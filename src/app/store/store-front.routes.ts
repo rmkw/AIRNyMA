@@ -4,6 +4,7 @@ import { HomePageComponent } from "./pages/home-page/home-page.component";
 import { ProductPageComponent } from "./pages/product-page/product-page.component";
 import { NotFoundPageComponent } from "./pages/not-found-page/not-found-page.component";
 import { GenderPageComponent } from "./pages/gender-page/gender-page.component";
+import { ProcesoProduccionComponent } from "@/procesoProduccion/pages/proceso-produccion/proceso-produccion.component";
 
 export const storeFrontRoutes: Routes = [
   {
@@ -21,6 +22,10 @@ export const storeFrontRoutes: Routes = [
       {
         path:'product/:idSlug',
         component:ProductPageComponent
+      },
+      {
+        path:'procesos',
+        component:ProcesoProduccionComponent
       },
       {
         path:'**',

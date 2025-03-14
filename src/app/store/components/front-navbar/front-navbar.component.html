@@ -1,37 +1,37 @@
 <div class="navbar bg-base-100 shadow-sm">
-
   <div class="navbar-start">
-    <div class="dropdown">
-      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+    <div class="relative">
+      <!-- Botón del menú hamburguesa -->
+      <button (click)="toggleMenu()" class="btn btn-ghost lg:hidden">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
         </svg>
-      </div>
+      </button>
 
-      <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-        <li><a
-          routerLink="/gender/development"
-          class="btn btn-ghost"
-          routerLinkActive="text-secondary">Development</a></li>
-        <li><a
-          routerLink="/gender/review"
-          class="btn btn-ghost"
-          routerLinkActive="text-secondary">Review</a></li>
-        <li><a
-          routerLink="/gender/completed"
-          class="btn btn-ghost"
-          routerLinkActive="text-secondary">Completed</a></li>
+      <!-- Menú hamburguesa -->
+      <ul class="absolute left-0 top-12 w-52 bg-base-100 rounded-lg shadow-lg transition-all duration-200"
+        [ngClass]="{ 'hidden': !menuAbierto, 'block': menuAbierto }">
+        <li><a routerLink="/procesos" (click)="cerrarMenu()" class="block p-2 hover:bg-gray-200">Procesos de
+            producción</a></li>
+        <li><a routerLink="/gender/development" (click)="cerrarMenu()"
+            class="block p-2 hover:bg-gray-200">Development</a></li>
+        <li><a routerLink="/gender/review" (click)="cerrarMenu()" class="block p-2 hover:bg-gray-200">Review</a></li>
+        <li><a routerLink="/gender/completed" (click)="cerrarMenu()" class="block p-2 hover:bg-gray-200">Completed</a>
+        </li>
       </ul>
-
     </div>
-    <a routerLink="/" class="btn btn-ghost text-xl font-montserrat">Captura
-      <span class="text-secondary">| Forms </span>
+
+    <a routerLink="/" class="btn btn-ghost text-xl font-montserrat">
+      Captura <span class="text-secondary">| Forms </span>
     </a>
   </div>
 
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a routerLink="/gender/development" class="btn btn-ghost" routerLinkActive="text-secondary">Development</a></li>
+      <li><a routerLink="/procesos" class="btn btn-ghost" routerLinkActive="text-secondary">Procesos de producción</a>
+      </li>
+      <li><a routerLink="/gender/development" class="btn btn-ghost" routerLinkActive="text-secondary">Development</a>
+      </li>
       <li><a routerLink="/gender/review" class="btn btn-ghost" routerLinkActive="text-secondary">Review</a></li>
       <li><a routerLink="/gender/completed" class="btn btn-ghost" routerLinkActive="text-secondary">Completed</a></li>
     </ul>
@@ -40,5 +40,4 @@
   <div class="navbar-end">
     <a class="btn">Button</a>
   </div>
-
 </div>

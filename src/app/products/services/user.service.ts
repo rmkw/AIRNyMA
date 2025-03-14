@@ -14,8 +14,7 @@ export class UserService {
 
   getUsers(): Observable<UsersResponce>{
     return this.http
-      .get<UsersResponce>(`${baseUrl}/usuarios`);
-
-      //.pipe(tap((resp) => console.log(resp)));
+      .get<UsersResponce>(`${baseUrl}/usuarios`)
+      .pipe(tap((resp) => console.log(resp)));
   }
 }
