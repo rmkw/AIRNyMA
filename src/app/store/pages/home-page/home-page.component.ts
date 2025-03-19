@@ -12,9 +12,6 @@ import { rxResource } from '@angular/core/rxjs-interop';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
-
-  constructor() {
-  }
   _userService = inject(UserService);
 
   UsersResource = rxResource({
@@ -23,4 +20,6 @@ export class HomePageComponent {
       return this._userService.getUsers();
     },
   });
+
+
 }

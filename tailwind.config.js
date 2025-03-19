@@ -21,7 +21,7 @@ module.exports = {
   },
   plugins: [require('daisyui'),],
   daisyui:{
-    themes:['night']
+    themes: ['night', "default", "retro", "cyberpunk", "valentine", "aqua"]
   }
 }
 
