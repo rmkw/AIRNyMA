@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
-import { UsersResponce } from '../interfaces/users.interfaces';
+import { Role, UsersResponce } from '../interfaces/users.interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthResponse } from '../interfaces/auth-response.interface';
@@ -34,6 +34,7 @@ export class authService {
   });
 
   user = computed(() => this._user());
+  isAdmin = computed(()=> this._user()?.roles.includes(Role.Admin) ?? false)
 
   login(username: string, password: string): Observable<boolean> {
     return this.http
