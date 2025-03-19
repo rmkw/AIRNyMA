@@ -37,7 +37,22 @@
     </ul>
   </div>
 
-  <div class="navbar-end">
-    <a class="btn">Button</a>
+  <div class="navbar-end gap-4">
+
+
+
+    @if (userName()) {
+    <button class="btn btn-ghost">
+      {{ userName() }}
+    </button>
+    <button class="btn btn-sm btn-error" (click)="_authService.logout()">
+      Salir
+    </button>
+    } @else {
+    <a routerLink="/auth/login" class="btn btn-sm btn-primary">
+      Iniciar sesión
+    </a>
+    }
+
   </div>
 </div>

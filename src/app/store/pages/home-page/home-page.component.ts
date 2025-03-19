@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { UserService } from '../../../products/services/user.service';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
+
 
 @Component({
   selector: 'app-home-page',
@@ -11,6 +12,9 @@ import { rxResource } from '@angular/core/rxjs-interop';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
+
+  constructor() {
+  }
   _userService = inject(UserService);
 
   UsersResource = rxResource({

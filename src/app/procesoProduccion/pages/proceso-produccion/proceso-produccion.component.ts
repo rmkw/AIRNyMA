@@ -24,7 +24,7 @@ export class ProcesoProduccionComponent {
     loader: ({ request }) => {
       return this._ppEcoService.getPpEcos().pipe(
         tap((data) => {
-          console.log('Datos de la API:', data);
+
           this.ppEco.set(Array.isArray(data) ? data : []);
         })
       );
@@ -55,7 +55,7 @@ export class ProcesoProduccionComponent {
 
     this._ppEcoService.actualizarComentario(id, this.comentario).subscribe({
       next: (procesoActualizado) => {
-        console.log('Comentario actualizado:', procesoActualizado);
+
         this.procesoSeleccionado.set(procesoActualizado);
 
         // 🔥 Recargar los datos correctamente

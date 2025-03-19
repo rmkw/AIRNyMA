@@ -15,7 +15,7 @@ export class ppEcoService {
   getPpEcos(): Observable<PpEconomicas> {
     return this.http.get<PpEconomicas>(`${baseUrl}/ppeco`);
 
-    //.pipe(tap((resp) => console.log(resp)));
+
   }
 
   actualizarComentario(
