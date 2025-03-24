@@ -21,7 +21,32 @@ module.exports = {
   },
   plugins: [require('daisyui'),],
   daisyui:{
-    themes: ['night', "default", "retro", "cyberpunk", "valentine", "aqua"]
+    themes: [
+      "light",
+      "dark",
+      "bumblebee",
+      "emerald",
+
+      "synthwave",
+      "retro",
+      "cyberpunk",
+      "valentine",
+      "halloween",
+      "garden",
+      "lofi",
+      "fantasy",
+      "luxury",
+      "dracula",
+      "cmyk",
+      "autumn",
+      "business",
+      "lemonade",
+      "night",
+      "coffee",
+      "winter",
+      "dim",
+      "nord",
+      "sunset",]
   }
 }
 

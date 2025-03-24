@@ -5,14 +5,15 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.routes'),
-    canMatch: [NotAuthenticatedGuard],
   },
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes'),
+    canMatch: [NotAuthenticatedGuard],
   },
   {
     path: '',
     loadChildren: () => import('./store/store-front.routes'),
+    canMatch: [NotAuthenticatedGuard],
   },
 ];

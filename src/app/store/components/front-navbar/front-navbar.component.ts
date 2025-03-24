@@ -33,8 +33,35 @@ export class FrontNavbarComponent {
   }
 
   //!CAMBIAR THEMAS
-  themes = ['default', 'retro', 'cyberpunk', 'valentine', 'aqua'];
-  selectedTheme = signal(localStorage.getItem('theme') || 'default');
+  themes = [
+    'light',
+    'dark',
+    'bumblebee',
+    'emerald',
+    'synthwave',
+    'retro',
+    'cyberpunk',
+    'valentine',
+    'halloween',
+    'garden',
+    'lofi',
+    'fantasy',
+    'luxury',
+    'dracula',
+    'cmyk',
+    'autumn',
+    'business',
+    'acid',
+    'lemonade',
+    'night',
+    'coffee',
+    'winter',
+    'dim',
+    'nord',
+    'sunset',
+  ];
+
+  selectedTheme = signal(localStorage.getItem('theme') || 'halloween');
 
   dropdownAbierto = signal(false);
 

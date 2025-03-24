@@ -5,11 +5,14 @@ import { ProductPageComponent } from "./pages/product-page/product-page.componen
 import { NotFoundPageComponent } from "./pages/not-found-page/not-found-page.component";
 import { GenderPageComponent } from "./pages/gender-page/gender-page.component";
 import { ProcesoProduccionComponent } from "@/procesoProduccion/pages/proceso-produccion/proceso-produccion.component";
+import { NotAuthenticatedGuard } from "@/auth/guards/not-authenticated.guard";
+import { FuenteIdentificacionComponent } from "@/fuenteIdentificacion/pages/fuente-identificacion/fuente-identificacion.component";
 
 export const storeFrontRoutes: Routes = [
   {
     path: '',
     component: StoreFrontLayoutComponent,
+
     children: [
       {
         path:'',
@@ -26,6 +29,10 @@ export const storeFrontRoutes: Routes = [
       {
         path:'procesos',
         component:ProcesoProduccionComponent
+      },
+      {
+        path: 'fuentes',
+        component:FuenteIdentificacionComponent
       },
       {
         path:'**',
