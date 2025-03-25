@@ -6,22 +6,22 @@
 
   </h1>
 
-  <!-- Grid con 2 filas -->
+
   <div class="grid gap-4">
-    <!-- Primera fila con 3 columnas -->
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Select -->
+
       <div class="max-w-xs">
         <label class="block text-sm font-medium text-gray-500 mb-2" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
-        <select id="procesoProduccion" class="select select-bordered select-sm w-full" (change)="seleccionarProceso($event)">
-          <option disabled selected>Selecciona una opción</option>
+        <select id="procesoProduccion" class="select select-bordered select-sm w-full" (change)="seleccionarProceso($event)"
+          [value]="procesoSeleccionado()?.id || ''">
+          <option disabled [selected]="!procesoSeleccionado()">Selecciona una opción</option>
           @for (proceso of ppEco(); track proceso.id) {
           <option [value]="proceso.id">{{ proceso.procesoProduccion }}</option>
           }
         </select>
-
       </div>
 
       <!-- Acrónimo -->
@@ -29,17 +29,17 @@
         <label class="block text-sm font-medium text-gray-500 mb-2" for="acronimo">
           Acrónimo del proceso de producción
         </label>
-        <h2 class="text-lg font-semibold"> {{ procesoSeleccionado()?.acronimoProceso || 'Acrónimo' }} </h2>
+        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || 'Acrónimo' }} </h2>
       </div>
 
       <!-- Método -->
       <div>
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="metodo">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="fuente">
           Fuente de identificación y selección de la variable
           (DDI, FD, Cuestionario)
         </label>
 
-        <input type="text" class="input input-sm input-bordered w-full max-w-xs" placeholder="" list="fuentes" />
+        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full max-w-xs" placeholder="" list="fuentes" />
         <datalist id="fuentes">
           <option value="DDI">
           <option value="FD">
@@ -52,10 +52,10 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <!-- Select -->
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="procesoProduccion">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="accesoLink">
           Liga de acceso a la fuente
         </label>
-        <input type="text" class="input input-sm input-bordered w-full max-w-xs" placeholder=""  />
+        <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full max-w-xs" placeholder="" />
 
 
 
@@ -65,17 +65,17 @@
 
       <!-- Método -->
       <div>
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="metodo">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="anio">
           Año del evento
         </label>
-        <input type="text" class="input input-sm input-bordered w-full max-w-xs" placeholder="" />
+        <input type="text" id="anio" [(ngModel)]="anioEvento" class="input input-sm input-bordered w-full max-w-xs" placeholder="" />
 
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="objetivo">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="comentario">
           Comentario de la fuente de identificación y selección de la variable
         </label>
-        <textarea id="objetivo" class="textarea textarea-bordered w-full max-w-xs h-1"></textarea>
+        <input type="text" id="comentarioF" [(ngModel)]="comentarioF" class="input input-sm input-bordered w-full max-w-xs" />
       </div>
     </div>
 
@@ -83,18 +83,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
     <div class="flex flex-row-reverse">
-      <button class="btn btn-outline btn-info" (click)="Siguiente()">
-        Actualizar
+      <button class="btn btn-outline btn-info" type="submit" (click)="nuevaFuente()">
+        Capturar
       </button>
     </div>
 
@@ -102,4 +93,3 @@
   </div>
 
 </div>
-

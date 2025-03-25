@@ -1,7 +1,67 @@
-import { Injectable } from '@angular/core';
+import { authService } from '@/auth/services/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { catchError, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { FiEcoResponce } from '../interfaces/fiEco-responce.interface';
 
-@Injectable({providedIn: 'root'})
+const baseUrl = environment.baseUrl
+
+@Injectable({ providedIn: 'root' })
 export class FuenteIdentificacionService {
-  constructor() { }
+  constructor() {}
 
+  private _authService = inject(authService);
+  private http = inject(HttpClient);
+
+  obtenerFuentes(): Observable<FiEcoResponce[]> {
+    const userId = this._authService.user()?.id;
+    if (!userId) {
+      console.log('No hay usuario autenticado');
+      return of([]);
+    }
+
+    return this.http
+      .get<FiEcoResponce[]>(`${baseUrl}/fi-economicas/${userId}`)
+      .pipe(
+        catchError((error) => {
+          console.error('Error al obtener fuentes:', error);
+          return of([]);
+        })
+      );
+  }
+
+  registrarFuente(datos: {
+    idPp: string;
+    fuente: string;
+    linkFuente: string;
+    anioEvento: string;
+    comentario: string;
+  }): Observable<FiEcoResponce | null> {
+
+    const userId = this._authService.user()?.id;
+    console.log('Usuario autenticado en servicio fuente:', userId);
+
+    // Si no hay usuario logeado, no se puede registrar
+    if (!userId) {
+      console.log('No hay usuario autenticado');
+      return of(null); // O puedes lanzar un error, dependiendo de cómo lo manejes
+    }
+
+    // Se agrega responsableRegister con el userId
+    const datosConResponsable = {
+      ...datos,
+      responsableRegister: userId,
+    };
+    console.log('Datos enviados al backend:', datosConResponsable);
+
+    return this.http
+      .post<FiEcoResponce>(`${baseUrl}/fi-economicas`, datosConResponsable)
+      .pipe(
+        catchError((error) => {
+          console.error('Error al registrar fuente:', error);
+          return of(null); // O cualquier otro valor que indique error
+        })
+      );
+  }
 }

@@ -7,6 +7,8 @@ import { GenderPageComponent } from "./pages/gender-page/gender-page.component";
 import { ProcesoProduccionComponent } from "@/procesoProduccion/pages/proceso-produccion/proceso-produccion.component";
 import { NotAuthenticatedGuard } from "@/auth/guards/not-authenticated.guard";
 import { FuenteIdentificacionComponent } from "@/fuenteIdentificacion/pages/fuente-identificacion/fuente-identificacion.component";
+import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/fuentes-list.component";
+import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/nueva-fuente.component";
 
 export const storeFrontRoutes: Routes = [
   {
@@ -15,35 +17,43 @@ export const storeFrontRoutes: Routes = [
 
     children: [
       {
-        path:'',
-        component: HomePageComponent
+        path: '',
+        component: HomePageComponent,
       },
       {
-        path:'gender/:gender',
-        component:GenderPageComponent
+        path: 'gender/:gender',
+        component: GenderPageComponent,
       },
       {
-        path:'product/:idSlug',
-        component:ProductPageComponent
+        path: 'product/:idSlug',
+        component: ProductPageComponent,
       },
       {
-        path:'procesos',
-        component:ProcesoProduccionComponent
+        path: 'procesos',
+        component: ProcesoProduccionComponent,
       },
       {
         path: 'fuentes',
-        component:FuenteIdentificacionComponent
+        component: FuentesListComponent,
       },
       {
-        path:'**',
-        component:NotFoundPageComponent
-      }
+        path: 'fuente/:id',
+        component: FuenteIdentificacionComponent,
+      },
+      {
+        path: 'nueva-fuente',
+        component: NuevaFuenteComponent,
+      },
+      {
+        path: '**',
+        component: NotFoundPageComponent,
+      },
     ],
   },
   {
     path: '**',
-    redirectTo:'',
-  }
+    redirectTo: '',
+  },
 ];
 
 export default storeFrontRoutes;

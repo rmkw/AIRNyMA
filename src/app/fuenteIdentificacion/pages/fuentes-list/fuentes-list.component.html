@@ -1,0 +1,58 @@
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold font-montserrat">Fuentes de identificación</h1>
+    <button class="btn btn-outline btn-sm btn-secondary"
+      routerLink="/nueva-fuente">
+      + Agregar Fuente
+    </button>
+  </div>
+
+
+  <div class="overflow-x-auto pt-5">
+    <table class="table table-xs">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Procesos de Producción</th>
+          <th>Fuente de identificación</th>
+          <th>Liga de acceso a la fuente</th>
+          <th>Año del evento</th>
+          <th>Comentario de la fuente </th>
+          <th>Acciónes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Spinner de carga -->
+        <tr *ngIf="loading">
+          <td colspan="7" class="text-center p-4">
+            <span class="loading loading-spinner loading-md"></span>
+          </td>
+        </tr>
+
+
+        <tr *ngFor="let fuente of fuentes; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ fuente.idPp }}</td>
+          <td>{{ fuente.fuente }}</td>
+          <td>
+            <a [href]="fuente.linkFuente" class="text-blue-500 underline" target="_blank">
+              Link de la fuente
+            </a>
+          </td>
+          <td>{{ fuente.anioEvento }}</td>
+          <td>{{ fuente.comentario }}</td>
+          <td>
+            <button (click)="editarFuente(fuente.idFuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
+              Editar
+            </button>
+          </td>
+        </tr>
+
+
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+
