@@ -61,20 +61,20 @@ export class authService {
       .pipe(
         tap((resp) => {
           if (!resp || !resp.authenticated) {
-            console.warn('⚠️:', resp?.message);
+            // console.warn('⚠️:', resp?.message);
             this._user.set(null); // Asegurar que el usuario sea nulo
             this._authStatus.set(NOT_AUTHENTICATED);
           } else {
-            console.log('✅ Usuario autenticado:', resp.user);
+            // console.log('✅ Usuario autenticado:', resp.user);
             this._user.set(resp.user || null); // Asignar null si user no existe
             this._authStatus.set(AUTHENTICATED);
           }
         }),
         catchError((error) => {
-          console.error(
-            '❌ Error al verificar el usuario:',
-            error.message || 'Error desconocido'
-          );
+          // console.error(
+          //   '❌ Error al verificar el usuario:',
+          //   error.message || 'Error desconocido'
+          // );
           this._user.set(null); // Asegurar que el usuario sea nulo en caso de error
           this._authStatus.set(NOT_AUTHENTICATED);
           return of(null); // Devolver null en caso de error
@@ -94,15 +94,15 @@ export class authService {
       )
       .subscribe({
         next: () => {
-          console.log(' Sesión cerrada en el backend');
+          // console.log(' Sesión cerrada en el backend');
         },
         error: (err) => {
           console.error(' Error cerrando sesión en el backend:', err);
           console.log(' Respuesta completa:', err.response || err);
         },
         complete: () => {
-          console.log(' Limpiando sesión en frontend...');
-          document.cookie = 'JSESSIONID=; Path=/; Max-Age=0;';
+          // console.log(' Limpiando sesión en frontend...');
+          // document.cookie = 'JSESSIONID=; Path=/; Max-Age=0;';
           this._user.set(null);
           this._authStatus.set('not-authenticated');
 
@@ -114,9 +114,9 @@ export class authService {
 
           //  Recargar la página para eliminar cualquier sesión en memoria
           window.location.href = '/auth/login';
-          console.log('--------');
-          console.log('this._user:', this._user());
-          console.log('this._authStatus:', this._authStatus());
+          // console.log('--------');
+          // console.log('this._user:', this._user());
+          // console.log('this._authStatus:', this._authStatus());
         },
       });
   }

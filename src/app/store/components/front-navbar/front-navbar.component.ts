@@ -14,12 +14,12 @@ export class FrontNavbarComponent {
   public _authService = inject(authService);
 
   user = computed(() => {
-    console.log(' Computed user:', this._authService.user());
+    // console.log(' Computed user:', this._authService.user());
     return this._authService.user();
   });
 
   userName = computed(() => {
-    console.log(' Computed userName:', this.user()?.nombre ?? '');
+    // console.log(' Computed userName:', this.user()?.nombre ?? '');
     return this.user()?.nombre ?? '';
   });
 

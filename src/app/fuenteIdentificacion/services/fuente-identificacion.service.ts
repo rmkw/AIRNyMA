@@ -64,4 +64,27 @@ export class FuenteIdentificacionService {
         })
       );
   }
+
+
+
+  editarFuente(idFuente: number, datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>): Observable<FiEcoResponce | null> {
+    const userId = this._authService.user()?.id;
+    if (!userId) {
+      console.log('No hay usuario autenticado');
+      return of(null);
+    }
+    console.log('Usuario autenticado en servicio fuente:', userId);
+    const payload = { ...datos, idFuente, responsableActualizacion: userId };
+    console.log('Enviando datos al backend:', payload);
+
+    return this.http
+      .put<FiEcoResponce>(`${baseUrl}/fi-economicas/${idFuente}`, payload)
+      .pipe(
+        catchError((error) => {
+          console.error('Error al editar fuente:', error);
+          return of(null);
+        })
+      );
+
+  }
 }
