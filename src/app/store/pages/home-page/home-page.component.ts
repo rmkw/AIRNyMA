@@ -12,14 +12,14 @@ import { rxResource } from '@angular/core/rxjs-interop';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
-  _userService = inject(UserService);
+  // _userService = inject(UserService);
 
-  UsersResource = rxResource({
-    request: () => ({}),
-    loader: ({ request }) => {
-      return this._userService.getUsers();
-    },
-  });
+  // UsersResource = rxResource({
+  //   request: () => ({}),
+  //   loader: ({ request }) => {
+  //     return this._userService.getUsers();
+  //   },
+  // });
 
 
 }

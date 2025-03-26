@@ -97,23 +97,23 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.anioEvento = fuente.anioEvento;
       this.comentario = fuente.comentario;
 
-      console.log(this.idPp, 'idPp');
+      // console.log(this.idPp, 'idPp');
 
       const procesoEncontrado =
         this.ppEco().find((proceso) => proceso.acronimoProceso === this.idPp) ||
         null;
 
-      console.log(procesoEncontrado, 'mirame');
+      // console.log(procesoEncontrado, 'mirame');
 
       if (procesoEncontrado) {
-        console.log(procesoEncontrado.procesoProduccion, 'procesoEncontrado');
+        // console.log(procesoEncontrado.procesoProduccion, 'procesoEncontrado');
         this.procesoSeleccionado.set(procesoEncontrado);
 
         this.procesoSeleccionadoId = procesoEncontrado.id;
-        console.log(this.procesoSeleccionado(), 'procesoSeleccionado');
+        // console.log(this.procesoSeleccionado(), 'procesoSeleccionado');
       }
     }
-    console.log('fuenteeditable', this.fuenteState);
+    // console.log('fuenteeditable', this.fuenteState);
   }
 
   getAcronimo(): string {
@@ -122,5 +122,47 @@ export class FuenteIdentificacionComponent implements OnInit {
     );
   }
 
-  actualizarFuente() {}
+  actualizarFuente() {
+    // Asegúrate de que todos los datos estén presentes antes de intentar actualizar
+    if (!this.procesoSeleccionado()) {
+      console.error('No se ha seleccionado un proceso de producción');
+      return;
+    }
+    console.log(this.procesoSeleccionado(), 'procesoSeleccionadoActualizarFuente');
+
+    const datosAActualizar: Omit<
+      FiEcoResponce,
+      'idFuente' | 'responsableActualizacion'
+    > = {
+      fuente: this.fuente,
+      linkFuente: this.linkFuente,
+      anioEvento: this.anioEvento,
+      comentario: this.comentario,
+      idPp: this.procesoSeleccionado()?.acronimoProceso || '', // Usamos el acrónimo del proceso seleccionado
+    };
+
+    console.log(datosAActualizar, 'datosAActualizar');
+    console.log(this.idFuente, 'idFuente');
+
+    // Llamar al servicio para editar la fuente
+    this._fuenteService
+      .editarFuente(this.idFuente, datosAActualizar)
+      .subscribe({
+        next: (updatedFuente) => {
+          if (updatedFuente) {
+            console.log('Fuente actualizada correctamente:', updatedFuente);
+            localStorage.removeItem('fuenteEditable');
+            // Aquí puedes manejar la respuesta (ej. redirigir o mostrar mensaje de éxito)
+          } else {
+            console.error('Error al actualizar la fuente');
+          }
+        },
+        error: (error) => {
+          console.error(
+            'Hubo un error al intentar actualizar la fuente:',
+            error
+          );
+        },
+      });
+  }
 }

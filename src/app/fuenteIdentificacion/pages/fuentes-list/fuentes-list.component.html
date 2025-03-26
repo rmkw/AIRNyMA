@@ -35,10 +35,15 @@
           <td>{{ fuente.idPp }}</td>
           <td>{{ fuente.fuente }}</td>
           <td>
+            @if (fuente.linkFuente) {
             <a [href]="fuente.linkFuente" class="text-blue-500 underline" target="_blank">
               Link de la fuente
             </a>
+            } @else {
+            <span class="text-yellow-500 font-semibold">Link no disponible</span>
+            }
           </td>
+
           <td>{{ fuente.anioEvento }}</td>
           <td>{{ fuente.comentario }}</td>
           <td>

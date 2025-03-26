@@ -12,9 +12,9 @@ export class UserService {
 
   private http = inject(HttpClient)
 
-  getUsers(): Observable<UsersResponce>{
-    return this.http
-      .get<UsersResponce>(`${baseUrl}/usuarios`, { withCredentials: true })
-      .pipe(tap((resp) => console.log(resp)));
-  }
+  // getUsers(): Observable<UsersResponce>{
+  //   return this.http
+  //     .get<UsersResponce>(`${baseUrl}/usuarios`, { withCredentials: true })
+  //     .pipe(tap((resp) => console.log(resp)));
+  // }
 }
