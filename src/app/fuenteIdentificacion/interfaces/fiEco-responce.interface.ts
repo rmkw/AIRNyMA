@@ -3,10 +3,10 @@ export interface FiEcoResponce {
   idPp:                     string;
   fuente:                   string;
   linkFuente:               string;
-  linkAccesoFuente?:         string | null;
+  linkAccesoFuente?:        string | null;
   anioEvento:               string;
   comentario:               string;
-  isactive?:                 boolean | null;
-  responsableRegister?:      number;
+  isactive?:                boolean | null;
+  responsableRegister?:     number;
   responsableActualizacion: number | null;
 }

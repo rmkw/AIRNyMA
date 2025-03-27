@@ -151,8 +151,9 @@ export class FuenteIdentificacionComponent implements OnInit {
         next: (updatedFuente) => {
           if (updatedFuente) {
             console.log('Fuente actualizada correctamente:', updatedFuente);
-            localStorage.removeItem('fuenteEditable');
+            // localStorage.removeItem('fuenteEditable');
             // Aquí puedes manejar la respuesta (ej. redirigir o mostrar mensaje de éxito)
+            alert('Fuente actualizada correctamente');
           } else {
             console.error('Error al actualizar la fuente');
           }

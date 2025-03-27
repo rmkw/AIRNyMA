@@ -14,6 +14,7 @@ export class FuenteIdentificacionService {
   private _authService = inject(authService);
   private http = inject(HttpClient);
 
+  //!OBTENER FUENTES
   obtenerFuentes(): Observable<FiEcoResponce[]> {
     const userId = this._authService.user()?.id;
     if (!userId) {
@@ -31,6 +32,7 @@ export class FuenteIdentificacionService {
       );
   }
 
+  //!REGISTRAR FUENTE
   registrarFuente(datos: {
     idPp: string;
     fuente: string;

@@ -34,6 +34,8 @@ export class NuevaFuenteComponent {
   anioEvento = '';
   comentarioF = '';
 
+  flagVarButton: boolean = false;
+
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const procesoId = Number(selectElement.value);
@@ -76,7 +78,8 @@ export class NuevaFuenteComponent {
         if (response) {
           console.log('Fuente registrada exitosamente', response);
           alert('Fuente registrada exitosamente');
-          this.limpiarFormulario();
+          this.flagVarButton = true;
+          // this.limpiarFormulario();
         } else {
           console.error('Hubo un error al registrar la fuente');
           alert('Hubo un error al registrar la fuente');
@@ -88,11 +91,19 @@ export class NuevaFuenteComponent {
       }
     );
   }
+
   limpiarFormulario() {
     this.fuente = '';
     this.linkFuente = '';
     this.anioEvento = '';
     this.comentarioF = '';
-    this.procesoSeleccionado.set(null);  // Restablecer el proceso seleccionado
+    this.procesoSeleccionado.set(null); // Restablecer el proceso seleccionado
   }
+
+  idVariable: string = '';
+  nombreVariable: string = '';
+  definicionVariable: string = '';
+  comentarioVariable: string = '';
+  alinea_MDEA: string = '';
+  alinea_ODS: string = '';
 }

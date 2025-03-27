@@ -30,6 +30,10 @@ export class FrontNavbarComponent {
   }
   cerrarMenuHamburgesa() {
     this.menuHamburgesa = false;
+    localStorage.removeItem('fuenteEditable');
+  }
+  navegandosinStorage() {
+    localStorage.removeItem('fuenteEditable');
   }
 
   //!CAMBIAR THEMAS
