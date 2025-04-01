@@ -4,8 +4,8 @@ import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.inte
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
 import { Component, signal, inject, OnInit } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 
@@ -26,7 +26,6 @@ export class FuenteIdentificacionComponent implements OnInit {
 
   fuenteState: FiEcoResponce | null = null;
 
-  // Variables para ngModel
   idFuente: number = NaN;
   idPp: string = '';
   responsableActualizacion: string = '';
@@ -35,7 +34,18 @@ export class FuenteIdentificacionComponent implements OnInit {
   anioEvento: string = '';
   comentario: string = '';
 
+  valoresIniciales = {
+    fuente: '',
+    linkFuente: '',
+    anioEvento: '',
+    comentario: '',
+    idPp:'',
+  };
+
   procesoSeleccionadoId: number | null = null;
+
+  mostrarAlerta = signal(false);
+  mensajeAlerta = '';
 
   constructor() {}
 
@@ -53,6 +63,14 @@ export class FuenteIdentificacionComponent implements OnInit {
         })
       )
       .subscribe();
+
+    this.valoresIniciales = {
+      fuente: this.fuente,
+      linkFuente: this.linkFuente,
+      anioEvento: this.anioEvento,
+      comentario: this.comentario,
+      idPp: this.procesoSeleccionado()?.acronimoProceso || '',
+    };
   }
 
   ppEco = signal<PpEconomicas[]>([]);
@@ -97,23 +115,16 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.anioEvento = fuente.anioEvento;
       this.comentario = fuente.comentario;
 
-      // console.log(this.idPp, 'idPp');
-
       const procesoEncontrado =
         this.ppEco().find((proceso) => proceso.acronimoProceso === this.idPp) ||
         null;
 
-      // console.log(procesoEncontrado, 'mirame');
-
       if (procesoEncontrado) {
-        // console.log(procesoEncontrado.procesoProduccion, 'procesoEncontrado');
         this.procesoSeleccionado.set(procesoEncontrado);
 
         this.procesoSeleccionadoId = procesoEncontrado.id;
-        // console.log(this.procesoSeleccionado(), 'procesoSeleccionado');
       }
     }
-    // console.log('fuenteeditable', this.fuenteState);
   }
 
   getAcronimo(): string {
@@ -128,7 +139,10 @@ export class FuenteIdentificacionComponent implements OnInit {
       console.error('No se ha seleccionado un proceso de producción');
       return;
     }
-    console.log(this.procesoSeleccionado(), 'procesoSeleccionadoActualizarFuente');
+    console.log(
+      this.procesoSeleccionado(),
+      'procesoSeleccionadoActualizarFuente'
+    );
 
     const datosAActualizar: Omit<
       FiEcoResponce,
@@ -141,10 +155,6 @@ export class FuenteIdentificacionComponent implements OnInit {
       idPp: this.procesoSeleccionado()?.acronimoProceso || '', // Usamos el acrónimo del proceso seleccionado
     };
 
-    console.log(datosAActualizar, 'datosAActualizar');
-    console.log(this.idFuente, 'idFuente');
-
-    // Llamar al servicio para editar la fuente
     this._fuenteService
       .editarFuente(this.idFuente, datosAActualizar)
       .subscribe({
@@ -153,7 +163,10 @@ export class FuenteIdentificacionComponent implements OnInit {
             console.log('Fuente actualizada correctamente:', updatedFuente);
             // localStorage.removeItem('fuenteEditable');
             // Aquí puedes manejar la respuesta (ej. redirigir o mostrar mensaje de éxito)
-            alert('Fuente actualizada correctamente');
+            // alert('Fuente actualizada correctamente');
+            this.mostrarAlerta.set(true);
+            this.mensajeAlerta = `Fuente actualizada correctamente.`;
+            setTimeout(() => this.mostrarAlerta.set(false), 3000);
           } else {
             console.error('Error al actualizar la fuente');
           }
@@ -165,5 +178,18 @@ export class FuenteIdentificacionComponent implements OnInit {
           );
         },
       });
+  }
+
+  formularioModificado = false;
+  verificarCambio(): void {
+    this.formularioModificado =
+      this.fuente !== this.valoresIniciales.fuente ||
+      this.linkFuente !== this.valoresIniciales.linkFuente ||
+      this.anioEvento !== this.valoresIniciales.anioEvento ||
+      this.comentario !== this.valoresIniciales.comentario ||
+      this.procesoSeleccionado()?.acronimoProceso !==
+        this.valoresIniciales.idPp;
+
+    console.log('Estado del formulario modificado:', this.formularioModificado);
   }
 }
