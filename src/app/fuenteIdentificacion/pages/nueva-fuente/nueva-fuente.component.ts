@@ -1,6 +1,7 @@
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +9,7 @@ import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-nueva-fuente',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './nueva-fuente.component.html',
 })
 export class NuevaFuenteComponent {
@@ -122,13 +123,11 @@ export class NuevaFuenteComponent {
       this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
 
       this.showWarning = true;
-
     } else if (!this.flagMDEArelation && newValue) {
       // Activación directa (sin confirmación)
       this.flagMDEArelation = true;
       this.showWarning = false;
     }
-
   }
 
   confirmDeactivation() {
@@ -141,8 +140,6 @@ export class NuevaFuenteComponent {
     }
     this.showWarning = false;
     this.currentDeactivation = null;
-
-
   }
 
   cancelDeactivation() {
@@ -160,17 +157,12 @@ export class NuevaFuenteComponent {
       if (mdeaCheckbox) mdeaCheckbox.checked = this.flagMDEArelation;
       if (odsCheckbox) odsCheckbox.checked = this.flagODSrelation;
     });
-
-
-
   }
 
   flagODSrelation: boolean = false;
   pendingDeactivationODS: boolean = false;
 
   checkedAliniationODS(event: Event) {
-
-
     const checkbox = event.target as HTMLInputElement;
     const newValue = checkbox.checked;
 
@@ -181,6 +173,7 @@ export class NuevaFuenteComponent {
     } else if (!this.flagODSrelation && newValue) {
       this.flagODSrelation = true;
     }
-
   }
+
+
 }

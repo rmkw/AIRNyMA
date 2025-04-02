@@ -55,36 +55,30 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Select -->
-      <div class="max-w-xs">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+
+      <div class="">
         <label class="block text-sm font-medium text-gray-500 mb-2" for="accesoLink">
           Liga de acceso a la fuente
         </label>
         <input type="text" id="accesoLink" [(ngModel)]="linkFuente"
-          class="input input-sm input-bordered w-full max-w-xs" placeholder="" />
-
-
-
+          class="input input-sm input-bordered w-full " placeholder="" />
       </div>
 
-
-
-      <!-- Método -->
-      <div>
+      <div class="col-span-2">
         <label class="block text-sm font-medium text-gray-500 mb-2" for="anio">
           Año del evento
         </label>
-        <input type="text" id="anio" [(ngModel)]="anioEvento" class="input input-sm input-bordered w-full max-w-xs"
+        <input type="text" id="anio" [(ngModel)]="anioEvento" class="input input-sm input-bordered w-full "
           placeholder="" />
-
       </div>
-      <div>
+
+      <div class="col-span-2">
         <label class="block text-sm font-medium text-gray-500 mb-2" for="comentario">
           Comentario
         </label>
         <input type="text" id="comentarioF" [(ngModel)]="comentario"
-          class="input input-sm input-bordered w-full max-w-xs" />
+          class="input input-sm input-bordered w-full" />
       </div>
     </div>
 
