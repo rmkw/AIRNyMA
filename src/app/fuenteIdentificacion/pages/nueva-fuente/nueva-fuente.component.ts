@@ -34,7 +34,7 @@ export class NuevaFuenteComponent {
   anioEvento = '';
   comentarioF = '';
 
-  flagVarButton: boolean = false;
+  flagVarButton: boolean = true;
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -106,4 +106,81 @@ export class NuevaFuenteComponent {
   comentarioVariable: string = '';
   alinea_MDEA: string = '';
   alinea_ODS: string = '';
+
+  flagMDEArelation: boolean = false;
+  showWarning: boolean = false;
+
+  currentDeactivation: { type: 'MDEA' | 'ODS'; name: string } | null = null;
+
+  checkedAliniationMDEA(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    const newValue = checkbox.checked;
+
+    // Si está intentando desactivar (de true a false)
+    if (this.flagMDEArelation && !newValue) {
+      event.preventDefault(); // Prevenir el cambio
+      this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
+
+      this.showWarning = true;
+
+    } else if (!this.flagMDEArelation && newValue) {
+      // Activación directa (sin confirmación)
+      this.flagMDEArelation = true;
+      this.showWarning = false;
+    }
+
+  }
+
+  confirmDeactivation() {
+    if (this.currentDeactivation) {
+      if (this.currentDeactivation.type === 'MDEA') {
+        this.flagMDEArelation = false;
+      } else {
+        this.flagODSrelation = false;
+      }
+    }
+    this.showWarning = false;
+    this.currentDeactivation = null;
+
+
+  }
+
+  cancelDeactivation() {
+    this.showWarning = false;
+    this.currentDeactivation = null;
+    // Forzar el estado de los checkboxes
+    setTimeout(() => {
+      const mdeaCheckbox = document.querySelector(
+        '#alinea_MDEA'
+      ) as HTMLInputElement;
+      const odsCheckbox = document.querySelector(
+        '#alinea_ODS'
+      ) as HTMLInputElement;
+
+      if (mdeaCheckbox) mdeaCheckbox.checked = this.flagMDEArelation;
+      if (odsCheckbox) odsCheckbox.checked = this.flagODSrelation;
+    });
+
+
+
+  }
+
+  flagODSrelation: boolean = false;
+  pendingDeactivationODS: boolean = false;
+
+  checkedAliniationODS(event: Event) {
+
+
+    const checkbox = event.target as HTMLInputElement;
+    const newValue = checkbox.checked;
+
+    if (this.flagODSrelation && !newValue) {
+      event.preventDefault();
+      this.currentDeactivation = { type: 'ODS', name: 'ODS' };
+      this.showWarning = true;
+    } else if (!this.flagODSrelation && newValue) {
+      this.flagODSrelation = true;
+    }
+
+  }
 }
