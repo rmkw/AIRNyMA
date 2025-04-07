@@ -1,8 +1,10 @@
+import { Item } from '@/fuenteIdentificacion/interfaces/Item.interface';
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
+import { MdeaService } from '@/fuenteIdentificacion/services/mdea-pull.service';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { tap } from 'rxjs';
@@ -12,9 +14,10 @@ import { tap } from 'rxjs';
   imports: [FormsModule, CommonModule],
   templateUrl: './nueva-fuente.component.html',
 })
-export class NuevaFuenteComponent {
+export class NuevaFuenteComponent implements OnInit {
   _fuenteIServive = inject(FuenteIdentificacionService);
   _ppEcoService = inject(ppEcoService);
+  _mdeaService = inject(MdeaService);
 
   ppEco = signal<PpEconomicas[]>([]);
   procesoSeleccionado = signal<PpEconomicas | null>(null);
@@ -175,5 +178,79 @@ export class NuevaFuenteComponent {
     }
   }
 
+  componentes: any[] = [];
+  subcomponentes: any[] = [];
+  topicos: any[] = [];
+  variables: any[] = [];
+  estadisticos: any[] = [];
 
+  selectedComp!: number;
+  selectedSub!: number | string;
+  selectedTop!: number | string;
+  selectedVar!: string | number;
+  selectedEstadistico!: string | number;
+
+  ngOnInit(): void {
+    this._mdeaService
+      .getComponentes()
+      .subscribe((data) => (this.componentes = data));
+  }
+
+  onCompChange(idComp: number): void {
+    this.selectedComp = +idComp;
+    this.selectedSub = 0;
+    this.selectedTop = 0;
+    this.selectedVar = '';
+
+    this.subcomponentes = [];
+    this.topicos = [];
+    this.variables = [];
+    this.estadisticos = [];
+
+    this._mdeaService
+      .getSubcomponentes(this.selectedComp)
+      .subscribe((data) => (this.subcomponentes = data));
+    console.log('firstValue', this.selectedComp);
+  }
+
+  onSubChange(idSub: number | string): void {
+    this.selectedSub = +idSub;
+    this.selectedTop = 0;
+    this.selectedVar = '';
+    this.topicos = [];
+    this.variables = [];
+    this.estadisticos = [];
+
+    this._mdeaService
+      .getTopicos(this.selectedComp, this.selectedSub)
+      .subscribe((data) => (this.topicos = data));
+  }
+
+  onTopicoChange(idTop: number | string): void {
+    this.selectedTop = +idTop;
+    this.selectedVar = '';
+    this.variables = [];
+    this.estadisticos = [];
+
+    this._mdeaService
+      .getVariables(
+        this.selectedComp,
+        this.selectedSub,
+        this.selectedTop)
+      .subscribe((data) => (this.variables = data));
+  }
+
+  onVariableChange(idVar: string ): void {
+    this.selectedVar = idVar;
+    this.estadisticos = [];
+
+    this._mdeaService
+      .getEstadisticos(
+        this.selectedComp,
+        this.selectedSub,
+        this.selectedTop,
+        this.selectedVar
+      )
+      .subscribe((data) => (this.estadisticos = data));
+  }
 }
