@@ -222,33 +222,32 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
 
       <div class="flex flex-col gap-4">
-        <select class="select select-sm" (change)="onCompChange($any($event.target).value)">
-          <option disabled selected>Selecciona un Componente</option>
-          <option *ngFor="let comp of componentes" [value]="comp.idComp">{{ comp.nombre }}</option>
+        <select class="select select-sm">
+          <option disabled value="">Selecciona un Componente</option>
+
 
         </select>
 
-        <select class="select select-sm" [disabled]="!subcomponentes.length" (change)="onSubChange($any($event.target).value)">
-          <option disabled selected>Selecciona un Subcomponente</option>
-          <option *ngFor="let sub of subcomponentes" [value]="sub.idSub">{{ sub.nombre }}</option>
+        <select class="select select-sm">
+          <option disabled value="">Selecciona un Subcomponente</option>
           <option value="-">-</option>
         </select>
 
-        <select class="select select-sm" [disabled]="!topicos.length" (change)="onTopicoChange($any($event.target).value)">
-          <option disabled selected>Selecciona un Tópico</option>
-          <option *ngFor="let top of topicos" [value]="top.idTop">{{ top.nombre }}</option>
+        <select class="select select-sm">
+          <option disabled value="">Selecciona un Tópico</option>
+
           <option value="-">-</option>
         </select>
 
-        <select class="select select-sm" [disabled]="!variables.length" (change)="onVariableChange($any($event.target).value)">
-          <option disabled selected>Selecciona una Variable</option>
-          <option *ngFor="let v of variables" [value]="v.idVar">{{ v.nombre }}</option>
+        <select class="select select-sm">
+          <option disabled value="">Selecciona una Variable</option>
+
           <option value="-">-</option>
         </select>
 
-        <select class="select select-sm" [disabled]="!estadisticos.length">
-          <option disabled selected>Selecciona un Estadístico</option>
-          <option *ngFor="let est of estadisticos" [value]="est.idEst">{{ est.nombre }}</option>
+        <select class="select select-sm">
+          <option disabled value="">Selecciona un Estadístico</option>
+
           <option value="-">-</option>
         </select>
       </div>

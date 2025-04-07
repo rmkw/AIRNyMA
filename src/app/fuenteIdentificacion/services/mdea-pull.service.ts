@@ -19,34 +19,60 @@ export class MdeaService {
     );
   }
 
-  getSubcomponentes(idComp: number): Observable<any[]> {
+  getSubcomponentes(idComp: number | string): Observable<any[]> {
     return this.http.get<any[]>(`${baseUrl}/mdea/subcomponente/comp/${idComp}`);
   }
 
-  getTopicos(idComp: number, idSub: number): Observable<any[]> {
+  getTopicos(
+    idComp: number | string,
+    idSub: number | string
+  ): Observable<any[]> {
     return this.http.get<any[]>(
       `${baseUrl}/mdea/topicos/comp/${idComp}/sub/${idSub}`
     );
   }
 
   getVariables(
-    idComp: number,
+    idComp: number | string,
     idSub: number | string,
-    idTop: number
+    idTop: number | string
   ): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${baseUrl}/mdea/variables/comp/${idComp}/sub/${idSub}/top/${idTop}`
-    );
+    return this.http
+      .get<any[]>(
+        `${baseUrl}/mdea/variables/comp/${idComp}/sub/${idSub}/top/${idTop}`,
+        { observe: 'response' }
+      )
+      .pipe(
+        map((resp) => {
+          if (resp.status === 204) {
+            return [{ idVar: '-', nombre: '-' }];
+          }
+          return resp.body?.length ? resp.body : [{ idVar: '-', nombre: '-' }];
+        }),
+        catchError(() => of([{ idVar: '-', nombre: '-' }]))
+      );
   }
 
   getEstadisticos(
-    idComp: number,
+    idComp: number | string,
     idSub: number | string,
     idTop: number | string,
     idVar: string | number
   ): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${baseUrl}/mdea/estadisticos/comp/${idComp}/sub/${idSub}/top/${idTop}/var/${idVar}`
-    );
+    return this.http
+      .get<any[]>(
+        `${baseUrl}/mdea/estadisticos/comp/${idComp}/sub/${idSub}/top/${idTop}/var/${idVar}`,
+        { observe: 'response' }
+      )
+      .pipe(
+        map((resp) => {
+          if (resp.status === 204) {
+            return [{ idEst: '-', nombre: '-' }];
+          }
+          return resp.body?.length ? resp.body : [{ idEst: '-', nombre: '-' }];
+        }),
+        catchError(() => of([{ idEst: '-', nombre: '-' }]))
+      );
+
   }
 }
