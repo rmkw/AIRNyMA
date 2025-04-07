@@ -115,7 +115,7 @@
 
 
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-5">
 
       <div class="max-w-xs">
         <label class="block text-sm font-medium  mb-2" for="idVariable">
@@ -125,7 +125,7 @@
           placeholder="" />
       </div>
 
-      <div class="max-w-xs">
+      <div class="col-span-3">
         <label class="block text-sm font-medium  mb-2" for="nombreVariable">
           Nombre de la variable
         </label>
@@ -133,7 +133,7 @@
           placeholder="" />
       </div>
 
-      <div class="max-w-xs">
+      <div class="col-span-3">
         <label class="block text-sm font-medium  mb-2" for="definicionVariable">
           Definición de la variable
         </label>
@@ -141,7 +141,7 @@
           class="input input-sm input-bordered w-full" placeholder="" />
       </div>
 
-      <div class="max-w-xs">
+      <div class="col-span-4">
         <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
           Comentario de la variable
         </label>
@@ -173,6 +173,8 @@
 
     </div>
 
+
+
   </div>
 
   @if (showWarning && currentDeactivation) {
@@ -189,51 +191,7 @@
   </div>
   }
 
-  <div class="grid gap-4 animate-fadeIn">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-          Tema de cobertura de necesidades
-        </label>
-        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-          class="input input-sm input-bordered w-full" placeholder="" />
-      </div>
 
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-          Nivel de contribución al Tema de cobertura
-        </label>
-        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-          class="input input-sm input-bordered w-full" placeholder="" />
-      </div>
-
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-          Viabilidad de generación de estadística derivada
-        </label>
-        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-          class="input input-sm input-bordered w-full" placeholder="" />
-      </div>
-
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-          Propuesta de generación de estadística derivada
-        </label>
-        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-          class="input input-sm input-bordered w-full" placeholder="" />
-      </div>
-
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-          Comentario de pertinencia
-        </label>
-        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-          class="input input-sm input-bordered w-full" placeholder="" />
-      </div>
-    </div>
-
-
-  </div>
 
 
 
@@ -405,6 +363,74 @@
   </div>
   }
   }
+  <div class="grid gap-4 animate-fadeIn">
+    <div class="flex w-full flex-col mt-2 mb-2">
+      <div class="divider "></div></div>
+
+      <h1 class="text-3xl font-bold font-montserrat">Cobertura de necesidades</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <div class="col-span-2">
+        <label class="block text-sm font-medium mb-2" for="comentarioVariable">
+          Tema de cobertura de necesidades
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+          Nivel de contribución
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" list="niveles"/>
+          <datalist id="niveles">
+            <option value="Alto">
+            <option value="Intermedio">
+            <option value="Bajo">
+            <option value="-"></option>
+          </datalist>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+          Viabilidad de generación
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" list="viabilidad" />
+          <datalist id="viabilidad">
+            <option value="Viable">
+            <option value="No viable">
+
+            <option value="-"></option>
+          </datalist>
+      </div>
+
+      <div class="col-span-2">
+        <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+          Propuesta de generación de estadística derivada
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="col-span-2">
+        <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+          Comentario de pertinencia
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+    </div>
+
+    <div class="flex w-full flex-col ">
+      <div class="divider "></div>
+    </div>
+
+
+
+  </div>
 
 
 </div>
