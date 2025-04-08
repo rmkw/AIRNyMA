@@ -219,98 +219,105 @@
 
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
 
-      <div class="flex flex-col gap-4">
-        <select class="select select-sm">
-          <option disabled value="">Selecciona un Componente</option>
-
-
-        </select>
-
-        <select class="select select-sm">
-          <option disabled value="">Selecciona un Subcomponente</option>
-          <option value="-">-</option>
-        </select>
-
-        <select class="select select-sm">
-          <option disabled value="">Selecciona un Tópico</option>
-
-          <option value="-">-</option>
-        </select>
-
-        <select class="select select-sm">
-          <option disabled value="">Selecciona una Variable</option>
-
-          <option value="-">-</option>
-        </select>
-
-        <select class="select select-sm">
-          <option disabled value="">Selecciona un Estadístico</option>
-
-          <option value="-">-</option>
-        </select>
-      </div>
-
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-20">
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
           Componente
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <select class="select select-bordered select-sm w-full"
+          (change)="onSelectComponente($event)">
+          <option disabled selected>Selecciona un Componente</option>
+          <option *ngFor="let comp of arrComponentes" [value]="comp.idComp">{{ comp.nombre }}</option>
+        </select>
       </div>
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
           Subcomponente
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <select  class="select select-bordered select-sm w-full"
+          #subcomponenteSelect
+          (change)="onSelectSubcomponente($event)"
+          [disabled]="!isSelectEnabled_Subc">
+          <option disabled selected>Selecciona un Subcomponente</option>
+          <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}</option>
+          <option value="-">-</option>
+        </select>
       </div>
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
           Tema
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <select class="select select-bordered select-sm w-full"
+          #topicoSelect
+          (change)="onSelectTopico($event)"
+          [disabled]="!isSelectEnabled_Top">
+          >
+          <option disabled selected>Selecciona un Tópico</option>
+          <option *ngFor="let tema of arrTopicos" [value]="tema.idTop">{{ tema.nombre }}</option>
+          <option value="-">-</option>
+        </select>
       </div>
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariableMDEA">
           Estadística 1
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <select class="select select-bordered select-sm w-full"
+          #variableSelect
+          (change)="onSelectVariable($event)"
+          [disabled]="!isSelectEnabled_Var">
+          <option disabled selected>Selecciona una Variable</option>
+          <option *ngFor="let vari of arrVariables" [value]="vari.idVar">{{ vari.nombre }}</option>
+          <option value="-">-</option>
+        </select>
       </div>
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idEstadistico">
           Estadística 2
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <select class="select select-bordered select-sm w-full"
+          #estadisticoSelect
+          (change)="onSelectEstadistico($event)"
+          [disabled]="!isSelectEnabled_Est">
+          <option disabled selected>Selecciona un Estadístico</option>
+          <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}</option>
+          <option value="-">-</option>
+        </select>
       </div>
 
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
           Nivel de contribución a contenidos
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-          placeholder="" />
+        <input type="text" id="nivelpullMdea"  class="input input-sm input-bordered w-full"
+          placeholder="" list="nivelesMDEA" />
+          <datalist id="nivelesMDEA">
+            <option value="Alto">
+            <option value="Intermedio">
+            <option value="Bajo">
+            <option value="-"></option>
+          </datalist>
       </div>
 
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
           Comentario
         </label>
-        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
+        <input type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full"
           placeholder="" />
       </div>
 
 
     </div>
+    <code>
+
+    </code>
+
 
   </div>
   }

@@ -4,14 +4,14 @@ import { MdeaService } from '@/fuenteIdentificacion/services/mdea-pull.service';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
-import { tap } from 'rxjs';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { catchError, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-nueva-fuente',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './nueva-fuente.component.html',
 })
 export class NuevaFuenteComponent implements OnInit {
@@ -178,20 +178,173 @@ export class NuevaFuenteComponent implements OnInit {
     }
   }
 
-
-
   ngOnInit(): void {
-
+    this.getComponentes();
   }
 
-  // Utilidad para resetear hijos desde un punto
+  arrComponentes: any[] = [];
+  arrSubcompo: any[] = [];
+  arrTopicos: any[] = [];
+  arrVariables: any[] = [];
+  arrEstadisticos: any[] = [];
+
+  idComponente: number | string = '';
+  idSubcomponente: number | string = '';
+  idTopico: number | string = '';
+  idVariableMDEAPULL: number | string = '';
+  idEstadistico: number | string = '';
+
+  //! funciones control
+  getComponentes() {
+    this._mdeaService.getComponentes().subscribe((data) => {
+      console.log('Componentes:', data);
+      this.arrComponentes = data;
+    });
+  }
+  getSubcomponentes(idComp: number | string) {
+    this._mdeaService.getSubcomponentes(idComp).subscribe((data) => {
+      console.log('Subcomponentes:', data);
+      this.arrSubcompo = data;
+    });
+  }
+  getTopicos(idSub: number | string) {
+    this._mdeaService.getTopicos(this.idComponente, idSub).subscribe((data) => {
+      console.log('Topicos:', data);
+      this.arrTopicos = data;
+    });
+  }
+
+  getVariables(idTop: number | string) {
+    this._mdeaService
+      .getVariables(this.idComponente, this.idSubcomponente, idTop)
+      .subscribe((data) => {
+        console.log('Variables:', data);
+        this.arrVariables = data;
+      });
+  }
+  getEstadisticos(idVar: number | string) {
+    this._mdeaService
+      .getEstadisticos(
+        this.idComponente,
+        this.idSubcomponente,
+        this.idTopico,
+        idVar
+      )
+      .subscribe((data) => {
+        console.log('Estadisticos:', data);
+        this.arrEstadisticos = data;
+      });
+  }
+
+  isSelectEnabled_Subc: boolean = false;
+  isSelectEnabled_Top: boolean = false;
+  isSelectEnabled_Var: boolean = false;
+  isSelectEnabled_Est: boolean = false;
+
+  //! onSelects
+  onSelectComponente(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const _idComponente = selectElement.value;
+    this.idComponente = _idComponente;
+    console.log('Componente seleccionado:', _idComponente);
+
+    //* limpieza de selects
+    this.isSelectEnabled_Subc = true;
+    const conSubSelect = this.subcomponenteSelect.nativeElement as HTMLSelectElement;
+    conSubSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrSubcompo = []; // Limpiar el array de subcomponentes
+
+    this.isSelectEnabled_Top = false;
+    const conTopSelect = this.topicoSelect.nativeElement as HTMLSelectElement;
+    conTopSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrTopicos = []; // Limpiar el array de tópicos
+
+    this.isSelectEnabled_Var = false;
+    const conVarSelect = this.variableSelect.nativeElement as HTMLSelectElement;
+    conVarSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrVariables = []; // Limpiar el array de variables
+
+    this.isSelectEnabled_Est = false;
+    const conEstSelect = this.estadisticoSelect.nativeElement as HTMLSelectElement;
+    conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrEstadisticos = []; // Limpiar el array de estadísticos
 
 
+    this.getSubcomponentes(_idComponente);
+  }
 
+  @ViewChild('subcomponenteSelect') subcomponenteSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('topicoSelect') topicoSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('variableSelect') variableSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('estadisticoSelect') estadisticoSelect!: ElementRef<HTMLSelectElement>;
 
+  onSelectSubcomponente(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idSubcomponente = selectElement.value;
+    this.idSubcomponente = idSubcomponente;
+    console.log('Subcomponente seleccionado:', idSubcomponente);
+    this.isSelectEnabled_Top = true;
 
+    const conTopSelect = this.topicoSelect.nativeElement as HTMLSelectElement;
+    conTopSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrTopicos = [];
 
+    this.isSelectEnabled_Var = false;
+    const conVarSelect = this.variableSelect.nativeElement as HTMLSelectElement;
+    conVarSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrVariables = []; // Limpiar el array de variables
 
+    this.isSelectEnabled_Est = false;
+    const conEstSelect = this.estadisticoSelect
+      .nativeElement as HTMLSelectElement;
+    conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrEstadisticos = []; // Limpiar el array de estadísticos
 
+    if (this.idSubcomponente == '-') {
+      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
 
+        console.log('entre a hacer el cambiio');
+        this.topicoSelect.nativeElement.value = '-';
+        this.variableSelect.nativeElement.value = '-';
+        this.estadisticoSelect.nativeElement.value = '-';
+
+        this.isSelectEnabled_Var = true;
+        this.isSelectEnabled_Est = true;
+
+        this.arrTopicos = [];
+        this.arrVariables = [];
+        this.arrEstadisticos = [];
+
+      return;
+    }
+
+    this.getTopicos(idSubcomponente);
+  }
+
+  onSelectTopico(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idTopico = selectElement.value;
+    this.idTopico = idTopico;
+    console.log('Topico seleccionado:', idTopico);
+    this.isSelectEnabled_Var = true;
+
+    this.getVariables(idTopico);
+  }
+
+  onSelectVariable(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idVariable = selectElement.value;
+    this.idVariableMDEAPULL = idVariable;
+    console.log('Variable seleccionada:', idVariable);
+    this.isSelectEnabled_Est = true;
+
+    this.getEstadisticos(idVariable);
+  }
+
+  onSelectEstadistico(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idEstadistico = Number(selectElement.value);
+    this.idEstadistico = idEstadistico;
+    console.log('Estadistico seleccionado:', idEstadistico);
+  }
 }
