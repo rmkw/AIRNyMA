@@ -328,6 +328,31 @@ export class NuevaFuenteComponent implements OnInit {
     console.log('Topico seleccionado:', idTopico);
     this.isSelectEnabled_Var = true;
 
+    const conVarSelect = this.variableSelect.nativeElement as HTMLSelectElement;
+    conVarSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrVariables = []; // Limpiar el array de variables
+
+    this.isSelectEnabled_Est = false;
+    const conEstSelect = this.estadisticoSelect.nativeElement as HTMLSelectElement;
+    conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrEstadisticos = []; // Limpiar el array de estadísticos
+
+    if (this.idTopico == '-') {
+      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
+
+        console.log('entre a hacer el cambiio');
+        this.variableSelect.nativeElement.value = '-';
+        this.estadisticoSelect.nativeElement.value = '-';
+
+        this.isSelectEnabled_Est = true;
+
+        this.arrVariables = [];
+        this.arrEstadisticos = [];
+
+      return;
+    }
+
+
     this.getVariables(idTopico);
   }
 
@@ -337,6 +362,22 @@ export class NuevaFuenteComponent implements OnInit {
     this.idVariableMDEAPULL = idVariable;
     console.log('Variable seleccionada:', idVariable);
     this.isSelectEnabled_Est = true;
+
+    const conEstSelect = this.estadisticoSelect
+      .nativeElement as HTMLSelectElement;
+    conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrEstadisticos = []; // Limpiar el array de estadísticos
+
+    if (this.idVariableMDEAPULL == '-') {
+      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
+
+        console.log('entre a hacer el cambiio');
+        this.estadisticoSelect.nativeElement.value = '-';
+
+        this.arrEstadisticos = [];
+
+      return;
+    }
 
     this.getEstadisticos(idVariable);
   }
