@@ -13,8 +13,10 @@ import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.inte
 })
 export class ProcesoProduccionComponent {
   _ppEcoService = inject(ppEcoService);
+
   ppEco = signal<PpEconomicas[]>([]);
   procesoSeleccionado = signal<PpEconomicas | null>(null);
+
   comentario = '';
   mostrarAlerta = signal(false);
   mensajeAlerta = '';
@@ -24,7 +26,6 @@ export class ProcesoProduccionComponent {
     loader: ({ request }) => {
       return this._ppEcoService.getPpEcos().pipe(
         tap((data) => {
-
           this.ppEco.set(Array.isArray(data) ? data : []);
         })
       );
@@ -43,30 +44,52 @@ export class ProcesoProduccionComponent {
       : '';
   }
 
-  alertaVisible = signal(false);
+  mostrarAlertaNoProceso = signal(false);
 
   actualizarComentario() {
     const id = this.procesoSeleccionado()?.id;
+    this.ppSelected = id;
 
     if (!id) {
       console.error('No hay proceso seleccionado');
+
+      // 🔥 Mostrar alerta
+      this.mostrarAlertaNoProceso.set(true);
+      this.mensajeAlerta = `Ningun proceso seleccionado.`;
+      setTimeout(() => this.mostrarAlertaNoProceso.set(false), 3000);
+
       return;
     }
 
-    this._ppEcoService.actualizarComentario(id, this.comentario).subscribe({
-      next: (procesoActualizado) => {
-
-        this.procesoSeleccionado.set(procesoActualizado);
-
-        // 🔥 Recargar los datos correctamente
-        this.ppEcoResource.reload();
-
-        // 🔥 Mostrar alerta
-        this.mostrarAlerta.set(true);
-        this.mensajeAlerta = `Proceso: ${procesoActualizado.acronimoProceso} actualizado correctamente.`;
-        setTimeout(() => this.mostrarAlerta.set(false), 3000);
-      },
-      error: (err) => console.error('Error al actualizar:', err),
-    });
+    this.showWarning = true;
   }
+
+  showWarning: boolean = false;
+  ppSelected: any = null;
+
+  cancelDeactivation() {
+    this.showWarning = false;
+  }
+
+  confirmDeactivation() {
+    this._ppEcoService
+      .actualizarComentario(this.ppSelected, this.comentario)
+      .subscribe({
+        next: (procesoActualizado) => {
+          this.procesoSeleccionado.set(procesoActualizado);
+
+          // 🔥 Recargar los datos correctamente
+          this.ppEcoResource.reload();
+
+          // 🔥 Mostrar alerta
+          this.mostrarAlerta.set(true);
+          this.mensajeAlerta = `Proceso: ${procesoActualizado.acronimoProceso} actualizado correctamente.`;
+          setTimeout(() => this.mostrarAlerta.set(false), 3000);
+          this.showWarning = false;
+        },
+        error: (err) => console.error('Error al actualizar:', err),
+      });
+  }
+
+
 }
