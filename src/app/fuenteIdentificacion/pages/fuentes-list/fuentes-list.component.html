@@ -93,9 +93,10 @@
 
 
 
+<h1 class="text-1xl font-bold font-montserrat mb-6">Lista de fuentes de identificación</h1>
 
-  <div class="overflow-x-auto mt-5">
-    <h1 class="text-1xl font-bold font-montserrat mb-6">Lista de fuentes de identificación</h1>
+  <div class="overflow-auto   mt-5 " style="max-height: 40rem;">
+
     <table class="table table-xs table-pin-rows">
       <thead>
         <tr>
@@ -105,7 +106,8 @@
           <th>Liga de acceso a la fuente</th>
           <th>Año del evento</th>
           <th>Comentario de la fuente </th>
-          <th>Acciónes</th>
+          <th >Acciónes</th>
+          <th>Variables</th>
         </tr>
       </thead>
       <tbody>
@@ -134,8 +136,17 @@
           <td>{{ fuente.anioEvento }}</td>
           <td>{{ fuente.comentario }}</td>
           <td>
+
             <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
               Editar
+            </button>
+            <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2">
+              Eliminar
+            </button>
+          </td>
+          <td>
+            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs mr-2 ">
+              + Agregar
             </button>
           </td>
         </tr>

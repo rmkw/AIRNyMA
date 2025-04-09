@@ -1,4 +1,4 @@
-import { MdeaService } from '@/fuenteIdentificacion/services/mdea-pull.service';
+import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

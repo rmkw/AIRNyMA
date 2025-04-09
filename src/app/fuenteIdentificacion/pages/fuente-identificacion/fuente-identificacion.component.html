@@ -1,86 +1,74 @@
+
 <div class="container mx-auto p-4">
-  <h1 class="text-3xl font-bold font-montserrat mb-6">
-    Fuente de identificación y selección de la variable
-    <!-- <span class="loading loading-bars loading-xs"></span> -->
-
-
-  </h1>
-
+  <h1 class="text-3xl font-bold font-montserrat mb-6">Fuente de identificación y selección de la variable</h1>
 
   <div class="grid gap-4">
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-      <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="procesoProduccion">
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <!--! PP -->
+      <div class="col-span-2">
+        <label class="block text-sm font-medium  mb-2" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
-        <select
-          id="procesoProduccion"
-          [(ngModel)]="procesoSeleccionadoId"
-          (change)="seleccionarProceso($event)"
-          class="select select-bordered select-sm w-full">
-
-          <option disabled>Selecciona una opción</option>
+        <select id="procesoProduccion" class="select select-bordered select-sm w-full " (change)="seleccionarProceso($event)"
+          [value]="procesoSeleccionado()?.id || ''">
+          <option disabled [selected]="!procesoSeleccionado()">Selecciona una opción</option>
           @for (proceso of ppEco(); track proceso.id) {
           <option [value]="proceso.id">{{ proceso.procesoProduccion }}</option>
           }
         </select>
       </div>
-
-      <!-- Acrónimo -->
-      <div>
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="acronimo">
-          Acrónimo del proceso de producción
+      <!--! Acrónimo -->
+      <div class="col-span-1 text-center">
+        <label class="block text-sm font-medium  mb-2" for="acronimo">
+          Acrónimo
         </label>
-        <h2 class="text-lg font-semibold" id="acronimo"> {{ getAcronimo() }}
+        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
         </h2>
       </div>
 
-      <!-- Método -->
-      <div>
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="fuente">
+      <!--! Tipo Fuente -->
+      <div class="col-span-2">
+        <label class="block text-sm font-medium mb-2" for="fuente">
           Fuente de identificación
-          (DDI, FD, Cuestionario)
         </label>
+        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full " placeholder="" />
+      </div>
 
-        <input type="text" id="fuente" [(ngModel)]="fuente" (ngModelChange)="verificarCambio()" class="input input-sm input-bordered w-full max-w-xs"
-          placeholder="" list="fuentes" />
-        <datalist id="fuentes">
-          <option value="DDI">
-          <option value="FD">
-          <option value="Cuestionario">
-
-        </datalist>
+      <!--! Año del evento -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium  mb-2" for="anio">
+          Año del evento
+        </label>
+        <input type="text" id="anio" [(ngModel)]="anioEvento" maxlength="6" class="input input-sm input-bordered w-full "
+          placeholder="" />
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-
-      <div class="">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="accesoLink">
+    <div class="grid grid-col-1 md:grid-cols-4 gap-4">
+      <!--! Liga de acceso a la fuente -->
+      <div class="col-span-2">
+        <label class="block text-sm font-medium  mb-2" for="accesoLink">
           Liga de acceso a la fuente
         </label>
-        <input type="text" id="accesoLink" [(ngModel)]="linkFuente"
-          class="input input-sm input-bordered w-full " placeholder="" />
-      </div>
-
-      <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="anio">
-          Año del evento
-        </label>
-        <input type="text" id="anio" [(ngModel)]="anioEvento" class="input input-sm input-bordered w-full "
+        <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full "
           placeholder="" />
       </div>
 
+
+      <!--! Comentario de la fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium text-gray-500 mb-2" for="comentario">
-          Comentario
+        <label class="block text-sm font-medium  mb-2" for="comentario">
+          Comentario de la fuente
         </label>
-        <input type="text" id="comentarioF" [(ngModel)]="comentario"
-          class="input input-sm input-bordered w-full" />
+        <input type="text" id="comentarioF" [(ngModel)]="comentario" class="input input-sm input-bordered w-full" />
       </div>
+
+
+
+
     </div>
+
 
 
     <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-12">
@@ -99,22 +87,11 @@
         Actualizar
       </button>
     </div>
-
-
   </div>
-
-  <div class="flex w-full flex-col">
-    <div class="divider "></div>
-  </div>
-
-  <div class="grid gap-4">
-    <div class="flex flex-row-reverse">
-      <button class="btn btn-outline btn-ghost btn-sm" type="submit">
-        + Agregar Variable
-      </button>
-    </div>
-  </div>
-
-
-
 </div>
+
+
+
+
+
+

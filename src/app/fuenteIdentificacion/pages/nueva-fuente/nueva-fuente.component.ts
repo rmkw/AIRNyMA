@@ -1,6 +1,6 @@
 
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
-import { MdeaService } from '@/fuenteIdentificacion/services/mdea-pull.service';
+import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
