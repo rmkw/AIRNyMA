@@ -55,7 +55,6 @@ export class FrontNavbarComponent {
     'cmyk',
     'autumn',
     'business',
-    'acid',
     'lemonade',
     'night',
     'coffee',
@@ -63,9 +62,11 @@ export class FrontNavbarComponent {
     'dim',
     'nord',
     'sunset',
+    'black',
+
   ];
 
-  selectedTheme = signal(localStorage.getItem('theme') || 'halloween');
+  selectedTheme = signal(localStorage.getItem('theme') || 'black');
 
   dropdownAbierto = signal(false);
 
@@ -82,6 +83,8 @@ export class FrontNavbarComponent {
   }
 
   changeTheme(theme: string) {
+     console.log('Selected theme:', theme);
+    localStorage.removeItem('theme');
     this.selectedTheme.set(theme);
     localStorage.setItem('theme', theme);
     this.applyTheme(theme);

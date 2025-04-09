@@ -37,7 +37,7 @@ export class FuenteIdentificacionService {
     idPp: string;
     fuente: string;
     linkFuente: string;
-    anioEvento: string;
+    anioEvento: string | number;
     comentario: string;
   }): Observable<FiEcoResponce | null> {
 

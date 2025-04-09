@@ -9,6 +9,7 @@ import { NotAuthenticatedGuard } from "@/auth/guards/not-authenticated.guard";
 import { FuenteIdentificacionComponent } from "@/fuenteIdentificacion/pages/fuente-identificacion/fuente-identificacion.component";
 import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/fuentes-list.component";
 import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/nueva-fuente.component";
+import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
 
 export const storeFrontRoutes: Routes = [
   {
@@ -43,6 +44,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'nueva-fuente',
         component: NuevaFuenteComponent,
+      },
+      {
+        path: 'nueva-variable',
+        component: NuevaVariableComponent,
       },
       {
         path: '**',

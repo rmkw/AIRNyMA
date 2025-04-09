@@ -16,12 +16,14 @@
 
         <li><a routerLink="/fuentes" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Fuentes de Identificación</a></li>
 
+        <li><a routerLink="/nueva-variable" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Identificación de variables</a></li>
+
 
       </ul>
     </div>
 
     <a routerLink="/" class="btn btn-ghost text-xl font-montserrat">
-      <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+      <span class="text-primary">
         Captura
       </span><span class="text-secondary">| Forms </span>
     </a>
@@ -33,6 +35,9 @@
       </li>
       <li><a routerLink="/fuentes" (click)="navegandosinStorage()" class="btn btn-ghost" routerLinkActive="text-secondary">Fuentes de Identificación</a>
       </li>
+
+      <li><a routerLink="/nueva-variable" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost">Identificación de
+          variables</a></li>
 
     </ul>
   </div>

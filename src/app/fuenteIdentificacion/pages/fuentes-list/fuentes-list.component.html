@@ -1,11 +1,96 @@
 <div class="container mx-auto p-4">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold font-montserrat">Fuentes de identificación</h1>
-    <button class="btn btn-outline btn-sm btn-secondary"
-      routerLink="/nueva-fuente">
-      + Agregar Fuente
-    </button>
+  <div class="grid gap-4">
+
+    <h1 class="text-3xl font-bold font-montserrat mb-6">Fuente de identificación</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <!--! PP -->
+      <div class=" col-span-2">
+        <label class="block text-sm font-medium  mb-2" for="procesoProduccion">
+          Selecciona el proceso de producción
+        </label>
+        <select id="procesoProduccion" class="select select-bordered select-sm w-full "
+          (change)="seleccionarProceso($event)" [value]="procesoSeleccionado()?.id || ''">
+          <option disabled [selected]="!procesoSeleccionado()">Selecciona una opción</option>
+          @for (proceso of ppEco(); track proceso.id) {
+          <option [value]="proceso.id">{{ proceso.procesoProduccion }}</option>
+          }
+        </select>
+      </div>
+
+      <!--! Acrónimo -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium  mb-2" for="acronimo">
+          Acrónimo
+        </label>
+        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
+        </h2>
+      </div>
+
+      <!--! Tipo Fuente -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-2" for="fuente">
+          Fuente de identificación
+
+        </label>
+
+        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full " placeholder="" />
+
+
+      </div>
+
+      <!--! Año del evento -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium  mb-2" for="anio">
+          Año del evento
+        </label>
+        <input type="text" (input)="validateYear($event)" [(ngModel)]="anioEvento" maxlength="4" class="input input-sm input-bordered w-full "
+          placeholder="" />
+      </div>
+
+
+
+    </div>
+
+    <div class="grid grid-col-1 md:grid-cols-4 gap-4">
+
+
+      <!--! Liga de acceso a la fuente -->
+      <div class="col-span-2">
+        <label class="block text-sm font-medium  mb-2" for="accesoLink">
+          Liga de acceso a la fuente
+        </label>
+        <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full "
+          placeholder="" />
+      </div>
+
+
+      <!--! Comentario de la fuente -->
+      <div class="col-span-2">
+        <label class="block text-sm font-medium  mb-2" for="comentario">
+          Comentario de la fuente
+        </label>
+        <input type="text" id="comentarioF" [(ngModel)]="comentarioF" class="input input-sm input-bordered w-full" />
+      </div>
+    </div>
+
+    <!-- @if (!flagVarButton) { -->
+    <div class="flex justify-between items-center mt-2 mb-2">
+      <h1></h1>
+      <button class="btn btn-outline btn-secondary btn-sm" (click)="nuevaFuente()">
+        Capturar fuente
+      </button>
+    </div>
+    <!-- } -->
+
   </div>
+
+
+
+
+
+
+  <div class="divider"></div>
 
 
   <div class="overflow-x-auto pt-5">
@@ -58,6 +143,8 @@
 
     </table>
   </div>
+
+
 </div>
 
 

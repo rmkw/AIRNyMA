@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 md:grid-cols-8">
       <!-- Select -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium text-primary mb-2" for="procesoProduccion">
+        <label class="block text-sm font-medium mb-2" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
         <select id="procesoProduccion" class="select select-bordered select-sm w-full"
@@ -23,22 +23,22 @@
 
       <!-- Acrónimo -->
       <div class="col-span-2 text-center">
-        <label class="block text-sm font-medium text-primary mb-2" for="acronimo">
+        <label class="block text-sm font-medium mb-2" for="acronimo">
           Acrónimo
         </label>
-        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.acronimoProceso || 'Acrónimo' }}</h2>
+        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.acronimoProceso || '-' }}</h2>
       </div>
 
       <!-- Método -->
       <div class="col-span-3">
-        <label class="block text-sm font-medium text-primary mb-2" for="metodo">
+        <label class="block text-sm font-medium mb-2" for="metodo">
           Método de obtención de la información
         </label>
-        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || 'Método' }}</h2>
+        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || '-' }}</h2>
       </div>
       <!-- Estatus con botón dinámico -->
       <div>
-        <label class="block text-sm font-medium text-primary mb-2">
+        <label class="block text-sm font-medium mb-2">
           Estatus
         </label>
         <button class="btn btn-outline btn-sm" [ngClass]="{
@@ -52,7 +52,7 @@
 
     <!-- Segunda fila con 1 columna -->
     <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium text-primary mb-2" for="objetivo">
+      <label class="block text-sm font-medium mb-2" for="objetivo">
         Objetivo del proceso
       </label>
       <textarea id="objetivo" class="textarea textarea-bordered w-full h-31"
@@ -60,7 +60,7 @@
     </div>
 
     <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium text-primary mb-2" for="poblacion001">
+      <label class="block text-sm font-medium mb-2" for="poblacion001">
         Población objeto de estudio
       </label>
       <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31"
@@ -68,7 +68,7 @@
     </div>
 
     <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium text-primary mb-2" for="unidad001">
+      <label class="block text-sm font-medium mb-2" for="unidad001">
         Unidad de observación
       </label>
       <textarea id="unidad001" class="textarea textarea-bordered w-full h-31"
@@ -79,31 +79,31 @@
     <div class="grid grid-cols-1 md:grid-cols-8">
       <!-- Unidad Administrativa -->
       <div class="col-span-3">
-        <label class="block text-sm font-medium text-primary mb-2">
+        <label class="block text-sm font-medium mb-2">
           Unidad Administrativa
         </label>
         <h2 class="text-lg font-semibold">
-          {{ procesoSeleccionado()?.unidadAdministrativa || 'Unidad Administrativa' }}
+          {{ procesoSeleccionado()?.unidadAdministrativa || '-' }}
         </h2>
       </div>
 
       <!-- Periodicidad del Proceso de Producción -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium text-primary mb-2">
+        <label class="block text-sm font-medium mb-2">
           Periodicidad del Proceso de Producción
         </label>
         <h2 class="text-lg font-semibold">
-          {{ procesoSeleccionado()?.periodicidad || 'Periodicidad' }}
+          {{ procesoSeleccionado()?.periodicidad || '-' }}
         </h2>
       </div>
 
       <!-- Condición de Información de Interés Nacional -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium text-primary mb-2">
+        <label class="block text-sm font-medium mb-2">
           Condición de Información de Interés Nacional
         </label>
         <h2 class="text-lg font-semibold">
-          {{ procesoSeleccionado()?.informacionInteresNacional || 'Información de Interés Nacional' }}
+          {{ procesoSeleccionado()?.informacionInteresNacional || '-' }}
         </h2>
       </div>
 
@@ -111,14 +111,14 @@
     </div>
 
     <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium text-primary mb-2" for="comentario">
+      <label class="block text-sm font-medium mb-2" for="comentario">
         Comentario del Proceso de Producción
       </label>
       <textarea id="comentario" class="textarea textarea-bordered w-full h-31" [(ngModel)]="comentario"></textarea>
     </div>
 
 
-    <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-14">
+    <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
       <div class="alert btn-success btn-outline">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-14">
+    <div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-20">
       <div class="alert btn-error btn-outline">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -144,7 +144,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <span>¿Estás seguro de actualizar el comentario del proceso?</span>
+      <span>¿Estás seguro de actualizar el comentario del proceso de producción?</span>
       <div>
         <button class="btn btn-sm mr-5 " (click)="cancelDeactivation()">Cancelar</button>
         <button class="btn btn-sm btn-sectext-primary btn-primary" (click)="confirmDeactivation()">Aceptar</button>

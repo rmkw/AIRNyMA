@@ -26,7 +26,6 @@ module.exports = {
       "dark",
       "bumblebee",
       "emerald",
-
       "synthwave",
       "retro",
       "cyberpunk",
@@ -46,7 +45,9 @@ module.exports = {
       "winter",
       "dim",
       "nord",
-      "sunset",]
+      "sunset",
+      "black",
+      ]
   }
 }
 
