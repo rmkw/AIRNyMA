@@ -1,10 +1,8 @@
 
-
-<div class="grid gap-4 animate-fadeIn mt-4">
-
+<div class="container mx-auto mt-5">
 
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold font-montserrat">Identificación de la variable</h1>
+    <h1 class="text-2xl font-bold font-montserrat">Identificación de la variable</h1>
 
     <button class="btn btn-outline btn-sm btn-ghost">
       + Agregar Variable
@@ -14,349 +12,344 @@
 
 
 
-  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-5">
 
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2" for="idVariable">
-        Id variable
-      </label>
-      <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
-        placeholder="" />
+
+
+
+
+    <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-5">
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium  mb-2" for="idVariable">
+          Id variable
+        </label>
+        <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
+          placeholder="" />
+      </div>
+
+      <div class="col-span-3">
+        <label class="block text-sm font-medium  mb-2" for="nombreVariable">
+          Nombre de la variable
+        </label>
+        <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" class="input input-sm input-bordered w-full"
+          placeholder="" />
+      </div>
+
+      <div class="col-span-3">
+        <label class="block text-sm font-medium  mb-2" for="definicionVariable">
+          Definición de la variable
+        </label>
+        <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable"
+          class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="col-span-4">
+        <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
+          Comentario de la variable
+        </label>
+        <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+          class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium  mb-2" for="alinea_MDEA">
+          Alineación con MDEA
+        </label>
+        <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
+          class="checkbox checkbox-md" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium  mb-2" for="alinea_ODS">
+          Alineación con ODS
+        </label>
+        <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
+          class="checkbox checkbox-md" />
+      </div>
+
+
+
+
+
+    </div>
+    <div class="grid gap-4 animate-fadeIn">
+
+
+      <h1 class="text-1xl font-bold font-montserrat">Cobertura de necesidades</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div class="col-span-2">
+          <label class="block text-sm font-medium mb-2" for="comentarioVariable">
+            Tema de cobertura de necesidades
+          </label>
+          <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+        </div>
+
+        <div class="max-w-xs">
+          <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+            Nivel de contribución
+          </label>
+          <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder=""
+            list="niveles" />
+          <datalist id="niveles">
+            <option value="Alto">
+            <option value="Intermedio">
+            <option value="Bajo">
+            <option value="-"></option>
+          </datalist>
+        </div>
+
+        <div class="max-w-xs">
+          <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+            Viabilidad de generación
+          </label>
+          <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder=""
+            list="viabilidad" />
+          <datalist id="viabilidad">
+            <option value="Viable">
+            <option value="No viable">
+
+            <option value="-"></option>
+          </datalist>
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+            Propuesta de generación de estadística derivada
+          </label>
+          <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+            Comentario de pertinencia
+          </label>
+          <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+        </div>
+
+      </div>
+
+      <div class="flex w-full flex-col ">
+        <div class="divider "></div>
+      </div>
+
+
+
     </div>
 
-    <div class="col-span-3">
-      <label class="block text-sm font-medium  mb-2" for="nombreVariable">
-        Nombre de la variable
-      </label>
-      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" class="input input-sm input-bordered w-full"
-        placeholder="" />
+
+
+
+
+  @if (showWarning && currentDeactivation) {
+  <div role="alert" class="alert alert-vertical sm:alert-horizontal mt-5 animate-fadeIn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>¿Estás seguro de desactivar la alineación con {{currentDeactivation.name}}?</span>
+    <div>
+      <button class="btn btn-sm mr-5" (click)="cancelDeactivation()">Cancelar</button>
+      <button class="btn btn-sm btn-primary" (click)="confirmDeactivation()">Aceptar</button>
     </div>
-
-    <div class="col-span-3">
-      <label class="block text-sm font-medium  mb-2" for="definicionVariable">
-        Definición de la variable
-      </label>
-      <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-4">
-      <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
-        Comentario de la variable
-      </label>
-      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
+  </div>
+  }
 
 
 
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2" for="alinea_MDEA">
-        Alineación con MDEA
-      </label>
-      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
-        class="checkbox checkbox-md" />
-    </div>
 
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2" for="alinea_ODS">
-        Alineación con ODS
-      </label>
-      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
-        class="checkbox checkbox-md" />
+
+
+
+
+
+
+  @if (flagMDEArelation) {
+
+
+  <div class="grid gap-4 animate-fadeIn">
+
+    <div class="flex w-full flex-col mt-3">
+      <div class="divider "></div>
     </div>
 
 
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold font-montserrat">Relación MDEA</h1>
+
+      <button class="btn btn-outline btn-sm btn-primary ">
+        + Agregar relación
+      </button>
+
+    </div>
+
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-20">
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
+          Componente
+        </label>
+        <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
+          <option disabled selected>Selecciona un Componente</option>
+          <option *ngFor="let comp of arrComponentes" [value]="comp.idComp">{{ comp.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
+          Subcomponente
+        </label>
+        <select class="select select-bordered select-sm w-full" #subcomponenteSelect
+          (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
+          <option disabled selected>Selecciona un Subcomponente</option>
+          <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
+          Tema
+        </label>
+        <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
+          [disabled]="!isSelectEnabled_Top">
+          >
+          <option disabled selected>Selecciona un Tópico</option>
+          <option *ngFor="let tema of arrTopicos" [value]="tema.idTop">{{ tema.nombre }}</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariableMDEA">
+          Estadística 1
+        </label>
+        <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
+          [disabled]="!isSelectEnabled_Var">
+          <option disabled selected>Selecciona una Variable</option>
+          <option *ngFor="let vari of arrVariables" [value]="vari.idVar">{{ vari.nombre }}</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idEstadistico">
+          Estadística 2
+        </label>
+        <select class="select select-bordered select-sm w-full" #estadisticoSelect (change)="onSelectEstadistico($event)"
+          [disabled]="!isSelectEnabled_Est">
+          <option disabled selected>Selecciona un Estadístico</option>
+          <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
+          Nivel de contribución a contenidos
+        </label>
+        <input type="text" id="nivelpullMdea" class="input input-sm input-bordered w-full" placeholder=""
+          list="nivelesMDEA" />
+        <datalist id="nivelesMDEA">
+          <option value="Alto">
+          <option value="Intermedio">
+          <option value="Bajo">
+          <option value="-"></option>
+        </datalist>
+      </div>
+
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
+          Comentario
+        </label>
+        <input type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+
+    </div>
 
 
 
   </div>
+  }
+  @if (flagODSrelation) {
+  <div class="grid gap-4 animate-fadeIn">
+
+    <div class="flex w-full flex-col mt-3">
+      <div class="divider "></div>
+    </div>
+
+
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold font-montserrat">Relación ODS</h1>
+
+      <button class="btn btn-outline btn-sm btn-primary ">
+        + Agregar relación ODS
+      </button>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Componente
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Subcomponente
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Tema
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Estadística 1
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Estadística 2
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Nivel de contribución a contenidos
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+      <div class="max-w-xs">
+        <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
+          Comentario
+        </label>
+        <input type="text" id="idVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      </div>
+
+
+    </div>
+
+  </div>
+  }
 
 
 
 </div>
 
-@if (showWarning && currentDeactivation) {
-<div role="alert" class="alert alert-vertical sm:alert-horizontal mt-5 animate-fadeIn">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-  </svg>
-  <span>¿Estás seguro de desactivar la alineación con {{currentDeactivation.name}}?</span>
-  <div>
-    <button class="btn btn-sm mr-5" (click)="cancelDeactivation()">Cancelar</button>
-    <button class="btn btn-sm btn-primary" (click)="confirmDeactivation()">Aceptar</button>
-  </div>
-</div>
-}
-
-
-
-
-
-
-
-
-
-
-@if (flagMDEArelation) {
-
-
-<div class="grid gap-4 animate-fadeIn">
-
-  <div class="flex w-full flex-col mt-3">
-    <div class="divider "></div>
-  </div>
-
-
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold font-montserrat">Relación MDEA</h1>
-
-    <button class="btn btn-outline btn-sm btn-primary ">
-      + Agregar relación
-    </button>
-
-  </div>
-
-
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-20">
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
-        Componente
-      </label>
-      <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
-        <option disabled selected>Selecciona un Componente</option>
-        <option *ngFor="let comp of arrComponentes" [value]="comp.idComp">{{ comp.nombre }}</option>
-      </select>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
-        Subcomponente
-      </label>
-      <select class="select select-bordered select-sm w-full" #subcomponenteSelect
-        (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
-        <option disabled selected>Selecciona un Subcomponente</option>
-        <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
-        Tema
-      </label>
-      <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
-        [disabled]="!isSelectEnabled_Top">
-        >
-        <option disabled selected>Selecciona un Tópico</option>
-        <option *ngFor="let tema of arrTopicos" [value]="tema.idTop">{{ tema.nombre }}</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariableMDEA">
-        Estadística 1
-      </label>
-      <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
-        [disabled]="!isSelectEnabled_Var">
-        <option disabled selected>Selecciona una Variable</option>
-        <option *ngFor="let vari of arrVariables" [value]="vari.idVar">{{ vari.nombre }}</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idEstadistico">
-        Estadística 2
-      </label>
-      <select class="select select-bordered select-sm w-full" #estadisticoSelect (change)="onSelectEstadistico($event)"
-        [disabled]="!isSelectEnabled_Est">
-        <option disabled selected>Selecciona un Estadístico</option>
-        <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
-        Nivel de contribución a contenidos
-      </label>
-      <input type="text" id="nivelpullMdea" class="input input-sm input-bordered w-full" placeholder=""
-        list="nivelesMDEA" />
-      <datalist id="nivelesMDEA">
-        <option value="Alto">
-        <option value="Intermedio">
-        <option value="Bajo">
-        <option value="-"></option>
-      </datalist>
-    </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
-        Comentario
-      </label>
-      <input type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-
-  </div>
-  <code>
-
-    </code>
-
-
-</div>
-}
-@if (flagODSrelation) {
-<div class="grid gap-4 animate-fadeIn">
-
-  <div class="flex w-full flex-col mt-3">
-    <div class="divider "></div>
-  </div>
-
-
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold font-montserrat">Relación ODS</h1>
-
-    <button class="btn btn-outline btn-sm btn-primary ">
-      + Agregar relación ODS
-    </button>
-
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Componente
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Subcomponente
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Tema
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Estadística 1
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Estadística 2
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Nivel de contribución a contenidos
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariable">
-        Comentario
-      </label>
-      <input type="text" id="idVariable"  class="input input-sm input-bordered w-full"
-        placeholder="" />
-    </div>
-
-
-  </div>
-
-</div>
-}
-
-<div class="grid gap-4 animate-fadeIn">
-  <div class="flex w-full flex-col mt-2 mb-2">
-    <div class="divider "></div>
-  </div>
-
-  <h1 class="text-3xl font-bold font-montserrat">Cobertura de necesidades</h1>
-
-  <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-    <div class="col-span-2">
-      <label class="block text-sm font-medium mb-2" for="comentarioVariable">
-        Tema de cobertura de necesidades
-      </label>
-      <input type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
-        Nivel de contribución
-      </label>
-      <input type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" list="niveles" />
-      <datalist id="niveles">
-        <option value="Alto">
-        <option value="Intermedio">
-        <option value="Bajo">
-        <option value="-"></option>
-      </datalist>
-    </div>
-
-    <div class="max-w-xs">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
-        Viabilidad de generación
-      </label>
-      <input type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" list="viabilidad" />
-      <datalist id="viabilidad">
-        <option value="Viable">
-        <option value="No viable">
-
-        <option value="-"></option>
-      </datalist>
-    </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
-        Propuesta de generación de estadística derivada
-      </label>
-      <input type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
-        Comentario de pertinencia
-      </label>
-      <input type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-  </div>
-
-  <div class="flex w-full flex-col ">
-    <div class="divider "></div>
-  </div>
-
-
-
-</div>
