@@ -1,4 +1,5 @@
 import { MdeaService } from '@/variables/services/mdea-pull.service';
+import { OdsService } from '@/variables/services/ods-pull.service';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,36 +12,51 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class NuevaVariableComponent implements OnInit {
   ngOnInit(): void {
     this.getComponentes();
+    this.getObjetivos();
   }
+
+  //! COSAS PARA QUE FUNCIONE MDEA RELATION
   _mdeaService = inject(MdeaService);
-
-  showWarning: boolean = false;
   flagMDEArelation: boolean = false;
-  idVariable: string = '';
-  nombreVariable: string = '';
-  definicionVariable: string = '';
-  comentarioVariable: string = '';
-  alinea_MDEA: string = '';
-  alinea_ODS: string = '';
 
+  //? para el warning MDEA o ODS
+  showWarning: boolean = false;
   currentDeactivation: { type: 'MDEA' | 'ODS'; name: string } | null = null;
+
+  //? seguro de eliminar ALERT
   checkedAliniationMDEA(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     const newValue = checkbox.checked;
-
-    // Si está intentando desactivar (de true a false)
+    //! Si está intentando desactivar (de true a false)
     if (this.flagMDEArelation && !newValue) {
       event.preventDefault(); // Prevenir el cambio
       this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
 
       this.showWarning = true;
     } else if (!this.flagMDEArelation && newValue) {
-      // Activación directa (sin confirmación)
+      //! Activación directa (sin confirmación)
       this.flagMDEArelation = true;
       this.showWarning = false;
     }
   }
+  //? seguro de eliminar ALERT ODS
+  flagODSrelation: boolean = false;
+  checkedAliniationODS(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    const newValue = checkbox.checked;
 
+    if (this.flagODSrelation && !newValue) {
+      event.preventDefault();
+      this.currentDeactivation = { type: 'ODS', name: 'ODS' };
+      this.showWarning = true;
+    } else if (!this.flagODSrelation && newValue) {
+      this.flagODSrelation = true;
+    }
+
+    console.log(this.flagODSrelation,'noma')
+  }
+
+  // ? WARNING ACEPTAR
   confirmDeactivation() {
     if (this.currentDeactivation) {
       if (this.currentDeactivation.type === 'MDEA') {
@@ -53,6 +69,7 @@ export class NuevaVariableComponent implements OnInit {
     this.currentDeactivation = null;
   }
 
+  // ? WARNING CANCELAR
   cancelDeactivation() {
     this.showWarning = false;
     this.currentDeactivation = null;
@@ -70,22 +87,7 @@ export class NuevaVariableComponent implements OnInit {
     });
   }
 
-  flagODSrelation: boolean = false;
-  pendingDeactivationODS: boolean = false;
-
-  checkedAliniationODS(event: Event) {
-    const checkbox = event.target as HTMLInputElement;
-    const newValue = checkbox.checked;
-
-    if (this.flagODSrelation && !newValue) {
-      event.preventDefault();
-      this.currentDeactivation = { type: 'ODS', name: 'ODS' };
-      this.showWarning = true;
-    } else if (!this.flagODSrelation && newValue) {
-      this.flagODSrelation = true;
-    }
-  }
-
+  // ! VARIABLES MDEA RELATION
   arrComponentes: any[] = [];
   arrSubcompo: any[] = [];
   arrTopicos: any[] = [];
@@ -98,7 +100,7 @@ export class NuevaVariableComponent implements OnInit {
   idVariableMDEAPULL: number | string = '';
   idEstadistico: number | string = '';
 
-  //! funciones control
+  //! funciones tablas control
   getComponentes() {
     this._mdeaService.getComponentes().subscribe((data) => {
       console.log('Componentes:', data);
@@ -139,12 +141,18 @@ export class NuevaVariableComponent implements OnInit {
         this.arrEstadisticos = data;
       });
   }
-
+  // ? selects habilitados MDEA
   isSelectEnabled_Subc: boolean = false;
   isSelectEnabled_Top: boolean = false;
   isSelectEnabled_Var: boolean = false;
   isSelectEnabled_Est: boolean = false;
 
+  @ViewChild('subcomponenteSelect')
+  subcomponenteSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('topicoSelect') topicoSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('variableSelect') variableSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('estadisticoSelect')
+  estadisticoSelect!: ElementRef<HTMLSelectElement>;
   //! onSelects
   onSelectComponente(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -177,13 +185,6 @@ export class NuevaVariableComponent implements OnInit {
 
     this.getSubcomponentes(_idComponente);
   }
-
-  @ViewChild('subcomponenteSelect')
-  subcomponenteSelect!: ElementRef<HTMLSelectElement>;
-  @ViewChild('topicoSelect') topicoSelect!: ElementRef<HTMLSelectElement>;
-  @ViewChild('variableSelect') variableSelect!: ElementRef<HTMLSelectElement>;
-  @ViewChild('estadisticoSelect')
-  estadisticoSelect!: ElementRef<HTMLSelectElement>;
 
   onSelectSubcomponente(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -294,5 +295,123 @@ export class NuevaVariableComponent implements OnInit {
     const idEstadistico = Number(selectElement.value);
     this.idEstadistico = idEstadistico;
     console.log('Estadistico seleccionado:', idEstadistico);
+  }
+
+  // ! ODS RELATION
+  _odsServices = inject(OdsService);
+  arrODS: any[] = [];
+  arrMetas: any[] = [];
+  arrIndicadores: any[] = [];
+
+  idObjetivo: number | string = '';
+  idMeta: number | string = '';
+  idIndicador: number | string = '';
+  getObjetivos() {
+    this._odsServices.getObjetivos().subscribe((data) => {
+      console.log('Objetivos:', data);
+      this.arrODS = data;
+    });
+  }
+  getMetas(idObj: number | string) {
+    console.log('idObj:', idObj);
+    this._odsServices.getMetas(idObj).subscribe((data) => {
+      console.log('Metas:', data);
+      this.arrMetas = data;
+    });
+  }
+  getIndicadores(idMeta: number | string) {
+    this._odsServices
+      .getIndicadores(this.idObjetivo, idMeta)
+      .subscribe((data) => {
+        console.log('Indicadores:', data);
+        this.arrIndicadores = data;
+      });
+  }
+  // ? selects habilitados ODS
+  isSelectEnabled_Meta: boolean = false;
+  isSelectEnabled_Ind: boolean = false;
+  @ViewChild('metaSelect') metaSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('indicadorSelect')
+  indicadorSelect!: ElementRef<HTMLSelectElement>;
+  //! onSelects
+  onSelectObjetivo(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idObjetivo = selectElement.value;
+    this.idObjetivo = idObjetivo;
+    console.log('Objetivo seleccionado:', idObjetivo);
+
+    //* limpieza de selects
+    this.isSelectEnabled_Meta = true;
+    const conMetaSelect = this.metaSelect.nativeElement as HTMLSelectElement;
+    conMetaSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrMetas = []; // Limpiar el array de metas
+
+    this.isSelectEnabled_Ind = false;
+    const conIndSelect = this.indicadorSelect
+      .nativeElement as HTMLSelectElement;
+    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    this.getMetas(idObjetivo);
+  }
+  onSelectMeta(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idMeta = selectElement.value;
+    this.idMeta = idMeta;
+    console.log('Meta seleccionada:', idMeta);
+    this.isSelectEnabled_Ind = true;
+
+    const conIndSelect = this.indicadorSelect
+      .nativeElement as HTMLSelectElement;
+    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    if (this.idMeta == '-') {
+      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
+
+      console.log('entre a hacer el cambiio');
+      this.indicadorSelect.nativeElement.value = '-';
+
+      this.arrIndicadores = [];
+
+      return;
+    }
+
+    this.getIndicadores(idMeta);
+  }
+  onSelectIndicador(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idIndicador = selectElement.value;
+    this.idIndicador = idIndicador;
+    console.log('Indicador seleccionado:', idIndicador);
+  }
+
+  // ! Captura variable
+  // ! VARIABLE CAMPOS
+  idVariable: string = 'ATUS-001';
+  nombreVariable: string = 'fake';
+  definicionVariable: string = 'fake definicion';
+  comentarioVariable: string = 'fake comentario';
+  relacion_Mdea: boolean = this.flagMDEArelation;
+  relacion_Ods: boolean = this.flagODSrelation;
+
+  consoleLogs() {
+    const relajoMdea = this.flagMDEArelation
+    const relajoOds = this.flagODSrelation
+    console.log('idVariable:', this.idVariable);
+    // ! idFuente
+    // ! idPp
+    console.log('nombreVariable:', this.nombreVariable);
+    console.log('definicionVariable:', this.definicionVariable);
+    console.log('comentarioVariable:', this.comentarioVariable);
+    console.log('relacion_Mdea:', relajoMdea);
+    console.log('relacion_Ods:', relajoOds);
+    // ! responsableRegister
+
+
+  }
+  // ! Boton guardar
+  guardarVariable() {
+    this.consoleLogs();
   }
 }

@@ -6,7 +6,7 @@ import { catchError, Observable, of } from 'rxjs';
 const baseUrl = environment.baseUrl
 
 @Injectable({providedIn: 'root'})
-export class ServiceNameService {
+export class OdsService {
   constructor() { }
   private http = inject(HttpClient);
 

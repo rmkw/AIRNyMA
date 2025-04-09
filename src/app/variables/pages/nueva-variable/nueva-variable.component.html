@@ -3,7 +3,7 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat">Identificación de la variable</h1>
 
-    <button class="btn btn-outline btn-sm btn-ghost">
+    <button class="btn btn-outline btn-sm btn-ghost" (click)="guardarVariable()">
       + Agregar Variable
     </button>
 
@@ -68,11 +68,18 @@
       <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
+
     <div class="max-w-xs">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+      <label class="block text-sm font-medium  mb-2" for="idNivelCont">
         Nivel de contribución
       </label>
-      <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <select class="select select-bordered select-sm w-full ">
+        <option disabled selected>Selecciona un nivel</option>
+        <option value="Alto">Alto</option>
+        <option value="Intermedio">Intermedio</option>
+        <option value="Bajo">Bajo</option>
+        <option value="-">-</option>
+      </select>
 
     </div>
 
@@ -200,14 +207,13 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
             Nivel de contribución a contenidos
           </label>
-          <input type="text" id="nivelpullMdea" class="input input-sm input-bordered w-full" placeholder=""
-            list="nivelesMDEA" />
-          <datalist id="nivelesMDEA">
-            <option value="Alto">
-            <option value="Intermedio">
-            <option value="Bajo">
-            <option value="-"></option>
-          </datalist>
+          <select class="select select-bordered select-sm w-full ">
+            <option disabled selected>Selecciona un nivel</option>
+            <option value="Alto">Alto</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+
         </div>
 
         <div class="col-span-3">
@@ -247,33 +253,34 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
             Objetivo
           </label>
-          <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
+          <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)">
             <option disabled selected>Selecciona un Objetivo</option>
-            <option *ngFor="let comp of arrComponentes" [value]="comp.idComp">{{ comp.nombre }}</option>
+            <option *ngFor="let obj of arrODS" [value]="obj.id">{{ obj.nombre }}</option>
           </select>
         </div>
 
-        <div class="max-w-xs">
+        <div class="max-w-xs ">
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
             Meta
           </label>
-          <select class="select select-bordered select-sm w-full" #subcomponenteSelect
-            (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
+          <select class="select select-bordered select-sm w-full" #metaSelect
+            (change)="onSelectMeta($event)" [disabled]="!isSelectEnabled_Meta">
             <option disabled selected>Selecciona una Meta</option>
-            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}</option>
+            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{
+              meta.nombreMeta.length > 50 ? (meta.nombreMeta | slice:0:100) + '...' : meta.nombreMeta }}</option>
             <option value="-">-</option>
           </select>
         </div>
 
-        <div class="max-w-xs">
+        <div class="max-w-xs truncate">
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
             Indicador
           </label>
-          <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
-            [disabled]="!isSelectEnabled_Top">
+          <select class="select select-bordered select-sm w-full " #indicadorSelect (change)="onSelectIndicador($event)"
+            [disabled]="!isSelectEnabled_Ind">
             >
             <option disabled selected>Selecciona un Indicador</option>
-            <option *ngFor="let tema of arrTopicos" [value]="tema.idTop">{{ tema.nombre }}</option>
+            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">{{ indic.nombreIndicador.length > 50 ? (indic.nombreIndicador | slice:0:100) + '...' : indic.nombreIndicador }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -282,14 +289,13 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
             Nivel de contribución a contenidos
           </label>
-          <input type="text" id="nivelpullMdea" class="input input-sm input-bordered w-full" placeholder=""
-            list="nivelesMDEA" />
-          <datalist id="nivelesMDEA">
-            <option value="Alto">
-            <option value="Intermedio">
-            <option value="Bajo">
-            <option value="-"></option>
-          </datalist>
+          <select class="select select-bordered select-sm w-full ">
+            <option disabled selected>Selecciona un nivel</option>
+            <option value="Alto">Alto</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+
         </div>
 
         <div class="col-span-2">
