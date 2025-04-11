@@ -16,40 +16,19 @@ import { tap } from 'rxjs';
   templateUrl: './fuentes-list.component.html',
 })
 export class FuentesListComponent implements OnInit {
-  private _fuentesService = inject(FuenteIdentificacionService);
-  private _router = inject(Router);
+  _fuentesService = inject(FuenteIdentificacionService);
+  _router = inject(Router);
+  _ppEcoService = inject(ppEcoService);
 
   fuentes: any[] = [];
   loading = true;
 
-  ngOnInit(): void {
-    this._fuentesService.obtenerFuentes().subscribe((data) => {
-      if (data.length === 0) {
-        console.warn('No hay registros en fuentes:', data);
-      }
-      this.fuentes = data;
-      this.loading = false;
-    });
-  }
+  fuente = '';
+  linkFuente = '';
+  anioEvento: number | string = '';
+  comentarioF = '';
 
-  editarFuente(_fuente: FiEcoResponce) {
-    localStorage.removeItem('fuenteEditable');
-    const fuenteEditable = {
-      idFuente: _fuente.idFuente,
-      idPp: _fuente.idPp,
-      fuente: _fuente.fuente,
-      linkFuente: _fuente.linkFuente,
-      anioEvento: _fuente.anioEvento,
-      comentario: _fuente.comentario,
-      responsableActualizacion: _fuente.responsableActualizacion,
-    };
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
-
-    this._router.navigate(['/fuente', _fuente.idFuente]);
-  }
-
-  _fuenteIServive = inject(FuenteIdentificacionService);
-  _ppEcoService = inject(ppEcoService);
+  flagVarButton: boolean = true;
 
   ppEco = signal<PpEconomicas[]>([]);
   procesoSeleccionado = signal<PpEconomicas | null>(null);
@@ -65,20 +44,18 @@ export class FuentesListComponent implements OnInit {
     },
   });
 
-  fuente = '';
-  linkFuente = '';
-  anioEvento: number | string = '';
-  comentarioF = '';
+  ngOnInit(): void {
+    this.getFuentes();
+  }
 
-  flagVarButton: boolean = true;
-
-  seleccionarProceso(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const procesoId = Number(selectElement.value);
-
-    const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
-    this.procesoSeleccionado.set(procesoEncontrado);
+  getFuentes() {
+    this._fuentesService.obtenerFuentes().subscribe((data) => {
+      if (data.length === 0) {
+        console.warn('No hay registros en fuentes:', data);
+      }
+      this.fuentes = data;
+      this.loading = false;
+    });
   }
 
   nuevaFuente() {
@@ -109,7 +86,7 @@ export class FuentesListComponent implements OnInit {
 
     console.log('Datos a registrar:', datosFuente);
 
-    this._fuenteIServive.registrarFuente(datosFuente).subscribe(
+    this._fuentesService.registrarFuente(datosFuente).subscribe(
       (response) => {
         if (response) {
           console.log('Fuente registrada exitosamente', response);
@@ -129,6 +106,31 @@ export class FuentesListComponent implements OnInit {
     );
   }
 
+  editarFuente(_fuente: FiEcoResponce) {
+    localStorage.removeItem('fuenteEditable');
+    const fuenteEditable = {
+      idFuente: _fuente.idFuente,
+      idPp: _fuente.idPp,
+      fuente: _fuente.fuente,
+      linkFuente: _fuente.linkFuente,
+      anioEvento: _fuente.anioEvento,
+      comentario: _fuente.comentario,
+      responsableActualizacion: _fuente.responsableActualizacion,
+    };
+    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+
+    this._router.navigate(['/fuente', _fuente.idFuente]);
+  }
+
+  seleccionarProceso(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const procesoId = Number(selectElement.value);
+
+    const procesoEncontrado =
+      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
+    this.procesoSeleccionado.set(procesoEncontrado);
+  }
+
   limpiarFormulario() {
     this.fuente = '';
     this.linkFuente = '';
@@ -136,6 +138,7 @@ export class FuentesListComponent implements OnInit {
     this.comentarioF = '';
     this.procesoSeleccionado.set(null); // Restablecer el proceso seleccionado
   }
+
   limpiarAnio() {
     this.anioEvento = '';
   }
