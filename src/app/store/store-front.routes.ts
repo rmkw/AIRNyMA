@@ -10,6 +10,7 @@ import { FuenteIdentificacionComponent } from "@/fuenteIdentificacion/pages/fuen
 import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/fuentes-list.component";
 import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/nueva-fuente.component";
 import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
+import { TestZoneComponent } from "./pages/test-zone/test-zone.component";
 
 export const storeFrontRoutes: Routes = [
   {
@@ -48,6 +49,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'nueva-variable',
         component: NuevaVariableComponent,
+      },
+      {
+        path: 'test-zone',
+        component: TestZoneComponent,
       },
       {
         path: '**',

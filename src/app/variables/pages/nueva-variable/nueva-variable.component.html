@@ -3,8 +3,8 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat">Identificación de la variable</h1>
 
-    <button class="btn btn-outline btn-sm btn-ghost" (click)="guardarVariable()">
-      + Agregar Variable
+    <button class="btn btn-outline btn-sm btn-ghost" (click)="crearVarInNewVars()">
+      + Capturar Variable
     </button>
 
   </div>
@@ -36,6 +36,14 @@
     </div>
 
     <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2" for="_linkVar">
+        Link de acceso variable
+      </label>
+      <input type="text" id="_linkVar" [(ngModel)]="_linkVar"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-3">
       <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
         Comentario de la variable
       </label>
@@ -45,7 +53,7 @@
 
 
 
-    <div class="max-w-xs">
+    <div class="max-w-xs text-center">
       <label class="block text-sm font-medium  mb-2" for="alinea_MDEA">
         Alineación con MDEA
       </label>
@@ -53,7 +61,7 @@
         class="checkbox checkbox-md" />
     </div>
 
-    <div class="max-w-xs">
+    <div class="max-w-xs text-center">
       <label class="block text-sm font-medium  mb-2" for="alinea_ODS">
         Alineación con ODS
       </label>
@@ -61,7 +69,7 @@
         class="checkbox checkbox-md" />
     </div>
 
-    <div class="col-span-4">
+    <div class="col-span-3">
       <label class="block text-sm font-medium mb-2" for="comentarioVariable">
         Tema de cobertura de necesidades
       </label>
@@ -87,18 +95,24 @@
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Viabilidad de generación
       </label>
-      <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <select class="select select-bordered select-sm w-full ">
+        <option disabled selected>Selecciona una opción</option>
+        <option value="Viable">Viable</option>
+        <option value="No viable">No viable</option>
+
+        <option value="-">-</option>
+      </select>
 
     </div>
 
-    <div class="col-span-4">
+    <div class="col-span-3">
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Propuesta de generación de estadística derivada
       </label>
       <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="col-span-4">
+    <div class="col-span-3">
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Comentario de pertinencia
       </label>
@@ -127,7 +141,7 @@
   }
 
   <!--! dos columnas -->
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 
     <!--! mdea -->
@@ -142,7 +156,7 @@
         </button>
       </div>
 
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
 
         <div class="max-w-xs">
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
@@ -248,7 +262,7 @@
 
       </div>
 
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
         <div class="max-w-xs">
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
             Objetivo
@@ -315,6 +329,69 @@
 
   </div>
 
+  <div class="grid grid-cols-1 gap4 mt-5">
+
+<div class="flex w-full flex-col">
+  <div class="divider"></div>
+
+</div>
+    <div class="flex justify-between items-center mb-6">
+
+      <h1 class="text-1xl font-bold font-montserrat">Lista de variables </h1>
+
+
+
+    </div>
+    <div class="overflow-x-auto">
+      <table class="table">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th>Id Variable</th>
+            <th>Nombre</th>
+            <th>Definición</th>
+            <th>Alineación Mdea</th>
+            <th>Alineación Ods</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ( varItem of arrVARIABLES_REGISTER; track $index) {
+
+            <tr>
+              <td>{{ varItem.idVariable }}</td>
+              <td>{{varItem.nombreVariable }}</td>
+              <td>{{ varItem.definicionVar }}</td>
+              <td>
+                @if (varItem.alineacionMdea) {
+              <span class="text-green-600">✔️</span>
+              } @else {
+              <span class="text-red-600">❌</span>
+              }</td>
+              <td>
+                @if (varItem.alineacionOds) {
+                <span class="text-green-600">✔️</span>
+                } @else {
+                <span class="text-red-600">❌</span>
+                }
+              </td>
+              <td class="text-center">
+                <button class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
+                  Editar
+                </button>
+                <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+
+
+
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 
 

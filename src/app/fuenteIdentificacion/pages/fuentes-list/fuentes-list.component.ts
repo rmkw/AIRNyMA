@@ -121,6 +121,17 @@ export class FuentesListComponent implements OnInit {
 
     this._router.navigate(['/fuente', _fuente.idFuente]);
   }
+  addVars(_fuente: FiEcoResponce) {
+    localStorage.removeItem('fuenteEditable');
+    const fuenteEditable = {
+      idFuente: _fuente.idFuente,
+      idPp: _fuente.idPp,
+      anioEvento: _fuente.anioEvento,
+    }
+    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+    this._router.navigate(['/nueva-variable']);
+
+  }
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
