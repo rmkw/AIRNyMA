@@ -1,0 +1,29 @@
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { RelationVarWhitMDEA } from '../interfaces/relationVarWhitMdea.interface';
+import { Observable } from 'rxjs';
+
+const baseUrl = environment.baseUrl
+
+@Injectable({ providedIn: 'root' })
+export class CapturaMdeaVarService {
+  constructor() {}
+
+  private http = inject(HttpClient);
+
+  registrarRelacion(relacion: RelationVarWhitMDEA): Observable<any> {
+    return this.http.post<any>(`${baseUrl}/relacion-mdea`, relacion);
+  }
+  // GET relaciones por idVariableUnique
+  getRelacionesPorVariable(
+    idVariableUnique: number
+  ): Observable<RelationVarWhitMDEA[]> {
+    return this.http.get<RelationVarWhitMDEA[]>(
+      `${baseUrl}/relacion-mdea/${idVariableUnique}`
+    );
+  }
+  eliminarRelacion(id: number): Observable<void> {
+    return this.http.delete<void>(`${baseUrl}/relacion-mdea/${id}`);
+  }
+}

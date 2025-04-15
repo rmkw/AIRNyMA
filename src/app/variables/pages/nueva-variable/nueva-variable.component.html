@@ -151,7 +151,7 @@
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-1xl font-bold font-montserrat">Relación MDEA</h1>
 
-        <button class="btn btn-outline btn-sm btn-primary ">
+        <button class="btn btn-outline btn-sm btn-primary " (click)="registrarRelacion()">
           + Agregar relación
         </button>
       </div>
@@ -219,9 +219,14 @@
 
         <div class="max-w-xs">
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
-            Nivel de contribución a contenidos
+            Nivel de contribución
           </label>
-          <select class="select select-bordered select-sm w-full ">
+          <select id="idNivelCont"
+          (change)="onSelectNivel($event)"
+            [(ngModel)]="nivelContribucionContenidosMdeaRelation"
+            name="nivelContribucionContenidosMdeaRelation"
+            [disabled]="!isSelectEnabled_Nivel"
+            class="select select-bordered select-sm w-full ">
             <option disabled selected>Selecciona un nivel</option>
             <option value="Alto">Alto</option>
             <option value="Intermedio">Intermedio</option>
@@ -234,10 +239,55 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
             Comentario
           </label>
-          <input type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
+          <input type="text" id="comentariopullMdea" [(ngModel)]="comentariopullMdea"
+          [disabled]="!isSelectEnabled_Comentario" class="input input-sm input-bordered w-full" placeholder="" />
         </div>
 
 
+      </div>
+
+
+      <div class="flex justify-between items-center mb-2 mt-6">
+        <h1 class="text-1xl font-bold font-montserrat">Lista de relaciones</h1>
+
+
+      </div>
+
+
+
+      <div class="overflow-x-auto">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th >Codigo de relación</th>
+              <th class="text-center">Nivel</th>
+              <th class="text-center">Acciones</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <!-- row 1 -->
+             @for (itemRelation of relationesMDEA; track $index) {
+              <tr>
+                <th >{{'['+'C: '+ itemRelation.idComponente +']' +
+                      '['+' S:'+ itemRelation.idSubcomponente +']' +
+                      '['+' T:'+itemRelation.idTopico +']' +
+                      '['+' V:'+itemRelation.idVariableMdeaPull +']' +
+                      '['+' E:'+itemRelation.idEstadistico +']'}}</th>
+
+                      <th class="text-center">{{itemRelation.nivelContribucion}}</th>
+
+                <th class="text-center">
+                  <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
+                  (click)="eliminarRelacionesMDEAWhitVars(itemRelation.id)">Eliminar</button>
+                </th>
+              </tr>
+             }
+
+
+          </tbody>
+        </table>
       </div>
 
 

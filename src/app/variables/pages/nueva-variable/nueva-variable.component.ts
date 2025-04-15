@@ -1,4 +1,6 @@
+import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
 import { VariableDTO } from '@/variables/interfaces/variablesCapDTO.interface';
+import { CapturaMdeaVarService } from '@/variables/services/captura-mdea-vars.service';
 import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
@@ -17,6 +19,7 @@ export class NuevaVariableComponent implements OnInit {
     this.getComponentes();
     this.getObjetivos();
     this.getPropetiesLocalStorage();
+    this.getRelation_MDEA_Var();
   }
 
   //! COSAS PARA QUE FUNCIONE MDEA RELATION
@@ -144,6 +147,9 @@ export class NuevaVariableComponent implements OnInit {
   isSelectEnabled_Var: boolean = false;
   isSelectEnabled_Est: boolean = false;
 
+  isSelectEnabled_Nivel: boolean = false;
+  isSelectEnabled_Comentario: boolean = false;
+
   @ViewChild('subcomponenteSelect')
   subcomponenteSelect!: ElementRef<HTMLSelectElement>;
   @ViewChild('topicoSelect') topicoSelect!: ElementRef<HTMLSelectElement>;
@@ -212,8 +218,13 @@ export class NuevaVariableComponent implements OnInit {
       this.variableSelect.nativeElement.value = '-';
       this.estadisticoSelect.nativeElement.value = '-';
 
+      this.idTopico = '-';
+      this.idVariableMDEAPULL = '-';
+      this.idEstadistico = '-';
+
       this.isSelectEnabled_Var = true;
       this.isSelectEnabled_Est = true;
+      this.isSelectEnabled_Nivel = true;
 
       this.arrTopicos = [];
       this.arrVariables = [];
@@ -248,7 +259,11 @@ export class NuevaVariableComponent implements OnInit {
       this.variableSelect.nativeElement.value = '-';
       this.estadisticoSelect.nativeElement.value = '-';
 
+      this.idVariableMDEAPULL = '-';
+      this.idEstadistico = '-';
+
       this.isSelectEnabled_Est = true;
+      this.isSelectEnabled_Nivel = true;
 
       this.arrVariables = [];
       this.arrEstadisticos = [];
@@ -275,8 +290,11 @@ export class NuevaVariableComponent implements OnInit {
       //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
 
       this.estadisticoSelect.nativeElement.value = '-';
+      this.idEstadistico = '-';
 
       this.arrEstadisticos = [];
+
+      this.isSelectEnabled_Nivel = true;
 
       return;
     }
@@ -289,6 +307,16 @@ export class NuevaVariableComponent implements OnInit {
     const idEstadistico = Number(selectElement.value);
     this.idEstadistico = idEstadistico;
     console.log('Estadistico seleccionado:', idEstadistico);
+
+    this.isSelectEnabled_Nivel = true;
+  }
+
+  onSelectNivel(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nivel = selectElement.value;
+    this.nivelContribucionContenidosMdeaRelation = nivel;
+    console.log('nivel: ', this.nivelContribucionContenidosMdeaRelation);
+    this.isSelectEnabled_Comentario = true;
   }
 
   // ! ODS RELATION
@@ -468,10 +496,8 @@ export class NuevaVariableComponent implements OnInit {
         console.info('Variable registrada correctamente');
         this.cleanVars();
       });
-
   }
-  cleanVars(){
-
+  cleanVars() {
     this.idVariable = this.idVAR_PP_ANIO;
 
     this.nombreVariable = '';
@@ -481,7 +507,6 @@ export class NuevaVariableComponent implements OnInit {
     this.flagMDEArelation = false;
     this.flagODSrelation = false;
     this.varSerieAnio = '';
-
 
     this.arrSubcompo = []; // Limpiar el array de subcomponentes
     this.arrTopicos = []; // Limpiar el array de tópicos
@@ -501,5 +526,69 @@ export class NuevaVariableComponent implements OnInit {
     this.showWarning = false;
 
     this.getVarInNewVars(this._idFuente, this._responsableRegister!);
+  }
+
+  //! relacion mdea VARIABLES
+  nivelContribucionContenidosMdeaRelation: string = '';
+  comentariopullMdea: string = '';
+
+  _relacionService = inject(CapturaMdeaVarService);
+  registrarRelacion() {
+    if (!this.comentariopullMdea) {
+      alert('Por favor, selecciona');
+      return;
+    }
+    const nuevaRelacion: RelationVarWhitMDEA = {
+      idVariableUnique: 1,
+      idVariable: 'ATUS-100',
+
+      idComponente: this.idComponente.toString(),
+      idSubcomponente: this.idSubcomponente.toString(),
+      idTopico: this.idTopico.toString(),
+      idVariableMdeaPull: this.idVariableMDEAPULL,
+      idEstadistico: this.idEstadistico.toString(),
+      nivelContribucion: this.nivelContribucionContenidosMdeaRelation,
+      comentarioRelacionMdea: this.comentariopullMdea,
+      idVarCaracterizada: 'ATUS-100-2024',
+    };
+
+    this._relacionService
+      .registrarRelacion(nuevaRelacion)
+      .pipe(
+        catchError((error) => {
+          console.error('❌ Error al registrar la relación:', error);
+          return of(null); // Evita que se rompa el flujo
+        })
+      )
+      .subscribe((respuesta) => {
+        if (respuesta) {
+          console.log('✅ Relación registrada correctamente:', respuesta);
+          // Aquí podrías resetear el formulario o notificar al usuario
+        } else {
+          console.warn('⚠️ No se pudo registrar la relación.');
+        }
+      });
+  }
+
+  relationesMDEA: any[] = [];
+  getRelation_MDEA_Var() {
+    this._relacionService.getRelacionesPorVariable(1).subscribe((response) => {
+      console.log('relaciones: ', response);
+      this.relationesMDEA = response;
+    });
+  }
+
+  eliminarRelacionesMDEAWhitVars(idRelacion:number) {
+
+    this._relacionService.eliminarRelacion(idRelacion).subscribe({
+      next: () => {
+        console.log('Relación eliminada con éxito');
+        this.getRelation_MDEA_Var();
+        // Puedes actualizar tu lista aquí
+      },
+      error: (err) => {
+        console.error('Error al eliminar relación:', err);
+      },
+    });
   }
 }

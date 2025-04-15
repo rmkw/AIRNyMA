@@ -106,8 +106,8 @@
           <th>Liga de acceso a la fuente</th>
           <th>Año del evento</th>
           <th>Comentario de la fuente </th>
-          <th >Acciónes</th>
-          <th>Variables</th>
+          <th class="text-center" >Acciónes</th>
+          <th class="text-center">Variables</th>
         </tr>
       </thead>
       <tbody>
@@ -135,7 +135,7 @@
 
           <td>{{ fuente.anioEvento }}</td>
           <td>{{ fuente.comentario }}</td>
-          <td>
+          <td class="text-center">
 
             <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
               Editar
@@ -144,7 +144,7 @@
               Eliminar
             </button>
           </td>
-          <td>
+          <td class="text-center">
             <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs mr-2 " (click)="addVars(fuente)">
               + Agregar
             </button>
