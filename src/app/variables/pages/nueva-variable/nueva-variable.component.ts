@@ -451,20 +451,24 @@ export class NuevaVariableComponent implements OnInit {
       .pipe(
         catchError((error) => {
           console.error('❌ Error al crear la variable:', error);
-          // Aquí podrías mostrar un toast, modal, etc.
-          return of(null); // Devuelve un observable para que no se rompa el flujo
+
+          const mensaje =
+            error?.error?.message ||
+            'Error inesperado al registrar la variable';
+          // Mostrar mensaje de error al usuario (puede ser toast, snackbar, alerta...)
+          console.error(mensaje); // ejemplo con ngx-toastr o algo similar
+
+          return of(null); // Evita que se rompa el flujo
         })
       )
       .subscribe((data) => {
-        if (data) {
-          console.log('✅ Variable registrada:', data);
-          this.cleanVars();
-          this.getVarInNewVars(this._idFuente, this._responsableRegister!);
+        if (!data) return; // Si hubo error, ya fue manejado en catchError
 
-        } else {
-          console.warn('⚠️ No se pudo registrar la variable.');
-        }
+        console.log('✅ Variable registrada:', data);
+        console.info('Variable registrada correctamente');
+        this.cleanVars();
       });
+
   }
   cleanVars(){
 
@@ -478,23 +482,7 @@ export class NuevaVariableComponent implements OnInit {
     this.flagODSrelation = false;
     this.varSerieAnio = '';
 
-    // Resetear los selects
-    const conSubSelect = this.subcomponenteSelect
-      .nativeElement as HTMLSelectElement;
-    conSubSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    const conTopSelect = this.topicoSelect.nativeElement as HTMLSelectElement;
-    conTopSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    const conVarSelect = this.variableSelect.nativeElement as HTMLSelectElement;
-    conVarSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    const conEstSelect = this.estadisticoSelect
-      .nativeElement as HTMLSelectElement;
-    conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
 
-    const conMetaSelect = this.metaSelect.nativeElement as HTMLSelectElement;
-    conMetaSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    const conIndSelect = this.indicadorSelect
-      .nativeElement as HTMLSelectElement;
-    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
     this.arrSubcompo = []; // Limpiar el array de subcomponentes
     this.arrTopicos = []; // Limpiar el array de tópicos
     this.arrVariables = []; // Limpiar el array de variables
@@ -511,5 +499,7 @@ export class NuevaVariableComponent implements OnInit {
     this.flagMDEArelation = false;
     this.flagODSrelation = false;
     this.showWarning = false;
+
+    this.getVarInNewVars(this._idFuente, this._responsableRegister!);
   }
 }
