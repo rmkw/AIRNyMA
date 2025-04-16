@@ -15,7 +15,7 @@
       <label class="block text-sm font-medium  mb-2" for="idVariable">
         Id variable
       </label>
-      <input type="text" id="idVariable" [(ngModel)]="idVariable" class="input input-sm input-bordered w-full"
+      <input type="text" id="idVariable" [(ngModel)]="idVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
         placeholder="" />
     </div>
 
@@ -23,7 +23,7 @@
       <label class="block text-sm font-medium  mb-2" for="nombreVariable">
         Nombre de la variable
       </label>
-      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" class="input input-sm input-bordered w-full"
+      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
         placeholder="" />
     </div>
 
@@ -31,7 +31,7 @@
       <label class="block text-sm font-medium  mb-2" for="definicionVariable">
         Definición de la variable
       </label>
-      <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable"
+      <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -39,7 +39,7 @@
       <label class="block text-sm font-medium  mb-2" for="_linkVar">
         Link de acceso variable
       </label>
-      <input type="text" id="_linkVar" [(ngModel)]="_linkVar"
+      <input type="text" id="_linkVar" [(ngModel)]="_linkVar" [disabled]="camposBloqueados"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -47,7 +47,8 @@
       <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
         Comentario de la variable
       </label>
-      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable"
+      <input type="text" id="comentarioVariable"
+      [(ngModel)]="comentarioVariable" [disabled]="camposBloqueados"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -57,7 +58,7 @@
       <label class="block text-sm font-medium  mb-2" for="alinea_MDEA">
         Alineación con MDEA
       </label>
-      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
+      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)" [disabled]="camposBloqueados"
         class="checkbox checkbox-md" />
     </div>
 
@@ -65,7 +66,7 @@
       <label class="block text-sm font-medium  mb-2" for="alinea_ODS">
         Alineación con ODS
       </label>
-      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
+      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)" [disabled]="camposBloqueados"
         class="checkbox checkbox-md" />
     </div>
 
@@ -73,7 +74,9 @@
       <label class="block text-sm font-medium mb-2" for="comentarioVariable">
         Tema de cobertura de necesidades
       </label>
-      <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <input type="text"id="comentarioVariable"
+      (click)="onComentarioClick($event)"
+      class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
 
@@ -81,7 +84,8 @@
       <label class="block text-sm font-medium  mb-2" for="idNivelCont">
         Nivel de contribución
       </label>
-      <select class="select select-bordered select-sm w-full ">
+      <select class="select select-bordered select-sm w-full "
+        [disabled]="DISABLE_temaCobertura">
         <option disabled selected>Selecciona un nivel</option>
         <option value="Alto">Alto</option>
         <option value="Intermedio">Intermedio</option>
@@ -95,7 +99,8 @@
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Viabilidad de generación
       </label>
-      <select class="select select-bordered select-sm w-full ">
+      <select class="select select-bordered select-sm w-full "
+        [disabled]="DISABLE_temaCobertura">
         <option disabled selected>Selecciona una opción</option>
         <option value="Viable">Viable</option>
         <option value="No viable">No viable</option>
@@ -109,14 +114,14 @@
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Propuesta de generación de estadística derivada
       </label>
-      <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-3">
       <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
         Comentario de pertinencia
       </label>
-      <input type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
 
@@ -145,7 +150,7 @@
 
 
     <!--! mdea -->
-    @if (flagMDEArelation) {
+    @if (showPOST_RELATIONES_MDE) {
     <div class="border p-4">
 
       <div class="flex justify-between items-center mb-6">
@@ -300,7 +305,7 @@
 
 
     <!--! ods -->
-    @if (flagODSrelation) {
+    @if (showPOST_RELATIONES_ODS) {
     <div class="border p-4">
 
       <div class="flex justify-between items-center mb-6">
@@ -459,3 +464,22 @@
 
 
 </div>
+
+<dialog #miModal id="mi_modal_1" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">¿Deseas continuar con el registro?</h3>
+    <p class="py-4">
+      Si continúas, se registrarán los campos que acabas de llenar para esta variable y se habilitará la sección para
+      agregar las relaciones correspondientes.<br><br>
+      Si aún no estás seguro, puedes cancelar para revisar o editar los datos antes de proceder.
+    </p>
+
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn btn-secondary">Cancelar</button>
+      </form>
+      <button class="btn btn-primary" (click)="accionPersonalizada()">Sí, continuar</button>
+    </div>
+  </div>
+</dialog>
+

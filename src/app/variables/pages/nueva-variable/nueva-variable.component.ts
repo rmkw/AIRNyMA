@@ -28,24 +28,30 @@ export class NuevaVariableComponent implements OnInit {
 
   //? para el warning MDEA o ODS
   showWarning: boolean = false;
-  currentDeactivation: { type: 'MDEA' | 'ODS'; name: string } | null = null;
+  currentDeactivation: {
+    type: 'MDEA' | 'ODS' | 'firstActivationMDEA';
+    name: string;
+  } | null = null;
 
   //? seguro de eliminar ALERT
+
+  activacionInicialMDEA = false; // <-- esta controla si ya se hizo la primera vez
+
   checkedAliniationMDEA(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     const newValue = checkbox.checked;
-    //! Si está intentando desactivar (de true a false)
-    if (this.flagMDEArelation && !newValue) {
-      event.preventDefault(); // Prevenir el cambio
-      this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
 
+    if (this.flagMDEArelation && !newValue) {
+      event.preventDefault();
+      this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
       this.showWarning = true;
+
     } else if (!this.flagMDEArelation && newValue) {
-      //! Activación directa (sin confirmación)
       this.flagMDEArelation = true;
       this.showWarning = false;
     }
   }
+
   //? seguro de eliminar ALERT ODS
   flagODSrelation: boolean = false;
   checkedAliniationODS(event: Event) {
@@ -66,8 +72,10 @@ export class NuevaVariableComponent implements OnInit {
     if (this.currentDeactivation) {
       if (this.currentDeactivation.type === 'MDEA') {
         this.flagMDEArelation = false;
+        this.showPOST_RELATIONES_MDE = false;
       } else {
         this.flagODSrelation = false;
+        this.showPOST_RELATIONES_ODS = false;
       }
     }
     this.showWarning = false;
@@ -437,11 +445,11 @@ export class NuevaVariableComponent implements OnInit {
   _varService = inject(VariableService);
   arrVARIABLES_REGISTER: any[] = [];
 
-  idVAR_PP_ANIO: string = '';
+  _pP_idVar: string = '';
 
   getVarInNewVars(idFuente: number, responsableRegister: number) {
-    this.idVAR_PP_ANIO = this._idPp + '-';
-    this.idVariable = this.idVAR_PP_ANIO;
+    this._pP_idVar = this._idPp + '-';
+    this.idVariable = this._pP_idVar;
     const responsableParsed = Number(responsableRegister);
 
     this._varService.getVars(responsableParsed, idFuente).subscribe((data) => {
@@ -451,10 +459,10 @@ export class NuevaVariableComponent implements OnInit {
   }
 
   idVariable: string = '';
-  nombreVariable: string = 'fake';
-  definicionVariable: string = 'fake definicion';
-  comentarioVariable: string = 'Dato actualizado trimestralmente';
-  _linkVar: string = 'fake link';
+  nombreVariable: string = '';
+  definicionVariable: string = '';
+  comentarioVariable: string = '-';
+  _linkVar: string = '';
   relacion_Mdea: boolean = this.flagMDEArelation;
   relacion_Ods: boolean = this.flagODSrelation;
   varSerieAnio: string = '';
@@ -498,7 +506,7 @@ export class NuevaVariableComponent implements OnInit {
       });
   }
   cleanVars() {
-    this.idVariable = this.idVAR_PP_ANIO;
+    this.idVariable = this._pP_idVar;
 
     this.nombreVariable = '';
     this.definicionVariable = '';
@@ -534,6 +542,7 @@ export class NuevaVariableComponent implements OnInit {
 
   _relacionService = inject(CapturaMdeaVarService);
   registrarRelacion() {
+
     if (!this.comentariopullMdea) {
       alert('Por favor, selecciona');
       return;
@@ -563,11 +572,42 @@ export class NuevaVariableComponent implements OnInit {
       .subscribe((respuesta) => {
         if (respuesta) {
           console.log('✅ Relación registrada correctamente:', respuesta);
+          this.resetRelationMDEA_SELECTS();
+
           // Aquí podrías resetear el formulario o notificar al usuario
         } else {
           console.warn('⚠️ No se pudo registrar la relación.');
         }
       });
+  }
+  resetRelationMDEA_SELECTS(){
+    this.arrComponentes = [];
+    this.getComponentes();
+
+    this.arrSubcompo = []; // Limpiar el array de subcomponentes
+    this.arrTopicos = []; // Limpiar el array de tópicos
+    this.arrVariables = []; // Limpiar el array de variables
+    this.arrEstadisticos = []; // Limpiar el array de estadísticos
+    this.nivelContribucionContenidosMdeaRelation = ''
+    this.comentariopullMdea = '';
+
+    this.arrODS = [];
+    this.getObjetivos();
+
+    this.arrMetas = []; // Limpiar el array de metas
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    this.isSelectEnabled_Subc = false;
+    this.isSelectEnabled_Top = false;
+    this.isSelectEnabled_Var = false;
+    this.isSelectEnabled_Est = false;
+    this.isSelectEnabled_Nivel = false;
+    this.isSelectEnabled_Comentario = false;
+
+    this.isSelectEnabled_Meta = false;
+    this.isSelectEnabled_Ind = false;
+
+    this.getRelation_MDEA_Var();
   }
 
   relationesMDEA: any[] = [];
@@ -578,8 +618,7 @@ export class NuevaVariableComponent implements OnInit {
     });
   }
 
-  eliminarRelacionesMDEAWhitVars(idRelacion:number) {
-
+  eliminarRelacionesMDEAWhitVars(idRelacion: number) {
     this._relacionService.eliminarRelacion(idRelacion).subscribe({
       next: () => {
         console.log('Relación eliminada con éxito');
@@ -591,4 +630,66 @@ export class NuevaVariableComponent implements OnInit {
       },
     });
   }
+
+  @ViewChild('miModal') miModal!: ElementRef<HTMLDialogElement>;
+
+  abrirModal() {
+    if (this.miModal && this.miModal.nativeElement) {
+      this.miModal.nativeElement.showModal();
+    }
+  }
+
+  accionPersonalizada() {
+    this.primeraInteraccion = false;
+
+    // Aquí deshabilitas los inputs que ya fueron registrados si es necesario
+    this.deshabilitarCamposRelacionados();
+
+    this.enableTEMA_COBERTURA();
+
+    // Cierra el modal
+    const modal = document.getElementById('mi_modal_1') as HTMLDialogElement;
+    modal?.close();
+  }
+
+  camposBloqueados: boolean = false;
+  showPOST_RELATIONES_MDE: boolean = false;
+  showPOST_RELATIONES_ODS: boolean = false;
+  deshabilitarCamposRelacionados() {
+    // Puedes dejar banderas que te permitan deshabilitar inputs con [disabled] en el HTML
+    this.camposBloqueados = true;
+
+    if (this.flagMDEArelation) {
+      console.log('entre a mdea relacion')
+      this.showPOST_RELATIONES_MDE = true;
+    }
+    if (this.flagODSrelation) {
+      console.log('entre a ods relacion');
+      this.showPOST_RELATIONES_ODS =true
+    }
+  }
+  primeraInteraccion: boolean = true; // bandera general para el modal
+  modalDisparadoDesde: 'MDEA' | 'ODS' | 'comentario' | null = null;
+  onComentarioClick(event: Event) {
+    if (!this.nombreVariable || !this.definicionVariable || !this._linkVar
+        || !this.comentarioVariable
+    ) {
+      alert('Por favor, captura los datos faltantes primero');
+      return;
+    }
+    if (this.primeraInteraccion) {
+      event.preventDefault();
+      this.modalDisparadoDesde = 'comentario';
+      this.abrirModalGeneral();
+    }
+  }
+  abrirModalGeneral() {
+    const modal = document.getElementById('mi_modal_1') as HTMLDialogElement;
+    modal?.showModal();
+  }
+  DISABLE_temaCobertura: boolean = true;
+  enableTEMA_COBERTURA(){
+    this.DISABLE_temaCobertura = false;
+  }
 }
+
