@@ -3,7 +3,7 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, input, OnInit, signal, ViewChild } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -54,6 +54,7 @@ export class FuentesListComponent implements OnInit {
         console.warn('No hay registros en fuentes:', data);
       }
       this.fuentes = data;
+      console.log(data);
       this.loading = false;
     });
   }
@@ -127,10 +128,9 @@ export class FuentesListComponent implements OnInit {
       idFuente: _fuente.idFuente,
       idPp: _fuente.idPp,
       anioEvento: _fuente.anioEvento,
-    }
+    };
     localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
     this._router.navigate(['/nueva-variable']);
-
   }
 
   seleccionarProceso(event: Event) {
@@ -179,5 +179,35 @@ export class FuentesListComponent implements OnInit {
 
     // Si todo está bien, asignamos el valor limpio
     this.anioEvento = cleanedValue;
+  }
+
+  desactivar(id: number): void {
+    this._fuentesService.deactivateRecord(id).subscribe({
+      next: (res) => {
+        console.log('Registro desactivado:', res);
+        this.getFuentes();
+      },
+      error: (err) => {
+        console.error('Error al desactivar:', err);
+        this.getFuentes();
+      },
+    });
+  }
+
+  @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
+  idFuenteSeleccionada: number | null = null;
+  abrirModal(id: number) {
+    this.idFuenteSeleccionada = id;
+    this.modalEliminar.nativeElement.showModal();
+  }
+  cerrarModal() {
+    this.modalEliminar.nativeElement.close();
+    this.idFuenteSeleccionada = null;
+  }
+  confirmarEliminacion() {
+    if (this.idFuenteSeleccionada !== null) {
+      this.desactivar(this.idFuenteSeleccionada);
+    }
+    this.cerrarModal();
   }
 }

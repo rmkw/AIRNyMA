@@ -40,7 +40,6 @@ export class FuenteIdentificacionService {
     anioEvento: string | number;
     comentario: string;
   }): Observable<FiEcoResponce | null> {
-
     const userId = this._authService.user()?.id;
     console.log('Usuario autenticado en servicio fuente:', userId);
 
@@ -67,9 +66,10 @@ export class FuenteIdentificacionService {
       );
   }
 
-
-
-  editarFuente(idFuente: number, datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>): Observable<FiEcoResponce | null> {
+  editarFuente(
+    idFuente: number,
+    datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>
+  ): Observable<FiEcoResponce | null> {
     const userId = this._authService.user()?.id;
     if (!userId) {
       console.log('No hay usuario autenticado');
@@ -87,6 +87,13 @@ export class FuenteIdentificacionService {
           return of(null);
         })
       );
+  }
 
+  deactivateRecord(id: number): Observable<any> {
+    return this.http.patch(
+      `${baseUrl}/fi-economicas/${id}/deactivate`,
+      {},
+      { withCredentials: true }
+    );
   }
 }

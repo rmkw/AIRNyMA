@@ -35,7 +35,7 @@
 
         </label>
 
-        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full text-secondary" placeholder="" />
+        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full" placeholder="" />
 
 
       </div>
@@ -78,7 +78,7 @@
     <!-- @if (!flagVarButton) { -->
     <div class="flex justify-between items-center mt-2 mb-2">
       <h1></h1>
-      <button class="btn btn-outline btn-secondary btn-sm " (click)="nuevaFuente()">
+      <button class="btn btn-outline btn-primary btn-sm " (click)="nuevaFuente()">
         Capturar fuente
       </button>
     </div>
@@ -100,11 +100,11 @@
     <table class="table table-xs table-pin-rows">
       <thead class="">
         <tr class="">
-
+          <th class="text-secondary text-center">Proceso de producción</th>
           <th class="text-secondary text-center">Fuente de identificación</th>
           <th class="text-secondary text-center">Liga de acceso a la fuente</th>
           <th class="text-secondary text-center">Año del evento</th>
-          <th class="text-secondary text-center">Comentario de la fuente </th>
+
           <th class="text-secondary text-center">Acciónes</th>
           <th class="text-secondary text-center">Variables</th>
         </tr>
@@ -133,13 +133,13 @@
           </td>
 
           <td class="text-center">{{ fuente.anioEvento }}</td>
-          <td class="text-center">{{ fuente.comentario }}</td>
+
           <td class="text-center">
 
             <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
               Editar
             </button>
-            <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2">
+            <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="abrirModal(fuente.idFuente)">
               Eliminar
             </button>
           </td>
@@ -161,3 +161,16 @@
 </div>
 
 
+<!-- Modal -->
+<dialog #modalEliminar class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">¿Estás seguro?</h3>
+    <p class="py-4">¿Deseas eliminar esta fuente de identificación? Esta acción no se puede deshacer.</p>
+    <div class="modal-action">
+      <!-- Botón Cancelar -->
+      <button class="btn btn-outline" (click)="cerrarModal()">Cancelar</button>
+      <!-- Botón Aceptar -->
+      <button class="btn btn-error" (click)="confirmarEliminacion()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
