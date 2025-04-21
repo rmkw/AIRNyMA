@@ -16,8 +16,8 @@ export class VariableService {
     );
   }
 
-  crearVar(variable: VariableDTO): Observable<any> {
-    return this.http.post<any>(`${baseUrl}/variables`, variable);
+  crearVar(variable: VariableDTO): Observable<VariableDTO> {
+    return this.http.post<VariableDTO>(`${baseUrl}/variables`, variable);
   }
 
   deleteVariable(id: number) {

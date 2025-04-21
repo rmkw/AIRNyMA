@@ -485,6 +485,9 @@ export class NuevaVariableComponent implements OnInit {
   relacion_Ods: boolean = this.flagODSrelation;
   varSerieAnio: string = '';
 
+  _respons_var_registrada: {} = {};
+  _respons_var_idUnique: number | undefined = undefined;
+
   crearVarInNewVars() {
     const nuevaVariable: VariableDTO = {
       idVariable: this.idVariable,
@@ -520,7 +523,11 @@ export class NuevaVariableComponent implements OnInit {
 
         console.log('✅ Variable registrada:', data);
         console.info('Variable registrada correctamente');
-        console.log('props vars: ', nuevaVariable);
+
+        this._respons_var_registrada = data;
+        this._respons_var_idUnique = data.idUnique
+        console.log('respuesta con id: ', this._respons_var_registrada);
+
       });
   }
   cleanVars() {
@@ -565,8 +572,8 @@ export class NuevaVariableComponent implements OnInit {
       return;
     }
     const nuevaRelacion: RelationVarWhitMDEA = {
-      idVariableUnique: 1,
-      idVariable: 'ATUS-100',
+      idVariableUnique: this._respons_var_idUnique,
+      idVariable: this.idVariable,
 
       idComponente: this.idComponente.toString(),
       idSubcomponente: this.idSubcomponente.toString(),
@@ -575,8 +582,9 @@ export class NuevaVariableComponent implements OnInit {
       idEstadistico: this.idEstadistico.toString(),
       nivelContribucion: this.nivelContribucionContenidosMdeaRelation,
       comentarioRelacionMdea: this.comentariopullMdea,
-      idVarCaracterizada: 'ATUS-100-2024',
+      idVarCaracterizada: this.idVariable + '-' + this._anioEvento,
     };
+    console.log('mandando al back: ', nuevaRelacion)
 
     this._relacionService
       .registrarRelacion(nuevaRelacion)
@@ -750,9 +758,9 @@ export class NuevaVariableComponent implements OnInit {
       return;
     }
     const nuevaRelacion: RelacionODS = {
-      idVariableUnique: 1,
-      idVariable: 'ATUS-001',
-      idVarCaracterizada: 'ATUS-001-2024',
+      idVariableUnique: this._respons_var_idUnique,
+      idVariable: this.idVariable,
+      idVarCaracterizada: this.idVariable + '-' + this._anioEvento,
       idObj: this.idObjetivo.toString(),
       idMeta: this.idMeta.toString(),
       idIndicador: this.idIndicador.toString(),
@@ -776,7 +784,7 @@ export class NuevaVariableComponent implements OnInit {
       this._varService.deleteVariable(id).subscribe({
         next: () => {
           this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
-            (v) => v.id !== id
+            (v) => v.idUnique !== id
           );
         },
         error: (err) => {

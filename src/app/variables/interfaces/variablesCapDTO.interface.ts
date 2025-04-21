@@ -1,5 +1,5 @@
 export interface VariableDTO {
-  id?: number;
+  idUnique?: number;
   idVariable: string;
   idFuente: number;
   idPp: string;

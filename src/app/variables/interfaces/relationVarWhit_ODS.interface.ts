@@ -1,6 +1,6 @@
 export interface RelacionODS {
   idUnique?: number;
-  idVariableUnique: number;
+  idVariableUnique?: number;
   idVariable: string;
   idVarCaracterizada?: string;
   idObj?: string;

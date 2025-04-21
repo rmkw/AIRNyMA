@@ -1,6 +1,6 @@
 export interface RelationVarWhitMDEA {
   idVariable: string;
-  idVariableUnique: number;
+  idVariableUnique?: number;
   idComponente: string | number;
   idSubcomponente: string | number;
   idTopico: string | number;
