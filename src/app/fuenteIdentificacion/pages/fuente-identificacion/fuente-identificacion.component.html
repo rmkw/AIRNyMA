@@ -1,13 +1,13 @@
 
 <div class="container mx-auto p-4">
-  <h1 class="text-3xl font-bold font-montserrat mb-6">Fuente de identificación y selección de la variable</h1>
+  <h1 class="text-3xl font-bold font-montserrat mb-6 text-primary">Editar fuente de identificación</h1>
 
   <div class="grid gap-4">
 
     <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
       <!--! PP -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="procesoProduccion">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
         <select id="procesoProduccion" class="select select-bordered select-sm w-full " (change)="seleccionarProceso($event)"
@@ -20,7 +20,7 @@
       </div>
       <!--! Acrónimo -->
       <div class="col-span-1 text-center">
-        <label class="block text-sm font-medium  mb-2" for="acronimo">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="acronimo">
           Acrónimo
         </label>
         <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
@@ -29,7 +29,7 @@
 
       <!--! Tipo Fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2" for="fuente">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="fuente">
           Fuente de identificación
         </label>
         <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full " placeholder="" />
@@ -37,7 +37,7 @@
 
       <!--! Año del evento -->
       <div class="col-span-1">
-        <label class="block text-sm font-medium  mb-2" for="anio">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
           Año del evento
         </label>
         <input type="text" id="anio" [(ngModel)]="anioEvento" maxlength="6" class="input input-sm input-bordered w-full "
@@ -48,7 +48,7 @@
     <div class="grid grid-col-1 md:grid-cols-4 gap-4">
       <!--! Liga de acceso a la fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="accesoLink">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="accesoLink">
           Liga de acceso a la fuente
         </label>
         <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full "
@@ -58,7 +58,7 @@
 
       <!--! Comentario de la fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="comentario">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="comentario">
           Comentario de la fuente
         </label>
         <input type="text" id="comentarioF" [(ngModel)]="comentario" class="input input-sm input-bordered w-full" />
@@ -71,8 +71,8 @@
 
 
 
-    <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-12">
-      <div class="alert btn-success btn-outline">
+    <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
+      <div class="alert btn-success">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -83,7 +83,7 @@
 
 
     <div class="flex flex-row-reverse">
-      <button class="btn btn-outline btn-secondary btn-sm" type="submit" (click)="actualizarFuente()">
+      <button class="btn btn-outline btn-primary btn-sm" type="submit" (click)="actualizarFuente()">
         Actualizar
       </button>
     </div>

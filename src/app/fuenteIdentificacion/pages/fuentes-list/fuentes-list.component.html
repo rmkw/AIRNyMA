@@ -1,5 +1,5 @@
 <div class="container mx-auto mt-5">
-  <h1 class="text-2xl font-bold font-montserrat mb-6">Nueva fuente de identificación</h1>
+  <h1 class="text-2xl font-bold font-montserrat mb-6 text-primary">Nueva fuente de identificación</h1>
 
 
   <div class="grid gap-4">
@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
       <!--! PP -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="procesoProduccion">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
         <select id="procesoProduccion" class="select select-bordered select-sm w-full "
@@ -21,7 +21,7 @@
 
       <!--! Acrónimo -->
       <div class="col-span-1 text-center">
-        <label class="block text-sm font-medium  mb-2" for="acronimo">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="acronimo">
           Acrónimo
         </label>
         <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
@@ -30,19 +30,19 @@
 
       <!--! Tipo Fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2" for="fuente">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="fuente">
           Fuente de identificación
 
         </label>
 
-        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full " placeholder="" />
+        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full text-secondary" placeholder="" />
 
 
       </div>
 
       <!--! Año del evento -->
       <div class="col-span-1">
-        <label class="block text-sm font-medium  mb-2" for="anio">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
           Año del evento
         </label>
         <input type="text" (input)="validateYear($event)" [(ngModel)]="anioEvento" maxlength="4" class="input input-sm input-bordered w-full "
@@ -58,7 +58,7 @@
 
       <!--! Liga de acceso a la fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="accesoLink">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="accesoLink">
           Liga de acceso a la fuente
         </label>
         <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full "
@@ -68,7 +68,7 @@
 
       <!--! Comentario de la fuente -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2" for="comentario">
+        <label class="block text-sm font-medium  mb-2 text-secondary" for="comentario">
           Comentario de la fuente
         </label>
         <input type="text" id="comentarioF" [(ngModel)]="comentarioF" class="input input-sm input-bordered w-full" />
@@ -78,7 +78,7 @@
     <!-- @if (!flagVarButton) { -->
     <div class="flex justify-between items-center mt-2 mb-2">
       <h1></h1>
-      <button class="btn btn-outline btn-secondary btn-sm" (click)="nuevaFuente()">
+      <button class="btn btn-outline btn-secondary btn-sm " (click)="nuevaFuente()">
         Capturar fuente
       </button>
     </div>
@@ -93,21 +93,20 @@
 
 
 
-<h1 class="text-1xl font-bold font-montserrat mb-6">Lista de fuentes de identificación</h1>
+<h1 class="text-1xl font-bold font-montserrat mb-6 text-primary">Lista de fuentes de identificación</h1>
 
   <div class="overflow-auto   mt-5 " style="max-height: 40rem;">
 
     <table class="table table-xs table-pin-rows">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Procesos de Producción</th>
-          <th>Fuente de identificación</th>
-          <th>Liga de acceso a la fuente</th>
-          <th>Año del evento</th>
-          <th>Comentario de la fuente </th>
-          <th class="text-center" >Acciónes</th>
-          <th class="text-center">Variables</th>
+      <thead class="">
+        <tr class="">
+
+          <th class="text-secondary text-center">Fuente de identificación</th>
+          <th class="text-secondary text-center">Liga de acceso a la fuente</th>
+          <th class="text-secondary text-center">Año del evento</th>
+          <th class="text-secondary text-center">Comentario de la fuente </th>
+          <th class="text-secondary text-center">Acciónes</th>
+          <th class="text-secondary text-center">Variables</th>
         </tr>
       </thead>
       <tbody>
@@ -120,10 +119,10 @@
 
 
         <tr *ngFor="let fuente of fuentes; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ fuente.idPp }}</td>
-          <td>{{ fuente.fuente }}</td>
-          <td>
+
+          <td class="text-center">{{ fuente.idPp }}</td>
+          <td class="text-center">{{ fuente.fuente }}</td>
+          <td class="text-center">
             @if (fuente.linkFuente) {
             <a [href]="fuente.linkFuente" class="text-blue-500 underline" target="_blank">
               Liga de acceso
@@ -133,8 +132,8 @@
             }
           </td>
 
-          <td>{{ fuente.anioEvento }}</td>
-          <td>{{ fuente.comentario }}</td>
+          <td class="text-center">{{ fuente.anioEvento }}</td>
+          <td class="text-center">{{ fuente.comentario }}</td>
           <td class="text-center">
 
             <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">

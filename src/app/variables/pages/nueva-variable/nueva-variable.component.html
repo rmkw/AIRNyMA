@@ -1,7 +1,7 @@
 <div class="container mx-auto mt-5">
 
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold font-montserrat">Identificación de la variable</h1>
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable</h1>
 
     <button class="btn btn-outline btn-sm btn-ghost" (click)="crearVarInNewVars()">
       + Capturar Variable
@@ -12,7 +12,7 @@
   <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-6">
 
     <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2" for="idVariable">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="idVariable">
         Id variable
       </label>
       <input type="text" id="idVariable" [(ngModel)]="idVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
@@ -20,7 +20,7 @@
     </div>
 
     <div class="col-span-2">
-      <label class="block text-sm font-medium  mb-2" for="nombreVariable">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
         Nombre de la variable
       </label>
       <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
@@ -28,7 +28,7 @@
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium  mb-2" for="definicionVariable">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="definicionVariable">
         Definición de la variable
       </label>
       <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"
@@ -36,7 +36,7 @@
     </div>
 
     <div class="col-span-2">
-      <label class="block text-sm font-medium  mb-2" for="_linkVar">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="_linkVar">
         Link de acceso variable
       </label>
       <input type="text" id="_linkVar" [(ngModel)]="_linkVar" [disabled]="camposBloqueados"
@@ -44,7 +44,7 @@
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium  mb-2" for="comentarioVariable">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
         Comentario de la variable
       </label>
       <input type="text" id="comentarioVariable"
@@ -55,7 +55,7 @@
 
 
     <div class="max-w-xs text-center">
-      <label class="block text-sm font-medium  mb-2" for="alinea_MDEA">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
         Alineación con MDEA
       </label>
       <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)" [disabled]="camposBloqueados"
@@ -63,7 +63,7 @@
     </div>
 
     <div class="max-w-xs text-center">
-      <label class="block text-sm font-medium  mb-2" for="alinea_ODS">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
         Alineación con ODS
       </label>
       <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)" [disabled]="camposBloqueados"
@@ -71,7 +71,7 @@
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2" for="comentarioVariable">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="comentarioVariable">
         Tema de cobertura de necesidades
       </label>
       <input type="text"id="comentarioVariable"
@@ -81,7 +81,7 @@
 
 
     <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2" for="idNivelCont">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
         Nivel de contribución
       </label>
       <select class="select select-bordered select-sm w-full "
@@ -96,7 +96,7 @@
     </div>
 
     <div class="max-w-xs">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Viabilidad de generación
       </label>
       <select class="select select-bordered select-sm w-full "
@@ -111,14 +111,14 @@
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Propuesta de generación de estadística derivada
       </label>
       <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2  " for="comentarioVariable">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Comentario de pertinencia
       </label>
       <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
@@ -154,17 +154,17 @@
     <div class="border p-4">
 
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-1xl font-bold font-montserrat">Relación MDEA</h1>
+        <h1 class="text-1xl font-bold font-montserrat text-primary">Relación MDEA</h1>
 
         <button class="btn btn-outline btn-sm btn-primary " (click)="registrarRelacion()">
-          + Agregar relación
+          + Agregar relación MDEA
         </button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idComp">
             Componente
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
@@ -174,7 +174,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
             Subcomponente
           </label>
           <select class="select select-bordered select-sm w-full" #subcomponenteSelect
@@ -186,7 +186,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
             Tema
           </label>
           <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
@@ -199,7 +199,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idVariableMDEA">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idVariableMDEA">
             Estadística 1
           </label>
           <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
@@ -211,7 +211,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idEstadistico">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idEstadistico">
             Estadística 2
           </label>
           <select class="select select-bordered select-sm w-full" #estadisticoSelect
@@ -223,7 +223,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
             Nivel de contribución
           </label>
           <select id="idNivelCont"
@@ -241,7 +241,7 @@
         </div>
 
         <div class="col-span-3">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
             Comentario
           </label>
           <input type="text" id="comentariopullMdea" [(ngModel)]="comentariopullMdea"
@@ -253,7 +253,7 @@
 
 
       <div class="flex justify-between items-center mb-2 mt-6">
-        <h1 class="text-1xl font-bold font-montserrat">Lista de relaciones</h1>
+        <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
 
 
       </div>
@@ -265,9 +265,9 @@
           <!-- head -->
           <thead>
             <tr>
-              <th >Codigo de relación</th>
-              <th class="text-center">Nivel</th>
-              <th class="text-center">Acciones</th>
+              <th class="text-secondary">Codigo de relación</th>
+              <th class="text-secondary text-center">Nivel</th>
+              <th class="text-secondary text-center">Acciones</th>
 
             </tr>
           </thead>
@@ -309,7 +309,7 @@
     <div class="border p-4">
 
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-1xl font-bold font-montserrat">Relación ODS</h1>
+        <h1 class="text-1xl font-bold font-montserrat text-primary">Relación ODS</h1>
 
         <button class="btn btn-outline btn-sm btn-primary " (click)="registrarNuevaRelacion()">
           + Agregar relación ODS
@@ -319,7 +319,7 @@
 
       <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idComp">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idComp">
             Objetivo
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)">
@@ -329,7 +329,7 @@
         </div>
 
         <div class="max-w-xs ">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idSubcom">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
             Meta
           </label>
           <select class="select select-bordered select-sm w-full" #metaSelect
@@ -346,7 +346,7 @@
         </div>
 
         <div class="max-w-xs truncate">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idTopico">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
             Indicador
           </label>
           <select class="select select-bordered select-sm w-full " #indicadorSelect (change)="onSelectIndicador($event)"
@@ -361,7 +361,7 @@
         </div>
 
         <div class="max-w-xs">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
             Nivel de contribución a contenidos
           </label>
           <select class="select select-bordered select-sm w-full "
@@ -377,7 +377,7 @@
         </div>
 
         <div class="col-span-2">
-          <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
+          <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
             Comentario
           </label>
           <input [(ngModel)]="_ods_comentarioRelacionODS"
@@ -387,7 +387,7 @@
       </div>
 
       <div class="flex justify-between items-center mb-2 mt-6">
-        <h1 class="text-1xl font-bold font-montserrat">Lista de relaciones</h1>
+        <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
 
 
       </div>
@@ -397,9 +397,9 @@
           <!-- head -->
           <thead>
             <tr>
-              <th>Codigo de relación</th>
-              <th class="text-center">Nivel</th>
-              <th class="text-center">Acciones</th>
+              <th class="text-secondary">Codigo de relación</th>
+              <th class="text-center text-secondary">Nivel</th>
+              <th class="text-center text-secondary">Acciones</th>
 
             </tr>
           </thead>
@@ -441,7 +441,7 @@
 </div>
     <div class="flex justify-between items-center mb-6">
 
-      <h1 class="text-1xl font-bold font-montserrat">Lista de variables </h1>
+      <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de variables </h1>
 
 
 
@@ -451,12 +451,12 @@
         <!-- head -->
         <thead>
           <tr>
-            <th>Id Variable</th>
-            <th>Nombre</th>
-            <th>Definición</th>
-            <th>Alineación Mdea</th>
-            <th>Alineación Ods</th>
-            <th class="text-center">Acciones</th>
+            <th class="text-secondary">Id Variable</th>
+            <th class="text-secondary">Nombre</th>
+            <th class="text-secondary">Definición</th>
+            <th class="text-secondary">Alineación Mdea</th>
+            <th class="text-secondary">Alineación Ods</th>
+            <th class="text-secondary text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
