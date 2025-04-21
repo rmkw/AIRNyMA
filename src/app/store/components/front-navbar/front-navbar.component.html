@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100 shadow-sm">
+<div class="navbar bg-neutral shadow-sm">
   <div class="navbar-start">
     <div class="relative">
       <!-- Botón del menú hamburguesa -->
@@ -12,20 +12,20 @@
       <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
         [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
 
-        <li><a routerLink="/procesos" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Procesos de producción</a></li>
+        <li><a routerLink="/procesos" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200 text-base-100">Procesos de producción</a></li>
 
         <li><a routerLink="/fuentes" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Fuentes de Identificación</a></li>
 
         <li><a routerLink="/nueva-variable" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Identificación de variables</a></li>
 
-        <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">TEST ZONE</a></li>
+        <!-- <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">TEST ZONE</a></li> -->
 
 
       </ul>
     </div>
 
     <a routerLink="/" class="btn btn-ghost text-xl font-montserrat">
-      <span class="text-primary">
+      <span class="text-base-100">
         Captura
       </span><span class="text-secondary">| Forms </span>
     </a>
@@ -33,16 +33,16 @@
 
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-ghost" routerLinkActive="text-secondary">Procesos de producción</a>
+      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Procesos de producción</a>
       </li>
-      <li><a routerLink="/fuentes" (click)="navegandosinStorage()" class="btn btn-ghost" routerLinkActive="text-secondary">Fuentes de Identificación</a>
+      <li><a routerLink="/fuentes" (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Fuentes de Identificación</a>
       </li>
 
-      <li><a routerLink="/nueva-variable" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost">Identificación de
+      <li><a routerLink="/nueva-variable" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Identificación de
           variables</a></li>
 
-      <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost">TEST ZONE</a>
-      </li>
+      <!-- <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost">TEST ZONE</a>
+      </li> -->
 
     </ul>
   </div>
@@ -51,7 +51,7 @@
 
     <div class="relative">
       <!-- Botón para abrir el dropdown -->
-      <button class="btn btn-ghost m-1" (click)="toggleDropdown()">
+      <button class="btn btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
         Theme
         <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
@@ -75,7 +75,7 @@
 
 
     @if (userName()) {
-    <button class="btn btn-ghost">
+    <button class="btn btn-ghost text-slate-300">
       {{ userName() }}
     </button>
     <button class="btn btn-sm btn-error" (click)="_authService.logout()">

@@ -1,6 +1,8 @@
+import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
 import { VariableDTO } from '@/variables/interfaces/variablesCapDTO.interface';
 import { CapturaMdeaVarService } from '@/variables/services/captura-mdea-vars.service';
+import { relacionODS_Service } from '@/variables/services/captura-ods-vars.service';
 import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
@@ -20,6 +22,7 @@ export class NuevaVariableComponent implements OnInit {
     this.getObjetivos();
     this.getPropetiesLocalStorage();
     this.getRelation_MDEA_Var();
+    this.obtenerRelaciones_ods();
   }
 
   //! COSAS PARA QUE FUNCIONE MDEA RELATION
@@ -45,7 +48,6 @@ export class NuevaVariableComponent implements OnInit {
       event.preventDefault();
       this.currentDeactivation = { type: 'MDEA', name: 'MDEA' };
       this.showWarning = true;
-
     } else if (!this.flagMDEArelation && newValue) {
       this.flagMDEArelation = true;
       this.showWarning = false;
@@ -354,6 +356,8 @@ export class NuevaVariableComponent implements OnInit {
       });
   }
 
+  _ods_isSelectEnabled_Nivel: boolean = false;
+  _ods_isSelectEnabled_Comentario: boolean = false;
   // ? selects habilitados ODS
   isSelectEnabled_Meta: boolean = false;
   isSelectEnabled_Ind: boolean = false;
@@ -381,6 +385,7 @@ export class NuevaVariableComponent implements OnInit {
 
     this.getMetas(idObjetivo);
   }
+
   onSelectMeta(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const idMeta = selectElement.value;
@@ -399,7 +404,11 @@ export class NuevaVariableComponent implements OnInit {
       console.log('entre a hacer el cambiio');
       this.indicadorSelect.nativeElement.value = '-';
 
+      this.idIndicador = '-';
+
       this.arrIndicadores = [];
+      this.isSelectEnabled_Ind = true;
+      this._ods_isSelectEnabled_Nivel = true;
 
       return;
     }
@@ -411,6 +420,15 @@ export class NuevaVariableComponent implements OnInit {
     const idIndicador = selectElement.value;
     this.idIndicador = idIndicador;
     console.log('Indicador seleccionado:', idIndicador);
+    this._ods_isSelectEnabled_Nivel = true;
+  }
+  _ods_onSelectNivel(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nivel = selectElement.value;
+    this._ods_nivelContribucion = nivel;
+    console.log('nivel: ', this._ods_nivelContribucion);
+
+    this.isSelectEnabled_Comentario = true;
   }
 
   // ! Captura variable
@@ -542,7 +560,6 @@ export class NuevaVariableComponent implements OnInit {
 
   _relacionService = inject(CapturaMdeaVarService);
   registrarRelacion() {
-
     if (!this.comentariopullMdea) {
       alert('Por favor, selecciona');
       return;
@@ -580,7 +597,7 @@ export class NuevaVariableComponent implements OnInit {
         }
       });
   }
-  resetRelationMDEA_SELECTS(){
+  resetRelationMDEA_SELECTS() {
     this.arrComponentes = [];
     this.getComponentes();
 
@@ -588,14 +605,9 @@ export class NuevaVariableComponent implements OnInit {
     this.arrTopicos = []; // Limpiar el array de tópicos
     this.arrVariables = []; // Limpiar el array de variables
     this.arrEstadisticos = []; // Limpiar el array de estadísticos
-    this.nivelContribucionContenidosMdeaRelation = ''
+    this.nivelContribucionContenidosMdeaRelation = '';
     this.comentariopullMdea = '';
 
-    this.arrODS = [];
-    this.getObjetivos();
-
-    this.arrMetas = []; // Limpiar el array de metas
-    this.arrIndicadores = []; // Limpiar el array de indicadores
 
     this.isSelectEnabled_Subc = false;
     this.isSelectEnabled_Top = false;
@@ -604,10 +616,25 @@ export class NuevaVariableComponent implements OnInit {
     this.isSelectEnabled_Nivel = false;
     this.isSelectEnabled_Comentario = false;
 
-    this.isSelectEnabled_Meta = false;
-    this.isSelectEnabled_Ind = false;
+
 
     this.getRelation_MDEA_Var();
+
+  }
+  resetRelationODS_SELECTS(){
+    this.arrODS = [];
+    this.getObjetivos();
+
+    this.arrMetas = []; // Limpiar el array de metas
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+    this._ods_nivelContribucion = '';
+    this._ods_comentarioRelacionODS = '';
+
+    this.isSelectEnabled_Meta = false;
+    this.isSelectEnabled_Ind = false;
+    this._ods_isSelectEnabled_Nivel = false;
+    this._ods_isSelectEnabled_Comentario = false;
+    this.obtenerRelaciones_ods();
   }
 
   relationesMDEA: any[] = [];
@@ -660,19 +687,22 @@ export class NuevaVariableComponent implements OnInit {
     this.camposBloqueados = true;
 
     if (this.flagMDEArelation) {
-      console.log('entre a mdea relacion')
+      console.log('entre a mdea relacion');
       this.showPOST_RELATIONES_MDE = true;
     }
     if (this.flagODSrelation) {
       console.log('entre a ods relacion');
-      this.showPOST_RELATIONES_ODS =true
+      this.showPOST_RELATIONES_ODS = true;
     }
   }
   primeraInteraccion: boolean = true; // bandera general para el modal
   modalDisparadoDesde: 'MDEA' | 'ODS' | 'comentario' | null = null;
   onComentarioClick(event: Event) {
-    if (!this.nombreVariable || !this.definicionVariable || !this._linkVar
-        || !this.comentarioVariable
+    if (
+      !this.nombreVariable ||
+      !this.definicionVariable ||
+      !this._linkVar ||
+      !this.comentarioVariable
     ) {
       alert('Por favor, captura los datos faltantes primero');
       return;
@@ -688,8 +718,59 @@ export class NuevaVariableComponent implements OnInit {
     modal?.showModal();
   }
   DISABLE_temaCobertura: boolean = true;
-  enableTEMA_COBERTURA(){
+  enableTEMA_COBERTURA() {
     this.DISABLE_temaCobertura = false;
+  }
+  relacionesODS: RelacionODS[] = [];
+  _service_relation_ODS_VAR = inject(relacionODS_Service);
+
+  obtenerRelaciones_ods() {
+    this._service_relation_ODS_VAR.getRelacionesPorVariable_ods(1).subscribe({
+      next: (res) => {
+        console.log('Datos recibidos en obtenerRelaciones_ods():', res);
+        this.relacionesODS = res;
+      },
+      error: (err) => console.error('Error obteniendo relaciones:', err),
+    });
+  }
+
+  eliminarRelacion(id: number) {
+    this._service_relation_ODS_VAR.eliminarRelacion_ods(id).subscribe({
+      next: () => {
+        console.log(`Relación con id ${id} eliminada correctamente`);
+        this.obtenerRelaciones_ods(); // Refresca la lista automáticamente
+      },
+      error: (err) => console.error('Error eliminando relación:', err),
+    });
+  }
+  _ods_nivelContribucion: string = '';
+  _ods_comentarioRelacionODS: string = '';
+
+  registrarNuevaRelacion() {
+    if (!this._ods_comentarioRelacionODS) {
+      alert('Por favor, selecciona');
+      return;
+    }
+    const nuevaRelacion: RelacionODS = {
+      idVariableUnique: 1,
+      idVariable: 'ATUS-001',
+      idVarCaracterizada: 'ATUS-001-2024',
+      idObj: this.idObjetivo.toString(),
+      idMeta: this.idMeta.toString(),
+      idIndicador: this.idIndicador.toString(),
+      nivelContribucion: this._ods_nivelContribucion,
+      comentarioRelacionODS: this._ods_comentarioRelacionODS,
+    };
+
+    this._service_relation_ODS_VAR
+      .registrarRelacion_ods(nuevaRelacion)
+      .subscribe({
+        next: (res) => {
+          console.log('Relacion creada:', res);
+          this.resetRelationODS_SELECTS();
+        },
+        error: (err) => console.error('Error creando relación:', err),
+      });
   }
 }
 

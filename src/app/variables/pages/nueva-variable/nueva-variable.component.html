@@ -311,7 +311,7 @@
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-1xl font-bold font-montserrat">Relación ODS</h1>
 
-        <button class="btn btn-outline btn-sm btn-primary ">
+        <button class="btn btn-outline btn-sm btn-primary " (click)="registrarNuevaRelacion()">
           + Agregar relación ODS
         </button>
 
@@ -324,7 +324,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)">
             <option disabled selected>Selecciona un Objetivo</option>
-            <option *ngFor="let obj of arrODS" [value]="obj.id">{{ obj.nombre }}</option>
+            <option *ngFor="let obj of arrODS" [value]="obj.id">{{ obj.id+'. '+obj.nombre }}</option>
           </select>
         </div>
 
@@ -335,8 +335,12 @@
           <select class="select select-bordered select-sm w-full" #metaSelect
             (change)="onSelectMeta($event)" [disabled]="!isSelectEnabled_Meta">
             <option disabled selected>Selecciona una Meta</option>
-            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{
-              meta.nombreMeta.length > 50 ? (meta.nombreMeta | slice:0:100) + '...' : meta.nombreMeta }}</option>
+            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}.
+            {{
+            meta.nombreMeta.length > 50
+            ? (meta.nombreMeta | slice: 0: 100) + '...'
+            : meta.nombreMeta
+            }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -349,7 +353,9 @@
             [disabled]="!isSelectEnabled_Ind">
             >
             <option disabled selected>Selecciona un Indicador</option>
-            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">{{ indic.nombreIndicador.length > 50 ? (indic.nombreIndicador | slice:0:100) + '...' : indic.nombreIndicador }}</option>
+            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
+              {{indic.idIndicador}}.
+              {{ indic.nombreIndicador.length > 50 ? (indic.nombreIndicador | slice:0:100) + '...' : indic.nombreIndicador }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -358,7 +364,10 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idNivelCont">
             Nivel de contribución a contenidos
           </label>
-          <select class="select select-bordered select-sm w-full ">
+          <select class="select select-bordered select-sm w-full "
+            (change)="_ods_onSelectNivel($event)"
+            [(ngModel)]="_ods_nivelContribucion"
+            [disabled]="!_ods_isSelectEnabled_Nivel">
             <option disabled selected>Selecciona un nivel</option>
             <option value="Alto">Alto</option>
             <option value="Intermedio">Intermedio</option>
@@ -371,9 +380,49 @@
           <label class="block text-sm font-medium text-gray-500 mb-2" for="idComentario">
             Comentario
           </label>
-          <input type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
+          <input [(ngModel)]="_ods_comentarioRelacionODS"
+                 [disabled]="!isSelectEnabled_Comentario"  type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
         </div>
 
+      </div>
+
+      <div class="flex justify-between items-center mb-2 mt-6">
+        <h1 class="text-1xl font-bold font-montserrat">Lista de relaciones</h1>
+
+
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th>Codigo de relación</th>
+              <th class="text-center">Nivel</th>
+              <th class="text-center">Acciones</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <!-- row 1 -->
+            @for (itemRelation of relacionesODS; track $index) {
+            <tr>
+              <th>{{'['+'O: '+ itemRelation.idObj +']' +
+                '['+' M:'+ itemRelation.idMeta +']' +
+                '['+' I:'+itemRelation.idIndicador +']'}}</th>
+
+              <th class="text-center">{{itemRelation.nivelContribucion}}</th>
+
+              <th class="text-center">
+                <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
+                  (click)="eliminarRelacion(itemRelation.idUnique!)">Eliminar</button>
+              </th>
+            </tr>
+            }
+
+
+          </tbody>
+        </table>
       </div>
 
 

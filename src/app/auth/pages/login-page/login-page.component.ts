@@ -43,7 +43,7 @@ export class LoginPageComponent {
         }, 2000);
       });
   }
-  selectedTheme = signal(localStorage.getItem('theme') || 'lofi');
+  selectedTheme = signal(localStorage.getItem('theme') || 'mytheme');
   constructor() {
     this.applyTheme(this.selectedTheme());
   }

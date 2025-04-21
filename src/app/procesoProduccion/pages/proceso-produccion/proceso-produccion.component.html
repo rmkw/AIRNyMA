@@ -1,6 +1,6 @@
 <div class="container mx-auto mt-5">
 
-  <h1 class="text-3xl font-bold font-montserrat mb-6">
+  <h1 class="text-3xl font-bold font-montserrat mb-6 text-primary">
     Caracterización del proceso de producción</h1>
 
   <!-- Grid con 2 filas -->
@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 md:grid-cols-8">
       <!-- Select -->
       <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2" for="procesoProduccion">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
         <select id="procesoProduccion" class="select select-bordered select-sm w-full"
@@ -23,7 +23,7 @@
 
       <!-- Acrónimo -->
       <div class="col-span-2 text-center">
-        <label class="block text-sm font-medium mb-2" for="acronimo">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="acronimo">
           Acrónimo
         </label>
         <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.acronimoProceso || '-' }}</h2>
@@ -31,7 +31,7 @@
 
       <!-- Método -->
       <div class="col-span-3">
-        <label class="block text-sm font-medium mb-2" for="metodo">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
           Método de obtención de la información
         </label>
         <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || '-' }}</h2>
