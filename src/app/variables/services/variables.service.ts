@@ -5,14 +5,12 @@ import { environment } from 'src/environments/environment';
 import { VariableDTO } from '../interfaces/variablesCapDTO.interface';
 
 const baseUrl = environment.baseUrl
-@Injectable({providedIn: 'root'})
-
+@Injectable({ providedIn: 'root' })
 export class VariableService {
-  constructor() { }
+  constructor() {}
   private http = inject(HttpClient);
 
   getVars(responsableRegister: number, idFuente: number): Observable<any> {
-
     return this.http.get<any>(
       `${baseUrl}/variables/filtered/${responsableRegister}/${idFuente}`
     );
@@ -22,4 +20,9 @@ export class VariableService {
     return this.http.post<any>(`${baseUrl}/variables`, variable);
   }
 
+  deleteVariable(id: number) {
+    return this.http.delete(`${baseUrl}/variables/${id}`, {
+      withCredentials: true,
+    });
+  }
 }

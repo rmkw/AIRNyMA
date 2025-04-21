@@ -520,7 +520,7 @@ export class NuevaVariableComponent implements OnInit {
 
         console.log('✅ Variable registrada:', data);
         console.info('Variable registrada correctamente');
-        this.cleanVars();
+        console.log('props vars: ', nuevaVariable);
       });
   }
   cleanVars() {
@@ -608,7 +608,6 @@ export class NuevaVariableComponent implements OnInit {
     this.nivelContribucionContenidosMdeaRelation = '';
     this.comentariopullMdea = '';
 
-
     this.isSelectEnabled_Subc = false;
     this.isSelectEnabled_Top = false;
     this.isSelectEnabled_Var = false;
@@ -616,12 +615,9 @@ export class NuevaVariableComponent implements OnInit {
     this.isSelectEnabled_Nivel = false;
     this.isSelectEnabled_Comentario = false;
 
-
-
     this.getRelation_MDEA_Var();
-
   }
-  resetRelationODS_SELECTS(){
+  resetRelationODS_SELECTS() {
     this.arrODS = [];
     this.getObjetivos();
 
@@ -673,6 +669,8 @@ export class NuevaVariableComponent implements OnInit {
     this.deshabilitarCamposRelacionados();
 
     this.enableTEMA_COBERTURA();
+
+    this.crearVarInNewVars();
 
     // Cierra el modal
     const modal = document.getElementById('mi_modal_1') as HTMLDialogElement;
@@ -771,6 +769,22 @@ export class NuevaVariableComponent implements OnInit {
         },
         error: (err) => console.error('Error creando relación:', err),
       });
+  }
+  finalizarCaptura: boolean = true;
+  eliminarVariable(id: number) {
+    if (confirm('¿Seguro que deseas eliminar esta variable?')) {
+      this._varService.deleteVariable(id).subscribe({
+        next: () => {
+          this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
+            (v) => v.id !== id
+          );
+        },
+        error: (err) => {
+          alert('Error eliminando variable');
+          console.error(err);
+        },
+      });
+    }
   }
 }
 

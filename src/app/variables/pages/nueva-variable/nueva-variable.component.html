@@ -3,8 +3,8 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable</h1>
 
-    <button class="btn btn-outline btn-sm btn-ghost" (click)="crearVarInNewVars()">
-      + Capturar Variable
+    <button class="btn btn-outline btn-sm btn-ghost" (click)="crearVarInNewVars()" [disabled]="finalizarCaptura">
+      Finalizar Captura
     </button>
 
   </div>
@@ -483,7 +483,7 @@
                 <button class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
                   Editar
                 </button>
-                <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2">
+                <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="eliminarVariable(varItem.id)">
                   Eliminar
                 </button>
               </td>
