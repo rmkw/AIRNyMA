@@ -1,14 +1,14 @@
-<div class="container mx-auto mt-5">
+<div class="container mx-auto mt-7">
 
-  <h1 class="text-3xl font-bold font-montserrat mb-6 text-primary">
+  <h1 class="text-2xl font-bold font-montserrat mb-6 text-primary">
     Caracterización del proceso de producción</h1>
 
   <!-- Grid con 2 filas -->
   <div class="grid gap-8">
     <!-- Primera fila con 3 columnas -->
-    <div class="grid grid-cols-1 md:grid-cols-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 ">
       <!-- Select -->
-      <div class="col-span-2">
+      <div class="col-span-1">
         <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
           Selecciona el proceso de producción
         </label>
@@ -22,64 +22,16 @@
       </div>
 
       <!-- Acrónimo -->
-      <div class="col-span-2 text-center">
+      <div class="col-span-1 text-center">
         <label class="block text-sm font-medium mb-2 text-secondary" for="acronimo">
           Acrónimo
         </label>
         <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.acronimoProceso || '-' }}</h2>
       </div>
 
-      <!-- Método -->
-      <div class="col-span-3">
-        <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
-          Método de obtención de la información
-        </label>
-        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || '-' }}</h2>
-      </div>
-      <!-- Estatus con botón dinámico -->
-      <div>
-        <label class="block text-sm font-medium mb-2">
-          Estatus
-        </label>
-        <button class="btn btn-outline btn-sm" [ngClass]="{
-                  'btn-success': procesoSeleccionado()?.estatus === 'Activo',
-                  'btn-error': procesoSeleccionado()?.estatus === 'Inactivo'
-                }">
-          {{ procesoSeleccionado()?.estatus || 'Estatus' }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Segunda fila con 1 columna -->
-    <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium mb-2" for="objetivo">
-        Objetivo del proceso
-      </label>
-      <textarea id="objetivo" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
-    </div>
-
-    <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium mb-2" for="poblacion001">
-        Población objeto de estudio
-      </label>
-      <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.poblacionObjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
-    </div>
-
-    <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium mb-2" for="unidad001">
-        Unidad de observación
-      </label>
-      <textarea id="unidad001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.unidadObservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
-    </div>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-8">
       <!-- Unidad Administrativa -->
-      <div class="col-span-3">
-        <label class="block text-sm font-medium mb-2">
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-2 text-secondary">
           Unidad Administrativa
         </label>
         <h2 class="text-lg font-semibold">
@@ -87,19 +39,51 @@
         </h2>
       </div>
 
+      <!-- Estatus con botón dinámico -->
+      <div class="col-span-1 text-center">
+        <label class="block text-sm font-medium mb-2 text-secondary ">
+          Estatus
+        </label>
+        <button class="btn px-10 btn-sm text-center" [ngClass]="{
+                              'btn-success': procesoSeleccionado()?.estatus === 'Activo',
+                              'btn-error': procesoSeleccionado()?.estatus === 'Inactivo'
+                            }">
+          {{ procesoSeleccionado()?.estatus || 'Estatus' }}
+        </button>
+      </div>
+
+
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 ">
       <!-- Periodicidad del Proceso de Producción -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2">
-          Periodicidad del Proceso de Producción
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-2 text-secondary">
+          Periodicidad
         </label>
         <h2 class="text-lg font-semibold">
           {{ procesoSeleccionado()?.periodicidad || '-' }}
         </h2>
       </div>
 
+
+
+
+
+      <!-- Método -->
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
+          Método de obtención de la información
+        </label>
+        <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || '-' }}</h2>
+      </div>
+
+
+
       <!-- Condición de Información de Interés Nacional -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2">
+      <div class="col-span-1">
+        <label class="block text-sm font-medium mb-2 text-secondary">
           Condición de Información de Interés Nacional
         </label>
         <h2 class="text-lg font-semibold">
@@ -110,8 +94,36 @@
 
     </div>
 
+    <!-- Segunda fila con 1 columna -->
     <div class="grid grid-cols-1">
-      <label class="block text-sm font-medium mb-2" for="comentario">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="objetivo">
+        Objetivo del proceso
+      </label>
+      <textarea id="objetivo" class="textarea textarea-bordered w-full h-31"
+        readonly>{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
+    </div>
+
+    <div class="grid grid-cols-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="poblacion001">
+        Población objeto de estudio
+      </label>
+      <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31"
+        readonly>{{ procesoSeleccionado()?.poblacionObjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
+    </div>
+
+    <div class="grid grid-cols-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="unidad001">
+        Unidad de observación
+      </label>
+      <textarea id="unidad001" class="textarea textarea-bordered w-full h-31"
+        readonly>{{ procesoSeleccionado()?.unidadObservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
+    </div>
+
+
+
+
+    <div class="grid grid-cols-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="comentario">
         Comentario del Proceso de Producción
       </label>
       <textarea id="comentario" class="textarea textarea-bordered w-full h-31" [(ngModel)]="comentario"></textarea>
@@ -119,7 +131,7 @@
 
 
     <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
-      <div class="alert btn-success btn-outline">
+      <div class="alert btn-success">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -129,7 +141,7 @@
     </div>
 
     <div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-20">
-      <div class="alert btn-error btn-outline">
+      <div class="alert btn-error">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -146,15 +158,15 @@
       </svg>
       <span>¿Estás seguro de actualizar el comentario del proceso de producción?</span>
       <div>
-        <button class="btn btn-sm mr-5 " (click)="cancelDeactivation()">Cancelar</button>
-        <button class="btn btn-sm btn-sectext-primary btn-primary" (click)="confirmDeactivation()">Aceptar</button>
+        <button class="btn btn-sm btn-outline mr-5 " (click)="cancelDeactivation()">Cancelar</button>
+        <button class="btn btn-sm  btn-primary" (click)="confirmDeactivation()">Aceptar</button>
       </div>
     </div>
     }
 
 
     <div class="flex flex-row-reverse">
-      <button class="btn btn-outline btn-info" (click)="actualizarComentario()">
+      <button class="btn btn-outline btn-primary" (click)="actualizarComentario()">
         Actualizar
       </button>
     </div>
