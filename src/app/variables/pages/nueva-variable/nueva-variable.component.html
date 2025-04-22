@@ -1,30 +1,29 @@
 <div class="container mx-auto mt-5">
-
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable</h1>
 
-    <button class="btn btn-outline btn-sm btn-ghost" (click)="crearVarInNewVars()" [disabled]="finalizarCaptura">
+
+    <button class="btn btn-outline btn-sm btn-ghost" [disabled]="finalizarCaptura" (click)="registrarTema()">
       Finalizar Captura
     </button>
 
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-6">
-
     <div class="max-w-xs">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="idVariable">
         Id variable
       </label>
-      <input type="text" id="idVariable" [(ngModel)]="idVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
-        placeholder="" />
+      <input type="text" id="idVariable" [(ngModel)]="idVariable" [disabled]="camposBloqueados"
+        class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-2">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
         Nombre de la variable
       </label>
-      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" [disabled]="camposBloqueados" class="input input-sm input-bordered w-full"
-        placeholder="" />
+      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" [disabled]="camposBloqueados"
+        class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-3">
@@ -47,85 +46,81 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
         Comentario de la variable
       </label>
-      <input type="text" id="comentarioVariable"
-      [(ngModel)]="comentarioVariable" [disabled]="camposBloqueados"
+      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable" [disabled]="camposBloqueados"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
-
-
 
     <div class="max-w-xs text-center">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
         Alineación con MDEA
       </label>
-      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)" [disabled]="camposBloqueados"
-        class="checkbox checkbox-md" />
+      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
+        [disabled]="camposBloqueados" class="checkbox checkbox-md" />
     </div>
 
     <div class="max-w-xs text-center">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
         Alineación con ODS
       </label>
-      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)" [disabled]="camposBloqueados"
-        class="checkbox checkbox-md" />
+      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
+        [disabled]="camposBloqueados" class="checkbox checkbox-md" />
     </div>
 
     <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="comentarioVariable">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
         Tema de cobertura de necesidades
       </label>
-      <input type="text"id="comentarioVariable"
-      (click)="onComentarioClick($event)"
-      class="input input-sm input-bordered w-full" placeholder="" />
+      <input type="text" id="temaCobertura"
+      [(ngModel)]="temaCobertura"
+      (ngModelChange)="verificarFinalizarCaptura()"
+       (click)="onComentarioClick($event)"
+        class="input input-sm input-bordered w-full" placeholder="" />
     </div>
-
 
     <div class="max-w-xs">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
         Nivel de contribución
       </label>
-      <select class="select select-bordered select-sm w-full "
-        [disabled]="DISABLE_temaCobertura">
+      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura"
+        [(ngModel)]="nivelContribucion">
         <option disabled selected>Selecciona un nivel</option>
         <option value="Alto">Alto</option>
         <option value="Intermedio">Intermedio</option>
         <option value="Bajo">Bajo</option>
         <option value="-">-</option>
       </select>
-
     </div>
 
     <div class="max-w-xs">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Viabilidad de generación
       </label>
-      <select class="select select-bordered select-sm w-full "
-        [disabled]="DISABLE_temaCobertura">
+      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura" [(ngModel)]="viabilidad">
         <option disabled selected>Selecciona una opción</option>
         <option value="Viable">Viable</option>
         <option value="No viable">No viable</option>
-
         <option value="-">-</option>
       </select>
-
     </div>
 
     <div class="col-span-3">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Propuesta de generación de estadística derivada
       </label>
-      <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="propuesta"
+      (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-3">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Comentario de pertinencia
       </label>
-      <input [disabled]="DISABLE_temaCobertura" type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+      <input [disabled]="DISABLE_temaCobertura"
+      [(ngModel)]="comentarioPertinencia"
+      (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
     </div>
-
-
-
 
   </div>
 
@@ -147,8 +142,6 @@
 
   <!--! dos columnas -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-
     <!--! mdea -->
     @if (showPOST_RELATIONES_MDE) {
     <div class="border p-4">
@@ -180,7 +173,8 @@
           <select class="select select-bordered select-sm w-full" #subcomponenteSelect
             (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
             <option disabled selected>Selecciona un Subcomponente</option>
-            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}</option>
+            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSub">{{ subcomp.nombre }}
+            </option>
             <option value="-">-</option>
           </select>
         </div>
@@ -214,10 +208,11 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idEstadistico">
             Estadística 2
           </label>
-          <select class="select select-bordered select-sm w-full" #estadisticoSelect
-            (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
+          <select class="select select-bordered select-sm w-full" #estadisticoSelect (change)="onSelectEstadistico($event)"
+            [disabled]="!isSelectEnabled_Est">
             <option disabled selected>Selecciona un Estadístico</option>
-            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}</option>
+            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}
+            </option>
             <option value="-">-</option>
           </select>
         </div>
@@ -226,11 +221,8 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
             Nivel de contribución
           </label>
-          <select id="idNivelCont"
-          (change)="onSelectNivel($event)"
-            [(ngModel)]="nivelContribucionContenidosMdeaRelation"
-            name="nivelContribucionContenidosMdeaRelation"
-            [disabled]="!isSelectEnabled_Nivel"
+          <select id="idNivelCont" (change)="onSelectNivel($event)" [(ngModel)]="nivelContribucionContenidosMdeaRelation"
+            name="nivelContribucionContenidosMdeaRelation" [disabled]="!isSelectEnabled_Nivel"
             class="select select-bordered select-sm w-full ">
             <option disabled selected>Selecciona un nivel</option>
             <option value="Alto">Alto</option>
@@ -245,7 +237,7 @@
             Comentario
           </label>
           <input type="text" id="comentariopullMdea" [(ngModel)]="comentariopullMdea"
-          [disabled]="!isSelectEnabled_Comentario" class="input input-sm input-bordered w-full" placeholder="" />
+            [disabled]="!isSelectEnabled_Comentario" class="input input-sm input-bordered w-full" placeholder="" />
         </div>
 
 
@@ -254,43 +246,34 @@
 
       <div class="flex justify-between items-center mb-2 mt-6">
         <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
-
-
       </div>
 
 
 
       <div class="overflow-x-auto">
         <table class="table">
-          <!-- head -->
           <thead>
             <tr>
               <th class="text-secondary">Codigo de relación</th>
               <th class="text-secondary text-center">Nivel</th>
               <th class="text-secondary text-center">Acciones</th>
-
             </tr>
           </thead>
           <tbody>
-            <!-- row 1 -->
-             @for (itemRelation of relationesMDEA; track $index) {
-              <tr>
-                <th >{{'['+'C: '+ itemRelation.idComponente +']' +
-                      '['+' S:'+ itemRelation.idSubcomponente +']' +
-                      '['+' T:'+itemRelation.idTopico +']' +
-                      '['+' V:'+itemRelation.idVariableMdeaPull +']' +
-                      '['+' E:'+itemRelation.idEstadistico +']'}}</th>
-
-                      <th class="text-center">{{itemRelation.nivelContribucion}}</th>
-
-                <th class="text-center">
-                  <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
+            @for (itemRelation of relationesMDEA; track $index) {
+            <tr>
+              <th>{{'['+'C: '+ itemRelation.idComponente +']' +
+                '['+' S:'+ itemRelation.idSubcomponente +']' +
+                '['+' T:'+itemRelation.idTopico +']' +
+                '['+' V:'+itemRelation.idVariableMdeaPull +']' +
+                '['+' E:'+itemRelation.idEstadistico +']'}}</th>
+              <th class="text-center">{{itemRelation.nivelContribucion}}</th>
+              <th class="text-center">
+                <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
                   (click)="eliminarRelacionesMDEAWhitVars(itemRelation.id)">Eliminar</button>
-                </th>
-              </tr>
-             }
-
-
+              </th>
+            </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -302,7 +285,6 @@
 
     </div>
     }
-
 
     <!--! ods -->
     @if (showPOST_RELATIONES_ODS) {
@@ -332,15 +314,15 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
             Meta
           </label>
-          <select class="select select-bordered select-sm w-full" #metaSelect
-            (change)="onSelectMeta($event)" [disabled]="!isSelectEnabled_Meta">
+          <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
+            [disabled]="!isSelectEnabled_Meta">
             <option disabled selected>Selecciona una Meta</option>
             <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}.
-            {{
-            meta.nombreMeta.length > 50
-            ? (meta.nombreMeta | slice: 0: 100) + '...'
-            : meta.nombreMeta
-            }}</option>
+              {{
+              meta.nombreMeta.length > 50
+              ? (meta.nombreMeta | slice: 0: 100) + '...'
+              : meta.nombreMeta
+              }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -355,7 +337,8 @@
             <option disabled selected>Selecciona un Indicador</option>
             <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
               {{indic.idIndicador}}.
-              {{ indic.nombreIndicador.length > 50 ? (indic.nombreIndicador | slice:0:100) + '...' : indic.nombreIndicador }}</option>
+              {{ indic.nombreIndicador.length > 50 ? (indic.nombreIndicador | slice:0:100) + '...' :
+              indic.nombreIndicador }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -364,10 +347,8 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
             Nivel de contribución a contenidos
           </label>
-          <select class="select select-bordered select-sm w-full "
-            (change)="_ods_onSelectNivel($event)"
-            [(ngModel)]="_ods_nivelContribucion"
-            [disabled]="!_ods_isSelectEnabled_Nivel">
+          <select class="select select-bordered select-sm w-full " (change)="_ods_onSelectNivel($event)"
+            [(ngModel)]="_ods_nivelContribucion" [disabled]="!_ods_isSelectEnabled_Nivel">
             <option disabled selected>Selecciona un nivel</option>
             <option value="Alto">Alto</option>
             <option value="Intermedio">Intermedio</option>
@@ -380,8 +361,8 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
             Comentario
           </label>
-          <input [(ngModel)]="_ods_comentarioRelacionODS"
-                 [disabled]="!isSelectEnabled_Comentario"  type="text" id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
+          <input [(ngModel)]="_ods_comentarioRelacionODS" [disabled]="!_ods_isSelectEnabled_Comentario" type="text"
+            id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
         </div>
 
       </div>
@@ -435,20 +416,16 @@
 
   <div class="grid grid-cols-1 gap4 mt-5">
 
-<div class="flex w-full flex-col">
-  <div class="divider"></div>
-
-</div>
-    <div class="flex justify-between items-center mb-6">
-
-      <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de variables </h1>
-
-
-
+    <div class="flex w-full flex-col">
+      <div class="divider"></div>
     </div>
+
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de variables </h1>
+    </div>
+
     <div class="overflow-x-auto">
       <table class="table">
-        <!-- head -->
         <thead>
           <tr>
             <th class="text-secondary">Id Variable</th>
@@ -462,63 +439,53 @@
         <tbody>
           @for ( varItem of arrVARIABLES_REGISTER; track $index) {
 
-            <tr>
-              <td>{{ varItem.idVariable }}</td>
-              <td>{{varItem.nombreVariable }}</td>
-              <td>{{ varItem.definicionVar }}</td>
-              <td>
-                @if (varItem.alineacionMdea) {
+          <tr>
+            <td>{{ varItem.idVariable }}</td>
+            <td>{{varItem.nombreVariable }}</td>
+            <td>{{ varItem.definicionVar }}</td>
+            <td>
+              @if (varItem.alineacionMdea) {
               <span class="text-green-600">✔️</span>
               } @else {
               <span class="text-red-600">❌</span>
-              }</td>
-              <td>
-                @if (varItem.alineacionOds) {
-                <span class="text-green-600">✔️</span>
-                } @else {
-                <span class="text-red-600">❌</span>
-                }
-              </td>
-              <td class="text-center">
-                <button class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
-                  Editar
-                </button>
-                <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="eliminarVariable(varItem.idUnique)">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
+              }
+            </td>
+            <td>
+              @if (varItem.alineacionOds) {
+              <span class="text-green-600">✔️</span>
+              } @else {
+              <span class="text-red-600">❌</span>
+              }
+            </td>
+            <td class="text-center">
+              <button class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
+                Editar
+              </button>
+              <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2"
+                (click)="eliminarVariable(varItem.idUnique)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
           }
-
-
-
         </tbody>
       </table>
     </div>
   </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
+
+
+
+
+<!--! modal -->
 
 <dialog #miModal id="mi_modal_1" class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">¿Deseas continuar con el registro?</h3>
     <p class="py-4">
-      Si continúas, se registrarán los campos que acabas de llenar para esta variable y se habilitará la sección para
+      Si continúas, se registrarán los campos que acabas de llenar para esta variable y se habilitará la sección
+      para
       agregar las relaciones correspondientes.<br><br>
       Si aún no estás seguro, puedes cancelar para revisar o editar los datos antes de proceder.
     </p>
@@ -531,4 +498,3 @@
     </div>
   </div>
 </dialog>
-

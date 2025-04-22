@@ -1,8 +1,10 @@
 import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
+import { TemaCobNec } from '@/variables/interfaces/temaCobNec.interface';
 import { VariableDTO } from '@/variables/interfaces/variablesCapDTO.interface';
 import { CapturaMdeaVarService } from '@/variables/services/captura-mdea-vars.service';
 import { relacionODS_Service } from '@/variables/services/captura-ods-vars.service';
+import { TemaCobNecService } from '@/variables/services/captura-temaCobNec.service';
 import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
@@ -21,8 +23,8 @@ export class NuevaVariableComponent implements OnInit {
     this.getComponentes();
     this.getObjetivos();
     this.getPropetiesLocalStorage();
-    this.getRelation_MDEA_Var();
-    this.obtenerRelaciones_ods();
+    // this.getRelation_MDEA_Var();
+    // this.obtenerRelaciones_ods();
   }
 
   //! COSAS PARA QUE FUNCIONE MDEA RELATION
@@ -428,7 +430,7 @@ export class NuevaVariableComponent implements OnInit {
     this._ods_nivelContribucion = nivel;
     console.log('nivel: ', this._ods_nivelContribucion);
 
-    this.isSelectEnabled_Comentario = true;
+    this._ods_isSelectEnabled_Comentario = true;
   }
 
   // ! Captura variable
@@ -525,12 +527,15 @@ export class NuevaVariableComponent implements OnInit {
         console.info('Variable registrada correctamente');
 
         this._respons_var_registrada = data;
-        this._respons_var_idUnique = data.idUnique
+        this._respons_var_idUnique = data.idUnique;
         console.log('respuesta con id: ', this._respons_var_registrada);
-
       });
   }
   cleanVars() {
+
+    this.camposBloqueados = false;
+    this.DISABLE_temaCobertura = true;
+
     this.idVariable = this._pP_idVar;
 
     this.nombreVariable = '';
@@ -545,18 +550,47 @@ export class NuevaVariableComponent implements OnInit {
     this.arrTopicos = []; // Limpiar el array de tópicos
     this.arrVariables = []; // Limpiar el array de variables
     this.arrEstadisticos = []; // Limpiar el array de estadísticos
+    this.nivelContribucionContenidosMdeaRelation = '';
+    this.comentariopullMdea = '';
 
-    this.arrMetas = []; // Limpiar el array de metas
-    this.arrIndicadores = []; // Limpiar el array de indicadores
     this.isSelectEnabled_Subc = false;
     this.isSelectEnabled_Top = false;
     this.isSelectEnabled_Var = false;
     this.isSelectEnabled_Est = false;
+    this.isSelectEnabled_Nivel = false;
+    this.isSelectEnabled_Comentario = false;
+
+    this.arrMetas = []; // Limpiar el array de metas
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+    this._ods_nivelContribucion = '';
+    this._ods_comentarioRelacionODS = '';
+
+
+
     this.isSelectEnabled_Meta = false;
     this.isSelectEnabled_Ind = false;
-    this.flagMDEArelation = false;
-    this.flagODSrelation = false;
+    this._ods_isSelectEnabled_Nivel = false;
+    this._ods_isSelectEnabled_Comentario = false;
+
+
     this.showWarning = false;
+
+    this.showPOST_RELATIONES_MDE = false;
+    this.showPOST_RELATIONES_ODS = false;
+
+    this.primeraInteraccion = true;
+    this.DISABLE_temaCobertura = true;
+    this.finalizarCaptura = true;
+
+    this.temaCobertura = '';
+    this.nivelContribucion = '';
+    this.viabilidad = '';
+    this.propuesta = '';
+    this.comentarioPertinencia = '';
+
+    this.relationesMDEA = [];
+    this.relacionesODS = [];
+
 
     this.getVarInNewVars(this._idFuente, this._responsableRegister!);
   }
@@ -584,7 +618,7 @@ export class NuevaVariableComponent implements OnInit {
       comentarioRelacionMdea: this.comentariopullMdea,
       idVarCaracterizada: this.idVariable + '-' + this._anioEvento,
     };
-    console.log('mandando al back: ', nuevaRelacion)
+    console.log('mandando al back: ', nuevaRelacion);
 
     this._relacionService
       .registrarRelacion(nuevaRelacion)
@@ -643,10 +677,12 @@ export class NuevaVariableComponent implements OnInit {
 
   relationesMDEA: any[] = [];
   getRelation_MDEA_Var() {
-    this._relacionService.getRelacionesPorVariable(1).subscribe((response) => {
-      console.log('relaciones: ', response);
-      this.relationesMDEA = response;
-    });
+    this._relacionService
+      .getRelacionesPorVariable(this._respons_var_idUnique!)
+      .subscribe((response) => {
+        console.log('relaciones: ', response);
+        this.relationesMDEA = response;
+      });
   }
 
   eliminarRelacionesMDEAWhitVars(idRelacion: number) {
@@ -731,13 +767,15 @@ export class NuevaVariableComponent implements OnInit {
   _service_relation_ODS_VAR = inject(relacionODS_Service);
 
   obtenerRelaciones_ods() {
-    this._service_relation_ODS_VAR.getRelacionesPorVariable_ods(1).subscribe({
-      next: (res) => {
-        console.log('Datos recibidos en obtenerRelaciones_ods():', res);
-        this.relacionesODS = res;
-      },
-      error: (err) => console.error('Error obteniendo relaciones:', err),
-    });
+    this._service_relation_ODS_VAR
+      .getRelacionesPorVariable_ods(this._respons_var_idUnique!)
+      .subscribe({
+        next: (res) => {
+          console.log('Datos recibidos en obtenerRelaciones_ods():', res);
+          this.relacionesODS = res;
+        },
+        error: (err) => console.error('Error obteniendo relaciones:', err),
+      });
   }
 
   eliminarRelacion(id: number) {
@@ -793,6 +831,40 @@ export class NuevaVariableComponent implements OnInit {
         },
       });
     }
+  }
+
+  temaCobertura: string = '';
+  nivelContribucion: string = '';
+  viabilidad: string = '';
+  propuesta: string = '';
+  comentarioPertinencia: string = '';
+
+  _temaCobNec_Service = inject(TemaCobNecService);
+  registrarTema() {
+    const nuevoTema: TemaCobNec = {
+      temaCobNec: this.temaCobertura,
+      nivelContribucion: this.nivelContribucion,
+      viabEstDer: this.viabilidad,
+      propEstDer: this.propuesta,
+      comentarioPertinencia: this.comentarioPertinencia,
+      idVariableUnique: this._respons_var_idUnique!,
+    };
+
+    this._temaCobNec_Service.crearTema(nuevoTema).subscribe({
+      next: (respuesta) => {
+        console.log('Guardado correctamente:', respuesta);
+        this.cleanVars()
+      },
+      error: (error) => {
+        console.error('Error al guardar:', error);
+      },
+    });
+  }
+  verificarFinalizarCaptura(): void {
+    this.finalizarCaptura =
+      this.comentarioPertinencia.trim().length === 0 ||
+      this.temaCobertura.trim().length === 0 ||
+      this.propuesta.trim().length === 0;
   }
 }
 
