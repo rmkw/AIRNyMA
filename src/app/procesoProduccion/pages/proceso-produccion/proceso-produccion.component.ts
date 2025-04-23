@@ -1,17 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
+import { Direccion } from '@/variables/interfaces/direcciones.interface';
+import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 
 @Component({
   selector: 'app-proceso-produccion',
   imports: [CommonModule, FormsModule],
   templateUrl: './proceso-produccion.component.html',
 })
-export class ProcesoProduccionComponent {
+export class ProcesoProduccionComponent implements OnInit{
+  ngOnInit(): void {
+      this.getDirecciones();
+  }
   _ppEcoService = inject(ppEcoService);
 
   ppEco = signal<PpEconomicas[]>([]);
@@ -31,6 +36,8 @@ export class ProcesoProduccionComponent {
       );
     },
   });
+
+
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -91,5 +98,19 @@ export class ProcesoProduccionComponent {
       });
   }
 
+  arrDirecciones: Direccion[] = [];
+  direccionSelected: string | null = null;
+  _serviceDirecciones = inject(DireccionesService);
 
+  getDirecciones() {
+    this._serviceDirecciones.getDirecciones().subscribe({
+      next: (data) => {
+        this.arrDirecciones = data;
+        console.log(this.arrDirecciones);
+      },
+      error: (err) => {
+        console.error('error al cargar', err);
+      },
+    });
+  }
 }

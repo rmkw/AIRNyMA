@@ -1,3 +1,4 @@
+
 import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
 import { TemaCobNec } from '@/variables/interfaces/temaCobNec.interface';
@@ -5,6 +6,7 @@ import { VariableDTO } from '@/variables/interfaces/variablesCapDTO.interface';
 import { CapturaMdeaVarService } from '@/variables/services/captura-mdea-vars.service';
 import { relacionODS_Service } from '@/variables/services/captura-ods-vars.service';
 import { TemaCobNecService } from '@/variables/services/captura-temaCobNec.service';
+
 import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
@@ -866,5 +868,7 @@ export class NuevaVariableComponent implements OnInit {
       this.temaCobertura.trim().length === 0 ||
       this.propuesta.trim().length === 0;
   }
+
+
 }
 
