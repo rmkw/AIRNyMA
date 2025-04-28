@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
@@ -7,60 +7,93 @@ import { tap } from 'rxjs';
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
+import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 
 @Component({
   selector: 'app-proceso-produccion',
   imports: [CommonModule, FormsModule],
   templateUrl: './proceso-produccion.component.html',
 })
-export class ProcesoProduccionComponent implements OnInit{
-  ngOnInit(): void {
-      this.getDirecciones();
-  }
-  _ppEcoService = inject(ppEcoService);
+export class ProcesoProduccionComponent implements OnInit {
+  _serviceDirecciones = inject(DireccionesService);
+  _pp_Service = inject(ppEcoService);
 
-  ppEco = signal<PpEconomicas[]>([]);
-  procesoSeleccionado = signal<PpEconomicas | null>(null);
+  arrDirecciones: Direccion[] = [];
+  arrProcesosPBydire: interface_ProcesoP[] = [];
 
+  procesoSeleccionado = signal<interface_ProcesoP | null>(null);
   comentario = '';
+
+  mostrarAlertaNoProceso = signal(false);
   mostrarAlerta = signal(false);
+
+  idProsesoSelect: any = null;
+
+  showWarning: boolean = false;
   mensajeAlerta = '';
 
-  ppEcoResource = rxResource({
-    request: () => ({}),
-    loader: ({ request }) => {
-      return this._ppEcoService.getPpEcos().pipe(
-        tap((data) => {
-          this.ppEco.set(Array.isArray(data) ? data : []);
-        })
-      );
-    },
-  });
+  ngOnInit(): void {
+    this.getDirecciones();
+  }
 
+  getDirecciones() {
+    this._serviceDirecciones.getDirecciones().subscribe({
+      next: (data) => {
+        this.arrDirecciones = data;
+      },
+      error: (err) => {
+        console.error('error al cargar', err);
+      },
+    });
+  }
 
+  @ViewChild('procesoProduccionTag')
+  procesoProduccionTag!: ElementRef<HTMLSelectElement>;
+  selectedDireccion(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nameDi = selectElement.value;
+
+    const selectedOption = this.procesoProduccionTag.nativeElement as HTMLSelectElement
+    selectedOption.selectedIndex = 0;
+
+    this.cargarProcesosProduccionByDireccionGeneral(nameDi);
+  }
+
+  cargarProcesosProduccionByDireccionGeneral(dire: string) {
+    this._pp_Service.getPorDireccionGeneral(dire).subscribe({
+      next: (data) => {
+        this.arrProcesosPBydire = data;
+        console.log('Procesos filtrados', data);
+      },
+      error: (err) => {
+        console.error('Error al obtener procesos por DG', err);
+      },
+    });
+  }
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const procesoId = Number(selectElement.value);
 
     const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
+      this.arrProcesosPBydire.find((proceso) => proceso.id === procesoId) ||
+      null;
+
     this.procesoSeleccionado.set(procesoEncontrado);
+
     this.comentario = procesoEncontrado
       ? procesoEncontrado.comentarioPp || ''
       : '';
   }
 
-  mostrarAlertaNoProceso = signal(false);
-
-  actualizarComentario() {
+  showAlertUpComentario() {
     const id = this.procesoSeleccionado()?.id;
-    this.ppSelected = id;
+    this.idProsesoSelect = id;
 
     if (!id) {
       console.error('No hay proceso seleccionado');
 
-      // 🔥 Mostrar alerta
+      //  Mostrar alerta
       this.mostrarAlertaNoProceso.set(true);
       this.mensajeAlerta = `Ningun proceso seleccionado.`;
       setTimeout(() => this.mostrarAlertaNoProceso.set(false), 3000);
@@ -71,46 +104,34 @@ export class ProcesoProduccionComponent implements OnInit{
     this.showWarning = true;
   }
 
-  showWarning: boolean = false;
-  ppSelected: any = null;
-
   cancelDeactivation() {
     this.showWarning = false;
   }
 
   confirmDeactivation() {
-    this._ppEcoService
-      .actualizarComentario(this.ppSelected, this.comentario)
+    const proceso = this.procesoSeleccionado();
+
+    if (!proceso || !proceso.id) {
+      console.warn('No hay un proceso seleccionado para actualizar');
+      return;
+    }
+
+    this._pp_Service
+      .actualizarComentario(proceso.id, this.comentario)
       .subscribe({
-        next: (procesoActualizado) => {
-          this.procesoSeleccionado.set(procesoActualizado);
-
-          // 🔥 Recargar los datos correctamente
-          this.ppEcoResource.reload();
-
-          // 🔥 Mostrar alerta
+        next: (res) => {
+          console.log('Comentario actualizado con éxito:', res);
           this.mostrarAlerta.set(true);
-          this.mensajeAlerta = `Proceso: ${procesoActualizado.acronimoProceso} actualizado correctamente.`;
+          this.mensajeAlerta =
+            res.message || 'Proceso actualizado correctamente.';
           setTimeout(() => this.mostrarAlerta.set(false), 3000);
           this.showWarning = false;
+          // Aquí puedes mostrar un toast o snackbar
         },
-        error: (err) => console.error('Error al actualizar:', err),
+        error: (err) => {
+          console.error('Error al actualizar comentario:', err);
+          // Mostrar error al usuario
+        },
       });
-  }
-
-  arrDirecciones: Direccion[] = [];
-  direccionSelected: string | null = null;
-  _serviceDirecciones = inject(DireccionesService);
-
-  getDirecciones() {
-    this._serviceDirecciones.getDirecciones().subscribe({
-      next: (data) => {
-        this.arrDirecciones = data;
-        console.log(this.arrDirecciones);
-      },
-      error: (err) => {
-        console.error('error al cargar', err);
-      },
-    });
   }
 }
