@@ -199,6 +199,7 @@ export class FuentesListComponent implements OnInit {
     this._fuentesService.deactivateRecord(id).subscribe({
       next: (res) => {
         console.log('Registro desactivado:', res);
+        this.getFuentesByidPp();
       },
       error: (err) => {
         console.error('Error al desactivar:', err);

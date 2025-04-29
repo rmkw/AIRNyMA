@@ -134,15 +134,7 @@ export class FuenteIdentificacionComponent implements OnInit {
   }
 
   actualizarFuente() {
-    // Asegúrate de que todos los datos estén presentes antes de intentar actualizar
-    if (!this.procesoSeleccionado()) {
-      console.error('No se ha seleccionado un proceso de producción');
-      return;
-    }
-    console.log(
-      this.procesoSeleccionado(),
-      'procesoSeleccionadoActualizarFuente'
-    );
+
 
     const datosAActualizar: Omit<
       FiEcoResponce,
@@ -152,7 +144,7 @@ export class FuenteIdentificacionComponent implements OnInit {
       linkFuente: this.linkFuente,
       anioEvento: this.anioEvento,
       comentario: this.comentario,
-      idPp: this.procesoSeleccionado()?.acronimoProceso || '', // Usamos el acrónimo del proceso seleccionado
+
     };
 
     this._fuenteService
@@ -167,6 +159,7 @@ export class FuenteIdentificacionComponent implements OnInit {
             this.mostrarAlerta.set(true);
             this.mensajeAlerta = `Fuente actualizada correctamente.`;
             setTimeout(() => this.mostrarAlerta.set(false), 3000);
+            this._router.navigate(['/fuentes']);
           } else {
             console.error('Error al actualizar la fuente');
           }
@@ -186,9 +179,7 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.fuente !== this.valoresIniciales.fuente ||
       this.linkFuente !== this.valoresIniciales.linkFuente ||
       this.anioEvento !== this.valoresIniciales.anioEvento ||
-      this.comentario !== this.valoresIniciales.comentario ||
-      this.procesoSeleccionado()?.acronimoProceso !==
-        this.valoresIniciales.idPp;
+      this.comentario !== this.valoresIniciales.comentario;
 
     console.log('Estado del formulario modificado:', this.formularioModificado);
   }

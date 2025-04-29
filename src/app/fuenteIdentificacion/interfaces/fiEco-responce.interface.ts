@@ -1,6 +1,6 @@
 export interface FiEcoResponce {
   idFuente:                 number;
-  idPp:                     string;
+  idPp?:                     string;
   fuente:                   string;
   linkFuente:               string;
   linkAccesoFuente?:        string | null;

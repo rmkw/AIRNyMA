@@ -4,28 +4,9 @@
 
   <div class="grid gap-4">
 
-    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-      <!--! PP -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="procesoProduccion">
-          Selecciona el proceso de producción
-        </label>
-        <select id="procesoProduccion" class="select select-bordered select-sm w-full " (change)="seleccionarProceso($event)"
-          [value]="procesoSeleccionado()?.id || ''">
-          <option disabled [selected]="!procesoSeleccionado()">Selecciona una opción</option>
-          @for (proceso of ppEco(); track proceso.id) {
-          <option [value]="proceso.id">{{ proceso.procesoProduccion }}</option>
-          }
-        </select>
-      </div>
-      <!--! Acrónimo -->
-      <div class="col-span-1 text-center">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="acronimo">
-          Acrónimo
-        </label>
-        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
-        </h2>
-      </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+
 
       <!--! Tipo Fuente -->
       <div class="col-span-2">
@@ -36,7 +17,7 @@
       </div>
 
       <!--! Año del evento -->
-      <div class="col-span-1">
+      <div class="col-span-2">
         <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
           Año del evento
         </label>
