@@ -70,7 +70,6 @@ export class ProcesoProduccionComponent implements OnInit {
     this._pp_Service.getPorDireccionGeneral(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
-        console.log('Procesos filtrados', data);
       },
       error: (err) => {
         console.error('Error al obtener procesos por DG', err);
@@ -98,13 +97,7 @@ export class ProcesoProduccionComponent implements OnInit {
     this.idProsesoSelect = id;
 
     if (!id) {
-      console.error('No hay proceso seleccionado');
-
-      //  Mostrar alerta
-      this.mostrarAlertaNoProceso.set(true);
-      this.mensajeAlerta = `Ningun proceso seleccionado.`;
-      setTimeout(() => this.mostrarAlertaNoProceso.set(false), 3000);
-
+      this.modalNingunProceso();
       return;
     }
 
@@ -149,13 +142,23 @@ export class ProcesoProduccionComponent implements OnInit {
       alert('No hay proceso seleccionado');
       return;
     }
-    console.log(_Pp)
+    console.log(_Pp);
     const procesoEditable = {
       nombrePp: _Pp.nombreProceso,
-      acronimo: _Pp.acronimo
+      acronimo: _Pp.acronimo,
     };
     localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
     this._router.navigate(['/fuentes']);
+  }
+
+  @ViewChild('modalNoProceso') modalNoProceso!: ElementRef<HTMLDialogElement>;
+
+  modalNingunProceso() {
+    this.modalNoProceso.nativeElement.showModal();
+  }
+  cerrarModal() {
+    this.modalNoProceso.nativeElement.close();
 
   }
+
 }

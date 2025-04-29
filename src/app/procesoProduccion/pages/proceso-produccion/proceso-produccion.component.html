@@ -141,7 +141,7 @@
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
-    <span>{{ mensajeAlerta }}</span>
+    <span>{{ mensajeAlerta }} *u*</span>
   </div>
 </div>
 
@@ -165,3 +165,20 @@
   </div>
 
 </div>
+
+
+
+
+<!-- Modal -->
+<dialog #modalNoProceso class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Proceso no seleccionado</h3>
+    <p class="py-4">Para editar esta información, primero debes seleccionar un proceso de producción. Por favor, elige un
+      proceso e intenta nuevamente.</p>
+    <div class="modal-action">
+      <!-- Botón Cancelar -->
+      <button class="btn btn-error" (click)="cerrarModal()">Aceptar</button>
+
+    </div>
+  </div>
+</dialog>
