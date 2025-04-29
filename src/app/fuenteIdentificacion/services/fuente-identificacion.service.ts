@@ -1,5 +1,5 @@
 import { authService } from '@/auth/services/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -30,6 +30,17 @@ export class FuenteIdentificacionService {
           return of([]);
         })
       );
+  }
+
+  getByIdPpAndResponsable(
+    idPp: string,
+    responsableRegister: number
+  ): Observable<any> {
+    const params = new HttpParams()
+      .set('idPp', idPp)
+      .set('responsableRegister', responsableRegister.toString());
+
+    return this.http.get(`${baseUrl}/fi-economicas/fuentes`, { params });
   }
 
   //!REGISTRAR FUENTE

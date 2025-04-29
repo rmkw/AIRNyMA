@@ -18,10 +18,9 @@ import { tap } from 'rxjs';
 export class FuentesListComponent implements OnInit {
   _fuentesService = inject(FuenteIdentificacionService);
   _router = inject(Router);
-  _ppEcoService = inject(ppEcoService);
 
-  fuentes: any[] = [];
-  loading = true;
+  procesoProduccion: string = '';
+  acronimoProceso: string = '';
 
   fuente = '';
   linkFuente = '';
@@ -29,129 +28,49 @@ export class FuentesListComponent implements OnInit {
   comentarioF = '';
 
   flagVarButton: boolean = true;
+  loading = true;
 
-  ppEco = signal<PpEconomicas[]>([]);
-  procesoSeleccionado = signal<PpEconomicas | null>(null);
+  fuentes: any[] = [];
 
-  ppEcoResource = rxResource({
-    request: () => ({}),
-    loader: ({ request }) => {
-      return this._ppEcoService.getPpEcos().pipe(
-        tap((data) => {
-          this.ppEco.set(Array.isArray(data) ? data : []);
-        })
-      );
-    },
-  });
+  _responsableRegister: number | null = null;
 
   ngOnInit(): void {
-    this.getFuentes();
+    this.getPropsLocalStorage();
+    this.getFuentesByidPp();
   }
 
-  getFuentes() {
-    this._fuentesService.obtenerFuentes().subscribe((data) => {
-      if (data.length === 0) {
-        console.warn('No hay registros en fuentes:', data);
-      }
-      this.fuentes = data;
-      console.log(data);
-      this.loading = false;
-    });
-  }
+  getPropsLocalStorage() {
+    const propsPp = localStorage.getItem('procesoEditable');
 
-  nuevaFuente() {
-    if (!this.procesoSeleccionado()) {
-      console.error('Por favor, selecciona un proceso de producción');
-      alert('Por favor, selecciona un proceso de producción');
-      return;
+    if (propsPp) {
+
+      const procesoP = JSON.parse(propsPp);
+      const _responsableRegister = localStorage.getItem('_id');
+
+      this.procesoProduccion = procesoP.nombrePp;
+      this.acronimoProceso = procesoP.acronimo;
+      this._responsableRegister = Number(_responsableRegister!);
     }
-
-    if (
-      !this.fuente ||
-      !this.linkFuente ||
-      !this.anioEvento ||
-      !this.comentarioF
-    ) {
-      console.error('Todos los campos son obligatorios');
-      alert('Por favor, completa todos los campos');
+  }
+  getFuentesByidPp(){
+    if (!this._responsableRegister || !this.acronimoProceso) {
+      console.error('Responsable o acrónimo de proceso no definidos');
       return;
+
     }
+    this._fuentesService
+      .getByIdPpAndResponsable(this.acronimoProceso, this._responsableRegister)
+      .subscribe({
+        next: (response) => {
+          console.log('Fuentes encontradas:', response.fuentes);
+          this.fuentes = response.fuentes;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error al obtener fuentes:', err);
+        },
+      });
 
-    const datosFuente = {
-      idPp: this.procesoSeleccionado()?.acronimoProceso || '',
-      fuente: this.fuente,
-      linkFuente: this.linkFuente,
-      anioEvento: this.anioEvento,
-      comentario: this.comentarioF,
-    };
-
-    console.log('Datos a registrar:', datosFuente);
-
-    this._fuentesService.registrarFuente(datosFuente).subscribe(
-      (response) => {
-        if (response) {
-          console.log('Fuente registrada exitosamente', response);
-          alert('Fuente registrada exitosamente');
-          this.flagVarButton = true;
-          this.ngOnInit();
-          this.limpiarFormulario();
-        } else {
-          console.error('Hubo un error al registrar la fuente');
-          alert('Hubo un error al registrar la fuente');
-        }
-      },
-      (error) => {
-        console.error('Error en la solicitud', error);
-        alert('Ocurrió un error al intentar registrar la fuente');
-      }
-    );
-  }
-
-  editarFuente(_fuente: FiEcoResponce) {
-    localStorage.removeItem('fuenteEditable');
-    const fuenteEditable = {
-      idFuente: _fuente.idFuente,
-      idPp: _fuente.idPp,
-      fuente: _fuente.fuente,
-      linkFuente: _fuente.linkFuente,
-      anioEvento: _fuente.anioEvento,
-      comentario: _fuente.comentario,
-      responsableActualizacion: _fuente.responsableActualizacion,
-    };
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
-
-    this._router.navigate(['/fuente', _fuente.idFuente]);
-  }
-  addVars(_fuente: FiEcoResponce) {
-    localStorage.removeItem('fuenteEditable');
-    const fuenteEditable = {
-      idFuente: _fuente.idFuente,
-      idPp: _fuente.idPp,
-      anioEvento: _fuente.anioEvento,
-    };
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
-    this._router.navigate(['/nueva-variable']);
-  }
-
-  seleccionarProceso(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const procesoId = Number(selectElement.value);
-
-    const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
-    this.procesoSeleccionado.set(procesoEncontrado);
-  }
-
-  limpiarFormulario() {
-    this.fuente = '';
-    this.linkFuente = '';
-    this.anioEvento = '';
-    this.comentarioF = '';
-    this.procesoSeleccionado.set(null); // Restablecer el proceso seleccionado
-  }
-
-  limpiarAnio() {
-    this.anioEvento = '';
   }
 
   async validateYear(event: Event) {
@@ -181,17 +100,82 @@ export class FuentesListComponent implements OnInit {
     this.anioEvento = cleanedValue;
   }
 
-  desactivar(id: number): void {
-    this._fuentesService.deactivateRecord(id).subscribe({
-      next: (res) => {
-        console.log('Registro desactivado:', res);
-        this.getFuentes();
+  limpiarAnio() {
+    this.anioEvento = '';
+  }
+
+  nuevaFuente() {
+    if (
+      !this.fuente ||
+      !this.linkFuente ||
+      !this.anioEvento ||
+      !this.comentarioF
+    ) {
+      console.error('Todos los campos son obligatorios');
+      alert('Por favor, completa todos los campos');
+      return;
+    }
+
+    const datosFuente = {
+      idPp: this.acronimoProceso,
+      fuente: this.fuente,
+      linkFuente: this.linkFuente,
+      anioEvento: this.anioEvento,
+      comentario: this.comentarioF,
+    };
+
+    console.log('Datos a registrar:', datosFuente);
+
+    this._fuentesService.registrarFuente(datosFuente).subscribe(
+      (response) => {
+        if (response) {
+          console.log('Fuente registrada exitosamente', response);
+          alert('Fuente registrada exitosamente');
+          this.flagVarButton = true;
+          this.ngOnInit();
+          this.limpiarFormulario();
+        } else {
+          console.error('Hubo un error al registrar la fuente');
+          alert('Hubo un error al registrar la fuente');
+        }
       },
-      error: (err) => {
-        console.error('Error al desactivar:', err);
-        this.getFuentes();
-      },
-    });
+      (error) => {
+        console.error('Error en la solicitud', error);
+        alert('Ocurrió un error al intentar registrar la fuente');
+      }
+    );
+  }
+  limpiarFormulario() {
+    this.fuente = '';
+    this.linkFuente = '';
+    this.anioEvento = '';
+    this.comentarioF = '';
+  }
+  editarFuente(_fuente: FiEcoResponce) {
+    localStorage.removeItem('fuenteEditable');
+    const fuenteEditable = {
+      idFuente: _fuente.idFuente,
+      idPp: _fuente.idPp,
+      fuente: _fuente.fuente,
+      linkFuente: _fuente.linkFuente,
+      anioEvento: _fuente.anioEvento,
+      comentario: _fuente.comentario,
+      responsableActualizacion: _fuente.responsableActualizacion,
+    };
+    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+
+    this._router.navigate(['/fuente', _fuente.idFuente]);
+  }
+
+  addVars(_fuente: FiEcoResponce) {
+    localStorage.removeItem('fuenteEditable');
+    const fuenteEditable = {
+      idFuente: _fuente.idFuente,
+      idPp: _fuente.idPp,
+      anioEvento: _fuente.anioEvento,
+    };
+    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+    this._router.navigate(['/nueva-variable']);
   }
 
   @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
@@ -200,6 +184,7 @@ export class FuentesListComponent implements OnInit {
     this.idFuenteSeleccionada = id;
     this.modalEliminar.nativeElement.showModal();
   }
+
   cerrarModal() {
     this.modalEliminar.nativeElement.close();
     this.idFuenteSeleccionada = null;
@@ -209,5 +194,15 @@ export class FuentesListComponent implements OnInit {
       this.desactivar(this.idFuenteSeleccionada);
     }
     this.cerrarModal();
+  }
+  desactivar(id: number): void {
+    this._fuentesService.deactivateRecord(id).subscribe({
+      next: (res) => {
+        console.log('Registro desactivado:', res);
+      },
+      error: (err) => {
+        console.error('Error al desactivar:', err);
+      },
+    });
   }
 }

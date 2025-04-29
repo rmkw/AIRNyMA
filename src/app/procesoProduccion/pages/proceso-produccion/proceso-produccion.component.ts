@@ -8,6 +8,7 @@ import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.inte
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-proceso-produccion',
@@ -17,6 +18,7 @@ import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.inte
 export class ProcesoProduccionComponent implements OnInit {
   _serviceDirecciones = inject(DireccionesService);
   _pp_Service = inject(ppEcoService);
+  _router = inject(Router);
 
   arrDirecciones: Direccion[] = [];
   arrProcesosPBydire: interface_ProcesoP[] = [];
@@ -31,6 +33,8 @@ export class ProcesoProduccionComponent implements OnInit {
 
   showWarning: boolean = false;
   mensajeAlerta = '';
+
+  direccionName = '';
 
   ngOnInit(): void {
     this.getDirecciones();
@@ -53,7 +57,10 @@ export class ProcesoProduccionComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const nameDi = selectElement.value;
 
-    const selectedOption = this.procesoProduccionTag.nativeElement as HTMLSelectElement
+    this.direccionName = nameDi;
+
+    const selectedOption = this.procesoProduccionTag
+      .nativeElement as HTMLSelectElement;
     selectedOption.selectedIndex = 0;
 
     this.cargarProcesosProduccionByDireccionGeneral(nameDi);
@@ -120,6 +127,8 @@ export class ProcesoProduccionComponent implements OnInit {
       .actualizarComentario(proceso.id, this.comentario)
       .subscribe({
         next: (res) => {
+          this.cargarProcesosProduccionByDireccionGeneral(this.direccionName);
+
           console.log('Comentario actualizado con éxito:', res);
           this.mostrarAlerta.set(true);
           this.mensajeAlerta =
@@ -133,5 +142,20 @@ export class ProcesoProduccionComponent implements OnInit {
           // Mostrar error al usuario
         },
       });
+  }
+
+  setLocalStorage(_Pp: interface_ProcesoP) {
+    if (!this.procesoSeleccionado()) {
+      alert('No hay proceso seleccionado');
+      return;
+    }
+    console.log(_Pp)
+    const procesoEditable = {
+      nombrePp: _Pp.nombreProceso,
+      acronimo: _Pp.acronimo
+    };
+    localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
+    this._router.navigate(['/fuentes']);
+
   }
 }
