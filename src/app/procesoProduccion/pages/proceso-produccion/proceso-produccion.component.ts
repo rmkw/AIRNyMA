@@ -139,7 +139,7 @@ export class ProcesoProduccionComponent implements OnInit {
 
   setLocalStorage(_Pp: interface_ProcesoP) {
     if (!this.procesoSeleccionado()) {
-      alert('No hay proceso seleccionado');
+      this.modalNingunProceso();
       return;
     }
     console.log(_Pp);
