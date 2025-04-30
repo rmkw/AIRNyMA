@@ -43,7 +43,6 @@ export class FuentesListComponent implements OnInit {
     const propsPp = localStorage.getItem('procesoEditable');
 
     if (propsPp) {
-
       const procesoP = JSON.parse(propsPp);
       const _responsableRegister = localStorage.getItem('_id');
 
@@ -52,11 +51,10 @@ export class FuentesListComponent implements OnInit {
       this._responsableRegister = Number(_responsableRegister!);
     }
   }
-  getFuentesByidPp(){
+  getFuentesByidPp() {
     if (!this._responsableRegister || !this.acronimoProceso) {
       console.error('Responsable o acrónimo de proceso no definidos');
       return;
-
     }
     this._fuentesService
       .getByIdPpAndResponsable(this.acronimoProceso, this._responsableRegister)
@@ -70,7 +68,6 @@ export class FuentesListComponent implements OnInit {
           console.error('Error al obtener fuentes:', err);
         },
       });
-
   }
 
   async validateYear(event: Event) {
@@ -112,7 +109,7 @@ export class FuentesListComponent implements OnInit {
       !this.comentarioF
     ) {
       console.error('Todos los campos son obligatorios');
-      alert('Por favor, completa todos los campos');
+      this.showModalSinDatos();
       return;
     }
 
@@ -205,5 +202,12 @@ export class FuentesListComponent implements OnInit {
         console.error('Error al desactivar:', err);
       },
     });
+  }
+  @ViewChild('modalSinDatos') modalSinDatos!: ElementRef<HTMLDialogElement>;
+  showModalSinDatos(){
+    this.modalSinDatos.nativeElement.showModal();
+  }
+  cloceModalSinDatos(){
+    this.modalSinDatos.nativeElement.close();
   }
 }

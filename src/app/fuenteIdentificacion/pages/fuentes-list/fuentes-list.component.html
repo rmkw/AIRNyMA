@@ -168,3 +168,16 @@
     </div>
   </div>
 </dialog>
+
+<!-- Modal para datos incompletos -->
+<dialog #modalSinDatos class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Datos incompletos</h3>
+    <p class="py-4">Para continuar, es necesario completar todos los campos requeridos. Por favor, verifica la
+      información faltante.</p>
+    <div class="modal-action">
+      <!-- Botón Aceptar -->
+      <button class="btn btn-primary" (click)="cloceModalSinDatos()">Entendido</button>
+    </div>
+  </div>
+</dialog>

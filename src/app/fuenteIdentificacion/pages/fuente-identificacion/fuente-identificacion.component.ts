@@ -3,7 +3,7 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -39,7 +39,7 @@ export class FuenteIdentificacionComponent implements OnInit {
     linkFuente: '',
     anioEvento: '',
     comentario: '',
-    idPp:'',
+    idPp: '',
   };
 
   procesoSeleccionadoId: number | null = null;
@@ -134,8 +134,6 @@ export class FuenteIdentificacionComponent implements OnInit {
   }
 
   actualizarFuente() {
-
-
     const datosAActualizar: Omit<
       FiEcoResponce,
       'idFuente' | 'responsableActualizacion'
@@ -144,7 +142,6 @@ export class FuenteIdentificacionComponent implements OnInit {
       linkFuente: this.linkFuente,
       anioEvento: this.anioEvento,
       comentario: this.comentario,
-
     };
 
     this._fuenteService
@@ -159,7 +156,8 @@ export class FuenteIdentificacionComponent implements OnInit {
             this.mostrarAlerta.set(true);
             this.mensajeAlerta = `Fuente actualizada correctamente.`;
             setTimeout(() => this.mostrarAlerta.set(false), 3000);
-            this._router.navigate(['/fuentes']);
+            this.showmodalActualizacionExitosa();
+
           } else {
             console.error('Error al actualizar la fuente');
           }
@@ -182,5 +180,16 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.comentario !== this.valoresIniciales.comentario;
 
     console.log('Estado del formulario modificado:', this.formularioModificado);
+  }
+
+  @ViewChild('modalActualizacionExitosa')
+  modalActualizacionExitosa!: ElementRef<HTMLDialogElement>;
+  showmodalActualizacionExitosa() {
+    this.modalActualizacionExitosa.nativeElement.showModal();
+  }
+  clocemodalActualizacionExitosa() {
+
+    this.modalActualizacionExitosa.nativeElement.close();
+    this._router.navigate(['/fuentes']);
   }
 }
