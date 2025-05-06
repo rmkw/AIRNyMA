@@ -126,11 +126,12 @@ export class FuentesListComponent implements OnInit {
     this._fuentesService.registrarFuente(datosFuente).subscribe(
       (response) => {
         if (response) {
-          console.log('Fuente registrada exitosamente', response);
-          alert('Fuente registrada exitosamente');
-          this.flagVarButton = true;
-          this.ngOnInit();
+
+
           this.limpiarFormulario();
+          this.ngOnInit();
+          this.showmodalFuenteNueva();
+
         } else {
           console.error('Hubo un error al registrar la fuente');
           alert('Hubo un error al registrar la fuente');
@@ -204,10 +205,19 @@ export class FuentesListComponent implements OnInit {
     });
   }
   @ViewChild('modalSinDatos') modalSinDatos!: ElementRef<HTMLDialogElement>;
-  showModalSinDatos(){
+  showModalSinDatos() {
     this.modalSinDatos.nativeElement.showModal();
   }
-  cloceModalSinDatos(){
+  cloceModalSinDatos() {
     this.modalSinDatos.nativeElement.close();
+  }
+  @ViewChild('modalFuenteNueva')
+  modalFuenteNueva!: ElementRef<HTMLDialogElement>;
+  showmodalFuenteNueva() {
+
+    this.modalFuenteNueva.nativeElement.showModal();
+  }
+  clocemodalFuenteNueva() {
+    this.modalFuenteNueva.nativeElement.close();
   }
 }

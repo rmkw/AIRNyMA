@@ -153,9 +153,9 @@ export class FuenteIdentificacionComponent implements OnInit {
             // localStorage.removeItem('fuenteEditable');
             // Aquí puedes manejar la respuesta (ej. redirigir o mostrar mensaje de éxito)
             // alert('Fuente actualizada correctamente');
-            this.mostrarAlerta.set(true);
-            this.mensajeAlerta = `Fuente actualizada correctamente.`;
-            setTimeout(() => this.mostrarAlerta.set(false), 3000);
+            // this.mostrarAlerta.set(true);
+            // this.mensajeAlerta = `Fuente actualizada correctamente.`;
+            // setTimeout(() => this.mostrarAlerta.set(false), 3000);
             this.showmodalActualizacionExitosa();
 
           } else {

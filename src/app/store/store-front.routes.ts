@@ -22,14 +22,14 @@ export const storeFrontRoutes: Routes = [
         path: '',
         component: HomePageComponent,
       },
-      {
-        path: 'gender/:gender',
-        component: GenderPageComponent,
-      },
-      {
-        path: 'product/:idSlug',
-        component: ProductPageComponent,
-      },
+      // {
+      //   path: 'gender/:gender',
+      //   component: GenderPageComponent,
+      // },
+      // {
+      //   path: 'product/:idSlug',
+      //   component: ProductPageComponent,
+      // },
       {
         path: 'procesos',
         component: ProcesoProduccionComponent,
@@ -38,22 +38,22 @@ export const storeFrontRoutes: Routes = [
         path: 'fuentes',
         component: FuentesListComponent,
       },
-      {
-        path: 'fuente/:id',
-        component: FuenteIdentificacionComponent,
-      },
-      {
-        path: 'nueva-fuente',
-        component: NuevaFuenteComponent,
-      },
+      // {
+      //   path: 'fuente/:id',
+      //   component: FuenteIdentificacionComponent,
+      // },
+      // {
+      //   path: 'nueva-fuente',
+      //   component: NuevaFuenteComponent,
+      // },
       {
         path: 'nueva-variable',
         component: NuevaVariableComponent,
       },
-      {
-        path: 'test-zone',
-        component: TestZoneComponent,
-      },
+      // {
+      //   path: 'test-zone',
+      //   component: TestZoneComponent,
+      // },
       {
         path: '**',
         component: NotFoundPageComponent,

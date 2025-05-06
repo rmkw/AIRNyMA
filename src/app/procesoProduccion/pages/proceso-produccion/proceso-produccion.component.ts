@@ -101,11 +101,14 @@ export class ProcesoProduccionComponent implements OnInit {
       return;
     }
 
-    this.showWarning = true;
+    // this.showWarning = true;
+    this.showModalActualizar();
   }
 
   cancelDeactivation() {
-    this.showWarning = false;
+    // this.showWarning = false;
+    this.cloceModalActualizar();
+
   }
 
   confirmDeactivation() {
@@ -122,11 +125,12 @@ export class ProcesoProduccionComponent implements OnInit {
         next: (res) => {
           this.cargarProcesosProduccionByDireccionGeneral(this.direccionName);
 
-          console.log('Comentario actualizado con éxito:', res);
-          this.mostrarAlerta.set(true);
-          this.mensajeAlerta =
-            res.message || 'Proceso actualizado correctamente.';
-          setTimeout(() => this.mostrarAlerta.set(false), 3000);
+          // console.log('Comentario actualizado con éxito:', res);
+          // this.mostrarAlerta.set(true);
+          // this.mensajeAlerta =
+          //   res.message || 'Proceso actualizado correctamente.';
+          // setTimeout(() => this.mostrarAlerta.set(false), 3000);
+          this.showmodalActualizacionExitosa();
           this.showWarning = false;
           // Aquí puedes mostrar un toast o snackbar
         },
@@ -158,7 +162,23 @@ export class ProcesoProduccionComponent implements OnInit {
   }
   cerrarModal() {
     this.modalNoProceso.nativeElement.close();
-
   }
 
+  @ViewChild('modalActualizacionExitosa')
+  modalActualizacionExitosa!: ElementRef<HTMLDialogElement>;
+  showmodalActualizacionExitosa() {
+    this.cloceModalActualizar();
+    this.modalActualizacionExitosa.nativeElement.showModal();
+  }
+  clocemodalActualizacionExitosa() {
+    this.modalActualizacionExitosa.nativeElement.close();
+  }
+  @ViewChild('modalActualizar')
+  modalActualizar!: ElementRef<HTMLDialogElement>;
+  showModalActualizar(){
+    this.modalActualizar.nativeElement.showModal();
+  }
+  cloceModalActualizar(){
+    this.modalActualizar.nativeElement.close();
+  }
 }
