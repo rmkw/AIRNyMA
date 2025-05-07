@@ -52,7 +52,7 @@ export class NuevaFuenteComponent implements OnInit {
   nuevaFuente() {
     if (!this.procesoSeleccionado()) {
       console.error('Por favor, selecciona un proceso de producción');
-      alert('Por favor, selecciona un proceso de producción');
+      // alert('Por favor, selecciona un proceso de producción');
       return;
     }
 
