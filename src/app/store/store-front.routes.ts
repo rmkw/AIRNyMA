@@ -38,10 +38,10 @@ export const storeFrontRoutes: Routes = [
         path: 'fuentes',
         component: FuentesListComponent,
       },
-      // {
-      //   path: 'fuente/:id',
-      //   component: FuenteIdentificacionComponent,
-      // },
+      {
+        path: 'fuente/:id',
+        component: FuenteIdentificacionComponent,
+      },
       // {
       //   path: 'nueva-fuente',
       //   component: NuevaFuenteComponent,

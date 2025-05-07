@@ -534,7 +534,6 @@ export class NuevaVariableComponent implements OnInit {
       });
   }
   cleanVars() {
-
     this.camposBloqueados = false;
     this.DISABLE_temaCobertura = true;
 
@@ -567,13 +566,10 @@ export class NuevaVariableComponent implements OnInit {
     this._ods_nivelContribucion = '';
     this._ods_comentarioRelacionODS = '';
 
-
-
     this.isSelectEnabled_Meta = false;
     this.isSelectEnabled_Ind = false;
     this._ods_isSelectEnabled_Nivel = false;
     this._ods_isSelectEnabled_Comentario = false;
-
 
     this.showWarning = false;
 
@@ -592,7 +588,6 @@ export class NuevaVariableComponent implements OnInit {
 
     this.relationesMDEA = [];
     this.relacionesODS = [];
-
 
     this.getVarInNewVars(this._idFuente, this._responsableRegister!);
   }
@@ -855,7 +850,7 @@ export class NuevaVariableComponent implements OnInit {
     this._temaCobNec_Service.crearTema(nuevoTema).subscribe({
       next: (respuesta) => {
         console.log('Guardado correctamente:', respuesta);
-        this.cleanVars()
+        this.cleanVars();
       },
       error: (error) => {
         console.error('Error al guardar:', error);
@@ -869,6 +864,16 @@ export class NuevaVariableComponent implements OnInit {
       this.propuesta.trim().length === 0;
   }
 
-
+  abrirDrawer() {
+    console.log('Valor de idVariable:', this.idVariable);
+    this.infoIdVariable();
+  }
+  arrVarsById: VariableDTO[] = [];
+  infoIdVariable(): void {
+    this._varService.getByVariable(this.idVariable).subscribe((data) => {
+      this.arrVarsById = data;
+      console.log('Datos de la variable:', this.arrVarsById);
+    });
+  }
 }
 

@@ -25,4 +25,10 @@ export class VariableService {
       withCredentials: true,
     });
   }
+
+  getByVariable(idVariable: string): Observable<any> {
+    return this.http.get<any>(
+      `${baseUrl}/variables/por-id/${idVariable}`
+    );
+  }
 }
