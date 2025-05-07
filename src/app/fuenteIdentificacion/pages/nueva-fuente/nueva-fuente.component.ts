@@ -63,7 +63,7 @@ export class NuevaFuenteComponent implements OnInit {
       !this.comentarioF
     ) {
       console.error('Todos los campos son obligatorios');
-      alert('Por favor, completa todos los campos');
+      // alert('Por favor, completa todos los campos');
       return;
     }
 
