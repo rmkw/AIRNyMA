@@ -11,7 +11,7 @@ import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { catchError, of } from 'rxjs';
 
@@ -20,13 +20,19 @@ import { catchError, of } from 'rxjs';
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './nueva-variable.component.html',
 })
-export class NuevaVariableComponent implements OnInit {
+export class NuevaVariableComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.getComponentes();
     this.getObjetivos();
     this.getPropetiesLocalStorage();
     // this.getRelation_MDEA_Var();
     // this.obtenerRelaciones_ods();
+  }
+  ngAfterViewInit() {
+    // Esto se ejecuta después de que el DOM ya está cargado
+    setTimeout(() => {
+      this.verificarFinalizarCaptura(); // aquí aseguras evaluar campos autocompletados
+    });
   }
 
   //! COSAS PARA QUE FUNCIONE MDEA RELATION
@@ -318,7 +324,7 @@ export class NuevaVariableComponent implements OnInit {
 
   onSelectEstadistico(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const idEstadistico = Number(selectElement.value);
+    const idEstadistico = selectElement.value;
     this.idEstadistico = idEstadistico;
     console.log('Estadistico seleccionado:', idEstadistico);
 
@@ -513,17 +519,30 @@ export class NuevaVariableComponent implements OnInit {
         catchError((error) => {
           console.error('❌ Error al crear la variable:', error);
 
-          const mensaje =
-            error?.error?.message ||
-            'Error inesperado al registrar la variable';
-          // Mostrar mensaje de error al usuario (puede ser toast, snackbar, alerta...)
-          console.error(mensaje); // ejemplo con ngx-toastr o algo similar
+          let mensaje = 'Error inesperado al registrar la variable';
 
-          return of(null); // Evita que se rompa el flujo
+          // Intenta extraer el mensaje de error del backend
+          if (error?.error?.message) {
+            mensaje = error.error.message;
+          } else if (error?.status === 403) {
+            mensaje = 'Ya existe una variable con el mismo ID.';
+          }
+
+          // Aquí puedes usar tu sistema de notificación; reemplaza `alert()` si usas otro
+          this.showCorregirIdVariable();
+
+          return of(null); // Previene que se rompa el flujo del observable
         })
       )
       .subscribe((data) => {
-        if (!data) return; // Si hubo error, ya fue manejado en catchError
+        if (!data) return; // Ya se manejó el error en catchError
+
+        this.primeraInteraccion = false;
+
+        // Aquí deshabilitas los inputs que ya fueron registrados si es necesario
+        this.deshabilitarCamposRelacionados();
+
+        this.enableTEMA_COBERTURA();
 
         console.log('✅ Variable registrada:', data);
         console.info('Variable registrada correctamente');
@@ -533,6 +552,7 @@ export class NuevaVariableComponent implements OnInit {
         console.log('respuesta con id: ', this._respons_var_registrada);
       });
   }
+
   cleanVars() {
     this.camposBloqueados = false;
     this.DISABLE_temaCobertura = true;
@@ -628,6 +648,7 @@ export class NuevaVariableComponent implements OnInit {
       .subscribe((respuesta) => {
         if (respuesta) {
           console.log('✅ Relación registrada correctamente:', respuesta);
+
           this.resetRelationMDEA_SELECTS();
 
           // Aquí podrías resetear el formulario o notificar al usuario
@@ -679,6 +700,8 @@ export class NuevaVariableComponent implements OnInit {
       .subscribe((response) => {
         console.log('relaciones: ', response);
         this.relationesMDEA = response;
+          this.verificarFinalizarCaptura();
+
       });
   }
 
@@ -704,14 +727,8 @@ export class NuevaVariableComponent implements OnInit {
   }
 
   accionPersonalizada() {
-    this.primeraInteraccion = false;
-
-    // Aquí deshabilitas los inputs que ya fueron registrados si es necesario
-    this.deshabilitarCamposRelacionados();
-
-    this.enableTEMA_COBERTURA();
-
     this.crearVarInNewVars();
+    console.log('lanzomodal');
 
     // Cierra el modal
     const modal = document.getElementById('mi_modal_1') as HTMLDialogElement;
@@ -837,6 +854,7 @@ export class NuevaVariableComponent implements OnInit {
   comentarioPertinencia: string = '';
 
   _temaCobNec_Service = inject(TemaCobNecService);
+
   registrarTema() {
     const nuevoTema: TemaCobNec = {
       temaCobNec: this.temaCobertura,
@@ -857,11 +875,32 @@ export class NuevaVariableComponent implements OnInit {
       },
     });
   }
+
   verificarFinalizarCaptura(): void {
-    this.finalizarCaptura =
-      this.comentarioPertinencia.trim().length === 0 ||
-      this.temaCobertura.trim().length === 0 ||
-      this.propuesta.trim().length === 0;
+    // Trim y verificación de campos obligatorios
+    const comentarioValido = this.comentarioPertinencia.trim().length > 0;
+    const temaValido = this.temaCobertura.trim().length > 0;
+    const propuestaValida = this.propuesta.trim().length > 0;
+
+    // Verificar que si flagMDEArelation es true, haya al menos una relación en el arreglo
+    const mdeaValido =
+      !this.flagMDEArelation ||
+      (Array.isArray(this.relationesMDEA) && this.relationesMDEA.length > 0);
+
+    // Solo se habilita el botón si TODO es válido
+    this.finalizarCaptura = !(
+      comentarioValido &&
+      temaValido &&
+      propuestaValida &&
+      mdeaValido
+    );
+
+    // Debug (puedes borrar esto después)
+    console.log('✅ comentario:', comentarioValido);
+    console.log('✅ tema:', temaValido);
+    console.log('✅ propuesta:', propuestaValida);
+    console.log('✅ MDEA válido:', mdeaValido);
+    console.log('¿Botón deshabilitado?', this.finalizarCaptura);
   }
 
   abrirDrawer() {
@@ -874,6 +913,17 @@ export class NuevaVariableComponent implements OnInit {
       this.arrVarsById = data;
       console.log('Datos de la variable:', this.arrVarsById);
     });
+  }
+
+  @ViewChild('modalIdDuplicado')
+  modalIdDuplicado!: ElementRef<HTMLDialogElement>;
+  corregirIdVariable() {
+    const modal = this.modalIdDuplicado.nativeElement as HTMLDialogElement;
+    modal.close();
+  }
+  showCorregirIdVariable() {
+    const modal = this.modalIdDuplicado.nativeElement as HTMLDialogElement;
+    modal.showModal();
   }
 }
 
