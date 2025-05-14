@@ -639,3 +639,18 @@
     </div>
   </div>
 </dialog>
+
+
+<!-- Modal -->
+<dialog #modalEliminar class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">¿Estás seguro?</h3>
+    <p class="py-4">¿Deseas eliminar esta variable? Esta acción no se puede deshacer.</p>
+    <div class="modal-action">
+      <!-- Botón Cancelar -->
+      <button class="btn btn-outline" (click)="cerrarModal()">Cancelar</button>
+      <!-- Botón Aceptar -->
+      <button class="btn btn-error" (click)="confirmarEliminacion()">Aceptar</button>
+    </div>
+  </div>
+</dialog>

@@ -849,21 +849,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       });
   }
   finalizarCaptura: boolean = true;
-  eliminarVariable(id: number) {
-    if (confirm('¿Seguro que deseas eliminar esta variable?')) {
-      this._varService.deleteVariable(id).subscribe({
-        next: () => {
-          this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
-            (v) => v.idUnique !== id
-          );
-        },
-        error: (err) => {
-          alert('Error eliminando variable');
-          console.error(err);
-        },
-      });
-    }
-  }
 
   temaCobertura: string = '';
   nivelContribucion: string = '';
@@ -947,6 +932,35 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   showCorregirIdVariable() {
     const modal = this.modalIdDuplicado.nativeElement as HTMLDialogElement;
     modal.showModal();
+  }
+
+  @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
+  idDelete: number | undefined = undefined;
+  eliminarVariable(id: number) {
+    this.modalEliminar.nativeElement.showModal();
+
+    this.idDelete = id;
+
+  }
+
+  cerrarModal() {
+    this.modalEliminar.nativeElement.close();
+  }
+
+  confirmarEliminacion() {
+    this._varService.deleteVariable(this.idDelete!).subscribe({
+      next: () => {
+        this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
+          (v) => v.idUnique !== this.idDelete!
+        );
+      },
+      error: (err) => {
+        alert('Error eliminando variable');
+        console.error(err);
+      },
+    });
+
+    this.cerrarModal();
   }
 }
 
