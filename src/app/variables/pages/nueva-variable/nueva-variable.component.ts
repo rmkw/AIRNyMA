@@ -355,9 +355,27 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
   getMetas(idObj: number | string) {
     this._odsServices.getMetas(idObj).subscribe((data) => {
-      this.arrMetas = data;
+      this.arrMetas = data.sort((a, b) => {
+        const isANumber = !isNaN(Number(a.idMeta));
+        const isBNumber = !isNaN(Number(b.idMeta));
+
+        if (isANumber && isBNumber) {
+          // Ambos son números
+          return Number(a.idMeta) - Number(b.idMeta);
+        } else if (isANumber) {
+          // a es número, b es letra -> a va antes
+          return -1;
+        } else if (isBNumber) {
+          // b es número, a es letra -> b va antes
+          return 1;
+        } else {
+          // Ambos son letras -> orden alfabético
+          return a.idMeta.localeCompare(b.idMeta);
+        }
+      });
     });
   }
+
   getIndicadores(idMeta: number | string) {
     this._odsServices
       .getIndicadores(this.idObjetivo, idMeta)
@@ -700,8 +718,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       .subscribe((response) => {
         console.log('relaciones: ', response);
         this.relationesMDEA = response;
-          this.verificarFinalizarCaptura();
-
+        this.verificarFinalizarCaptura();
       });
   }
 
@@ -787,6 +804,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         next: (res) => {
           console.log('Datos recibidos en obtenerRelaciones_ods():', res);
           this.relacionesODS = res;
+          this.verificarFinalizarCaptura();
         },
         error: (err) => console.error('Error obteniendo relaciones:', err),
       });
@@ -887,12 +905,17 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       !this.flagMDEArelation ||
       (Array.isArray(this.relationesMDEA) && this.relationesMDEA.length > 0);
 
+    const odsValido =
+      !this.flagODSrelation ||
+      (Array.isArray(this.relacionesODS) && this.relacionesODS.length > 0);
+
     // Solo se habilita el botón si TODO es válido
     this.finalizarCaptura = !(
       comentarioValido &&
       temaValido &&
       propuestaValida &&
-      mdeaValido
+      mdeaValido &&
+      odsValido
     );
 
     // Debug (puedes borrar esto después)
