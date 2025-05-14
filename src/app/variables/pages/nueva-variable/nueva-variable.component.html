@@ -74,7 +74,7 @@
         Alineación con MDEA
       </label>
       <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
-        [disabled]="camposBloqueados" class="checkbox checkbox-md" />
+        [disabled]="camposBloqueados" class="checkbox checkbox-md " />
     </div>
 
     <div class="max-w-xs text-center">
@@ -447,11 +447,11 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="text-secondary">Id Variable</th>
+            <th class="text-secondary" style="width: 6rem;">Id Variable</th>
             <th class="text-secondary">Nombre</th>
             <th class="text-secondary">Definición</th>
-            <th class="text-secondary">Alineación Mdea</th>
-            <th class="text-secondary">Alineación Ods</th>
+            <th class="text-secondary text-center">Alineación Mdea</th>
+            <th class="text-secondary text-center">Alineación Ods</th>
             <th class="text-secondary text-center">Acciones</th>
           </tr>
         </thead>
@@ -459,17 +459,17 @@
           @for ( varItem of arrVARIABLES_REGISTER; track $index) {
 
           <tr>
-            <td>{{ varItem.idVariable }}</td>
+            <td class="">{{ varItem.idVariable }}</td>
             <td>{{varItem.nombreVariable }}</td>
             <td>{{ varItem.definicionVar }}</td>
-            <td>
+            <td class="text-center">
               @if (varItem.alineacionMdea) {
               <span class="text-green-600">✔️</span>
               } @else {
               <span class="text-red-600">❌</span>
               }
             </td>
-            <td>
+            <td class="text-center">
               @if (varItem.alineacionOds) {
               <span class="text-green-600">✔️</span>
               } @else {
