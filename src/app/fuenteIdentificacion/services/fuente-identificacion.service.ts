@@ -101,9 +101,9 @@ export class FuenteIdentificacionService {
   }
 
   deactivateRecord(id: number): Observable<any> {
-    return this.http.patch(
-      `${baseUrl}/fi-economicas/${id}/deactivate`,
-      {},
+    return this.http.delete(
+      `${baseUrl}/fi-economicas/${id}/delete-full`,
+
       { withCredentials: true }
     );
   }

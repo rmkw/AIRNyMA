@@ -598,6 +598,41 @@
               </div>
             </ng-template>
           </div>
+
+          <!-- Relaciones tema -->
+          <div class="mt-4 border-t pt-3">
+            <h3 class="font-bold text-lg mb-2 text-secondary text-center">Tema Cobertura de Necesidades</h3>
+
+            <ng-container *ngIf="item.pertinencia && item.pertinencia.length > 0; else noOds">
+              <div *ngFor="let per of item.pertinencia" class="mb-3 p-2 rounded-lg">
+                <div class="mb-4">
+                  <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
+                  <p>{{ per.temaCobNec }}</p>
+
+                  <p class="text-primary font-semibold text-lg mt-2">Nivel de contribución:</p>
+                  <p>{{ per.nivelContribucion || 'No especificado' }}</p>
+
+                  <p class="text-primary font-semibold text-lg mt-2">Viabilidad de generación:</p>
+                  <p>{{ per.viabEstDer || 'No disponible' }}</p>
+
+                  <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
+                  <p>{{ per.propEstDer || 'No disponible' }}</p>
+                </div>
+
+
+              </div>
+            </ng-container>
+
+            <ng-template #noOds>
+              <div class="alert alert-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>No hay relaciones Tema Cobertura de necesidades registradas</span>
+              </div>
+            </ng-template>
+          </div>
         </div>
       </div>
      }

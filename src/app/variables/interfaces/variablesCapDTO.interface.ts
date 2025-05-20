@@ -14,6 +14,7 @@ export interface VariableDTO {
   responsableActualizacion?: number;
   mdeas?: MdeaDTO[]; // <-- Agrega esta línea
   ods?: OdsDTO[]; // <-- Agrega esta línea
+  pertinencia?: TemaCobNecDTO[];
 }
 
 // Define las interfaces para los objetos anidados
@@ -41,4 +42,13 @@ export interface OdsDTO {
   idIndicador: string;
   nivelContribucion: string;
   comentarioRelacionODS: string;
+}
+export interface TemaCobNecDTO {
+  id: number;
+  temaCobNec: string;
+  nivelContribucion: string;
+  viabEstDer: string;
+  propEstDer: string;
+  comentarioPertinencia: string;
+  idVariableUnique: number;
 }
