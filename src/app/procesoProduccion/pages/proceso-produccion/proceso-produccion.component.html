@@ -13,8 +13,8 @@
       </label>
       <select id="dire" class="select select-bordered select-sm w-full" (change)="selectedDireccion($event)">
         <option disabled selected>Selecciona una dirección</option>
-        @for (dire of arrDirecciones; track dire.idDi) {
-        <option [value]="dire.nameDi">{{ dire.nameDi }}</option>
+        @for (dire of arrDirecciones; track dire.idUnidad) {
+        <option [value]="dire.idUnidad">{{ dire.nameUnidad }}</option>
         }
       </select>
     </div>

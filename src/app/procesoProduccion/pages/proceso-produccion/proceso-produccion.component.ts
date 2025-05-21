@@ -34,7 +34,7 @@ export class ProcesoProduccionComponent implements OnInit {
   showWarning: boolean = false;
   mensajeAlerta = '';
 
-  direccionName = '';
+  direccionName:  number | undefined = undefined;
 
   ngOnInit(): void {
     this.getDirecciones();
@@ -57,17 +57,18 @@ export class ProcesoProduccionComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const nameDi = selectElement.value;
 
-    this.direccionName = nameDi;
+    this.direccionName = parseInt(nameDi);
 
     const selectedOption = this.procesoProduccionTag
       .nativeElement as HTMLSelectElement;
     selectedOption.selectedIndex = 0;
 
-    this.cargarProcesosProduccionByDireccionGeneral(nameDi);
+    this.cargarProcesosProduccionByDireccionGeneral(parseInt(nameDi));
   }
 
-  cargarProcesosProduccionByDireccionGeneral(dire: string) {
-    this._pp_Service.getPorDireccionGeneral(dire).subscribe({
+  cargarProcesosProduccionByDireccionGeneral(dire: number | undefined) {
+    console.log(dire);
+    this._pp_Service.obtenerProcesosPorUnidad(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
       },
@@ -108,7 +109,6 @@ export class ProcesoProduccionComponent implements OnInit {
   cancelDeactivation() {
     // this.showWarning = false;
     this.cloceModalActualizar();
-
   }
 
   confirmDeactivation() {
@@ -175,10 +175,10 @@ export class ProcesoProduccionComponent implements OnInit {
   }
   @ViewChild('modalActualizar')
   modalActualizar!: ElementRef<HTMLDialogElement>;
-  showModalActualizar(){
+  showModalActualizar() {
     this.modalActualizar.nativeElement.showModal();
   }
-  cloceModalActualizar(){
+  cloceModalActualizar() {
     this.modalActualizar.nativeElement.close();
   }
 }

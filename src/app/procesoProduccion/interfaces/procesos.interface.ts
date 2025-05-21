@@ -35,6 +35,6 @@ export interface interface_ProcesoP {
   claveInfraestructura?: string;
   infraestructura?: string;
   estatus?: string;
-  idDi?: number;
+  idUnidad?: number;
   comentarioPp?: string;
 }
