@@ -98,9 +98,10 @@
           <th class="text-secondary text-center">Fuente de identificación</th>
           <th class="text-secondary text-center">Liga de acceso a la fuente</th>
           <th class="text-secondary text-center">Año del evento</th>
+          <th class="text-secondary text-center">Variables Capturadas</th>
 
           <th class="text-secondary text-center">Acciónes</th>
-          <th class="text-secondary text-center">Variables</th>
+
         </tr>
       </thead>
       <tbody>
@@ -128,6 +129,8 @@
 
           <td class="text-center">{{ fuente.anioEvento }}</td>
 
+          <td class="text-center">{{ fuente.totalVariables }}</td>
+
           <td class="text-center">
 
             <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
@@ -136,12 +139,11 @@
             <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="abrirModal(fuente.idFuente)">
               Eliminar
             </button>
-          </td>
-          <td class="text-center">
-            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs mr-2 " (click)="addVars(fuente)">
-              + Agregar
+            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs ml-2 " (click)="addVars(fuente)">
+              Agregar Variable
             </button>
           </td>
+
         </tr>
 
 
