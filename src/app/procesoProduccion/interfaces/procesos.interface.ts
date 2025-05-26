@@ -37,4 +37,5 @@ export interface interface_ProcesoP {
   estatus?: string;
   idUnidad?: number;
   comentarioPp?: string;
+  totalVariables?: number;
 }

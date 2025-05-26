@@ -71,6 +71,7 @@ export class ProcesoProduccionComponent implements OnInit {
     this._pp_Service.obtenerProcesosPorUnidad(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
+        console.log(data)
       },
       error: (err) => {
         console.error('Error al obtener procesos por DG', err);
