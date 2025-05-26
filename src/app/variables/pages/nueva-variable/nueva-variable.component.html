@@ -1,6 +1,7 @@
 <div class="container mx-auto mt-10">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable fuente año {{_anioEvento}}</h1>
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable fuente año {{_anioEvento}}
+    </h1>
 
 
     <button class="btn btn-outline btn-sm btn-ghost" [disabled]="finalizarCaptura" (click)="registrarTema()">
@@ -19,10 +20,10 @@
       </label>
 
       <div class="join">
-        <input type="text" id="idVariable" class="input input-bordered join-item w-full input-sm" [(ngModel)]="idVariable"
-          [disabled]="camposBloqueados" placeholder="Email" />
+        <input type="text" id="idVariable" class="input input-bordered join-item w-full input-sm"
+          [(ngModel)]="idVariable" [disabled]="camposBloqueados" placeholder="Email" />
 
-        <label for="my-drawer-4"  class="btn btn-sm join-item  drawer-button" (click)="abrirDrawer()">Consultar</label >
+        <label for="my-drawer-4" class="btn btn-sm join-item  drawer-button" (click)="abrirDrawer()">Consultar</label>
 
       </div>
 
@@ -89,11 +90,8 @@
       <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
         Tema de cobertura de necesidades
       </label>
-      <input type="text" id="temaCobertura"
-      [(ngModel)]="temaCobertura"
-      (ngModelChange)="verificarFinalizarCaptura()"
-       (click)="onComentarioClick($event)"
-        class="input input-sm input-bordered w-full" placeholder="" />
+      <input type="text" id="temaCobertura" [(ngModel)]="temaCobertura" (ngModelChange)="verificarFinalizarCaptura()"
+        (click)="onComentarioClick($event)" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="max-w-xs">
@@ -114,7 +112,8 @@
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Viabilidad de generación
       </label>
-      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura" [(ngModel)]="viabilidad">
+      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura"
+        [(ngModel)]="viabilidad">
         <option disabled selected>Selecciona una opción</option>
         <option value="Viable">Viable</option>
         <option value="No viable">No viable</option>
@@ -126,18 +125,16 @@
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Propuesta de generación de estadística derivada
       </label>
-      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="propuesta"
-      (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
+      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="propuesta" (ngModelChange)="verificarFinalizarCaptura()"
+        type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-3">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Comentario de pertinencia
       </label>
-      <input [disabled]="DISABLE_temaCobertura"
-      [(ngModel)]="comentarioPertinencia"
-      (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
+      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="comentarioPertinencia"
+        (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -227,8 +224,8 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idEstadistico">
             Estadística 2
           </label>
-          <select class="select select-bordered select-sm w-full" #estadisticoSelect (change)="onSelectEstadistico($event)"
-            [disabled]="!isSelectEnabled_Est">
+          <select class="select select-bordered select-sm w-full" #estadisticoSelect
+            (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
             <option disabled selected>Selecciona un Estadístico</option>
             <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico">{{ estad.nombre }}
             </option>
@@ -240,9 +237,9 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
             Nivel de contribución
           </label>
-          <select id="idNivelCont" (change)="onSelectNivel($event)" [(ngModel)]="nivelContribucionContenidosMdeaRelation"
-            name="nivelContribucionContenidosMdeaRelation" [disabled]="!isSelectEnabled_Nivel"
-            class="select select-bordered select-sm w-full ">
+          <select id="idNivelCont" (change)="onSelectNivel($event)"
+            [(ngModel)]="nivelContribucionContenidosMdeaRelation" name="nivelContribucionContenidosMdeaRelation"
+            [disabled]="!isSelectEnabled_Nivel" class="select select-bordered select-sm w-full ">
             <option disabled selected>Selecciona un nivel</option>
             <option value="Alto">Alto</option>
             <option value="Intermedio">Intermedio</option>
@@ -528,8 +525,8 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 text-base-content min-h-full w-100 pr-2">
       <!-- Sidebar content here -->
-     @for (item of arrVarsById; track $index) {
-      <div class="card bg-base-100 shadow-xl mt-2 mb-2" style="width: 25rem;">
+      @for (item of arrVarsById; track $index) {
+      <div class="card bg-base-100 shadow-xl mt-2" style="width: 25rem;">
         <div class="card-body">
           <h3 class="font-bold text-secondary text-lg text-center">
             {{ item.varSerieAnio }}
@@ -545,6 +542,13 @@
 
             <p class="text-primary font-semibold text-lg mt-2">Link:</p>
             <p>{{ item.linkVar || 'No disponible' }}</p>
+
+            <p class="text-primary font-semibold text-lg mt-2">Comentario:</p>
+            <p>{{ item.comentarioVar || 'No disponible' }}</p>
+
+            <button class="btn btn-block btn-sm  btn-primary mt-3" (click)="registrarTema()">
+              Pegar Datos
+            </button>
           </div>
 
           <!-- Relaciones MDEA -->
@@ -565,7 +569,8 @@
 
             <ng-template #noMdeas>
               <div class="alert alert-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -590,7 +595,8 @@
 
             <ng-template #noOds>
               <div class="alert alert-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -604,8 +610,8 @@
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">Tema Cobertura de Necesidades</h3>
 
             <ng-container *ngIf="item.pertinencia && item.pertinencia.length > 0; else noOds">
-              <div *ngFor="let per of item.pertinencia" class="mb-3 p-2 rounded-lg">
-                <div class="mb-4">
+              <div *ngFor="let per of item.pertinencia" class="mb-2 p-2 rounded-lg">
+                <div class="mb-2">
                   <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
                   <p>{{ per.temaCobNec }}</p>
 
@@ -617,6 +623,10 @@
 
                   <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
                   <p>{{ per.propEstDer || 'No disponible' }}</p>
+
+                  <button class="btn btn-block btn-sm  btn-primary mt-4" (click)="registrarTema()">
+                    Pegar Datos
+                  </button>
                 </div>
 
 
@@ -625,7 +635,8 @@
 
             <ng-template #noOds>
               <div class="alert alert-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -635,7 +646,7 @@
           </div>
         </div>
       </div>
-     }
+      }
 
 
     </ul>
