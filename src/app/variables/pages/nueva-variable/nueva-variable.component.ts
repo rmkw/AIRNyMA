@@ -918,8 +918,14 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   arrVarsById: VariableDTO[] = [];
   infoIdVariable(): void {
     this._varService.getByVariable(this.idVariable).subscribe((data) => {
-      this.arrVarsById = data;
-      console.log('Datos de la variable:', this.arrVarsById);
+      // Ordenamos los objetos por año descendente
+      this.arrVarsById = data.sort((a: any, b: any) => {
+        const añoA = parseInt(a.varSerieAnio?.split('-')[2] || '0', 10);
+        const añoB = parseInt(b.varSerieAnio?.split('-')[2] || '0', 10);
+        return añoB - añoA;
+      });
+
+      console.log('Datos de la variable ordenados:', this.arrVarsById);
     });
   }
 
@@ -940,7 +946,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.modalEliminar.nativeElement.showModal();
 
     this.idDelete = id;
-
   }
 
   cerrarModal() {
@@ -961,6 +966,21 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     });
 
     this.cerrarModal();
+  }
+  pegarDatosVariable(event: VariableDTO) {
+    console.log(event);
+    this.nombreVariable = event.nombreVariable;
+    this.definicionVariable = event.definicionVar!;
+    this.comentarioVariable = event.comentarioVar!;
+  }
+  pegarDatosPertinencia(event: TemaCobNec) {
+    this.temaCobertura = event.temaCobNec;
+    this.nivelContribucion = event.nivelContribucion!;
+    this.viabilidad = event.viabEstDer!;
+    this.propuesta = event.propEstDer!;
+    this.comentarioPertinencia = event.comentarioPertinencia!;
+
+    this.finalizarCaptura = false;
   }
 }
 

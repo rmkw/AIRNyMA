@@ -546,7 +546,7 @@
             <p class="text-primary font-semibold text-lg mt-2">Comentario:</p>
             <p>{{ item.comentarioVar || 'No disponible' }}</p>
 
-            <button class="btn btn-block btn-sm  btn-primary mt-3" (click)="registrarTema()">
+            <button class="btn btn-block btn-sm  btn-primary mt-3" (click)="pegarDatosVariable(item)">
               Pegar Datos
             </button>
           </div>
@@ -560,9 +560,9 @@
                 <ul class="text-sm space-y-1">
                   <li><span class="font-semibold">Componente: {{ mdea.idComponente }}</span> </li>
                   <li><span class="font-semibold">Subcomponente: {{ mdea.idSubcomponente || '-' }}</span> </li>
-                  <li><span class="font-semibold">Tópico: {{ mdea.idTopico || '-' }}</span> </li>
-                  <li><span class="font-semibold">Variable: {{ mdea.idVariableMdeaPull || '-' }}</span> </li>
-                  <li><span class="font-semibold">Estadístico: {{ mdea.idEstadistico || '-' }}</span> </li>
+                  <li><span class="font-semibold">Tema: {{ mdea.idTopico || '-' }}</span> </li>
+                  <li><span class="font-semibold">Estadístico 1: {{ mdea.idVariableMdeaPull || '-' }}</span> </li>
+                  <li><span class="font-semibold">Estadístico 2: {{ mdea.idEstadistico || '-' }}</span> </li>
                 </ul>
               </div>
             </ng-container>
@@ -609,7 +609,7 @@
           <div class="mt-4 border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">Tema Cobertura de Necesidades</h3>
 
-            <ng-container *ngIf="item.pertinencia && item.pertinencia.length > 0; else noOds">
+            <ng-container *ngIf="item.pertinencia && item.pertinencia.length > 0; else noPer">
               <div *ngFor="let per of item.pertinencia" class="mb-2 p-2 rounded-lg">
                 <div class="mb-2">
                   <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
@@ -624,7 +624,7 @@
                   <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
                   <p>{{ per.propEstDer || 'No disponible' }}</p>
 
-                  <button class="btn btn-block btn-sm  btn-primary mt-4" (click)="registrarTema()">
+                  <button class="btn btn-block btn-sm  btn-primary mt-4" [disabled]="DISABLE_temaCobertura" (click)="pegarDatosPertinencia(per)">
                     Pegar Datos
                   </button>
                 </div>
@@ -633,7 +633,7 @@
               </div>
             </ng-container>
 
-            <ng-template #noOds>
+            <ng-template #noPer>
               <div class="alert alert-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
