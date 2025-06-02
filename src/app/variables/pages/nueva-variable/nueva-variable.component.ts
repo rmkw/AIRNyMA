@@ -904,11 +904,11 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     );
 
     // Debug (puedes borrar esto después)
-    console.log('✅ comentario:', comentarioValido);
-    console.log('✅ tema:', temaValido);
-    console.log('✅ propuesta:', propuestaValida);
-    console.log('✅ MDEA válido:', mdeaValido);
-    console.log('¿Botón deshabilitado?', this.finalizarCaptura);
+    // console.log('✅ comentario:', comentarioValido);
+    // console.log('✅ tema:', temaValido);
+    // console.log('✅ propuesta:', propuestaValida);
+    // console.log('✅ MDEA válido:', mdeaValido);
+    // console.log('¿Botón deshabilitado?', this.finalizarCaptura);
   }
 
   abrirDrawer() {
