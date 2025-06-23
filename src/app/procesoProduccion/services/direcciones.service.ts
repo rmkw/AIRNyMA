@@ -14,7 +14,7 @@ export class DireccionesService {
   private http = inject(HttpClient);
 
   getDirecciones(): Observable<Direccion[]> {
-    return this.http.get<Direccion[]>(`${baseUrl}/dir`, {
+    return this.http.get<Direccion[]>(`${baseUrl}/unidad`, {
       withCredentials: true,
     });
   }
