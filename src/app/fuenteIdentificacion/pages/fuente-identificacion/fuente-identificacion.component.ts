@@ -42,7 +42,7 @@ export class FuenteIdentificacionComponent implements OnInit {
     idPp: '',
   };
 
-  procesoSeleccionadoId: number | null = null;
+  procesoSeleccionadoId: string | null = null;
 
   mostrarAlerta = signal(false);
   mensajeAlerta = '';
@@ -69,7 +69,7 @@ export class FuenteIdentificacionComponent implements OnInit {
       linkFuente: this.linkFuente,
       anioEvento: this.anioEvento,
       comentario: this.comentario,
-      idPp: this.procesoSeleccionado()?.acronimoProceso || '',
+      idPp: this.procesoSeleccionado()?.acronimo || '',
     };
   }
 
@@ -90,14 +90,14 @@ export class FuenteIdentificacionComponent implements OnInit {
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const procesoId = Number(selectElement.value);
+    const procesoId = selectElement.value;
 
     const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
+      this.ppEco().find((proceso) => proceso.acronimo === procesoId) || null;
 
     if (procesoEncontrado) {
       this.procesoSeleccionado.set(procesoEncontrado);
-      this.idPp = procesoEncontrado.acronimoProceso;
+      this.idPp = procesoEncontrado.acronimo;
     }
   }
 
@@ -116,21 +116,18 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.comentario = fuente.comentario;
 
       const procesoEncontrado =
-        this.ppEco().find((proceso) => proceso.acronimoProceso === this.idPp) ||
-        null;
+        this.ppEco().find((proceso) => proceso.acronimo === this.idPp) || null;
 
       if (procesoEncontrado) {
         this.procesoSeleccionado.set(procesoEncontrado);
 
-        this.procesoSeleccionadoId = procesoEncontrado.id;
+        this.procesoSeleccionadoId = procesoEncontrado.acronimo;
       }
     }
   }
 
   getAcronimo(): string {
-    return (
-      this.procesoSeleccionado()?.acronimoProceso || this.idPp || 'Acrónimo'
-    );
+    return this.procesoSeleccionado()?.acronimo || this.idPp || 'Acrónimo';
   }
 
   actualizarFuente() {

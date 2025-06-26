@@ -1,41 +1,15 @@
 export interface interface_ProcesoP {
-  id: number;
-  programaInformacion?: string;
-  acronimo?: string;
-  nombreProceso?: string;
-  clavePeriodicidadProceso?: string;
-  periodicidadProceso?: string;
-  inicioVigencia?: string; // tipo string si viene en formato ISO (yyyy-MM-dd)
-  conclusion?: string;
-  objetivo?: string;
-  poblacionObjeto?: string;
-  unidadObservacion?: string;
-  unidadAdministrativa?: string;
-  claveMetodoGeneracion?: string;
-  metodoGeneracion?: string;
-  coberturaTematica?: string;
-  coberturaGeografica?: string;
-  productos?: string;
-  clavePeriodicidadProductos?: string;
-  periodicidadProductos?: string;
-  claveGradoMadurez?: string;
-  gradoMadurez?: string;
-  claveIin?: string;
-  condicionIin?: string;
-  fechaDeterminacionIin?: string;
-  clavePeriodicidadCambios?: string;
-  periodicidadCambios?: string;
-  claveOrigenRecursos?: string;
-  origenRecursos?: string;
-  claveDga?: string;
-  dgaResponsable?: string;
-  fechaIncorporacion?: string;
-  claveCondicionInfraestructura?: string;
-  condicionInfraestructura?: string;
-  claveInfraestructura?: string;
-  infraestructura?: string;
-  estatus?: string;
-  idUnidad?: number;
-  comentarioPp?: string;
-  totalVariables?: number;
+  acronimo: string;
+  proceso: string;
+  metodo: string;
+  objetivo: string;
+  pobjeto: string;
+  uobservacion: string;
+  unidad: string;
+  periodicidad: string;
+  iin: string;
+  estatus: string;
+  comentarioS: null;
+  comentarioA: null;
 }
+

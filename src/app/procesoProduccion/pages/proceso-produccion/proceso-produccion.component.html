@@ -14,7 +14,7 @@
       <select id="dire" class="select select-bordered select-sm w-full" (change)="selectedDireccion($event)">
         <option disabled selected>Selecciona una dirección</option>
         @for (dire of arrDirecciones; track dire.idUnidad) {
-        <option [value]="dire.idUnidad">{{ dire.nameUnidad }}</option>
+        <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
         }
       </select>
     </div>
@@ -27,8 +27,8 @@
         #procesoProduccionTag
         (change)="seleccionarProceso($event)">
         <option disabled selected>Selecciona una opción</option>
-        @for (proceso of arrProcesosPBydire; track proceso.id) {
-        <option [value]="proceso.id">{{ proceso.nombreProceso }}</option>
+        @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
+        <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
         }
       </select>
     </div>
@@ -68,7 +68,7 @@
       <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
         Método de obtención de la información
       </label>
-      <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodoGeneracion || '-' }}</h2>
+      <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodo || '-' }}</h2>
     </div>
 
     <div class="col-span-3">
@@ -76,7 +76,7 @@
         Condición de Información de Interés Nacional
       </label>
       <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.condicionIin || '-' }}
+        {{ procesoSeleccionado()?.iin || '-' }}
       </h2>
     </div>
 
@@ -85,7 +85,7 @@
         Periodicidad
       </label>
       <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.periodicidadProceso || '-' }}
+        {{ procesoSeleccionado()?.periodicidad || '-' }}
       </h2>
     </div>
 
@@ -94,7 +94,7 @@
         Variables Capturadas
       </label>
       <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.totalVariables || '-' }}
+        {{ '-' }}
       </h2>
     </div>
 
@@ -115,7 +115,7 @@
         Población objeto de estudio
       </label>
       <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.poblacionObjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
+        readonly>{{ procesoSeleccionado()?.pobjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
     </div>
 
     <div class="col-span-1">
@@ -123,7 +123,7 @@
         Unidad de observación
       </label>
       <textarea id="unidad001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.unidadObservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
+        readonly>{{ procesoSeleccionado()?.uobservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
     </div>
 
     <div class="col-span-1">

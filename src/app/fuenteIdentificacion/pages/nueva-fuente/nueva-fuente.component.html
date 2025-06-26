@@ -11,10 +11,10 @@
           Selecciona el proceso de producción
         </label>
         <select id="procesoProduccion" class="select select-bordered select-sm w-full "
-          (change)="seleccionarProceso($event)" [value]="procesoSeleccionado()?.id || ''">
+          (change)="seleccionarProceso($event)" [value]="procesoSeleccionado()?.acronimo || ''">
           <option disabled [selected]="!procesoSeleccionado()">Selecciona una opción</option>
-          @for (proceso of ppEco(); track proceso.id) {
-          <option [value]="proceso.id">{{ proceso.procesoProduccion }}</option>
+          @for (proceso of ppEco(); track proceso.acronimo) {
+          <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
           }
         </select>
       </div>
@@ -24,7 +24,7 @@
         <label class="block text-sm font-medium  mb-2" for="acronimo">
           Acrónimo
         </label>
-        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimoProceso || '-' }}
+        <h2 class="text-lg font-semibold" id="acronimo"> {{ procesoSeleccionado()?.acronimo || '-' }}
         </h2>
       </div>
 

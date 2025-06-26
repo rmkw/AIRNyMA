@@ -42,10 +42,10 @@ export class NuevaFuenteComponent implements OnInit {
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const procesoId = Number(selectElement.value);
+    const procesoId = selectElement.value;
 
     const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.id === procesoId) || null;
+      this.ppEco().find((proceso) => proceso.acronimo === procesoId) || null;
     this.procesoSeleccionado.set(procesoEncontrado);
   }
 
@@ -68,7 +68,7 @@ export class NuevaFuenteComponent implements OnInit {
     }
 
     const datosFuente = {
-      idPp: this.procesoSeleccionado()?.acronimoProceso || '',
+      idPp: this.procesoSeleccionado()?.acronimo || '',
       fuente: this.fuente,
       linkFuente: this.linkFuente,
       anioEvento: this.anioEvento,

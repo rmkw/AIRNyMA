@@ -1,14 +1,14 @@
 export interface PpEconomicas {
-  id: number;
-  procesoProduccion: string;
-  acronimoProceso: string;
-  metodoGeneracion: string;
+  acronimo: string;
+  proceso: string;
+  metodo: string;
   objetivo: string;
-  poblacionObjeto: string;
-  unidadObservacion: string;
-  unidadAdministrativa: string;
+  pobjeto: string;
+  uobservacion: string;
+  unidad: string;
   periodicidad: string;
-  informacionInteresNacional: string;
+  iin: string;
   estatus: string;
-  comentarioPp: string;
+  comentarioS: null;
+  comentarioA: null;
 }

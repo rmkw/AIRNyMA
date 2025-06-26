@@ -20,7 +20,7 @@ export class FuentesListComponent implements OnInit {
   _router = inject(Router);
 
   procesoProduccion: string = '';
-  acronimoProceso: string = '';
+  acronimo: string = '';
 
   fuente = '';
   linkFuente = '';
@@ -47,17 +47,17 @@ export class FuentesListComponent implements OnInit {
       const _responsableRegister = localStorage.getItem('_id');
 
       this.procesoProduccion = procesoP.nombrePp;
-      this.acronimoProceso = procesoP.acronimo;
+      this.acronimo = procesoP.acronimo;
       this._responsableRegister = Number(_responsableRegister!);
     }
   }
   getFuentesByidPp() {
-    if (!this._responsableRegister || !this.acronimoProceso) {
+    if (!this._responsableRegister || !this.acronimo) {
       console.error('Responsable o acrónimo de proceso no definidos');
       return;
     }
     this._fuentesService
-      .getByIdPpAndResponsable(this.acronimoProceso, this._responsableRegister)
+      .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
       .subscribe({
         next: (response) => {
           console.log('Fuentes encontradas:', response.fuentes);
@@ -114,7 +114,7 @@ export class FuentesListComponent implements OnInit {
     }
 
     const datosFuente = {
-      idPp: this.acronimoProceso,
+      idPp: this.acronimo,
       fuente: this.fuente,
       linkFuente: this.linkFuente,
       anioEvento: this.anioEvento,

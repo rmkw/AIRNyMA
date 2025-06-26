@@ -34,10 +34,11 @@ export class ProcesoProduccionComponent implements OnInit {
   showWarning: boolean = false;
   mensajeAlerta = '';
 
-  direccionName:  number | undefined = undefined;
+  direccionName:  string | number | undefined = undefined;
 
   ngOnInit(): void {
     this.getDirecciones();
+
   }
 
   getDirecciones() {
@@ -57,21 +58,21 @@ export class ProcesoProduccionComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const nameDi = selectElement.value;
 
-    this.direccionName = parseInt(nameDi);
+    this.direccionName = nameDi;
 
     const selectedOption = this.procesoProduccionTag
       .nativeElement as HTMLSelectElement;
     selectedOption.selectedIndex = 0;
 
-    this.cargarProcesosProduccionByDireccionGeneral(parseInt(nameDi));
+    this.cargarProcesosProduccionByDireccionGeneral(nameDi);
   }
 
-  cargarProcesosProduccionByDireccionGeneral(dire: number | undefined) {
-    console.log(dire);
-    this._pp_Service.obtenerProcesosPorUnidad(dire).subscribe({
+  cargarProcesosProduccionByDireccionGeneral(dire: string |number| undefined) {
+
+    this._pp_Service.getPorDireccionGeneral(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
-        console.log(data)
+
       },
       error: (err) => {
         console.error('Error al obtener procesos por DG', err);
@@ -81,21 +82,25 @@ export class ProcesoProduccionComponent implements OnInit {
 
   seleccionarProceso(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const procesoId = Number(selectElement.value);
+    const proceso = selectElement.value;
+
 
     const procesoEncontrado =
-      this.arrProcesosPBydire.find((proceso) => proceso.id === procesoId) ||
-      null;
+      this.arrProcesosPBydire.find(
+        (procesoItem) => procesoItem.acronimo === proceso
+      ) || null;
 
     this.procesoSeleccionado.set(procesoEncontrado);
 
     this.comentario = procesoEncontrado
-      ? procesoEncontrado.comentarioPp || ''
+      ? procesoEncontrado.comentarioS || ''
       : '';
+
+
   }
 
   showAlertUpComentario() {
-    const id = this.procesoSeleccionado()?.id;
+    const id = this.procesoSeleccionado()?.acronimo;
     this.idProsesoSelect = id;
 
     if (!id) {
@@ -115,16 +120,16 @@ export class ProcesoProduccionComponent implements OnInit {
   confirmDeactivation() {
     const proceso = this.procesoSeleccionado();
 
-    if (!proceso || !proceso.id) {
+    if (!proceso || !proceso.acronimo) {
       console.warn('No hay un proceso seleccionado para actualizar');
       return;
     }
 
     this._pp_Service
-      .actualizarComentario(proceso.id, this.comentario)
+      .actualizarComentario(proceso.acronimo, this.comentario)
       .subscribe({
         next: (res) => {
-          this.cargarProcesosProduccionByDireccionGeneral(this.direccionName);
+          this.cargarProcesosProduccionByDireccionGeneral(this.direccionName!);
 
           // console.log('Comentario actualizado con éxito:', res);
           // this.mostrarAlerta.set(true);
@@ -149,7 +154,7 @@ export class ProcesoProduccionComponent implements OnInit {
     }
     console.log(_Pp);
     const procesoEditable = {
-      nombrePp: _Pp.nombreProceso,
+      nombrePp: _Pp.proceso,
       acronimo: _Pp.acronimo,
     };
     localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
