@@ -39,7 +39,7 @@
         <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
           Año del evento
         </label>
-        <input type="text" (input)="validateYear($event)" [(ngModel)]="anioEvento" maxlength="4" class="input input-sm input-bordered w-full "
+        <input type="text" (input)="validateYear($event)" [(ngModel)]="edicion" maxlength="4" class="input input-sm input-bordered w-full "
           placeholder="" />
       </div>
 
@@ -55,7 +55,7 @@
         <label class="block text-sm font-medium  mb-2 text-secondary" for="accesoLink">
           Liga de acceso a la fuente
         </label>
-        <input type="text" id="accesoLink" [(ngModel)]="linkFuente" class="input input-sm input-bordered w-full "
+        <input type="text" id="accesoLink" [(ngModel)]="url" class="input input-sm input-bordered w-full "
           placeholder="" />
       </div>
 
@@ -115,11 +115,11 @@
 
         <tr *ngFor="let fuente of fuentes; let i = index">
 
-          <td class="text-center">{{ fuente.idPp }}</td>
+          <td class="text-center">{{ fuente.acronimo }}</td>
           <td class="text-center">{{ fuente.fuente }}</td>
           <td class="text-center">
-            @if (fuente.linkFuente) {
-            <a [href]="fuente.linkFuente" class="text-blue-500 underline" target="_blank">
+            @if (fuente.url) {
+            <a [href]="fuente.url" class="text-blue-500 underline" target="_blank">
               Liga de acceso
             </a>
             } @else {
@@ -127,7 +127,7 @@
             }
           </td>
 
-          <td class="text-center">{{ fuente.anioEvento }}</td>
+          <td class="text-center">{{ fuente.edicion }}</td>
 
           <td class="text-center">{{ fuente.totalVariables }}</td>
 

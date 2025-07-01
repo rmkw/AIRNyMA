@@ -68,11 +68,11 @@ export class NuevaFuenteComponent implements OnInit {
     }
 
     const datosFuente = {
-      idPp: this.procesoSeleccionado()?.acronimo || '',
+      acronimo: this.procesoSeleccionado()?.acronimo || '',
       fuente: this.fuente,
-      linkFuente: this.linkFuente,
-      anioEvento: this.anioEvento,
-      comentario: this.comentarioF,
+      url: this.linkFuente,
+      edicion: this.anioEvento,
+      comentarioS: this.comentarioF,
     };
 
     console.log('Datos a registrar:', datosFuente);

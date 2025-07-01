@@ -50,84 +50,32 @@ export class FuenteIdentificacionComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this._ppEcoService
-      .getPpEcos()
-      .pipe(
-        tap((data) => {
-          this.ppEco.set(Array.isArray(data) ? data : []);
-          this.obtenerFuente();
-        }),
-        catchError((error) => {
-          console.error('Error al cargar datos:', error);
-          return of([]); // Retorna un arreglo vacío en caso de error
-        })
-      )
-      .subscribe();
 
-    this.valoresIniciales = {
-      fuente: this.fuente,
-      linkFuente: this.linkFuente,
-      anioEvento: this.anioEvento,
-      comentario: this.comentario,
-      idPp: this.procesoSeleccionado()?.acronimo || '',
-    };
+
+    this.obtenerFuente();
+
   }
 
-  ppEco = signal<PpEconomicas[]>([]);
-  procesoSeleccionado = signal<PpEconomicas | null>(null);
 
-  // ppEcoResource = rxResource({
-  //   request: () => ({}),
-  //   loader: ({ request }) => {
-  //     return this._ppEcoService.getPpEcos().pipe(
-  //       tap((data) => {
-  //         this.ppEco.set(Array.isArray(data) ? data : []);
-  //         console.log(this.ppEco(),'ppEco');
-  //       })
-  //     );
-  //   },
-  // });
 
-  seleccionarProceso(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const procesoId = selectElement.value;
-
-    const procesoEncontrado =
-      this.ppEco().find((proceso) => proceso.acronimo === procesoId) || null;
-
-    if (procesoEncontrado) {
-      this.procesoSeleccionado.set(procesoEncontrado);
-      this.idPp = procesoEncontrado.acronimo;
-    }
-  }
 
   obtenerFuente() {
     const fuenteData = localStorage.getItem('fuenteEditable');
     if (fuenteData) {
       const fuente = JSON.parse(fuenteData);
       this.fuenteState = fuente;
+      console.log(fuente)
 
       this.idFuente = fuente.idFuente;
-      this.idPp = fuente.idPp;
+      this.idPp = fuente.acronimo;
       this.responsableActualizacion = fuente.responsableActualizacion;
       this.fuente = fuente.fuente;
-      this.linkFuente = fuente.linkFuente;
-      this.anioEvento = fuente.anioEvento;
-      this.comentario = fuente.comentario;
+      this.linkFuente = fuente.url;
+      this.anioEvento = fuente.edicion;
+      this.comentario = fuente.comentarioS;
 
-      const procesoEncontrado =
-        this.ppEco().find((proceso) => proceso.acronimo === this.idPp) || null;
 
-      if (procesoEncontrado) {
-        this.procesoSeleccionado.set(procesoEncontrado);
-
-        this.procesoSeleccionadoId = procesoEncontrado.acronimo;
-      }
     }
-  }
-
-  getAcronimo(): string {
-    return this.procesoSeleccionado()?.acronimo || this.idPp || 'Acrónimo';
   }
 
   actualizarFuente() {
@@ -135,10 +83,11 @@ export class FuenteIdentificacionComponent implements OnInit {
       FiEcoResponce,
       'idFuente' | 'responsableActualizacion'
     > = {
+      acronimo: this.idPp,
       fuente: this.fuente,
-      linkFuente: this.linkFuente,
-      anioEvento: this.anioEvento,
-      comentario: this.comentario,
+      url: this.linkFuente,
+      edicion: this.anioEvento,
+      comentarioS: this.comentario,
     };
 
     this._fuenteService

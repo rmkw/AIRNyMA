@@ -23,7 +23,7 @@ export class FuenteIdentificacionService {
     }
 
     return this.http
-      .get<FiEcoResponce[]>(`${baseUrl}/fi-economicas/${userId}`)
+      .get<FiEcoResponce[]>(`${baseUrl}/fuentes/${userId}`)
       .pipe(
         catchError((error) => {
           console.error('Error al obtener fuentes:', error);
@@ -33,26 +33,26 @@ export class FuenteIdentificacionService {
   }
 
   getByIdPpAndResponsable(
-    idPp: string,
+    acronimo: string,
     responsableRegister: number
   ): Observable<any> {
     const params = new HttpParams()
-      .set('idPp', idPp)
+      .set('acronimo', acronimo)
       .set('responsableRegister', responsableRegister.toString());
 
-    return this.http.get(`${baseUrl}/fi-economicas/fuentes`, { params });
+    return this.http.get(`${baseUrl}/fuentes/byResponsable`, { params });
   }
 
   //!REGISTRAR FUENTE
   registrarFuente(datos: {
-    idPp: string;
+    acronimo: string;
     fuente: string;
-    linkFuente: string;
-    anioEvento: string | number;
-    comentario: string;
+    url: string;
+    edicion: string | number;
+    comentarioS: string;
   }): Observable<FiEcoResponce | null> {
     const userId = this._authService.user()?.id;
-    console.log('Usuario autenticado en servicio fuente:', userId);
+    // console.log('Usuario autenticado en servicio fuente:', userId);
 
     // Si no hay usuario logeado, no se puede registrar
     if (!userId) {
@@ -65,10 +65,10 @@ export class FuenteIdentificacionService {
       ...datos,
       responsableRegister: userId,
     };
-    console.log('Datos enviados al backend:', datosConResponsable);
+    // console.log('Datos enviados al backend:', datosConResponsable);
 
     return this.http
-      .post<FiEcoResponce>(`${baseUrl}/fi-economicas`, datosConResponsable)
+      .post<FiEcoResponce>(`${baseUrl}/fuentes`, datosConResponsable)
       .pipe(
         catchError((error) => {
           console.error('Error al registrar fuente:', error);
@@ -91,7 +91,7 @@ export class FuenteIdentificacionService {
     console.log('Enviando datos al backend:', payload);
 
     return this.http
-      .put<FiEcoResponce>(`${baseUrl}/fi-economicas/${idFuente}`, payload)
+      .put<FiEcoResponce>(`${baseUrl}/fuentes/${idFuente}`, payload)
       .pipe(
         catchError((error) => {
           console.error('Error al editar fuente:', error);
@@ -102,7 +102,7 @@ export class FuenteIdentificacionService {
 
   deactivateRecord(id: number): Observable<any> {
     return this.http.delete(
-      `${baseUrl}/fi-economicas/${id}/delete-full`,
+      `${baseUrl}/fuentes/${id}`,
 
       { withCredentials: true }
     );

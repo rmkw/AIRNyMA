@@ -23,8 +23,8 @@ export class FuentesListComponent implements OnInit {
   acronimo: string = '';
 
   fuente = '';
-  linkFuente = '';
-  anioEvento: number | string = '';
+  url = '';
+  edicion: number | string = '';
   comentarioF = '';
 
   flagVarButton: boolean = true;
@@ -60,9 +60,15 @@ export class FuentesListComponent implements OnInit {
       .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
       .subscribe({
         next: (response) => {
-          console.log('Fuentes encontradas:', response.fuentes);
-          this.fuentes = response.fuentes;
-          this.loading = false;
+          // console.log('✅ Resultado del backend:', response);
+
+          this.fuentes = response;
+          if (this.fuentes.length > 0) {
+            this.loading = false;
+          } else {
+            this.loading = true;
+          }
+
         },
         error: (err) => {
           console.error('Error al obtener fuentes:', err);
@@ -94,18 +100,18 @@ export class FuentesListComponent implements OnInit {
     }
 
     // Si todo está bien, asignamos el valor limpio
-    this.anioEvento = cleanedValue;
+    this.edicion = cleanedValue;
   }
 
   limpiarAnio() {
-    this.anioEvento = '';
+    this.edicion = '';
   }
 
   nuevaFuente() {
     if (
       !this.fuente ||
-      !this.linkFuente ||
-      !this.anioEvento ||
+      !this.url ||
+      !this.edicion ||
       !this.comentarioF
     ) {
       console.error('Todos los campos son obligatorios');
@@ -114,14 +120,14 @@ export class FuentesListComponent implements OnInit {
     }
 
     const datosFuente = {
-      idPp: this.acronimo,
+      acronimo: this.acronimo,
       fuente: this.fuente,
-      linkFuente: this.linkFuente,
-      anioEvento: this.anioEvento,
-      comentario: this.comentarioF,
+      url: this.url,
+      edicion: this.edicion,
+      comentarioS: this.comentarioF,
     };
 
-    console.log('Datos a registrar:', datosFuente);
+    // console.log('Datos a registrar:', datosFuente);
 
     this._fuentesService.registrarFuente(datosFuente).subscribe(
       (response) => {
@@ -145,19 +151,19 @@ export class FuentesListComponent implements OnInit {
   }
   limpiarFormulario() {
     this.fuente = '';
-    this.linkFuente = '';
-    this.anioEvento = '';
+    this.url = '';
+    this.edicion = '';
     this.comentarioF = '';
   }
   editarFuente(_fuente: FiEcoResponce) {
     localStorage.removeItem('fuenteEditable');
     const fuenteEditable = {
       idFuente: _fuente.idFuente,
-      idPp: _fuente.idPp,
+      acronimo: _fuente.acronimo,
       fuente: _fuente.fuente,
-      linkFuente: _fuente.linkFuente,
-      anioEvento: _fuente.anioEvento,
-      comentario: _fuente.comentario,
+      url: _fuente.url,
+      edicion: _fuente.edicion,
+      comentarioS: _fuente.comentarioS,
       responsableActualizacion: _fuente.responsableActualizacion,
     };
     localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
@@ -169,8 +175,8 @@ export class FuentesListComponent implements OnInit {
     localStorage.removeItem('fuenteEditable');
     const fuenteEditable = {
       idFuente: _fuente.idFuente,
-      idPp: _fuente.idPp,
-      anioEvento: _fuente.anioEvento,
+      idPp: _fuente.acronimo,
+      edicion: _fuente.edicion,
     };
     localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
     this._router.navigate(['/nueva-variable']);
@@ -196,7 +202,7 @@ export class FuentesListComponent implements OnInit {
   desactivar(id: number): void {
     this._fuentesService.deactivateRecord(id).subscribe({
       next: (res) => {
-        console.log('Registro desactivado:', res);
+        // console.log('Registro eliminado:', res);
         this.getFuentesByidPp();
       },
       error: (err) => {
