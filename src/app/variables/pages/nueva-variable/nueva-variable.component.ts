@@ -514,21 +514,22 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   varSerieAnio: string = '';
 
   _respons_var_registrada: {} = {};
-  _respons_var_idUnique: number | undefined = undefined;
+  _respons_var_idUnique: string | undefined = undefined;
 
   crearVarInNewVars() {
     const nuevaVariable: VariableDTO = {
-      idVariable: this.idVariable,
+      idA: this.idVariable + '-' + this._anioEvento, // ahora se usa como ID completo
+      idS: this.idVariable, // ID corto (como "PIB", por ejemplo)
       idFuente: this._idFuente,
-      idPp: this._idPp,
-      nombreVariable: this.nombreVariable,
-      definicionVar: this.definicionVariable,
-      linkVar: this._linkVar,
-      comentarioVar: this.comentarioVariable,
-      alineacionMdea: this.flagMDEArelation,
-      alineacionOds: this.flagODSrelation,
+      acronimo: this._idPp, // proceso
+      nombre: this.nombreVariable,
+      definicion: this.definicionVariable,
+      url: this._linkVar,
+      comentarioS: this.comentarioVariable,
+      mdea: this.flagMDEArelation,
+      ods: this.flagODSrelation,
       responsableRegister: this._responsableRegister!,
-      varSerieAnio: this.idVariable + '-' + this._anioEvento,
+
     };
 
     this._varService
@@ -566,7 +567,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         console.info('Variable registrada correctamente');
 
         this._respons_var_registrada = data;
-        this._respons_var_idUnique = data.idUnique;
+        this._respons_var_idUnique = data.idA;
         console.log('respuesta con id: ', this._respons_var_registrada);
       });
   }
@@ -641,17 +642,17 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
     const nuevaRelacion: RelationVarWhitMDEA = {
-      idVariableUnique: this._respons_var_idUnique,
-      idVariable: this.idVariable,
+      idA: this._respons_var_idUnique,
+      idS: this.idVariable,
 
-      idComponente: this.idComponente.toString(),
-      idSubcomponente: this.idSubcomponente.toString(),
-      idTopico: this.idTopico.toString(),
-      idVariableMdeaPull: this.idVariableMDEAPULL,
-      idEstadistico: this.idEstadistico.toString(),
-      nivelContribucion: this.nivelContribucionContenidosMdeaRelation,
-      comentarioRelacionMdea: this.comentariopullMdea,
-      idVarCaracterizada: this.idVariable + '-' + this._anioEvento,
+      componente: this.idComponente.toString(),
+      subcomponente: this.idSubcomponente.toString(),
+      tema: this.idTopico.toString(),
+      estadistica1: this.idVariableMDEAPULL,
+      estadistica2: this.idEstadistico.toString(),
+      contribucion: this.nivelContribucionContenidosMdeaRelation,
+      comentarioS: this.comentariopullMdea,
+
     };
     console.log('mandando al back: ', nuevaRelacion);
 
@@ -810,7 +811,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       });
   }
 
-  eliminarRelacion(id: number) {
+  eliminarRelacion(id: string) {
     this._service_relation_ODS_VAR.eliminarRelacion_ods(id).subscribe({
       next: () => {
         console.log(`Relación con id ${id} eliminada correctamente`);
@@ -828,14 +829,14 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
     const nuevaRelacion: RelacionODS = {
-      idVariableUnique: this._respons_var_idUnique,
-      idVariable: this.idVariable,
-      idVarCaracterizada: this.idVariable + '-' + this._anioEvento,
-      idObj: this.idObjetivo.toString(),
-      idMeta: this.idMeta.toString(),
-      idIndicador: this.idIndicador.toString(),
-      nivelContribucion: this._ods_nivelContribucion,
-      comentarioRelacionODS: this._ods_comentarioRelacionODS,
+      idA: this._respons_var_idUnique,
+      idS: this.idVariable,
+
+      objetivo: this.idObjetivo.toString(),
+      meta: this.idMeta.toString(),
+      indicador: this.idIndicador.toString(),
+      contribucion: this._ods_nivelContribucion,
+      comentarioS: this._ods_comentarioRelacionODS,
     };
 
     this._service_relation_ODS_VAR
@@ -860,12 +861,12 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
   registrarTema() {
     const nuevoTema: TemaCobNec = {
-      temaCobNec: this.temaCobertura,
-      nivelContribucion: this.nivelContribucion,
-      viabEstDer: this.viabilidad,
-      propEstDer: this.propuesta,
-      comentarioPertinencia: this.comentarioPertinencia,
-      idVariableUnique: this._respons_var_idUnique!,
+      pertinencia: this.temaCobertura,
+      contribucion: this.nivelContribucion,
+      viabilidad: this.viabilidad,
+      propuesta: this.propuesta,
+      comentarioS: this.comentarioPertinencia,
+      idA: this._respons_var_idUnique!,
     };
 
     this._temaCobNec_Service.crearTema(nuevoTema).subscribe({
@@ -969,16 +970,16 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
   pegarDatosVariable(event: VariableDTO) {
     console.log(event);
-    this.nombreVariable = event.nombreVariable;
-    this.definicionVariable = event.definicionVar!;
-    this.comentarioVariable = event.comentarioVar!;
+    this.nombreVariable = event.nombre;
+    this.definicionVariable = event.definicion!;
+    this.comentarioVariable = event.comentarioS!;
   }
   pegarDatosPertinencia(event: TemaCobNec) {
-    this.temaCobertura = event.temaCobNec;
-    this.nivelContribucion = event.nivelContribucion!;
-    this.viabilidad = event.viabEstDer!;
-    this.propuesta = event.propEstDer!;
-    this.comentarioPertinencia = event.comentarioPertinencia!;
+    this.temaCobertura = event.pertinencia;
+    this.nivelContribucion = event.contribucion!;
+    this.viabilidad = event.viabilidad!;
+    this.propuesta = event.propuesta!;
+    this.comentarioPertinencia = event.comentarioS!;
 
     this.finalizarCaptura = false;
   }

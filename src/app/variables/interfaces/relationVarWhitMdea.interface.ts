@@ -1,12 +1,11 @@
 export interface RelationVarWhitMDEA {
-  idVariable: string;
-  idVariableUnique?: number;
-  idComponente: string | number;
-  idSubcomponente: string | number;
-  idTopico: string | number;
-  idVariableMdeaPull: string | number;
-  idEstadistico: string | number;
-  nivelContribucion: string ;
-  comentarioRelacionMdea: string;
-  idVarCaracterizada: string;
+  idA: string | undefined;
+  idS: string;
+  componente: string | number;
+  subcomponente: string | number;
+  tema: string | number;
+  estadistica1: string | number;
+  estadistica2: string | number;
+  contribucion: string;
+  comentarioS: string;
 }

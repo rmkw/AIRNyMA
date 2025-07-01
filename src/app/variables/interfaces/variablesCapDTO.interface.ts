@@ -1,54 +1,48 @@
 export interface VariableDTO {
-  idUnique?: number;
-  idVariable: string;
+  idA: string;
+  idS: string;
   idFuente: number;
-  idPp: string;
-  nombreVariable: string;
-  definicionVar?: string;
-  linkVar?: string;
-  comentarioVar?: string;
-  varSerieAnio?: string;
-  alineacionMdea: boolean;
-  alineacionOds: boolean;
+  acronimo: string;
+  nombre: string;
+  definicion: string;
+  url: string;
+  comentarioS?: string;
+  mdea: boolean;
+  ods: boolean;
   responsableRegister: number;
   responsableActualizacion?: number;
-  mdeas?: MdeaDTO[]; // <-- Agrega esta línea
-  ods?: OdsDTO[]; // <-- Agrega esta línea
+  alineacionMdea?: MdeaDTO[]; // <-- Agrega esta línea
+  alineacionOds?: OdsDTO[]; // <-- Agrega esta línea
   pertinencia?: TemaCobNecDTO[];
 }
 
 // Define las interfaces para los objetos anidados
 export interface MdeaDTO {
-  id: number;
-  idVarCaracterizada: string;
-  idVariableUnique: number;
-  idVariable: string;
-  idComponente: string;
-  idSubcomponente: string;
-  idTopico: string;
-  idVariableMdeaPull: string;
-  idEstadistico: string;
-  nivelContribucion: string;
-  comentarioRelacionMdea: string;
+  idA: string;
+  idS: number;
+  componente: string | number;
+  subcomponente: string | number;
+  tema: string | number;
+  estadistica1: string | number;
+  estadistica2: string | number;
+  contribucion: string;
+  comentarioS: string;
 }
 
 export interface OdsDTO {
-  idUnique: number;
-  idVariableUnique: number;
-  idVariable: string;
-  idVarCaracterizada: string;
-  idObj: string;
-  idMeta: string;
-  idIndicador: string;
-  nivelContribucion: string;
-  comentarioRelacionODS: string;
+  idA: string | undefined;
+  idS: string;
+  objetivo: string;
+  meta: string;
+  indicador: string;
+  contribucion: string;
+  comentarioS: string;
 }
 export interface TemaCobNecDTO {
-  id: number;
-  temaCobNec: string;
-  nivelContribucion: string;
-  viabEstDer: string;
-  propEstDer: string;
-  comentarioPertinencia: string;
-  idVariableUnique: number;
+  idA: string | undefined;
+  pertinencia: string;
+  contribucion?: string;
+  viabilidad?: string;
+  propuesta?: string;
+  comentarioS?: string;
 }

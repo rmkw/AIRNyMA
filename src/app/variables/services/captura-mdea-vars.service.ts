@@ -17,7 +17,7 @@ export class CapturaMdeaVarService {
   }
   // GET relaciones por idVariableUnique
   getRelacionesPorVariable(
-    idVariableUnique: number
+    idVariableUnique: string
   ): Observable<RelationVarWhitMDEA[]> {
     return this.http.get<RelationVarWhitMDEA[]>(
       `${baseUrl}/relacion-mdea/${idVariableUnique}`

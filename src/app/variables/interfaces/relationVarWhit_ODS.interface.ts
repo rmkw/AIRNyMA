@@ -1,11 +1,9 @@
 export interface RelacionODS {
-  idUnique?: number;
-  idVariableUnique?: number;
-  idVariable: string;
-  idVarCaracterizada?: string;
-  idObj?: string;
-  idMeta?: string;
-  idIndicador?: string;
-  nivelContribucion?: string;
-  comentarioRelacionODS?: string;
+  idA: string | undefined;
+  idS: string;
+  objetivo: string;
+  meta: string;
+  indicador: string;
+  contribucion: string;
+  comentarioS: string;
 }

@@ -404,15 +404,15 @@
             <!-- row 1 -->
             @for (itemRelation of relacionesODS; track $index) {
             <tr>
-              <th>{{'['+'O: '+ itemRelation.idObj +']' +
-                '['+' M:'+ itemRelation.idMeta +']' +
-                '['+' I:'+itemRelation.idIndicador +']'}}</th>
+              <th>{{'['+'O: '+ itemRelation.objetivo +']' +
+                '['+' M:'+ itemRelation.meta +']' +
+                '['+' I:'+itemRelation.indicador +']'}}</th>
 
-              <th class="text-center">{{itemRelation.nivelContribucion}}</th>
+              <th class="text-center">{{itemRelation.contribucion}}</th>
 
               <th class="text-center">
                 <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
-                  (click)="eliminarRelacion(itemRelation.idUnique!)">Eliminar</button>
+                  (click)="eliminarRelacion(itemRelation.idA!)">Eliminar</button>
               </th>
             </tr>
             }
@@ -529,22 +529,22 @@
       <div class="card bg-base-100 shadow-xl mt-2" style="width: 25rem;">
         <div class="card-body">
           <h3 class="font-bold text-secondary text-lg text-center">
-            {{ item.varSerieAnio }}
+            {{ item.idA }}
           </h3>
 
           <!-- Información básica -->
           <div class="mb-4">
             <p class="text-primary font-semibold text-lg">Nombre:</p>
-            <p>{{ item.nombreVariable }}</p>
+            <p>{{ item.nombre }}</p>
 
             <p class="text-primary font-semibold text-lg mt-2">Definición:</p>
-            <p>{{ item.definicionVar || 'No especificado' }}</p>
+            <p>{{ item.definicion || 'No especificado' }}</p>
 
             <p class="text-primary font-semibold text-lg mt-2">Link:</p>
-            <p>{{ item.linkVar || 'No disponible' }}</p>
+            <p>{{ item.url || 'No disponible' }}</p>
 
             <p class="text-primary font-semibold text-lg mt-2">Comentario:</p>
-            <p>{{ item.comentarioVar || 'No disponible' }}</p>
+            <p>{{ item.comentarioS || 'No disponible' }}</p>
 
             <button class="btn btn-block btn-sm  btn-primary mt-3" (click)="pegarDatosVariable(item)">
               Pegar Datos
@@ -555,14 +555,14 @@
           <div class="border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">MDEA</h3>
 
-            <ng-container *ngIf="item.mdeas && item.mdeas.length > 0; else noMdeas">
-              <div *ngFor="let mdea of item.mdeas" class="mb-3 p-2 bg-base-200 rounded-lg">
+            <ng-container *ngIf="item.alineacionMdea && item.alineacionMdea.length > 0; else noMdeas">
+              <div *ngFor="let mdea of item.alineacionMdea" class="mb-3 p-2 bg-base-200 rounded-lg">
                 <ul class="text-sm space-y-1">
-                  <li><span class="font-semibold">Componente: {{ mdea.idComponente }}</span> </li>
-                  <li><span class="font-semibold">Subcomponente: {{ mdea.idSubcomponente || '-' }}</span> </li>
-                  <li><span class="font-semibold">Tema: {{ mdea.idTopico || '-' }}</span> </li>
-                  <li><span class="font-semibold">Estadístico 1: {{ mdea.idVariableMdeaPull || '-' }}</span> </li>
-                  <li><span class="font-semibold">Estadístico 2: {{ mdea.idEstadistico || '-' }}</span> </li>
+                  <li><span class="font-semibold">Componente: {{ mdea.componente }}</span> </li>
+                  <li><span class="font-semibold">Subcomponente: {{ mdea.subcomponente || '-' }}</span> </li>
+                  <li><span class="font-semibold">Tema: {{ mdea.tema || '-' }}</span> </li>
+                  <li><span class="font-semibold">Estadístico 1: {{ mdea.estadistica1 || '-' }}</span> </li>
+                  <li><span class="font-semibold">Estadístico 2: {{ mdea.estadistica2 || '-' }}</span> </li>
                 </ul>
               </div>
             </ng-container>
@@ -583,12 +583,12 @@
           <div class="mt-4 border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">ODS</h3>
 
-            <ng-container *ngIf="item.ods && item.ods.length > 0; else noOds">
-              <div *ngFor="let ods of item.ods" class="mb-3 p-2 bg-base-200 rounded-lg">
+            <ng-container *ngIf="item.alineacionOds && item.alineacionOds.length > 0; else noOds">
+              <div *ngFor="let ods of item.alineacionOds" class="mb-3 p-2 bg-base-200 rounded-lg">
                 <ul class="text-sm space-y-1">
-                  <li><span class="font-semibold">Objetivo: {{ ods.idObj }}</span> </li>
-                  <li><span class="font-semibold">Meta: {{ ods.idMeta }}</span> </li>
-                  <li><span class="font-semibold">Indicador: {{ ods.idIndicador || '-' }}</span> </li>
+                  <li><span class="font-semibold">Objetivo: {{ ods.objetivo }}</span> </li>
+                  <li><span class="font-semibold">Meta: {{ ods.meta }}</span> </li>
+                  <li><span class="font-semibold">Indicador: {{ ods.indicador || '-' }}</span> </li>
                 </ul>
               </div>
             </ng-container>
@@ -613,16 +613,16 @@
               <div *ngFor="let per of item.pertinencia" class="mb-2 p-2 rounded-lg">
                 <div class="mb-2">
                   <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
-                  <p>{{ per.temaCobNec }}</p>
+                  <p>{{ per.pertinencia }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Nivel de contribución:</p>
-                  <p>{{ per.nivelContribucion || 'No especificado' }}</p>
+                  <p>{{ per.contribucion || 'No especificado' }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Viabilidad de generación:</p>
-                  <p>{{ per.viabEstDer || 'No disponible' }}</p>
+                  <p>{{ per.viabilidad || 'No disponible' }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
-                  <p>{{ per.propEstDer || 'No disponible' }}</p>
+                  <p>{{ per.propuesta || 'No disponible' }}</p>
 
                   <button class="btn btn-block btn-sm  btn-primary mt-4" [disabled]="DISABLE_temaCobertura" (click)="pegarDatosPertinencia(per)">
                     Pegar Datos

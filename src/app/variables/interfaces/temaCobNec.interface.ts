@@ -1,9 +1,9 @@
 export interface TemaCobNec {
-  idUnique?: number;
-  temaCobNec: string;
-  nivelContribucion?: string;
-  viabEstDer?: string;
-  propEstDer?: string;
-  comentarioPertinencia?: string;
-  idVariableUnique: number;
+  idA: string | undefined;
+  pertinencia: string;
+  contribucion?: string;
+  viabilidad?: string;
+  propuesta?: string;
+  comentarioS?: string;
+
 }
