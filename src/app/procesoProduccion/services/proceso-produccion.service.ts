@@ -27,7 +27,7 @@ export class ppEcoService {
   // }
 
   getProcesosProduccion(): Observable<interface_ProcesoP[]> {
-    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesosP`, {
+    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesos`, {
       withCredentials: true,
     });
   }
@@ -35,19 +35,19 @@ export class ppEcoService {
   getPorDireccionGeneral(direccionGeneral: string | number | undefined): Observable<interface_ProcesoP[]>{
     const params = new HttpParams().set('unidad_administrativa', direccionGeneral!);
 
-    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesosP/buscar`, {params, withCredentials: true},)
+    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesos/buscar`, {params, withCredentials: true},)
   }
 
   obtenerProcesosPorUnidad(idUnidad: number | undefined): Observable<interface_ProcesoP[]> {
     return this.http.get<interface_ProcesoP[]>(
-      `${baseUrl}/procesosP/unidad/${idUnidad}`
+      `${baseUrl}/procesos/unidad/${idUnidad}`
     );
   }
 
   actualizarComentario(id: number | string , comentario: string): Observable<any> {
     const body = { comentario };
 
-    return this.http.put(`${baseUrl}/procesosP/comentario/${id}`, body, {
+    return this.http.put(`${baseUrl}/procesos/comentario/${id}`, body, {
       withCredentials: true,
     });
   }

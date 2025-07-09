@@ -11,7 +11,7 @@ export class TemaCobNecService {
   private http = inject(HttpClient);
 
   crearTema(data: TemaCobNec): Observable<TemaCobNec> {
-    return this.http.post<TemaCobNec>(`${baseUrl}/tema-cob-nec`, data, {
+    return this.http.post<TemaCobNec>(`${baseUrl}/pertinencia`, data, {
       withCredentials: true,
     });
   }

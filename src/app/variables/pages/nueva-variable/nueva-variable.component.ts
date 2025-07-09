@@ -129,10 +129,13 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getComponentes() {
     this._mdeaService.getComponentes().subscribe((data) => {
       this.arrComponentes = data;
+      console.log(data)
     });
   }
-  getSubcomponentes(idComp: number | string) {
-    this._mdeaService.getSubcomponentes(idComp).subscribe((data) => {
+  getSubcomponentes(idComponente: number | string) {
+    console.log('idComp: ', idComponente);
+    this._mdeaService.getSubcomponentes(idComponente).subscribe((data) => {
+      console.log(data)
       this.arrSubcompo = data;
     });
   }
@@ -158,6 +161,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         idVar
       )
       .subscribe((data) => {
+        console.log(data)
         this.arrEstadisticos = data;
       });
   }
@@ -351,6 +355,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getObjetivos() {
     this._odsServices.getObjetivos().subscribe((data) => {
       this.arrODS = data;
+      console.log(data)
     });
   }
   getMetas(idObj: number | string) {
@@ -475,7 +480,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       this._idFuente = fuente.idFuente;
       this._idPp = fuente.idPp;
       this._responsableRegister = Number(_responsableRegister!);
-      this._anioEvento = fuente.anioEvento;
+      this._anioEvento = fuente.edicion;
 
       console.log('_idFuente:', this._idFuente);
       console.log('_idPp:', this._idPp);

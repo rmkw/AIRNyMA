@@ -13,17 +13,17 @@ export class CapturaMdeaVarService {
   private http = inject(HttpClient);
 
   registrarRelacion(relacion: RelationVarWhitMDEA): Observable<any> {
-    return this.http.post<any>(`${baseUrl}/relacion-mdea`, relacion);
+    return this.http.post<any>(`${baseUrl}/mdea`, relacion);
   }
   // GET relaciones por idVariableUnique
   getRelacionesPorVariable(
     idVariableUnique: string
   ): Observable<RelationVarWhitMDEA[]> {
     return this.http.get<RelationVarWhitMDEA[]>(
-      `${baseUrl}/relacion-mdea/${idVariableUnique}`
+      `${baseUrl}/mdea/${idVariableUnique}`
     );
   }
   eliminarRelacion(id: number): Observable<void> {
-    return this.http.delete<void>(`${baseUrl}/relacion-mdea/${id}`);
+    return this.http.delete<void>(`${baseUrl}/mdea/${id}`);
   }
 }

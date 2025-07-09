@@ -12,18 +12,18 @@ export class relacionODS_Service {
   private http = inject(HttpClient);
 
   registrarRelacion_ods(relacion: RelacionODS): Observable<any> {
-    return this.http.post<any>(`${baseUrl}/relacion-ods`, relacion);
+    return this.http.post<any>(`${baseUrl}/ods`, relacion);
   }
   getRelacionesPorVariable_ods(
     idVariableUnique: string
   ): Observable<RelacionODS[]> {
     return this.http.get<RelacionODS[]>(
-      `${baseUrl}/relacion-ods/${idVariableUnique}`,
+      `${baseUrl}/ods/${idVariableUnique}`,
       { withCredentials: true }
     );
   }
   eliminarRelacion_ods(id: string): Observable<void> {
-    return this.http.delete<void>(`${baseUrl}/relacion-ods/${id}`, {
+    return this.http.delete<void>(`${baseUrl}/ods/${id}`, {
       withCredentials: true,
     });
   }

@@ -16,34 +16,42 @@ export class MdeaService {
       .pipe(catchError(() => of([])));
   }
 
-  getSubcomponentes(idComp: number | string): Observable<any[]> {
-    return this.http.get<any[]>(`${baseUrl}/mdea/subcomponente/comp/${idComp}`);
+  getSubcomponentes(idComponente: number | string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${baseUrl}/mdea/subcomponente/comp/${idComponente}`
+    );
   }
 
-  getTopicos(idComp: number | string, idSub: number | string): Observable<any[]> {
+  getTopicos(
+    idComponente: number | string,
+    idSubcomponente: number | string
+  ): Observable<any[]> {
+    console.log(idSubcomponente);
     return this.http.get<any[]>(
-      `${baseUrl}/mdea/topicos/comp/${idComp}/sub/${idSub}`
+      `${baseUrl}/mdea/topicos/comp/${idComponente}/sub/${idSubcomponente}`
     );
   }
 
   getVariables(
-    idComp: number | string,
-    idSub: number | string,
-    idTop: number | string
+    idComponente: number | string,
+    idSubcomponente: number | string,
+    idTema: number | string
   ): Observable<any[]> {
     return this.http.get<any[]>(
-      `${baseUrl}/mdea/variables/comp/${idComp}/sub/${idSub}/top/${idTop}`
+      `${baseUrl}/mdea/estadistico1/id_componente/${idComponente}/id_subcomponente/${idSubcomponente}/id_tema/${idTema}`
     );
   }
 
   getEstadisticos(
-    idComp: number | string,
-    idSub: number | string,
-    idTop: number | string,
-    idVar: string | number
+    idComponente: number | string,
+    idSubcomponente: number | string,
+    idTema: number | string,
+    idEstadistico1: string | number
   ): Observable<any[]> {
     return this.http.get<any[]>(
-      `${baseUrl}/mdea/estadisticos/comp/${idComp}/sub/${idSub}/top/${idTop}/var/${idVar}`
+      `${baseUrl}/mdea/estadistico2/componente/${idComponente}/subcomponente/${idSubcomponente}/tema/${idTema}/estadistico1/${idEstadistico1}`
     );
   }
+
+
 }
