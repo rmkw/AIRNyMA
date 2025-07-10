@@ -12,7 +12,10 @@ export class VariableService {
 
   getVars(responsableRegister: number, idFuente: number): Observable<any> {
     return this.http.get<any>(
-      `${baseUrl}/variables/filtered/${responsableRegister}/${idFuente}`
+      `${baseUrl}/variables/filtered/${responsableRegister}/${idFuente}`,
+      {
+        withCredentials: true,
+      }
     );
   }
 
@@ -20,8 +23,8 @@ export class VariableService {
     return this.http.post<VariableDTO>(`${baseUrl}/variables`, variable);
   }
 
-  deleteVariable(id: number) {
-    return this.http.delete(`${baseUrl}/variables/${id}`, {
+  deleteVariable(idA: string) {
+    return this.http.delete(`${baseUrl}/variables/delete/${idA}`, {
       withCredentials: true,
     });
   }

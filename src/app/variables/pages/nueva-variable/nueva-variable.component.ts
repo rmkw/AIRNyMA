@@ -947,8 +947,9 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
 
   @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
-  idDelete: number | undefined = undefined;
-  eliminarVariable(id: number) {
+  idDelete: string | undefined = undefined;
+  eliminarVariable(id: string) {
+
     this.modalEliminar.nativeElement.showModal();
 
     this.idDelete = id;
@@ -962,7 +963,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this._varService.deleteVariable(this.idDelete!).subscribe({
       next: () => {
         this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
-          (v) => v.idUnique !== this.idDelete!
+          (v) => v.idA !== this.idDelete!
         );
       },
       error: (err) => {

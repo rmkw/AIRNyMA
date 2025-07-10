@@ -456,18 +456,18 @@
           @for ( varItem of arrVARIABLES_REGISTER; track $index) {
 
           <tr>
-            <td class="">{{ varItem.idVariable }}</td>
-            <td>{{varItem.nombreVariable }}</td>
-            <td>{{ varItem.definicionVar }}</td>
+            <td class="">{{ varItem.idS }}</td>
+            <td>{{varItem.nombre }}</td>
+            <td>{{ varItem.definicion }}</td>
             <td class="text-center">
-              @if (varItem.alineacionMdea) {
+              @if (varItem.mdea) {
               <span class="text-green-600">✔️</span>
               } @else {
               <span class="text-red-600">❌</span>
               }
             </td>
             <td class="text-center">
-              @if (varItem.alineacionOds) {
+              @if (varItem.ods) {
               <span class="text-green-600">✔️</span>
               } @else {
               <span class="text-red-600">❌</span>
@@ -478,7 +478,7 @@
                 Ver
               </button> -->
               <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2"
-                (click)="eliminarVariable(varItem.idUnique)">
+                (click)="eliminarVariable(varItem.idA)">
                 Eliminar
               </button>
             </td>
