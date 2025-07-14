@@ -24,7 +24,7 @@
       </ul>
     </div>
 
-    <a routerLink="/" class="btn btn-ghost text-xl font-montserrat">
+    <a routerLink="/" class="btn btn-sm btn-ghost text-xl font-montserrat">
       <span class="text-base-100">
         Captura
       </span><span class="text-secondary">| Forms </span>
@@ -33,7 +33,7 @@
 
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Iniciar flujo de captura de información</a>
+      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Iniciar flujo de captura de información</a>
       </li>
       <!-- <li><a  (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Fuentes de Identificación</a></li> -->
 
@@ -45,11 +45,19 @@
     </ul>
   </div>
 
-  <div class="navbar-end gap-4">
+  <div class="navbar-end gap-2">
 
-    <div class="relative">
+
+
+
+    @if (userName()) {
+    <button class="btn btn-sm btn-ghost text-slate-300">
+      {{ userName() }}
+    </button>
+
+
       <!-- Botón para abrir el dropdown -->
-      <button class="btn btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
+      <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
         Theme
         <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
@@ -69,13 +77,10 @@
           </label>
         </li>
       </ul>
-    </div>
 
 
-    @if (userName()) {
-    <button class="btn btn-ghost text-slate-300">
-      {{ userName() }}
-    </button>
+
+
     <button class="btn btn-sm btn-error" (click)="_authService.logout()">
       Salir
     </button>

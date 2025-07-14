@@ -131,6 +131,7 @@ export class authService {
       localStorage.setItem('userName', resp.user.nombre);
       localStorage.setItem('roles', JSON.stringify(resp.user.roles));
       localStorage.setItem('useResponce', JSON.stringify(resp.user));
+
     } else {
       console.warn(
         '⚠️ No hay usuario autenticado, no se guardan datos en localStorage'

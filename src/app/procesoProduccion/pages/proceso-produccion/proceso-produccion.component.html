@@ -1,4 +1,5 @@
-<div class="container mx-auto mt-10">
+<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-5">
+
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Caracterización del proceso de producción</h1>
     <button class="btn btn-outline btn-sm btn-primary" (click)="setLocalStorage(procesoSeleccionado()!)">
@@ -50,7 +51,7 @@
       <label class="block text-sm font-medium mb-2 text-secondary ">
         Estatus
       </label>
-      <button class="btn px-10 btn-sm text-center" [ngClass]="{
+      <button class="btn btn-sm text-center" [ngClass]="{
                                   'btn-success': procesoSeleccionado()?.estatus === 'Activo',
                                   'btn-error': procesoSeleccionado()?.estatus === 'Inactivo'
                                 }">
@@ -91,7 +92,7 @@
 
     <div class="col-span-1 text-center">
       <label class="block text-sm font-medium mb-2 text-secondary">
-        Variables Capturadas
+        Variables
       </label>
       <h2 class="text-lg font-semibold">
         {{ '-' }}
@@ -134,39 +135,41 @@
     </div>
 
   </div>
-<div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
-  <div class="alert btn-success">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span>{{ mensajeAlerta }}</span>
-  </div>
-</div>
 
-<div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-20">
-  <div class="alert btn-error">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span>{{ mensajeAlerta }} *u*</span>
+  <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
+    <div class="alert btn-success">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ mensajeAlerta }}</span>
+    </div>
   </div>
-</div>
 
-@if (showWarning) {
-<div role="alert" class="alert alert-vertical sm:alert-horizontal mt-5 mb-5 animate-fadeIn">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-  </svg>
-  <span>¿Estás seguro de actualizar el comentario del proceso de producción?</span>
-  <div>
-    <button class="btn btn-sm btn-outline mr-5 " (click)="cancelDeactivation()">Cancelar</button>
-    <button class="btn btn-sm  btn-primary" (click)="confirmDeactivation()">Aceptar</button>
+  <div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-20">
+    <div class="alert btn-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ mensajeAlerta }} *u*</span>
+    </div>
   </div>
-</div>
-}
+
+  @if (showWarning) {
+  <div role="alert" class="alert alert-vertical sm:alert-horizontal mt-5 mb-5 animate-fadeIn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>¿Estás seguro de actualizar el comentario del proceso de producción?</span>
+    <div>
+      <button class="btn btn-sm btn-outline mr-5 " (click)="cancelDeactivation()">Cancelar</button>
+      <button class="btn btn-sm  btn-primary" (click)="confirmDeactivation()">Aceptar</button>
+    </div>
+  </div>
+  }
+
   <div class="flex flex-row-reverse">
     <button class="btn btn-outline px-10 btn-primary" (click)="showAlertUpComentario()">
       Actualizar

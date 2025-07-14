@@ -11,8 +11,8 @@ export interface VariableDTO {
   ods: boolean;
   responsableRegister: number;
   responsableActualizacion?: number;
-  alineacionMdea?: MdeaDTO[]; // <-- Agrega esta línea
-  alineacionOds?: OdsDTO[]; // <-- Agrega esta línea
+  mdeas?: MdeaDTO[]; // <-- Agrega esta línea
+  odsList?: OdsDTO[]; // <-- Agrega esta línea
   pertinencia?: TemaCobNecDTO[];
 }
 

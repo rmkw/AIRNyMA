@@ -1,4 +1,5 @@
-<div class="container mx-auto mt-10">
+<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-5">
+
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable fuente año {{_anioEvento}}
     </h1>
@@ -10,10 +11,10 @@
 
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-4">
 
 
-    <div class="col-span-1">
+    <div class="col-span-2">
 
       <label class="block text-sm font-medium  mb-2 text-secondary" for="idVariable">
         Id variable
@@ -30,15 +31,7 @@
     </div>
 
 
-    <!-- <div class="max-w-xs">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="idVariable">
-        Id variable
-      </label>
-      <input type="text" id="idVariable" [(ngModel)]="idVariable" [disabled]="camposBloqueados"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div> -->
-
-    <div class="col-span-2">
+    <div class="col-span-3">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
         Nombre de la variable
       </label>
@@ -56,13 +49,13 @@
 
     <div class="col-span-2">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="_linkVar">
-        Link de acceso variable
+        Url de acceso variable
       </label>
       <input type="text" id="_linkVar" [(ngModel)]="_linkVar" [disabled]="camposBloqueados"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="col-span-3">
+    <div class="col-span-4">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
         Comentario de la variable
       </label>
@@ -70,7 +63,7 @@
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="max-w-xs text-center">
+    <div class="col-span-1 text-center">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
         Alineación con MDEA
       </label>
@@ -78,13 +71,22 @@
         [disabled]="camposBloqueados" class="checkbox checkbox-md " />
     </div>
 
-    <div class="max-w-xs text-center">
+    <div class="col-span-1 text-center">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
         Alineación con ODS
       </label>
       <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
         [disabled]="camposBloqueados" class="checkbox checkbox-md" />
     </div>
+
+
+
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-6">
+
+
+
 
     <div class="col-span-3">
       <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
@@ -94,7 +96,7 @@
         (click)="onComentarioClick($event)" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="max-w-xs">
+    <div class="col-span-2">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
         Nivel de contribución
       </label>
@@ -108,7 +110,7 @@
       </select>
     </div>
 
-    <div class="max-w-xs">
+    <div class="col-span-2">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Viabilidad de generación
       </label>
@@ -129,7 +131,7 @@
         type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="col-span-3">
+    <div class="col-span-4">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Comentario de pertinencia
       </label>
@@ -555,8 +557,8 @@
           <div class="border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">MDEA</h3>
 
-            <ng-container *ngIf="item.alineacionMdea && item.alineacionMdea.length > 0; else noMdeas">
-              <div *ngFor="let mdea of item.alineacionMdea" class="mb-3 p-2 bg-base-200 rounded-lg">
+            <ng-container *ngIf="item.mdeas && item.mdeas.length > 0; else noMdeas">
+              <div *ngFor="let mdea of item.mdeas" class="mb-3 p-2 bg-base-200 rounded-lg">
                 <ul class="text-sm space-y-1">
                   <li><span class="font-semibold">Componente: {{ mdea.componente }}</span> </li>
                   <li><span class="font-semibold">Subcomponente: {{ mdea.subcomponente || '-' }}</span> </li>
@@ -583,8 +585,8 @@
           <div class="mt-4 border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">ODS</h3>
 
-            <ng-container *ngIf="item.alineacionOds && item.alineacionOds.length > 0; else noOds">
-              <div *ngFor="let ods of item.alineacionOds" class="mb-3 p-2 bg-base-200 rounded-lg">
+            <ng-container *ngIf="item.odsList && item.odsList.length > 0; else noOds">
+              <div *ngFor="let ods of item.odsList" class="mb-3 p-2 bg-base-200 rounded-lg">
                 <ul class="text-sm space-y-1">
                   <li><span class="font-semibold">Objetivo: {{ ods.objetivo }}</span> </li>
                   <li><span class="font-semibold">Meta: {{ ods.meta }}</span> </li>

@@ -22,14 +22,12 @@ export class FuenteIdentificacionService {
       return of([]);
     }
 
-    return this.http
-      .get<FiEcoResponce[]>(`${baseUrl}/fuentes/${userId}`)
-      .pipe(
-        catchError((error) => {
-          console.error('Error al obtener fuentes:', error);
-          return of([]);
-        })
-      );
+    return this.http.get<FiEcoResponce[]>(`${baseUrl}/fuentes/${userId}`).pipe(
+      catchError((error) => {
+        console.error('Error al obtener fuentes:', error);
+        return of([]);
+      })
+    );
   }
 
   getByIdPpAndResponsable(
@@ -102,7 +100,7 @@ export class FuenteIdentificacionService {
 
   deactivateRecord(id: number): Observable<any> {
     return this.http.delete(
-      `${baseUrl}/fuentes/${id}`,
+      `${baseUrl}/fuentes/${id}/delete-full`,
 
       { withCredentials: true }
     );

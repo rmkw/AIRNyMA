@@ -24,7 +24,7 @@ export class VariableService {
   }
 
   deleteVariable(idA: string) {
-    return this.http.delete(`${baseUrl}/variables/delete/${idA}`, {
+    return this.http.delete(`${baseUrl}/variables/delete-full/${idA}`, {
       withCredentials: true,
     });
   }

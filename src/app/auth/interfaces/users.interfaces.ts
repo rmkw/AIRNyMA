@@ -3,6 +3,7 @@ export interface UsersResponce {
   nombre: string;
   contrasena: string;
   roles: Role[];
+
 }
 
 export enum Role {
