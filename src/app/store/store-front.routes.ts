@@ -52,7 +52,7 @@ export const storeFrontRoutes: Routes = [
         component: NuevaVariableComponent,
       },
       {
-        path: 'update-variable/:id',
+        path: 'update-variable/:idA',
         component: VariableUpdateComponent,
       },
       {

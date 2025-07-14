@@ -30,8 +30,10 @@ export class VariableService {
   }
 
   getByVariable(idVariable: string): Observable<any> {
-    return this.http.get<any>(
-      `${baseUrl}/variables/por-id/${idVariable}`
-    );
+    return this.http.get<any>(`${baseUrl}/variables/por-id/${idVariable}`);
+  }
+
+  getVariableByIdA(idA: string): Observable<VariableDTO> {
+    return this.http.get<VariableDTO>(`${baseUrl}/variables/por-ida/${idA}`);
   }
 }

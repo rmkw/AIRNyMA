@@ -13,6 +13,7 @@ import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -21,6 +22,7 @@ import { catchError, of } from 'rxjs';
   templateUrl: './nueva-variable.component.html',
 })
 export class NuevaVariableComponent implements OnInit, AfterViewInit {
+
   ngOnInit(): void {
     this.getComponentes();
     this.getObjetivos();
@@ -34,6 +36,8 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       this.verificarFinalizarCaptura(); // aquí aseguras evaluar campos autocompletados
     });
   }
+
+  _router = inject(Router);
 
   //! COSAS PARA QUE FUNCIONE MDEA RELATION
   _mdeaService = inject(MdeaService);
@@ -129,13 +133,13 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getComponentes() {
     this._mdeaService.getComponentes().subscribe((data) => {
       this.arrComponentes = data;
-      console.log(data)
+      console.log(data);
     });
   }
   getSubcomponentes(idComponente: number | string) {
     console.log('idComp: ', idComponente);
     this._mdeaService.getSubcomponentes(idComponente).subscribe((data) => {
-      console.log(data)
+      console.log(data);
       this.arrSubcompo = data;
     });
   }
@@ -161,7 +165,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         idVar
       )
       .subscribe((data) => {
-        console.log(data)
+        console.log(data);
         this.arrEstadisticos = data;
       });
   }
@@ -355,7 +359,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getObjetivos() {
     this._odsServices.getObjetivos().subscribe((data) => {
       this.arrODS = data;
-      console.log(data)
+      console.log(data);
     });
   }
   getMetas(idObj: number | string) {
@@ -534,7 +538,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       mdea: this.flagMDEArelation,
       ods: this.flagODSrelation,
       responsableRegister: this._responsableRegister!,
-
     };
 
     this._varService
@@ -657,7 +660,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       estadistica2: this.idEstadistico.toString(),
       contribucion: this.nivelContribucionContenidosMdeaRelation,
       comentarioS: this.comentariopullMdea,
-
     };
     console.log('mandando al back: ', nuevaRelacion);
 
@@ -949,7 +951,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
   idDelete: string | undefined = undefined;
   eliminarVariable(id: string) {
-
     this.modalEliminar.nativeElement.showModal();
 
     this.idDelete = id;
@@ -988,6 +989,10 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.comentarioPertinencia = event.comentarioS!;
 
     this.finalizarCaptura = false;
+  }
+
+  editarVariable(_variable: VariableDTO){
+    this._router.navigate(['/update-variable', _variable.idA])
   }
 }
 
