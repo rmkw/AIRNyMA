@@ -65,7 +65,7 @@ export class authService {
             this._user.set(null); // Asegurar que el usuario sea nulo
             this._authStatus.set(NOT_AUTHENTICATED);
           } else {
-            // console.log('✅ Usuario autenticado:', resp.user);
+            console.log('✅ Usuario autenticado:', resp.user);
             this._user.set(resp.user || null); // Asignar null si user no existe
             this._authStatus.set(AUTHENTICATED);
           }
@@ -108,6 +108,7 @@ export class authService {
 
           localStorage.removeItem('_id');
           localStorage.removeItem('userName');
+          localStorage.removeItem('aka');
           localStorage.removeItem('roles');
           localStorage.removeItem('useResponce');
           localStorage.clear();
@@ -129,8 +130,10 @@ export class authService {
       // ✅ Verificamos que resp.user no sea undefined
       localStorage.setItem('_id', resp.user.id.toString());
       localStorage.setItem('userName', resp.user.nombre);
+      localStorage.setItem('aka', resp.user.aka);
       localStorage.setItem('roles', JSON.stringify(resp.user.roles));
       localStorage.setItem('useResponce', JSON.stringify(resp.user));
+
 
     } else {
       console.warn(
@@ -138,6 +141,7 @@ export class authService {
       );
       localStorage.removeItem('_id');
       localStorage.removeItem('userName');
+      localStorage.removeItem('aka');
       localStorage.removeItem('roles');
       localStorage.removeItem('useResponce');
       localStorage.clear();

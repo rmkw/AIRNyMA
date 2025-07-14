@@ -1,6 +1,7 @@
 export interface UsersResponce {
   id: number;
   nombre: string;
+  aka: string;
   contrasena: string;
   roles: Role[];
 

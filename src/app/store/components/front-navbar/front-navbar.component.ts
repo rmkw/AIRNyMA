@@ -20,7 +20,7 @@ export class FrontNavbarComponent {
 
   userName = computed(() => {
     // console.log(' Computed userName:', this.user()?.nombre ?? '');
-    return this.user()?.nombre ?? '';
+    return this.user()?.aka ?? '';
   });
 
   //! MENU HAMBURGESA

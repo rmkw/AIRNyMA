@@ -1,9 +1,10 @@
 
 export interface UsersResponce {
-  id:         number;
-  nombre:     string;
+  id: number;
+  nombre: string;
+  aka: string;
   contrasena: string;
-  roles:      Role[];
+  roles: Role[];
 }
 
 export enum Role {
