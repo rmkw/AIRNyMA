@@ -1,0 +1,459 @@
+<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-5">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Editar variable
+      </h1>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
+        Nombre de la variable
+      </label>
+      <input type="text" id="nombreVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="definicionVariable">
+        Definición de la variable
+      </label>
+      <input type="text" id="definicionVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="_linkVar">
+        Url de acceso variable
+      </label>
+      <input type="text" id="_linkVar"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
+        Comentario de la variable
+      </label>
+      <input type="text" id="comentarioVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-2 text-center">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
+        Alineación con MDEA
+      </label>
+      <input type="checkbox" id="alinea_MDEA"
+         class="checkbox checkbox-md " />
+    </div>
+
+    <div class="col-span-2 text-center">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
+        Alineación con ODS
+      </label>
+      <input type="checkbox" id="alinea_ODS"  class="checkbox checkbox-md" />
+    </div>
+
+    <div class="col-span-4 ">
+      <button class="btn btn-block btn-primary btn-sm">Actualizar Variable</button>
+    </div>
+
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Editar Pertinencia
+    </h1>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-6">
+
+
+
+
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
+        Tema de cobertura de necesidades
+      </label>
+      <input type="text" id="temaCobertura"  class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
+        Nivel de contribución
+      </label>
+      <select class="select select-bordered select-sm w-full ">
+        <option disabled selected>Selecciona un nivel</option>
+        <option value="Alto">Alto</option>
+        <option value="Intermedio">Intermedio</option>
+        <option value="Bajo">Bajo</option>
+        <option value="-">-</option>
+      </select>
+    </div>
+
+    <div class="col-span-2">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
+        Viabilidad de generación
+      </label>
+      <select class="select select-bordered select-sm w-full " >
+        <option disabled selected>Selecciona una opción</option>
+        <option value="Viable">Viable</option>
+        <option value="No viable">No viable</option>
+        <option value="-">-</option>
+      </select>
+    </div>
+
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
+        Propuesta de generación de estadística derivada
+      </label>
+      <input
+        type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-4 mb-2">
+      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
+        Comentario de pertinencia
+      </label>
+      <input  type="text" id="comentarioVariable"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <div class="col-span-8">
+      <button class="btn btn-block btn-primary btn-sm">Actualizar Pertinencia</button>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Editar Relaciones Mdea y Ods
+    </h1>
+  </div>
+
+
+
+
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    @if (mdea_boolean) {
+      <div class="border p-4">
+
+          <div class="flex justify-between items-center mb-6">
+            <h1 class="text-1xl font-bold font-montserrat text-primary">Relación MDEA</h1>
+
+            <button class="btn btn-outline btn-sm btn-primary ">
+              + Agregar relación MDEA
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idComponente">
+                Componente
+              </label>
+              <select class="select select-bordered select-sm w-full">
+                <option disabled selected>Selecciona un Componente</option>
+                <option></option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
+                Subcomponente
+              </label>
+              <select class="select select-bordered select-sm w-full" #subcomponenteSelect                 >
+                <option disabled selected>Selecciona un Subcomponente</option>
+                <option >
+                </option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
+                Tema
+              </label>
+              <select class="select select-bordered select-sm w-full" #topicoSelect >
+                >
+                <option disabled selected>Selecciona un Tema</option>
+                <option ></option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idVariableMDEA">
+                Estadística 1
+              </label>
+              <select class="select select-bordered select-sm w-full" #variableSelect >
+                <option disabled selected>Selecciona Estadistica1</option>
+                <option ></option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idEstadistico">
+                Estadística 2
+              </label>
+              <select class="select select-bordered select-sm w-full" #estadisticoSelect >
+                <option disabled selected>Selecciona un Estadistica2</option>
+                <option >
+                </option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
+                Nivel de contribución
+              </label>
+              <select id="idNivelCont"
+                name="nivelContribucionContenidosMdeaRelation"
+                class="select select-bordered select-sm w-full ">
+                <option disabled selected>Selecciona un nivel</option>
+                <option value="Alto">Alto</option>
+                <option value="Intermedio">Intermedio</option>
+                <option value="Bajo">Bajo</option>
+              </select>
+
+            </div>
+
+            <div class="col-span-3">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
+                Comentario
+              </label>
+              <input type="text" id="comentariopullMdea"
+                class="input input-sm input-bordered w-full" placeholder="" />
+            </div>
+
+
+
+
+
+
+
+          </div>
+
+
+          <div class="flex justify-between items-center mb-2 mt-6">
+            <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
+          </div>
+
+            <div class="overflow-x-auto">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-secondary">Codigo de relación</th>
+                    <th class="text-secondary text-center">Nivel</th>
+                    <th class="text-secondary text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr>
+                    <th>
+                      <ul class="grid grid-cols-[auto_1fr] gap-x-2">
+                        <li class="contents">
+                          <span class="font-medium">Componente:</span>
+                          <span></span>
+                        </li>
+                        <li class="contents">
+                          <span class="font-medium">Subcomponente:</span>
+                          <span></span>
+                        </li>
+                        <li class="contents">
+                          <span class="font-medium">Tema:</span>
+                          <span></span>
+                        </li>
+                        <li class="contents">
+                          <span class="font-medium">Estadística 1:</span>
+                          <span></span>
+                        </li>
+                        <li class="contents">
+                          <span class="font-medium">Estadística 2:</span>
+                          <span></span>
+                        </li>
+                      </ul>
+                    </th>
+
+
+                    <th class="text-center"></th>
+                    <th class="text-center">
+                      <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
+                        >Eliminar</button>
+                    </th>
+                  </tr>
+
+                </tbody>
+              </table></div>
+
+
+
+
+              <div class="">
+                <button class="btn btn-block btn-primary btn-sm">Actualizar Mdea</button>
+              </div>
+      </div>
+
+
+
+
+    }
+    @if (ods_boolean) {
+      <div class="border p-4">
+
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-1xl font-bold font-montserrat text-primary">Relación ODS</h1>
+
+          <button class="btn btn-outline btn-sm btn-primary ">
+            + Agregar relación ODS
+          </button>
+
+        </div>
+
+          <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idComponente">
+                Objetivo
+              </label>
+              <select class="select select-bordered select-sm w-full" >
+                <option disabled selected>Selecciona un Objetivo</option>
+                <option ></option>
+              </select>
+            </div>
+
+            <div class="max-w-xs ">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
+                Meta
+              </label>
+              <select class="select select-bordered select-sm w-full" #metaSelect>
+                <option disabled selected>Selecciona una Meta</option>
+                <option ></option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs truncate">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
+                Indicador
+              </label>
+              <select class="select select-bordered select-sm w-full " #indicadorSelect >
+
+                <option disabled selected>Selecciona un Indicador</option>
+                <option class="truncate">
+                  </option>
+                <option value="-">-</option>
+              </select>
+            </div>
+
+            <div class="max-w-xs">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
+                Nivel de contribución
+              </label>
+              <select class="select select-bordered select-sm w-full " >
+                <option disabled selected>Selecciona un nivel</option>
+                <option value="Alto">Alto</option>
+                <option value="Intermedio">Intermedio</option>
+                <option value="Bajo">Bajo</option>
+              </select>
+
+            </div>
+
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
+                Comentario
+              </label>
+              <input  type="text"
+                id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
+            </div>
+
+          </div>
+
+          <div class="flex justify-between items-center mb-2 mt-6">
+            <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="table">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th class="text-secondary">Codigo de relación</th>
+                  <th class="text-center text-secondary">Nivel</th>
+                  <th class="text-center text-secondary">Acciones</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <!-- row 1 -->
+
+                <tr>
+                  <th>
+                    <ul class="grid grid-cols-[auto_1fr] gap-x-2">
+                      <li class="contents">
+                        <span class="font-medium">Objetivo:</span>
+                        <span></span>
+                      </li>
+                      <li class="contents">
+                        <span class="font-medium">Meta:</span>
+                        <span></span>
+                      </li>
+                      <li class="contents">
+                        <span class="font-medium">Indicador:</span>
+                        <span></span>
+                      </li>
+
+                    </ul>
+                  </th>
+
+
+
+                  <th class="text-center"></th>
+
+                  <th class="text-center">
+                    <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
+                      >Eliminar</button>
+                  </th>
+                </tr>
+
+
+
+              </tbody>
+            </table>
+            </div>
+
+            <div class="">
+              <button class="btn btn-block btn-primary btn-sm">Actualizar Ods</button>
+            </div>
+
+      </div>
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+</div>
