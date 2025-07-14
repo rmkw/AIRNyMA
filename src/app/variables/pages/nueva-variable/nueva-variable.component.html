@@ -280,12 +280,33 @@
           <tbody>
             @for (itemRelation of relationesMDEA; track $index) {
             <tr>
-              <th>{{'['+'C: '+ itemRelation.idComponente +']' +
-                '['+' S:'+ itemRelation.idSubcomponente +']' +
-                '['+' T:'+itemRelation.idTopico +']' +
-                '['+' V:'+itemRelation.idVariableMdeaPull +']' +
-                '['+' E:'+itemRelation.idEstadistico +']'}}</th>
-              <th class="text-center">{{itemRelation.nivelContribucion}}</th>
+              <th>
+                <ul class="grid grid-cols-[auto_1fr] gap-x-2">
+                  <li class="contents">
+                    <span class="font-medium">Componente:</span>
+                    <span>{{ itemRelation.componente }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Subcomponente:</span>
+                    <span>{{ itemRelation.subcomponente }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Tema:</span>
+                    <span>{{ itemRelation.tema }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Estadística 1:</span>
+                    <span>{{ itemRelation.estadistica1 }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Estadística 2:</span>
+                    <span>{{ itemRelation.estadistica2 }}</span>
+                  </li>
+                </ul>
+              </th>
+
+
+              <th class="text-center">{{itemRelation.contribucion}}</th>
               <th class="text-center">
                 <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
                   (click)="eliminarRelacionesMDEAWhitVars(itemRelation.idUnique)">Eliminar</button>
@@ -363,7 +384,7 @@
 
         <div class="max-w-xs">
           <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
-            Nivel de contribución a contenidos
+            Nivel de contribución
           </label>
           <select class="select select-bordered select-sm w-full " (change)="_ods_onSelectNivel($event)"
             [(ngModel)]="_ods_nivelContribucion" [disabled]="!_ods_isSelectEnabled_Nivel">
@@ -406,9 +427,25 @@
             <!-- row 1 -->
             @for (itemRelation of relacionesODS; track $index) {
             <tr>
-              <th>{{'['+'O: '+ itemRelation.objetivo +']' +
-                '['+' M:'+ itemRelation.meta +']' +
-                '['+' I:'+itemRelation.indicador +']'}}</th>
+              <th>
+                <ul class="grid grid-cols-[auto_1fr] gap-x-2">
+                  <li class="contents">
+                    <span class="font-medium">Objetivo:</span>
+                    <span>{{ itemRelation.objetivo }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Meta:</span>
+                    <span>{{ itemRelation.meta }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Indicador:</span>
+                    <span>{{ itemRelation.indicador }}</span>
+                  </li>
+
+                </ul>
+              </th>
+
+
 
               <th class="text-center">{{itemRelation.contribucion}}</th>
 
@@ -559,12 +596,27 @@
 
             <ng-container *ngIf="item.mdeas && item.mdeas.length > 0; else noMdeas">
               <div *ngFor="let mdea of item.mdeas" class="mb-3 p-2 bg-base-200 rounded-lg">
-                <ul class="text-sm space-y-1">
-                  <li><span class="font-semibold">Componente: {{ mdea.componente }}</span> </li>
-                  <li><span class="font-semibold">Subcomponente: {{ mdea.subcomponente || '-' }}</span> </li>
-                  <li><span class="font-semibold">Tema: {{ mdea.tema || '-' }}</span> </li>
-                  <li><span class="font-semibold">Estadístico 1: {{ mdea.estadistica1 || '-' }}</span> </li>
-                  <li><span class="font-semibold">Estadístico 2: {{ mdea.estadistica2 || '-' }}</span> </li>
+                <ul class="text-sm  grid grid-cols-[auto_1fr] gap-x-2">
+                  <li class="contents">
+                    <span class="font-medium">Componente:</span>
+                    <span>{{ mdea.componente }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Subcomponente:</span>
+                    <span>{{ mdea.subcomponente }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Tema:</span>
+                    <span>{{ mdea.tema }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Estadística 1:</span>
+                    <span>{{ mdea.estadistica1 }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Estadística 2:</span>
+                    <span>{{ mdea.estadistica2 }}</span>
+                  </li>
                 </ul>
               </div>
             </ng-container>
@@ -587,10 +639,21 @@
 
             <ng-container *ngIf="item.odsList && item.odsList.length > 0; else noOds">
               <div *ngFor="let ods of item.odsList" class="mb-3 p-2 bg-base-200 rounded-lg">
-                <ul class="text-sm space-y-1">
-                  <li><span class="font-semibold">Objetivo: {{ ods.objetivo }}</span> </li>
-                  <li><span class="font-semibold">Meta: {{ ods.meta }}</span> </li>
-                  <li><span class="font-semibold">Indicador: {{ ods.indicador || '-' }}</span> </li>
+                <ul class="text-sm grid grid-cols-[auto_1fr] gap-x-2">
+
+                  <li class="contents">
+                    <span class="font-medium">Objetivo:</span>
+                    <span>{{ ods.objetivo }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Meta:</span>
+                    <span>{{ ods.meta }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Indicador:</span>
+                    <span>{{ ods.indicador }}</span>
+                  </li>
+
                 </ul>
               </div>
             </ng-container>
