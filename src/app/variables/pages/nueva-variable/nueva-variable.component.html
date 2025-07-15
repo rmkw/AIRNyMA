@@ -677,29 +677,33 @@
           <div class="mt-4 border-t pt-3">
             <h3 class="font-bold text-lg mb-2 text-secondary text-center">Tema Cobertura de Necesidades</h3>
 
-            <ng-container *ngIf="item.pertinencia && item.pertinencia.length > 0; else noPer">
-              <div *ngFor="let per of item.pertinencia" class="mb-2 p-2 rounded-lg">
+            <ng-container *ngIf="item.pertinencia; else noPer">
+              <div class="mb-2 p-2 rounded-lg">
                 <div class="mb-2">
                   <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
-                  <p>{{ per.pertinencia }}</p>
+                  <p>{{ item.pertinencia.pertinencia }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Nivel de contribución:</p>
-                  <p>{{ per.contribucion || 'No especificado' }}</p>
+                  <p>{{ item.pertinencia.contribucion || 'No especificado' }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Viabilidad de generación:</p>
-                  <p>{{ per.viabilidad || 'No disponible' }}</p>
+                  <p>{{ item.pertinencia.viabilidad || 'No disponible' }}</p>
 
                   <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
-                  <p>{{ per.propuesta || 'No disponible' }}</p>
+                  <p>{{ item.pertinencia.propuesta || 'No disponible' }}</p>
 
-                  <button class="btn btn-block btn-sm  btn-primary mt-4" [disabled]="DISABLE_temaCobertura" (click)="pegarDatosPertinencia(per)">
+                  <button class="btn btn-block btn-sm btn-primary mt-4" [disabled]="DISABLE_temaCobertura"
+                    (click)="pegarDatosPertinencia(item.pertinencia)">
                     Pegar Datos
                   </button>
                 </div>
-
-
               </div>
             </ng-container>
+
+            <ng-template #noPer>
+              <p class="text-sm text-slate-500">Sin pertinencia registrada.</p>
+            </ng-template>
+
 
             <ng-template #noPer>
               <div class="alert alert-primary">

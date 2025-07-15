@@ -9,11 +9,11 @@ export interface VariableDTO {
   comentarioS?: string;
   mdea: boolean;
   ods: boolean;
-  responsableRegister: number;
+  responsableRegister?: number;
   responsableActualizacion?: number;
   mdeas?: MdeaDTO[]; // <-- Agrega esta línea
   odsList?: OdsDTO[]; // <-- Agrega esta línea
-  pertinencia?: TemaCobNecDTO[];
+  pertinencia?: TemaCobNecDTO;
 }
 
 // Define las interfaces para los objetos anidados
@@ -41,8 +41,8 @@ export interface OdsDTO {
 export interface TemaCobNecDTO {
   idA: string | undefined;
   pertinencia: string;
-  contribucion?: string;
-  viabilidad?: string;
-  propuesta?: string;
-  comentarioS?: string;
+  contribucion: string;
+  viabilidad: string;
+  propuesta: string;
+  comentarioS: string;
 }
