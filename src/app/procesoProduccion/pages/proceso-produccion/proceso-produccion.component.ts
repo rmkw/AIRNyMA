@@ -72,6 +72,7 @@ export class ProcesoProduccionComponent implements OnInit {
     this._pp_Service.getPorDireccionGeneral(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
+        console.log(data)
 
       },
       error: (err) => {

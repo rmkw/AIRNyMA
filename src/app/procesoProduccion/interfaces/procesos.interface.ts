@@ -11,5 +11,6 @@ export interface interface_ProcesoP {
   estatus: string;
   comentarioS: null;
   comentarioA: null;
+  totalVariables?: number;
 }
 

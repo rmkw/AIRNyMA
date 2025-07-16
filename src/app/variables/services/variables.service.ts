@@ -34,7 +34,9 @@ export class VariableService {
   }
 
   getVariableByIdA(idA: string): Observable<VariableDTO> {
-    return this.http.get<VariableDTO>(`${baseUrl}/variables/por-ida/${idA}`);
+    return this.http.get<VariableDTO>(`${baseUrl}/variables/por-ida/${idA}`,{
+      withCredentials: true,
+    });
   }
   updateVariable(idA: string, payload: VariableDTO) {
     return this.http.put<{ message: string }>(

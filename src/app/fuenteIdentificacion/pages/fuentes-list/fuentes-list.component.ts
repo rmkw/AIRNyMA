@@ -60,9 +60,9 @@ export class FuentesListComponent implements OnInit {
       .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
       .subscribe({
         next: (response) => {
-          // console.log('✅ Resultado del backend:', response);
+          console.log('✅ Resultado del backend:', response);
 
-          this.fuentes = response;
+          this.fuentes = response.fuentes;
           if (this.fuentes.length > 0) {
             this.loading = false;
           } else {
