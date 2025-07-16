@@ -15,4 +15,8 @@ export class TemaCobNecService {
       withCredentials: true,
     });
   }
+
+  editarPertinencia(idA: string, data: TemaCobNec) {
+    return this.http.put(`${baseUrl}/pertinencia/edit/${idA}`, data);
+  }
 }

@@ -1,7 +1,13 @@
+import { CapturaMdeaVarService } from './../../services/captura-mdea-vars.service';
+import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
+import { TemaCobNec } from '@/variables/interfaces/temaCobNec.interface';
 import { VariableDTO } from '@/variables/interfaces/variablesCapDTO.interface';
-import { CapturaMdeaVarService } from '@/variables/services/captura-mdea-vars.service';
+
+import { relacionODS_Service } from '@/variables/services/captura-ods-vars.service';
+import { TemaCobNecService } from '@/variables/services/captura-temaCobNec.service';
 import { MdeaService } from '@/variables/services/mdea-pull.service';
+import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
@@ -49,6 +55,8 @@ export class VariableUpdateComponent implements OnInit {
     console.log('ID de la variable:', this.idA);
     this.loadVariable();
     this.getComponentes();
+    this.getObjetivos();
+    this.getPropetiesLocalStorage();
   }
 
   loadVariable() {
@@ -64,6 +72,9 @@ export class VariableUpdateComponent implements OnInit {
         this.mdea = this.variableData.mdea;
         this.ods = this.variableData.ods;
 
+        this.mdea_html_hidden = this.variableData.mdea;
+        this.ods_html_hidden = this.variableData.ods;
+
         this.pertinencia = this.variableData.pertinencia!.pertinencia;
         this.contribucion = this.variableData.pertinencia!.contribucion;
         this.viabilidad = this.variableData.pertinencia!.viabilidad;
@@ -71,6 +82,7 @@ export class VariableUpdateComponent implements OnInit {
         this.comentarioSP = this.variableData.pertinencia!.comentarioS;
 
         this.get_ArrMdea();
+        this.get_ArrOds();
 
         // Aquí puedes usar patchValue si usas Reactive Forms
       },
@@ -394,6 +406,7 @@ export class VariableUpdateComponent implements OnInit {
 
     this.get_ArrMdea();
   }
+  responsableActualizacion: number | undefined = undefined;
 
   actualizarVariable() {
     const payload: VariableDTO = {
@@ -408,7 +421,7 @@ export class VariableUpdateComponent implements OnInit {
       mdea: this.mdea!,
       ods: this.ods!,
       // responsableRegister: this.variableData.responsableRegister,
-      responsableActualizacion: 1, // O el ID del usuario que edita, si lo tienes
+      responsableActualizacion: this.responsableActualizacion, // O el ID del usuario que edita, si lo tienes
 
       // Estos campos no los usas en backend al editar pero igual los puedes mandar
       // mdeas: this.variableData.mdeas,
@@ -429,11 +442,246 @@ export class VariableUpdateComponent implements OnInit {
     this._variableService.updateVariable(this.idA, payload).subscribe({
       next: (res) => {
         console.log(res.message);
+        this.get_ArrMdea();
+        this.get_ArrOds();
+        this.loadVariable();
         alert('¡Variable actualizada correctamente!');
       },
       error: (err) => {
         console.error('Error actualizando variable:', err);
         alert('Error al guardar los cambios.');
+      },
+    });
+  }
+
+  _service_relation_ODS_VAR = inject(relacionODS_Service);
+  get_ArrOds() {
+    this._service_relation_ODS_VAR
+      .getRelacionesPorVariable_ods(this.idA!)
+      .subscribe({
+        next: (res) => {
+          console.log('Datos recibidos en obtenerRelaciones_ods():', res);
+          this.arrOds = res;
+        },
+        error: (err) => console.error('Error obteniendo relaciones:', err),
+      });
+  }
+  delete_relationArrOds(id: string) {
+    this._service_relation_ODS_VAR.eliminarRelacion_ods(id).subscribe({
+      next: () => {
+        console.log(`Relación con id ${id} eliminada correctamente`);
+        this.get_ArrOds(); // Refresca la lista automáticamente
+      },
+      error: (err) => console.error('Error eliminando relación:', err),
+    });
+  }
+  _odsServices = inject(OdsService);
+  arrObjetivo: any[] = [];
+  arrMetas: any[] = [];
+  arrIndicadores: any[] = [];
+
+  idObjetivo: number | string = '';
+  idMeta: number | string = '';
+  idIndicador: number | string = '';
+  getObjetivos() {
+    this._odsServices.getObjetivos().subscribe((data) => {
+      this.arrObjetivo = data;
+      console.log(data);
+    });
+  }
+  getMetas(idObj: number | string) {
+    this._odsServices.getMetas(idObj).subscribe((data) => {
+      this.arrMetas = data.sort((a, b) => {
+        const isANumber = !isNaN(Number(a.idMeta));
+        const isBNumber = !isNaN(Number(b.idMeta));
+
+        if (isANumber && isBNumber) {
+          // Ambos son números
+          return Number(a.idMeta) - Number(b.idMeta);
+        } else if (isANumber) {
+          // a es número, b es letra -> a va antes
+          return -1;
+        } else if (isBNumber) {
+          // b es número, a es letra -> b va antes
+          return 1;
+        } else {
+          // Ambos son letras -> orden alfabético
+          return a.idMeta.localeCompare(b.idMeta);
+        }
+      });
+    });
+  }
+  getIndicadores(idMeta: number | string) {
+    this._odsServices
+      .getIndicadores(this.idObjetivo, idMeta)
+      .subscribe((data) => {
+        this.arrIndicadores = data;
+      });
+  }
+  _ods_isSelectEnabled_Nivel: boolean = false;
+  _ods_isSelectEnabled_Comentario: boolean = false;
+  // ? selects habilitados ODS
+  isSelectEnabled_Meta: boolean = false;
+  isSelectEnabled_Ind: boolean = false;
+  @ViewChild('metaSelect') metaSelect!: ElementRef<HTMLSelectElement>;
+  @ViewChild('indicadorSelect') indicadorSelect!: ElementRef<HTMLSelectElement>;
+
+  onSelectObjetivo(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idObjetivo = selectElement.value;
+    this.idObjetivo = idObjetivo;
+    console.log('Objetivo seleccionado:', idObjetivo);
+
+    //* limpieza de selects
+    this.isSelectEnabled_Meta = true;
+    const conMetaSelect = this.metaSelect.nativeElement as HTMLSelectElement;
+    conMetaSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrMetas = []; // Limpiar el array de metas
+
+    this.isSelectEnabled_Ind = false;
+    const conIndSelect = this.indicadorSelect
+      .nativeElement as HTMLSelectElement;
+    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    this.getMetas(idObjetivo);
+  }
+  onSelectMeta(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idMeta = selectElement.value;
+    this.idMeta = idMeta;
+    console.log('Meta seleccionada:', idMeta);
+    this.isSelectEnabled_Ind = true;
+
+    const conIndSelect = this.indicadorSelect
+      .nativeElement as HTMLSelectElement;
+    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    if (this.idMeta == '-') {
+      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
+
+      console.log('entre a hacer el cambiio');
+      this.indicadorSelect.nativeElement.value = '-';
+
+      this.idIndicador = '-';
+
+      this.arrIndicadores = [];
+      this.isSelectEnabled_Ind = true;
+      this._ods_isSelectEnabled_Nivel = true;
+
+      return;
+    }
+
+    this.getIndicadores(idMeta);
+  }
+  onSelectIndicador(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const idIndicador = selectElement.value;
+    this.idIndicador = idIndicador;
+    console.log('Indicador seleccionado:', idIndicador);
+    this._ods_isSelectEnabled_Nivel = true;
+  }
+  _ods_nivelContribucion: string = '';
+  _ods_onSelectNivel(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nivel = selectElement.value;
+    this._ods_nivelContribucion = nivel;
+    console.log('nivel: ', this._ods_nivelContribucion);
+
+    this._ods_isSelectEnabled_Comentario = true;
+  }
+
+  getPropetiesLocalStorage() {
+    const storeFuente = localStorage.getItem('fuenteEditable');
+    const _responsableRegister = localStorage.getItem('_id');
+
+    if (storeFuente) {
+      const fuente = JSON.parse(storeFuente);
+
+      this.responsableActualizacion = Number(_responsableRegister!);
+      console.log(
+        'Responsable de actualización:',
+        this.responsableActualizacion
+      );
+    } else {
+      console.error('No se encontró el elemento en localStorage');
+    }
+  }
+
+  _ods_comentarioRelacionODS: string = '';
+  registrarNuevaRelacion() {
+    if (!this._ods_comentarioRelacionODS) {
+      alert('Por favor, selecciona');
+      return;
+    }
+    const nuevaRelacion: RelacionODS = {
+      idA: this.idA,
+      idS: this.idS,
+
+      objetivo: this.idObjetivo.toString(),
+      meta: this.idMeta.toString(),
+      indicador: this.idIndicador.toString(),
+      contribucion: this._ods_nivelContribucion,
+      comentarioS: this._ods_comentarioRelacionODS,
+    };
+
+    this._service_relation_ODS_VAR
+      .registrarRelacion_ods(nuevaRelacion)
+      .subscribe({
+        next: (res) => {
+          console.log('Relacion creada:', res);
+          this.resetRelationODS_SELECTS();
+        },
+        error: (err) => console.error('Error creando relación:', err),
+      });
+  }
+  resetRelationODS_SELECTS() {
+    this.arrObjetivo = [];
+    this.getObjetivos();
+
+    this.arrMetas = []; // Limpiar el array de metas
+    this.arrIndicadores = []; // Limpiar el array de indicadores
+    this._ods_nivelContribucion = '';
+    this._ods_comentarioRelacionODS = '';
+
+    this.isSelectEnabled_Meta = false;
+    this.isSelectEnabled_Ind = false;
+    this._ods_isSelectEnabled_Nivel = false;
+    this._ods_isSelectEnabled_Comentario = false;
+    this.get_ArrOds();
+  }
+
+  _pertinenciaService = inject(TemaCobNecService);
+
+
+
+  actualizarPertinencia() {
+    const data: TemaCobNec = {
+      idA: this.idA,
+      pertinencia: this.pertinencia,
+      contribucion: this.contribucion,
+      viabilidad: this.viabilidad,
+      propuesta: this.propuesta,
+      comentarioS: this.comentarioSP,
+    };
+    console.log('Pertinencia que se enviará:', data);
+
+
+
+    if (!this.idA) {
+      console.error('No hay ID de variable definido');
+      return;
+    }
+
+    this._pertinenciaService.editarPertinencia(this.idA, data).subscribe({
+      next: (res) => {
+        console.log('Pertinencia actualizada con éxito:', res);
+        alert('Pertinencia actualizada con éxito');
+        // Aquí puedes mostrar un toast, alert o redirigir si quieres
+      },
+      error: (err) => {
+        console.error('Error al actualizar pertinencia:', err);
       },
     });
   }

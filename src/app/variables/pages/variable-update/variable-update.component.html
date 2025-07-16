@@ -122,7 +122,7 @@
     </div>
 
     <div class="col-span-8">
-      <button class="btn btn-block btn-primary btn-sm">Actualizar Pertinencia</button>
+      <button class="btn btn-block btn-primary btn-sm" (click)="actualizarPertinencia()">Actualizar Pertinencia</button>
     </div>
 
   </div>
@@ -315,7 +315,7 @@
         <div class="flex justify-between items-center mb-6">
           <h1 class="text-1xl font-bold font-montserrat text-primary">Relación ODS</h1>
 
-          <button class="btn btn-outline btn-sm btn-primary ">
+          <button class="btn btn-outline btn-sm btn-primary " (click)="registrarNuevaRelacion()">
             + Agregar relación ODS
           </button>
 
@@ -326,9 +326,9 @@
               <label class="block text-sm font-medium text-secondary mb-2" for="idComponente">
                 Objetivo
               </label>
-              <select class="select select-bordered select-sm w-full" >
+              <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)" >
                 <option disabled selected>Selecciona un Objetivo</option>
-                <option ></option>
+                <option *ngFor="let obj of arrObjetivo" [value]="obj.idObjetivo">{{ obj.idObjetivo+'. '+obj.objetivo }}</option>
               </select>
             </div>
 
@@ -336,9 +336,15 @@
               <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
                 Meta
               </label>
-              <select class="select select-bordered select-sm w-full" #metaSelect>
+              <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
+              [disabled]="!isSelectEnabled_Meta">
                 <option disabled selected>Selecciona una Meta</option>
-                <option ></option>
+                <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}.
+                  {{
+                  meta.meta.length > 50
+                  ? (meta.meta | slice: 0: 100) + '...'
+                  : meta.meta
+                  }}</option>
                 <option value="-">-</option>
               </select>
             </div>
@@ -347,11 +353,14 @@
               <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
                 Indicador
               </label>
-              <select class="select select-bordered select-sm w-full " #indicadorSelect >
+              <select class="select select-bordered select-sm w-full " #indicadorSelect (change)="onSelectIndicador($event)"
+              [disabled]="!isSelectEnabled_Ind" >
 
                 <option disabled selected>Selecciona un Indicador</option>
-                <option class="truncate">
-                  </option>
+                <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
+                  {{indic.idIndicador}}.
+                  {{ indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' :
+                  indic.indicador }}</option>
                 <option value="-">-</option>
               </select>
             </div>
@@ -360,7 +369,8 @@
               <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
                 Nivel de contribución
               </label>
-              <select class="select select-bordered select-sm w-full " >
+              <select class="select select-bordered select-sm w-full " (change)="_ods_onSelectNivel($event)"
+              [(ngModel)]="_ods_nivelContribucion" [disabled]="!_ods_isSelectEnabled_Nivel">
                 <option disabled selected>Selecciona un nivel</option>
                 <option value="Alto">Alto</option>
                 <option value="Intermedio">Intermedio</option>
@@ -373,7 +383,7 @@
               <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
                 Comentario
               </label>
-              <input  type="text"
+              <input  type="text" [(ngModel)]="_ods_comentarioRelacionODS" [disabled]="!_ods_isSelectEnabled_Comentario"
                 id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
             </div>
 
@@ -398,22 +408,22 @@
               </thead>
               <tbody>
                 <!-- row 1 -->
-
+                @for (item of arrOds; track $index) {
                 <tr>
                   <th>
                     <ul class="grid grid-cols-[auto_1fr] gap-x-2">
                       <li class="contents">
                         <span class="font-medium">Objetivo:</span>
-                        <span></span>
+                        <span>{{ item.objetivo }}</span>
                       </li>
                       <li class="contents">
                         <span class="font-medium">Meta:</span>
-                        <span></span>
+                        <span>{{ item.meta }}</span>
                       </li>
                       <li class="contents">
                         <span class="font-medium">Indicador:</span>
-                        <span></span>
-                      </li>
+                        <span>{{ item.indicador }}</span>
+                        </li>
 
                     </ul>
                   </th>
@@ -424,9 +434,10 @@
 
                   <th class="text-center">
                     <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
-                      >Eliminar</button>
+                    (click)="delete_relationArrOds(item.idA!)" >Eliminar</button>
                   </th>
                 </tr>
+              }
 
 
 
