@@ -11,7 +11,7 @@
 
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-4">
+  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-5">
 
 
     <div class="col-span-2">
@@ -83,7 +83,7 @@
 
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-5">
 
 
 
@@ -145,7 +145,7 @@
 
 
   @if (showWarning && currentDeactivation) {
-  <div role="alert" class="alert alert-vertical sm:alert-horizontal animate-fadeIn mb-6">
+  <div role="alert" class="alert alert-vertical sm:alert-horizontal animate-fadeIn mb-2">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -469,7 +469,7 @@
 
   </div>
 
-  <div class="grid grid-cols-1 gap4 mt-5">
+  <div class="grid grid-cols-1 gap4">
 
     <div class="flex w-full flex-col">
       <div class="divider"></div>
@@ -483,9 +483,9 @@
       <table class="table">
         <thead>
           <tr>
-            <th class="text-secondary" style="width: 6rem;">Id Variable</th>
+            <th class="text-secondary" style="width: 10rem;">Id Variable</th>
             <th class="text-secondary">Nombre</th>
-            <th class="text-secondary">Definición</th>
+
             <th class="text-secondary text-center">Alineación Mdea</th>
             <th class="text-secondary text-center">Alineación Ods</th>
             <th class="text-secondary text-center">Acciones</th>
@@ -497,7 +497,7 @@
           <tr>
             <td class="">{{ varItem.idS }}</td>
             <td>{{varItem.nombre }}</td>
-            <td>{{ varItem.definicion }}</td>
+
             <td class="text-center">
               @if (varItem.mdea) {
               <span class="text-green-600">✔️</span>
@@ -517,7 +517,7 @@
                 Ver
               </button> -->
               <button (click)="editarVariable(varItem)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
-                Editar
+                Consultar
                 </button>
               <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2"
                 (click)="eliminarVariable(varItem.idA)">
