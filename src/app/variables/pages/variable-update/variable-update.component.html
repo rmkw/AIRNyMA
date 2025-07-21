@@ -3,6 +3,9 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Editar variable {{ idA }}
       </h1>
+      <button class="btn btn-sm btn-primary" >
+        Actualizar Registro
+        </button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -54,9 +57,9 @@
       <input type="checkbox" id="alinea_ODS" [(ngModel)]="ods"  class="checkbox checkbox-md" />
     </div>
 
-    <div class="col-span-4 ">
+    <!-- <div class="col-span-4 ">
       <button class="btn btn-block btn-primary btn-sm" (click)="actualizarVariable()">Actualizar Variable</button>
-    </div>
+    </div> -->
 
 
   </div>
@@ -121,18 +124,34 @@
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="col-span-8">
+    <!-- <div class="col-span-8">
       <button class="btn btn-block btn-primary btn-sm" (click)="actualizarPertinencia()">Actualizar Pertinencia</button>
-    </div>
+    </div> -->
 
   </div>
 
   <div class="divider"></div>
 
+
+
+  @if (ods_html_hidden && mdea_html_hidden) {
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Editar Relaciones Mdea y Ods
     </h1>
   </div>
+  }
+
+  @if (mdea_html_hidden && !ods_html_hidden) {
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Editar Relaciones Mdea
+    </h1>
+  </div> }
+
+  @if (ods_html_hidden && !mdea_html_hidden) {
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Editar Relaciones Ods
+    </h1>
+  </div> }
 
 
 
