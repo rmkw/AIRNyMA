@@ -23,7 +23,7 @@
       </div>
 
       <!--! Tipo Fuente -->
-      <div class="col-span-2">
+      <!-- <div class="col-span-2">
         <label class="block text-sm font-medium mb-2 text-secondary" for="fuente">
           Fuente de identificación
 
@@ -32,6 +32,22 @@
         <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full" placeholder="" />
 
 
+      </div> -->
+
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-secondary mb-2" for="fuente">
+          Fuente de identificación
+        </label>
+        <select class="select select-bordered select-sm w-full "
+          [(ngModel)]="fuente" >
+          <option disabled selected>Selecciona una identificación</option>
+          <option value="DDI">DDI</option>
+          <option value="FD">FD</option>
+          <option value="DD">DD</option>
+          <option value="Cuestionario">Cuestionario</option>
+          <option value="Otro">Otro</option>
+        </select>
+
       </div>
 
       <!--! Año del evento -->
@@ -39,7 +55,7 @@
         <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
           Año del evento
         </label>
-        <input type="text" (input)="validateYear($event)" [(ngModel)]="edicion" maxlength="4" class="input input-sm input-bordered w-full "
+        <input type="text" (input)="validateYear($event)" [(ngModel)]="edicion" maxlength="9" class="input input-sm input-bordered w-full "
           placeholder="" />
       </div>
 

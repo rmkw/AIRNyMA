@@ -80,33 +80,34 @@ export class FuentesListComponent implements OnInit {
     const inputElement = event.target as HTMLInputElement;
     const rawValue = inputElement.value;
 
-    // Solo procedemos si tiene exactamente 4 caracteres
-    if (rawValue.length !== 4) return;
+    // // Solo procedemos si tiene exactamente 4 caracteres
+    // if (rawValue.length !== 9) return;
 
-    // Limpiamos todo lo que no sea número
-    const cleanedValue = rawValue.replace(/[^0-9]/g, '');
+    // // Limpiamos todo lo que no sea número
+    // const cleanedValue = rawValue.replace(/[^0-9]/g, '');
 
-    // Verificamos si el resultado sigue teniendo 4 caracteres
-    if (cleanedValue.length !== 4) {
-      await this.limpiarAnio();
-      return;
-    }
+    // // Verificamos si el resultado sigue teniendo 4 caracteres
+    // if (cleanedValue.length !== 9) {
+    //   await this.limpiarAnio();
+    //   return;
+    // }
 
-    const parsedYear = parseInt(cleanedValue, 10);
+    // const parsedYear = parseInt(cleanedValue, 10);
 
-    if (isNaN(parsedYear) || parsedYear < 1800 || parsedYear > 2099) {
-      await this.limpiarAnio();
-      return;
-    }
+    // if (isNaN(parsedYear) || parsedYear < 1800 || parsedYear > 2099) {
+    //   await this.limpiarAnio();
+    //   return;
+    // }
 
     // Si todo está bien, asignamos el valor limpio
-    this.edicion = cleanedValue;
+    this.edicion = rawValue;
+    console.log(this.edicion)
   }
 
   limpiarAnio() {
     this.edicion = '';
   }
-
+  idFuente: string = '';
   nuevaFuente() {
     if (
       !this.fuente ||
@@ -120,6 +121,7 @@ export class FuentesListComponent implements OnInit {
     }
 
     const datosFuente = {
+      idFuente: this.acronimo + '-' + this.fuente + '-' + this.edicion + '-' + this.url,
       acronimo: this.acronimo,
       fuente: this.fuente,
       url: this.url,
