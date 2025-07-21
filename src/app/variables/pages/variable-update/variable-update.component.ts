@@ -466,7 +466,7 @@ export class VariableUpdateComponent implements OnInit {
         error: (err) => console.error('Error obteniendo relaciones:', err),
       });
   }
-  delete_relationArrOds(id: string) {
+  delete_relationArrOds(id: number) {
     this._service_relation_ODS_VAR.eliminarRelacion_ods(id).subscribe({
       next: () => {
         console.log(`Relación con id ${id} eliminada correctamente`);

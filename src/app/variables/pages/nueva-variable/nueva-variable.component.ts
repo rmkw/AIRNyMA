@@ -818,7 +818,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       });
   }
 
-  eliminarRelacion(id: string) {
+  eliminarRelacion(id: number) {
     this._service_relation_ODS_VAR.eliminarRelacion_ods(id).subscribe({
       next: () => {
         console.log(`Relación con id ${id} eliminada correctamente`);

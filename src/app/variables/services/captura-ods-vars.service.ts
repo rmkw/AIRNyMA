@@ -22,7 +22,7 @@ export class relacionODS_Service {
       { withCredentials: true }
     );
   }
-  eliminarRelacion_ods(id: string): Observable<void> {
+  eliminarRelacion_ods(id: number): Observable<void> {
     return this.http.delete<void>(`${baseUrl}/ods/${id}`, {
       withCredentials: true,
     });

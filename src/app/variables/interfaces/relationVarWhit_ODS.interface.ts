@@ -1,4 +1,5 @@
 export interface RelacionODS {
+  idUnique?: number;
   idA: string | undefined;
   idS: string;
   objetivo: string;

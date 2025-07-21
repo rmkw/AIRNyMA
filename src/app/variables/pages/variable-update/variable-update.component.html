@@ -289,7 +289,7 @@
                     </th>
 
 
-                    <th class="text-center"></th>
+                    <th class="text-center">{{ item.contribucion }}</th>
                     <th class="text-center">
                       <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
                       (click)="delete_relationArrMdea(item.idUnique)">Eliminar</button>
@@ -430,11 +430,11 @@
 
 
 
-                  <th class="text-center"></th>
+                  <th class="text-center">{{ item.contribucion }}</th>
 
                   <th class="text-center">
                     <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
-                    (click)="delete_relationArrOds(item.idA!)" >Eliminar</button>
+                    (click)="delete_relationArrOds(item.idUnique!)" >Eliminar</button>
                   </th>
                 </tr>
               }
