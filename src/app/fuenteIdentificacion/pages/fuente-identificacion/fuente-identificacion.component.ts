@@ -50,21 +50,15 @@ export class FuenteIdentificacionComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-
-
     this.obtenerFuente();
-
   }
-
-
-
 
   obtenerFuente() {
     const fuenteData = localStorage.getItem('fuenteEditable');
     if (fuenteData) {
       const fuente = JSON.parse(fuenteData);
       this.fuenteState = fuente;
-      console.log(fuente)
+      console.log(fuente);
 
       this.idFuente = fuente.idFuente;
       this.idPp = fuente.acronimo;
@@ -73,8 +67,6 @@ export class FuenteIdentificacionComponent implements OnInit {
       this.linkFuente = fuente.url;
       this.anioEvento = fuente.edicion;
       this.comentario = fuente.comentarioS;
-
-
     }
   }
 
@@ -103,9 +95,9 @@ export class FuenteIdentificacionComponent implements OnInit {
             // this.mensajeAlerta = `Fuente actualizada correctamente.`;
             // setTimeout(() => this.mostrarAlerta.set(false), 3000);
             this.showmodalActualizacionExitosa();
-
           } else {
             console.error('Error al actualizar la fuente');
+            this.showModalErrorFuenteDuplicada();
           }
         },
         error: (error) => {
@@ -134,8 +126,17 @@ export class FuenteIdentificacionComponent implements OnInit {
     this.modalActualizacionExitosa.nativeElement.showModal();
   }
   clocemodalActualizacionExitosa() {
-
     this.modalActualizacionExitosa.nativeElement.close();
     this._router.navigate(['/fuentes']);
+  }
+  @ViewChild('modalErrorFuenteDuplicada')
+  modalErrorFuenteDuplicada!: ElementRef<HTMLDialogElement>;
+  showModalErrorFuenteDuplicada() {
+    this.modalErrorFuenteDuplicada.nativeElement.showModal();
+  }
+  cerrarModalerror() {
+    this.modalErrorFuenteDuplicada.nativeElement.close();
+
+
   }
 }
