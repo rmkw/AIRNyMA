@@ -10,9 +10,9 @@ import { MdeaService } from '@/variables/services/mdea-pull.service';
 import { OdsService } from '@/variables/services/ods-pull.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, first, of } from 'rxjs';
 
 @Component({
@@ -20,7 +20,7 @@ import { catchError, first, of } from 'rxjs';
   imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './variable-update.component.html',
 })
-export class VariableUpdateComponent implements OnInit {
+export class VariableUpdateComponent implements OnInit, AfterViewInit {
   idA!: string;
   idS: string = '';
 
@@ -44,6 +44,7 @@ export class VariableUpdateComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private _variableService: VariableService
   ) {}
 
@@ -57,6 +58,12 @@ export class VariableUpdateComponent implements OnInit {
     this.getComponentes();
     this.getObjetivos();
     this.getPropetiesLocalStorage();
+  }
+  ngAfterViewInit() {
+    // Esto se ejecuta después de que el DOM ya está cargado
+    setTimeout(() => {
+      this.validacion(); // aquí aseguras evaluar campos autocompletados
+    });
   }
 
   loadVariable() {
@@ -83,6 +90,7 @@ export class VariableUpdateComponent implements OnInit {
 
         this.get_ArrMdea();
         this.get_ArrOds();
+        this.validacion();
 
         // Aquí puedes usar patchValue si usas Reactive Forms
       },
@@ -331,6 +339,7 @@ export class VariableUpdateComponent implements OnInit {
       .subscribe((response) => {
         console.log('relaciones: ', response);
         this.arrMdea = response;
+        this.validacion();
       });
   }
 
@@ -445,7 +454,7 @@ export class VariableUpdateComponent implements OnInit {
         this.get_ArrMdea();
         this.get_ArrOds();
         this.loadVariable();
-        alert('¡Variable actualizada correctamente!');
+        // alert('¡Variable actualizada correctamente!');
       },
       error: (err) => {
         console.error('Error actualizando variable:', err);
@@ -462,6 +471,7 @@ export class VariableUpdateComponent implements OnInit {
         next: (res) => {
           console.log('Datos recibidos en obtenerRelaciones_ods():', res);
           this.arrOds = res;
+          this.validacion();
         },
         error: (err) => console.error('Error obteniendo relaciones:', err),
       });
@@ -654,8 +664,6 @@ export class VariableUpdateComponent implements OnInit {
 
   _pertinenciaService = inject(TemaCobNecService);
 
-
-
   actualizarPertinencia() {
     const data: TemaCobNec = {
       idA: this.idA,
@@ -667,8 +675,6 @@ export class VariableUpdateComponent implements OnInit {
     };
     console.log('Pertinencia que se enviará:', data);
 
-
-
     if (!this.idA) {
       console.error('No hay ID de variable definido');
       return;
@@ -677,12 +683,80 @@ export class VariableUpdateComponent implements OnInit {
     this._pertinenciaService.editarPertinencia(this.idA, data).subscribe({
       next: (res) => {
         console.log('Pertinencia actualizada con éxito:', res);
-        alert('Pertinencia actualizada con éxito');
+        // alert('Pertinencia actualizada con éxito');
         // Aquí puedes mostrar un toast, alert o redirigir si quieres
       },
       error: (err) => {
         console.error('Error al actualizar pertinencia:', err);
       },
     });
+  }
+
+  actualizarRegistro: boolean = true;
+  validacion(): void {
+    this.mdea = this.mdea_html_hidden;
+    this.ods = this.ods_html_hidden;
+
+    const varNombre = this.nombre.trim();
+    const varDefinicion = this.definicion.trim();
+    const varUrl = this.url.trim();
+    const varComentarioS = this.comentarioS.trim();
+
+    const perPertinencia = this.pertinencia.trim();
+    const perContribucion = this.contribucion.trim();
+    const perViabilidad = this.viabilidad.trim();
+    const perPropuesta = this.propuesta.trim();
+    const perComentarioSP = this.comentarioSP.trim();
+
+    const mdeaValido =
+      !this.mdea_html_hidden ||
+      (Array.isArray(this.arrMdea) && this.arrMdea.length > 0);
+    const odsValido =
+      !this.ods_html_hidden ||
+      (Array.isArray(this.arrOds) && this.arrOds.length > 0);
+
+    this.actualizarRegistro = !(
+      varNombre &&
+      varDefinicion &&
+      varUrl &&
+      varComentarioS &&
+      perPertinencia &&
+      perContribucion &&
+      perViabilidad &&
+      perPropuesta &&
+      perComentarioSP &&
+      mdeaValido &&
+      odsValido
+    );
+  }
+
+  @ViewChild('modalGuardado') modalGuardado!: ElementRef<HTMLDialogElement>;
+  actualizarTodo() {
+    this.actualizarVariable();
+    this.actualizarPertinencia();
+    console.log('entre');
+
+    this.modalGuardado.nativeElement.showModal();
+
+    // alert('¡Todos los cambios han sido guardados correctamente!');
+    // this.router.navigate(['/nueva-variable']);
+  }
+  checkedMDEA(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    this.mdea = checkbox.checked;
+    this.mdea_html_hidden = this.mdea;
+
+    this.validacion();
+  }
+  checkedODS(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    this.ods = checkbox.checked;
+    this.ods_html_hidden = this.ods;
+
+    this.validacion();
+  }
+
+  irANuevaVariable() {
+    this.router.navigate(['/nueva-variable']);
   }
 }

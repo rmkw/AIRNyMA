@@ -3,7 +3,7 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold font-montserrat text-primary">Editar variable {{ idA }}
       </h1>
-      <button class="btn btn-sm btn-primary" >
+      <button class="btn btn-sm btn-primary" [disabled]="actualizarRegistro" (click)="actualizarTodo()" >
         Actualizar Registro
         </button>
   </div>
@@ -14,7 +14,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
         Nombre de la variable
       </label>
-      <input type="text" id="nombreVariable" [(ngModel)]="nombre"
+      <input type="text" id="nombreVariable" [(ngModel)]="nombre" (ngModelChange)="validacion()"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -22,7 +22,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="definicionVariable">
         Definición de la variable
       </label>
-      <input type="text" id="definicionVariable" [(ngModel)]="definicion"
+      <input type="text" id="definicionVariable" [(ngModel)]="definicion" (ngModelChange)="validacion()"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -30,7 +30,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="_linkVar">
         Url de acceso variable
       </label>
-      <input type="text" id="_linkVar" [(ngModel)]="url"
+      <input type="text" id="_linkVar" [(ngModel)]="url" (ngModelChange)="validacion()"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -38,7 +38,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
         Comentario de la variable
       </label>
-      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioS"
+      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioS" (ngModelChange)="validacion()"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -46,7 +46,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
         Alineación con MDEA
       </label>
-      <input type="checkbox" id="alinea_MDEA" [(ngModel)]="mdea"
+      <input type="checkbox" id="alinea_MDEA"  [checked]="mdea" (click)="checkedMDEA($event)"
          class="checkbox checkbox-md " />
     </div>
 
@@ -54,7 +54,7 @@
       <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
         Alineación con ODS
       </label>
-      <input type="checkbox" id="alinea_ODS" [(ngModel)]="ods"  class="checkbox checkbox-md" />
+      <input type="checkbox" id="alinea_ODS"  [checked]="ods" (click)="checkedODS($event)"  class="checkbox checkbox-md" />
     </div>
 
     <!-- <div class="col-span-4 ">
@@ -80,14 +80,14 @@
       <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
         Tema de cobertura de necesidades
       </label>
-      <input type="text" id="temaCobertura" [(ngModel)]="pertinencia"  class="input input-sm input-bordered w-full" placeholder="" />
+      <input type="text" id="temaCobertura" [(ngModel)]="pertinencia" (ngModelChange)="validacion()"  class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-2">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
         Nivel de contribución
       </label>
-      <select class="select select-bordered select-sm w-full" [(ngModel)]="contribucion">
+      <select class="select select-bordered select-sm w-full" [(ngModel)]="contribucion" (ngModelChange)="validacion()">
         <option disabled selected>Selecciona un nivel</option>
         <option value="Alto">Alto</option>
         <option value="Intermedio">Intermedio</option>
@@ -100,7 +100,7 @@
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Viabilidad de generación
       </label>
-      <select class="select select-bordered select-sm w-full " [(ngModel)]="viabilidad">
+      <select class="select select-bordered select-sm w-full " [(ngModel)]="viabilidad" (ngModelChange)="validacion()">
         <option disabled selected>Selecciona una opción</option>
         <option value="Viable">Viable</option>
         <option value="No viable">No viable</option>
@@ -113,14 +113,14 @@
         Propuesta de generación de estadística derivada
       </label>
       <input
-        type="text" id="comentarioVariable" [(ngModel)]="propuesta" class="input input-sm input-bordered w-full" placeholder="" />
+        type="text" id="comentarioVariable" [(ngModel)]="propuesta" (ngModelChange)="validacion()" class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
     <div class="col-span-4 mb-2">
       <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
         Comentario de pertinencia
       </label>
-      <input  type="text" id="comentarioVariable" [(ngModel)]="comentarioSP"
+      <input  type="text" id="comentarioVariable" [(ngModel)]="comentarioSP" (ngModelChange)="validacion()"
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
@@ -492,3 +492,27 @@
 
 
 </div>
+
+
+
+
+<!-- Modal de actualización exitosa -->
+<dialog #modalGuardado class="modal">
+  <div class="modal-box">
+    <!-- Icono de check (opcional) -->
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center">¡Actualización exitosa!</h3>
+    <p class="py-4 text-center">Los datos de la variable se han actualizado correctamente.</p>
+
+    <div class="modal-action flex justify-center">
+      <!-- Botón para cerrar -->
+      <button class="btn btn-success" (click)="irANuevaVariable()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
