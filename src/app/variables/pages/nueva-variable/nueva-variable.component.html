@@ -180,7 +180,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
             <option disabled selected>Selecciona un Componente</option>
-            <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{ comp.nombre }}</option>
+            <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{comp.idComponente}}. {{ comp.nombre }}</option>
           </select>
         </div>
 
@@ -191,7 +191,7 @@
           <select class="select select-bordered select-sm w-full" #subcomponenteSelect
             (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
             <option disabled selected>Selecciona un Subcomponente</option>
-            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.nombre }}
+            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
             </option>
             <option value="-">-</option>
           </select>
@@ -205,7 +205,7 @@
             [disabled]="!isSelectEnabled_Top">
             >
             <option disabled selected>Selecciona un Tópico</option>
-            <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.nombre }}</option>
+            <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -217,7 +217,7 @@
           <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
             [disabled]="!isSelectEnabled_Var">
             <option disabled selected>Selecciona una Variable</option>
-            <option *ngFor="let vari of arrVariables" [value]="vari.idEstadistico1">{{ vari.nombre }}</option>
+            <option *ngFor="let vari of arrVariables" [value]="vari.idEstadistico1">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -229,7 +229,7 @@
           <select class="select select-bordered select-sm w-full" #estadisticoSelect
             (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
             <option disabled selected>Selecciona un Estadístico</option>
-            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.nombre }}
+            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
             </option>
             <option value="-">-</option>
           </select>
@@ -620,6 +620,14 @@
                     <span class="font-medium">Estadística 2:</span>
                     <span>{{ mdea.estadistica2 }}</span>
                   </li>
+                  <li class="contents">
+                    <span class="font-medium">Nivel de contribución:</span>
+                    <span>{{ mdea.contribucion }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Comentario:</span>
+                    <span>{{ mdea.comentarioS }}</span>
+                  </li>
                 </ul>
               </div>
             </ng-container>
@@ -655,6 +663,14 @@
                   <li class="contents">
                     <span class="font-medium">Indicador:</span>
                     <span>{{ ods.indicador }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Nivel de contribución:</span>
+                    <span>{{ ods.contribucion }}</span>
+                  </li>
+                  <li class="contents">
+                    <span class="font-medium">Comentario:</span>
+                    <span>{{ ods.comentarioS }}</span>
                   </li>
 
                 </ul>
