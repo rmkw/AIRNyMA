@@ -56,27 +56,33 @@
     </button>
 
 
-      <!-- Botón para abrir el dropdown -->
-      <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
-        Theme
-        <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
-          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
-          <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-        </svg>
-      </button>
+      <!-- Dropdown de temas -->
+      <div class="relative">
+        <!-- Botón para abrir el dropdown -->
+        <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
+          Theme
+          <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
+            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
+            <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+          </svg>
+        </button>
 
-      <!-- Menú dropdown -->
-      <ul class="menu bg-base-100 rounded-box z-[100] w-52 p-2 shadow absolute transition-all duration-200"
-        [ngClass]="{ 'opacity-0 invisible scale-95': !dropdownAbierto(), 'opacity-100 visible scale-100': dropdownAbierto() }">
+        <!-- Menú dropdown -->
+        <ul class="menu bg-base-100 rounded-box z-[100] w-52 p-2 shadow absolute right-0 mt-2 transition-all duration-200"
+          [ngClass]="{
+            'opacity-0 invisible scale-95': !dropdownAbierto(),
+            'opacity-100 visible scale-100': dropdownAbierto()
+          }">
+          <li *ngFor="let theme of themes">
+            <label class="btn btn-sm btn-block btn-ghost justify-start">
+              <input type="radio" name="theme-dropdown" (change)="changeTheme(theme)" [value]="theme"
+                [checked]="theme === selectedTheme()" />
+              {{ theme }}
+            </label>
+          </li>
+        </ul>
+      </div>
 
-        <li *ngFor="let theme of themes">
-          <label class="btn btn-sm btn-block btn-ghost justify-start">
-            <input type="radio" name="theme-dropdown" (change)="changeTheme(theme)" [value]="theme"
-              [checked]="theme === selectedTheme()" />
-            {{ theme }}
-          </label>
-        </li>
-      </ul>
 
 
 
