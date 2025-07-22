@@ -176,7 +176,7 @@
               </label>
               <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
                 <option disabled selected>Selecciona un Componente</option>
-                <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{ comp.nombre }}</option>
+                <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{comp.idComponente}}. {{ comp.nombre }}</option>
               </select>
             </div>
 
@@ -187,7 +187,7 @@
               <select class="select select-bordered select-sm w-full" #subcomponenteSelect
               (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc"                 >
                 <option disabled selected>Selecciona un Subcomponente</option>
-                <option *ngFor="let subcomp of arrSubcomponente" [value]="subcomp.idSubcomponente">{{ subcomp.nombre }}
+                <option *ngFor="let subcomp of arrSubcomponente" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
                   </option>
                 <option value="-">-</option>
               </select>
@@ -201,7 +201,7 @@
               [disabled]="!isSelectEnabled_Top" >
                 >
                 <option disabled selected>Selecciona un Tema</option>
-                <option *ngFor="let tema of arrTemas" [value]="tema.idTema">{{ tema.nombre }}</option>
+                <option *ngFor="let tema of arrTemas" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
                 <option value="-">-</option>
               </select>
             </div>
@@ -213,7 +213,7 @@
               <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
               [disabled]="!isSelectEnabled_Var">
                 <option disabled selected>Selecciona Estadistica1</option>
-                <option *ngFor="let vari of arrEstadistica1" [value]="vari.idEstadistico1">{{ vari.nombre }}</option>
+                <option *ngFor="let vari of arrEstadistica1" [value]="vari.idEstadistico1">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
                 <option value="-">-</option>
               </select>
             </div>
@@ -224,7 +224,7 @@
               </label>
               <select class="select select-bordered select-sm w-full" #estadisticoSelect (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
                 <option disabled selected>Selecciona un Estadistica2</option>
-                <option *ngFor="let estad of arrEstadistica2" [value]="estad.idEstadistico2">{{ estad.nombre }}
+                <option *ngFor="let estad of arrEstadistica2" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
                   </option>
                 <option value="-">-</option>
               </select>
