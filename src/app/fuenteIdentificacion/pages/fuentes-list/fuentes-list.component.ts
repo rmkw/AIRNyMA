@@ -68,7 +68,6 @@ export class FuentesListComponent implements OnInit {
           } else {
             this.loading = true;
           }
-
         },
         error: (err) => {
           console.error('Error al obtener fuentes:', err);
@@ -101,27 +100,24 @@ export class FuentesListComponent implements OnInit {
 
     // Si todo está bien, asignamos el valor limpio
     this.edicion = rawValue;
-    console.log(this.edicion)
+    console.log(this.edicion);
   }
 
   limpiarAnio() {
     this.edicion = '';
   }
   idFuente: string = '';
+  mensajeError: string = '';
   nuevaFuente() {
-    if (
-      !this.fuente ||
-      !this.url ||
-      !this.edicion ||
-      !this.comentarioF
-    ) {
+    if (!this.fuente || !this.url || !this.edicion || !this.comentarioF) {
       console.error('Todos los campos son obligatorios');
       this.showModalSinDatos();
       return;
     }
 
     const datosFuente = {
-      idFuente: this.acronimo + '-' + this.fuente + '-' + this.edicion + '-' + this.url,
+      idFuente:
+        this.acronimo + '-' + this.fuente + '-' + this.edicion + '-' + this.url,
       acronimo: this.acronimo,
       fuente: this.fuente,
       url: this.url,
@@ -133,23 +129,24 @@ export class FuentesListComponent implements OnInit {
 
     this._fuentesService.registrarFuente(datosFuente).subscribe(
       (response) => {
+        console.log('Respuesta del backend:', response);
         if (response) {
-
-
           this.limpiarFormulario();
           this.ngOnInit();
           this.showmodalFuenteNueva();
-
-        } else {
-          console.error('Hubo un error al registrar la fuente');
-          alert('Hubo un error al registrar la fuente');
         }
       },
       (error) => {
-        console.error('Error en la solicitud', error);
-        alert('Ocurrió un error al intentar registrar la fuente');
+        console.error('Error completo:', error);
+        if (error.status === 409) {
+          this.mensajeError = 'Ya existe una fuente con esa información.';
+          this.showModalErrorFuenteDuplicada();
+        } else {
+          alert('Otro error ocurrió');
+        }
       }
     );
+
   }
   limpiarFormulario() {
     this.fuente = '';
@@ -222,10 +219,21 @@ export class FuentesListComponent implements OnInit {
   @ViewChild('modalFuenteNueva')
   modalFuenteNueva!: ElementRef<HTMLDialogElement>;
   showmodalFuenteNueva() {
-
     this.modalFuenteNueva.nativeElement.showModal();
   }
   clocemodalFuenteNueva() {
     this.modalFuenteNueva.nativeElement.close();
+  }
+
+  @ViewChild('modalErrorFuenteDuplicada')
+  modalErrorFuenteDuplicada!: ElementRef<HTMLDialogElement>;
+  showModalErrorFuenteDuplicada() {
+    this.modalErrorFuenteDuplicada.nativeElement.showModal();
+  }
+  cerrarModalerror(){
+    this.modalErrorFuenteDuplicada.nativeElement.close();
+    this.mensajeError = ''; // Limpiar el mensaje de error
+    this.limpiarFormulario(); // Limpiar el formulario
+    this.ngOnInit(); // Recargar las fuentes
   }
 }

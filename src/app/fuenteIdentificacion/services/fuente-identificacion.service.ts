@@ -1,7 +1,7 @@
 import { authService } from '@/auth/services/auth.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FiEcoResponce } from '../interfaces/fiEco-responce.interface';
 
@@ -70,7 +70,7 @@ export class FuenteIdentificacionService {
       .pipe(
         catchError((error) => {
           console.error('Error al registrar fuente:', error);
-          return of(null); // O cualquier otro valor que indique error
+          return throwError(() => error); // O cualquier otro valor que indique error
         })
       );
   }
