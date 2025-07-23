@@ -12,7 +12,7 @@
       <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
         [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
 
-        <li><a routerLink="/procesos" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200 text-base-100">Procesos de producción</a></li>
+        <!-- <li><a routerLink="/procesos" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200 text-base-100">Procesos de producción</a></li> -->
 
         <!-- <li><a  (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Fuentes de Identificación</a></li> -->
 
@@ -33,7 +33,8 @@
 
   <div class="navbar-center hidden lg:flex">
     <ul class="menu menu-horizontal px-1">
-      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Iniciar flujo de captura de información</a>
+      <li><a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300"
+        routerLinkActive="text-base-100 bg-secondary">Iniciar flujo de captura de información</a>
       </li>
       <!-- <li><a  (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Fuentes de Identificación</a></li> -->
 

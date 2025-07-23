@@ -5,7 +5,7 @@
     </h1>
 
 
-    <button class="btn btn-sm btn-primary" [disabled]="finalizarCaptura" (click)="registrarTema()">
+    <button class="btn btn-sm btn-primary text-base-100" [disabled]="finalizarCaptura" (click)="registrarTema()">
       Finalizar Captura
     </button>
 
@@ -550,9 +550,9 @@
 
     <div class="modal-action">
       <form method="dialog">
-        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-error">Cancelar</button>
       </form>
-      <button class="btn btn-primary" (click)="accionPersonalizada()">Sí, continuar</button>
+      <button class="btn btn-primary text-base-100" (click)="accionPersonalizada()">Sí, continuar</button>
     </div>
   </div>
 </dialog>
@@ -576,19 +576,19 @@
 
           <!-- Información básica -->
           <div class="mb-4">
-            <p class="text-primary font-semibold text-lg">Nombre:</p>
+            <p class="text-secondary font-semibold text-lg">Nombre:</p>
             <p>{{ item.nombre }}</p>
 
-            <p class="text-primary font-semibold text-lg mt-2">Definición:</p>
+            <p class="text-secondary font-semibold text-lg mt-2">Definición:</p>
             <p>{{ item.definicion || 'No especificado' }}</p>
 
-            <p class="text-primary font-semibold text-lg mt-2">Link:</p>
+            <p class="text-secondary font-semibold text-lg mt-2">Link:</p>
             <p>{{ item.url || 'No disponible' }}</p>
 
-            <p class="text-primary font-semibold text-lg mt-2">Comentario:</p>
+            <p class="text-secondary font-semibold text-lg mt-2">Comentario:</p>
             <p>{{ item.comentarioS || 'No disponible' }}</p>
 
-            <button class="btn btn-block btn-sm  btn-primary mt-3" (click)="pegarDatosVariable(item)">
+            <button class="btn btn-block btn-sm  btn-secondary mt-3" (click)="pegarDatosVariable(item)">
               Pegar Datos
             </button>
           </div>
@@ -696,19 +696,19 @@
             <ng-container *ngIf="item.pertinencia; else noPer">
               <div class="mb-2 p-2 rounded-lg">
                 <div class="mb-2">
-                  <p class="text-primary font-semibold text-lg">Tema de cobertura:</p>
+                  <p class="text-secondary font-semibold text-lg">Tema de cobertura:</p>
                   <p>{{ item.pertinencia.pertinencia }}</p>
 
-                  <p class="text-primary font-semibold text-lg mt-2">Nivel de contribución:</p>
+                  <p class="text-secondary font-semibold text-lg mt-2">Nivel de contribución:</p>
                   <p>{{ item.pertinencia.contribucion || 'No especificado' }}</p>
 
-                  <p class="text-primary font-semibold text-lg mt-2">Viabilidad de generación:</p>
+                  <p class="text-secondary font-semibold text-lg mt-2">Viabilidad de generación:</p>
                   <p>{{ item.pertinencia.viabilidad || 'No disponible' }}</p>
 
-                  <p class="text-primary font-semibold text-lg mt-2">Propuesta de generación:</p>
+                  <p class="text-secondary font-semibold text-lg mt-2">Propuesta de generación:</p>
                   <p>{{ item.pertinencia.propuesta || 'No disponible' }}</p>
 
-                  <button class="btn btn-block btn-sm btn-primary mt-4" [disabled]="DISABLE_temaCobertura"
+                  <button class="btn btn-block btn-sm btn-secondary mt-4" [disabled]="DISABLE_temaCobertura"
                     (click)="pegarDatosPertinencia(item.pertinencia)">
                     Pegar Datos
                   </button>

@@ -24,10 +24,10 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          "primary": "#003057",
-          "secondary": "#0177c8",
+          "primary": "#888CE9",
+          "secondary": "#003057",
           "accent": "#031633",
-          "neutral": "#435363",
+          "neutral": "#08989C",
           "base-100": "#f0f0f0",
           "info": "#00aadd",
           "success": "#4ade80",
