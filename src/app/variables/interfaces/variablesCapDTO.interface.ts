@@ -1,7 +1,7 @@
 export interface VariableDTO {
   idA: string;
   idS: string;
-  idFuente: number;
+  idFuente: string;
   acronimo: string;
   nombre: string;
   definicion: string;

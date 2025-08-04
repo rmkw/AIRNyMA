@@ -6,7 +6,7 @@
 
 
     <button class="btn btn-sm btn-primary text-base-100" [disabled]="finalizarCaptura" (click)="registrarTema()">
-      Finalizar Captura
+      Finalizar captura
     </button>
 
   </div>
@@ -179,7 +179,7 @@
             Componente
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
-            <option disabled selected>Selecciona un Componente</option>
+            <option disabled selected>Selecciona un componente</option>
             <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{comp.idComponente}}. {{ comp.nombre }}</option>
           </select>
         </div>
@@ -190,7 +190,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" #subcomponenteSelect
             (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
-            <option disabled selected>Selecciona un Subcomponente</option>
+            <option disabled selected>Selecciona un subcomponente</option>
             <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
             </option>
             <option value="-">-</option>
@@ -204,7 +204,7 @@
           <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
             [disabled]="!isSelectEnabled_Top">
             >
-            <option disabled selected>Selecciona un Tópico</option>
+            <option disabled selected>Selecciona un tema</option>
             <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
             <option value="-">-</option>
           </select>
@@ -216,7 +216,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
             [disabled]="!isSelectEnabled_Var">
-            <option disabled selected>Selecciona una Variable</option>
+            <option disabled selected>Selecciona un estadístico1</option>
             <option *ngFor="let vari of arrVariables" [value]="vari.idEstadistico1">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
             <option value="-">-</option>
           </select>
@@ -228,7 +228,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" #estadisticoSelect
             (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
-            <option disabled selected>Selecciona un Estadístico</option>
+            <option disabled selected>Selecciona un estadístico2</option>
             <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
             </option>
             <option value="-">-</option>
@@ -344,7 +344,7 @@
             Objetivo
           </label>
           <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)">
-            <option disabled selected>Selecciona un Objetivo</option>
+            <option disabled selected>Selecciona un objetivo</option>
             <option *ngFor="let obj of arrODS" [value]="obj.idObjetivo">{{ obj.idObjetivo+'. '+obj.objetivo }}</option>
           </select>
         </div>
@@ -355,7 +355,7 @@
           </label>
           <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
             [disabled]="!isSelectEnabled_Meta">
-            <option disabled selected>Selecciona una Meta</option>
+            <option disabled selected>Selecciona una meta</option>
             <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}.
               {{
               meta.meta.length > 50
@@ -373,7 +373,7 @@
           <select class="select select-bordered select-sm w-full " #indicadorSelect (change)="onSelectIndicador($event)"
             [disabled]="!isSelectEnabled_Ind">
             >
-            <option disabled selected>Selecciona un Indicador</option>
+            <option disabled selected>Selecciona un ndicador</option>
             <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
               {{indic.idIndicador}}.
               {{ indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' :
@@ -480,7 +480,7 @@
     </div>
 
     <div class="overflow-x-auto">
-      <table class="table">
+      <table class="table table-xs">
         <thead>
           <tr>
             <th class="text-secondary" style="width: 10rem;">Id Variable</th>
@@ -492,7 +492,7 @@
           </tr>
         </thead>
         <tbody>
-          @for ( varItem of arrVARIABLES_REGISTER; track $index) {
+          @for ( varItem of variables; track $index) {
 
           <tr>
             <td class="">{{ varItem.idS }}</td>
@@ -529,9 +529,65 @@
         </tbody>
       </table>
     </div>
+
+    <!-- <div class="flex justify-end mt-4">
+      <div class="join">
+        <button class="join-item btn btn-sm" (click)="prevPage()" [disabled]="currentPage === 0">«</button>
+        <button class="join-item btn btn-sm">{{ currentPage + 1 }} / {{ totalPages }}</button>
+        <button class="join-item btn btn-sm btn-primary" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">»</button>
+        </div>
+    </div> -->
+
+    <div class="flex justify-between items-center mt-4 px-4">
+      <!-- Paginador a la izquierda -->
+      <div class="flex items-center space-x-2">
+        <span class="text-sm font-medium text-gray-700">Páginas:</span>
+
+        <div class="join space-x-1">
+          <!-- « solo si NO estás en el primer rango -->
+          <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">
+            «
+          </button>
+
+          <!-- Botones de página -->
+          <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
+            [ngClass]="{'btn-primary': page === currentPage}" (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
+
+          <!-- » solo si NO estás en el último rango -->
+          <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">
+            »
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="text-sm font-medium text-gray-700">Total de variables: {{totalItems}}</span>
+      </div>
+
+      <!-- Selector a la derecha -->
+      <div class="flex items-center space-x-2">
+        <span class="text-sm font-medium text-gray-700">Resultados por página:</span>
+
+        <select class="select select-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+        </select>
+      </div>
+    </div>
+
+
+
+
+
+
   </div>
 
+
 </div>
+
+
+
 
 
 

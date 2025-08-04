@@ -22,7 +22,6 @@ import { catchError, of } from 'rxjs';
   templateUrl: './nueva-variable.component.html',
 })
 export class NuevaVariableComponent implements OnInit, AfterViewInit {
-
   ngOnInit(): void {
     this.getComponentes();
     this.getObjetivos();
@@ -470,7 +469,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
   // ! Captura variable
   // ! VARIABLE CAMPOS
-  _idFuente: number = 0;
+  _idFuente: string = '';
   _idPp: string = '';
   _responsableRegister: number | null = null;
   _anioEvento: string = '';
@@ -502,7 +501,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
   _pP_idVar: string = '';
 
-  getVarInNewVars(idFuente: number, responsableRegister: number) {
+  getVarInNewVars(idFuente: string, responsableRegister: number) {
     this._pP_idVar = this._idPp + '-';
     this.idVariable = this._pP_idVar;
     const responsableParsed = Number(responsableRegister);
@@ -510,6 +509,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this._varService.getVars(responsableParsed, idFuente).subscribe((data) => {
       console.log('Variables List:', data);
       this.arrVARIABLES_REGISTER = data;
+      this.getVariablesPage();
     });
   }
 
@@ -991,8 +991,82 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.finalizarCaptura = false;
   }
 
-  editarVariable(_variable: VariableDTO){
-    this._router.navigate(['/update-variable', _variable.idA])
+  editarVariable(_variable: VariableDTO) {
+    this._router.navigate(['/update-variable', _variable.idA]);
+  }
+
+  variables: any[] = [];
+  currentPage: number = 0;
+  pageSize: number = 10;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  getVariablesPage() {
+    console.log('Responsable Register:', this._responsableRegister);
+    console.log('ID Fuente:', this._idFuente);
+    this._varService
+      .getVars(
+        this._responsableRegister!,
+        this._idFuente,
+        this.currentPage,
+        this.pageSize
+      )
+      .subscribe((response) => {
+        this.variables = response.content;
+        this.totalItems = response.totalElements;
+        this.totalPages = response.totalPages;
+      });
+  }
+  prevPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.getVariablesPage();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.getVariablesPage();
+    }
+  }
+  pageSizes = [10, 20, 50, 100];
+
+  onPageSizeChange() {
+    this.currentPage = 0; // reinicia a la primera página si cambias el tamaño
+    this.getVariablesPage();
+  }
+  get pageRange(): number[] {
+    const visiblePages = 5;
+    const currentRange = Math.floor(this.currentPage / visiblePages);
+    const startPage = currentRange * visiblePages;
+    const endPage = Math.min(startPage + visiblePages, this.totalPages);
+    return Array.from({ length: endPage - startPage }, (_, i) => startPage + i);
+  }
+  get isFirstRange(): boolean {
+    return this.pageRange[0] === 0;
+  }
+
+  get isLastRange(): boolean {
+    return this.pageRange[this.pageRange.length - 1] >= this.totalPages - 1;
+  }
+
+  goToPage(page: number) {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.getVariablesPage();
+    }
+  }
+
+  goToPrevPageRange() {
+    const newStart = Math.max(this.pageRange[0] - 5, 0);
+    this.goToPage(newStart);
+  }
+
+  goToNextPageRange() {
+    const newStart = this.pageRange[this.pageRange.length - 1] + 1;
+    if (newStart < this.totalPages) {
+      this.goToPage(newStart);
+    }
   }
 }
 

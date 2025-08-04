@@ -10,12 +10,17 @@ export class VariableService {
   constructor() {}
   private http = inject(HttpClient);
 
-  getVars(responsableRegister: number, idFuente: number): Observable<any> {
+  getVars(
+    responsableRegister: number,
+    idFuente: string,
+    page = 0,
+    size = 10
+  ): Observable<any> {
     return this.http.get<any>(
-      `${baseUrl}/variables/filtered/${responsableRegister}/${idFuente}`,
-      {
-        withCredentials: true,
-      }
+      `${baseUrl}/variables/filtered?responsableRegister=${responsableRegister}&idFuente=${encodeURIComponent(
+        idFuente
+      )}&page=${page}&size=${size}`,
+      { withCredentials: true }
     );
   }
 
@@ -34,7 +39,7 @@ export class VariableService {
   }
 
   getVariableByIdA(idA: string): Observable<VariableDTO> {
-    return this.http.get<VariableDTO>(`${baseUrl}/variables/por-ida/${idA}`,{
+    return this.http.get<VariableDTO>(`${baseUrl}/variables/por-ida/${idA}`, {
       withCredentials: true,
     });
   }

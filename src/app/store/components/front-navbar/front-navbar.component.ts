@@ -2,12 +2,12 @@ import { authService } from '@/auth/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, Inject, signal } from '@angular/core';
 import { InjectSetupWrapper } from '@angular/core/testing';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'front-navbar',
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, CommonModule],
   templateUrl: './front-navbar.component.html',
 })
 export class FrontNavbarComponent {
