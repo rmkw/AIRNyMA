@@ -76,7 +76,7 @@ export class FuenteIdentificacionService {
   }
 
   editarFuente(
-    idFuente: number,
+    idFuente: string,
     datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>
   ): Observable<FiEcoResponce | null> {
     const userId = this._authService.user()?.id;
@@ -84,12 +84,19 @@ export class FuenteIdentificacionService {
       console.log('No hay usuario autenticado');
       return of(null);
     }
+
     console.log('Usuario autenticado en servicio fuente:', userId);
+
     const payload = { ...datos, idFuente, responsableActualizacion: userId };
     console.log('Enviando datos al backend:', payload);
 
+    const encodedId = encodeURIComponent(idFuente);
     return this.http
-      .put<FiEcoResponce>(`${baseUrl}/fuentes/${idFuente}`, payload)
+      .put<FiEcoResponce>(
+        `${baseUrl}/fuentes/update?idFuente=${encodedId}`,
+        payload,
+        { withCredentials: true }
+      )
       .pipe(
         catchError((error) => {
           console.error('Error al editar fuente:', error);
@@ -98,10 +105,10 @@ export class FuenteIdentificacionService {
       );
   }
 
-  deactivateRecord(id: number): Observable<any> {
+  deactivateRecord(id: string): Observable<any> {
+    const encodedId = encodeURIComponent(id);
     return this.http.delete(
-      `${baseUrl}/fuentes/${id}/delete-full`,
-
+      `${baseUrl}/fuentes/delete-full?idFuente=${encodedId}`,
       { withCredentials: true }
     );
   }

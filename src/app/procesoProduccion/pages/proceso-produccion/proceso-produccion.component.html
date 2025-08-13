@@ -24,12 +24,13 @@
         Selecciona el proceso de producción
       </label>
       <select id="procesoProduccion" class="select select-bordered select-sm w-full"
-        #procesoProduccionTag
+        #procesoProduccionTag [disabled]="!_procesos_isSelectEnabled"
         (change)="seleccionarProceso($event)">
         <option disabled selected>Selecciona una opción</option>
         @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
-        <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+        <option [value]="proceso.acronimo" >{{ proceso.proceso }}</option>
         }
+        <option value="otro">Agregar nuevo proceso de producción +</option>
       </select>
     </div>
 
@@ -241,6 +242,33 @@
     </div>
   </div>
 </dialog>
+
+<!-- Modal de Confirmación para ir a registro de proceso -->
+<dialog #AgregarProceso class="modal">
+  <div class="modal-box">
+    <!-- Icono informativo -->
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-warning" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center">Agregar nuevo proceso de producción</h3>
+    <p class="py-4 text-center">Esta opción te llevará al formulario para registrar un nuevo proceso. ¿Deseas continuar?
+    </p>
+
+    <div class="modal-action flex justify-center space-x-2">
+      <!-- Botón para cancelar -->
+      <button class="btn btn-outline" (click)="clocemodalAgregarProceso()">Cancelar</button>
+
+      <!-- Botón para confirmar navegación -->
+      <button class="btn btn-warning" (click)="confirmarIrANuevoProceso()">Ir al formulario</button>
+    </div>
+  </div>
+</dialog>
+
 
 
 

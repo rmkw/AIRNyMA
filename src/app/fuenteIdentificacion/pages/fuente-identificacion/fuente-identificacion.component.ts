@@ -26,7 +26,7 @@ export class FuenteIdentificacionComponent implements OnInit {
 
   fuenteState: FiEcoResponce | null = null;
 
-  idFuente: number = NaN;
+  idFuente: string = '';
   idPp: string = '';
   responsableActualizacion: string = '';
   fuente: string = '';
@@ -136,7 +136,5 @@ export class FuenteIdentificacionComponent implements OnInit {
   }
   cerrarModalerror() {
     this.modalErrorFuenteDuplicada.nativeElement.close();
-
-
   }
 }

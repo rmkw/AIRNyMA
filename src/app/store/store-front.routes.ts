@@ -11,6 +11,7 @@ import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/
 import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/nueva-fuente.component";
 import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
 import { VariableUpdateComponent } from '../variables/pages/variable-update/variable-update.component';
+import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";
 
 
 export const storeFrontRoutes: Routes = [
@@ -36,13 +37,17 @@ export const storeFrontRoutes: Routes = [
         component: ProcesoProduccionComponent,
       },
       {
+        path: 'nuevo-proceso',
+        component: NuevoProcesoComponent
+      },
+      {
         path: 'fuentes',
         component: FuentesListComponent,
       },
-      {
-        path: 'fuente/:id',
-        component: FuenteIdentificacionComponent,
-      },
+      // {
+      //   path: 'fuente/:id',
+      //   component: FuenteIdentificacionComponent,
+      // },
       // {
       //   path: 'nueva-fuente',
       //   component: NuevaFuenteComponent,

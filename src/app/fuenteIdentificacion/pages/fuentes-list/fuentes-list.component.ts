@@ -142,7 +142,9 @@ export class FuentesListComponent implements OnInit {
           this.mensajeError = 'Ya existe una fuente con esa información.';
           this.showModalErrorFuenteDuplicada();
         } else {
-          alert('Otro error ocurrió');
+          alert(
+            'Error al registrar la fuente (API) o Ya existe una fuente con esta información. '
+          );
         }
       }
     );
@@ -182,8 +184,8 @@ export class FuentesListComponent implements OnInit {
   }
 
   @ViewChild('modalEliminar') modalEliminar!: ElementRef<HTMLDialogElement>;
-  idFuenteSeleccionada: number | null = null;
-  abrirModal(id: number) {
+  idFuenteSeleccionada: string | null = null;
+  abrirModal(id: string) {
     this.idFuenteSeleccionada = id;
     this.modalEliminar.nativeElement.showModal();
   }
@@ -198,10 +200,10 @@ export class FuentesListComponent implements OnInit {
     }
     this.cerrarModal();
   }
-  desactivar(id: number): void {
+  desactivar(id: string): void {
     this._fuentesService.deactivateRecord(id).subscribe({
       next: (res) => {
-        // console.log('Registro eliminado:', res);
+        console.log('Registro eliminado:', res);
         this.getFuentesByidPp();
       },
       error: (err) => {

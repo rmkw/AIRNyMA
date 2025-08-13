@@ -34,11 +34,10 @@ export class ProcesoProduccionComponent implements OnInit {
   showWarning: boolean = false;
   mensajeAlerta = '';
 
-  direccionName:  string | number | undefined = undefined;
+  direccionName: string | number | undefined = undefined;
 
   ngOnInit(): void {
     this.getDirecciones();
-
   }
 
   getDirecciones() {
@@ -64,16 +63,18 @@ export class ProcesoProduccionComponent implements OnInit {
       .nativeElement as HTMLSelectElement;
     selectedOption.selectedIndex = 0;
 
+    this._procesos_isSelectEnabled = true;
+
     this.cargarProcesosProduccionByDireccionGeneral(nameDi);
   }
 
-  cargarProcesosProduccionByDireccionGeneral(dire: string |number| undefined) {
-
+  cargarProcesosProduccionByDireccionGeneral(
+    dire: string | number | undefined
+  ) {
     this._pp_Service.getPorDireccionGeneral(dire).subscribe({
       next: (data) => {
         this.arrProcesosPBydire = data;
-        console.log(data)
-
+        console.log(data);
       },
       error: (err) => {
         console.error('Error al obtener procesos por DG', err);
@@ -85,6 +86,10 @@ export class ProcesoProduccionComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const proceso = selectElement.value;
 
+    if (proceso === 'otro') {
+      this.showModalAgregarProceso();
+      return;
+    }
 
     const procesoEncontrado =
       this.arrProcesosPBydire.find(
@@ -96,8 +101,6 @@ export class ProcesoProduccionComponent implements OnInit {
     this.comentario = procesoEncontrado
       ? procesoEncontrado.comentarioS || ''
       : '';
-
-
   }
 
   showAlertUpComentario() {
@@ -187,5 +190,34 @@ export class ProcesoProduccionComponent implements OnInit {
   }
   cloceModalActualizar() {
     this.modalActualizar.nativeElement.close();
+  }
+
+  _procesos_isSelectEnabled: boolean = false;
+
+
+  @ViewChild('AgregarProceso')
+  AgregarProceso!: ElementRef<HTMLDialogElement>;
+  showModalAgregarProceso() {
+    this.AgregarProceso.nativeElement.showModal();
+  }
+  clocemodalAgregarProceso() {
+    this.AgregarProceso.nativeElement.close();
+    // Reiniciar el select al valor por defecto
+    const selectElement = this.procesoProduccionTag.nativeElement;
+    selectElement.selectedIndex = 0;
+
+    // Limpiar también el proceso seleccionado, por si acaso
+    this.procesoSeleccionado.set(null);
+    this.comentario = '';
+  }
+  confirmarIrANuevoProceso() {
+    if (!this.direccionName) {
+      alert('Primero selecciona una unidad productora de información.');
+      return;
+    }
+
+    this._router.navigate(['/nuevo-proceso'], {
+      queryParams: { direccion: this.direccionName },
+    });
   }
 }

@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { PpEconomicas } from '../interfaces/ppEco-responce.interface';
 import { environment } from 'src/environments/environment';
 import { interface_ProcesoP } from '../interfaces/procesos.interface';
+import { ProcesoLocal } from '../interfaces/procesos_locales.interface';
 
 const baseUrl = environment.baseUrl;
 
@@ -32,22 +33,41 @@ export class ppEcoService {
     });
   }
 
-  getPorDireccionGeneral(direccionGeneral: string | number | undefined): Observable<interface_ProcesoP[]>{
-    const params = new HttpParams().set('unidad_administrativa', direccionGeneral!);
+  getPorDireccionGeneral(
+    direccionGeneral: string | number | undefined
+  ): Observable<interface_ProcesoP[]> {
+    const params = new HttpParams().set(
+      'unidad_administrativa',
+      direccionGeneral!
+    );
 
-    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesos/buscar`, {params, withCredentials: true},)
+    return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesos/buscar`, {
+      params,
+      withCredentials: true,
+    });
   }
 
-  obtenerProcesosPorUnidad(idUnidad: number | undefined): Observable<interface_ProcesoP[]> {
+  obtenerProcesosPorUnidad(
+    idUnidad: number | undefined
+  ): Observable<interface_ProcesoP[]> {
     return this.http.get<interface_ProcesoP[]>(
       `${baseUrl}/procesos/unidad/${idUnidad}`
     );
   }
 
-  actualizarComentario(id: number | string , comentario: string): Observable<any> {
+  actualizarComentario(
+    id: number | string,
+    comentario: string
+  ): Observable<any> {
     const body = { comentario };
 
     return this.http.put(`${baseUrl}/procesos/comentario/${id}`, body, {
+      withCredentials: true,
+    });
+  }
+
+  registrarProcesoLocal(proceso: ProcesoLocal): Observable<any> {
+    return this.http.post(`${baseUrl}/procesos/registrar`, proceso, {
       withCredentials: true,
     });
   }

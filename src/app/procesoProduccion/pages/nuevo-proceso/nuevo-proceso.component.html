@@ -1,0 +1,199 @@
+<div class="w-full max-w-screen-xl mx-auto px-5 mt-10 mb-5">
+
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-2xl font-bold font-montserrat text-primary">Caracterización del proceso de producción</h1>
+    <button class="btn btn-sm btn-secondary text-base-100" (click)="registrar()">
+      Agregar nuevo proceso de producción
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-8 gap-8 mb-8">
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="dire">
+        Selecciona unidad productora de información</label>
+
+      <label for="" class="label-text w-full">{{direccionRecibida}}</label>
+    </div>
+
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
+        Nombre del proceso de producción
+      </label>
+
+      <input type="text" id="nombreProceso" [(ngModel)]="proceso" name="proceso"
+        class="input input-sm input-bordered w-full" placeholder="" />
+    </div>
+
+    <!-- Acrónimo -->
+    <div class="col-span-1 text-center">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="acronimo">
+        Acrónimo
+      </label>
+      <input type="text" id="acronimo" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="acronimo" name="acronimo" />
+    </div>
+
+
+
+
+
+    <!-- Estatus con botón dinámico -->
+    <div class="col-span-1 text-center">
+      <label class="block text-sm font-medium mb-2 text-secondary ">
+        Estatus
+      </label>
+      <select class="select select-bordered select-sm w-full " [(ngModel)]="estatus" name="estatus">
+        <option disabled selected>Selecciona un estatus</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Histórico">Histórico</option>
+
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-8">
+
+
+
+
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
+        Método de obtención de la información
+      </label>
+      <input type="text" id="metodo" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="metodo" name="metodo" />
+    </div>
+
+    <div class="col-span-3">
+      <label class="block text-sm font-medium mb-2 text-secondary">
+        Condición de información de interés nacional
+      </label>
+      <!-- <input type="text" id="condicion" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="iin" name="iin" /> -->
+      <select class="select select-bordered select-sm w-full " [(ngModel)]="iin" name="iin">
+        <option disabled selected>Selecciona una opción</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+        <!-- <option value="Histórico">Histórico</option> -->
+
+      </select>
+    </div>
+
+    <div class="col-span-2 text-center">
+      <label class="block text-sm font-medium mb-2 text-secondary">
+        Periodicidad
+      </label>
+      <input type="text" id="periodicidad" class="input input-sm input-bordered w-full" placeholder=""  [(ngModel)]="periodicidad" name="periodicidad"/>
+    </div>
+
+
+
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-8">
+
+    <div class="col-span-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="objetivo">
+        Objetivo del proceso
+      </label>
+      <textarea id="objetivo" class="textarea textarea-bordered w-full h-31" [(ngModel)]="objetivo" name="objetivo"
+        ></textarea>
+    </div>
+
+    <div class="col-span-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="poblacion001">
+        Población objeto de estudio
+      </label>
+      <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31" [(ngModel)]="pobjeto" name="pobjeto"
+        ></textarea>
+    </div>
+
+    <div class="col-span-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="unidad001">
+        Unidad de observación
+      </label>
+      <textarea id="unidad001" class="textarea textarea-bordered w-full h-31" [(ngModel)]="uobservacion" name="uobservacion"
+        ></textarea>
+    </div>
+
+    <div class="col-span-1">
+      <label class="block text-sm font-medium mb-2 text-secondary" for="comentario">
+        Comentario del proceso de producción
+      </label>
+      <textarea id="comentario" class="textarea textarea-bordered w-full h-31" [(ngModel)]="comentarioS" name="comentarioS" ></textarea>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+</div>
+<!-- Modal de Registro Exitoso -->
+<dialog #RegistroExitoso class="modal">
+  <div class="modal-box">
+    <!-- Icono de éxito -->
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center">¡Registro exitoso!</h3>
+    <p class="py-4 text-center">El proceso ha sido registrado correctamente.</p>
+
+    <div class="modal-action flex justify-center">
+      <!-- Botón para redirigir -->
+      <button class="btn btn-success" (click)="redirigirAProcesos()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+
+<!-- Modal de Error -->
+<dialog #ErrorModal class="modal">
+  <div class="modal-box">
+    <!-- Icono de advertencia o error -->
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-error" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 6.5a9.5 9.5 0 1 1-9.5 9.5 9.5 9.5 0 0 1 9.5-9.5z" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center text-error">¡Ocurrió un error!</h3>
+    <p class="py-4 text-center">{{ mensajeError }}</p>
+
+    <div class="modal-action flex justify-center">
+      <!-- Botón para cerrar -->
+      <button class="btn btn-error" (click)="cerrarModalError()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal de Campos Incompletos -->
+<dialog #CamposIncompletosModal class="modal">
+  <div class="modal-box">
+    <!-- Icono de advertencia -->
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 6.5a9.5 9.5 0 1 1-9.5 9.5 9.5 9.5 0 0 1 9.5-9.5z" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center text-primary">¡Campos incompletos!</h3>
+    <p class="py-4 text-center">Por favor, completa todos los campos obligatorios antes de continuar.</p>
+
+    <div class="modal-action flex justify-center">
+      <button class="btn btn-primary text-base-100" (click)="cerrarModalCamposIncompletos()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
