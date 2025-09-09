@@ -191,7 +191,7 @@
           <select class="select select-bordered select-sm w-full" #subcomponenteSelect
             (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
             <option disabled selected>Selecciona un subcomponente</option>
-            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
+            <option *ngFor="let subcomp of arrSubcompo" [ngValue]="subcomp">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
             </option>
             <option value="-">-</option>
           </select>
@@ -205,7 +205,7 @@
             [disabled]="!isSelectEnabled_Top">
             >
             <option disabled selected>Selecciona un tema</option>
-            <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
+            <option *ngFor="let tema of arrTopicos" [ngValue]="tema">{{ tema.idTema }}. {{ tema.nombre }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -217,7 +217,7 @@
           <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
             [disabled]="!isSelectEnabled_Var">
             <option disabled selected>Selecciona un estadístico1</option>
-            <option *ngFor="let vari of arrVariables" [value]="vari.idEstadistico1">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
+            <option *ngFor="let vari of arrVariables" [ngValue]="vari">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -229,7 +229,7 @@
           <select class="select select-bordered select-sm w-full" #estadisticoSelect
             (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
             <option disabled selected>Selecciona un estadístico2</option>
-            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
+            <option *ngFor="let estad of arrEstadisticos" [ngValue]="estad">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
             </option>
             <option value="-">-</option>
           </select>
@@ -356,7 +356,7 @@
           <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
             [disabled]="!isSelectEnabled_Meta">
             <option disabled selected>Selecciona una meta</option>
-            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}.
+            <option *ngFor="let meta of arrMetas" [ngValue]="meta">{{ meta.idMeta }}.
               {{
               meta.meta.length > 50
               ? (meta.meta | slice: 0: 100) + '...'
@@ -374,7 +374,7 @@
             [disabled]="!isSelectEnabled_Ind">
             >
             <option disabled selected>Selecciona un ndicador</option>
-            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
+            <option class="truncate" *ngFor="let indic of arrIndicadores" [ngValue]="indic">
               {{indic.idIndicador}}.
               {{ indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' :
               indic.indicador }}</option>

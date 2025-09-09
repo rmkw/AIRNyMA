@@ -22,6 +22,12 @@ import { catchError, of } from 'rxjs';
   templateUrl: './nueva-variable.component.html',
 })
 export class NuevaVariableComponent implements OnInit, AfterViewInit {
+  uniqueSubcomponente: any;
+  uniqueTopico: any;
+  uniqueEst1: any;
+  uniqueEst2: any;
+  uniqueIdMeta: any;
+  uniqueidIndicador: any;
   ngOnInit(): void {
     this.getComponentes();
     this.getObjetivos();
@@ -132,27 +138,31 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getComponentes() {
     this._mdeaService.getComponentes().subscribe((data) => {
       this.arrComponentes = data;
-      console.log(data);
+
     });
   }
   getSubcomponentes(idComponente: number | string) {
-    console.log('idComp: ', idComponente);
+
     this._mdeaService.getSubcomponentes(idComponente).subscribe((data) => {
-      console.log(data);
+
       this.arrSubcompo = data;
     });
   }
   getTopicos(idSub: number | string) {
+
     this._mdeaService.getTopicos(this.idComponente, idSub).subscribe((data) => {
       this.arrTopicos = data;
+      console.log('topicos:', data)
     });
   }
 
   getVariables(idTop: number | string) {
+    console.log('tema que mandamos:', idTop)
     this._mdeaService
       .getVariables(this.idComponente, this.idSubcomponente, idTop)
       .subscribe((data) => {
         this.arrVariables = data;
+        console.log('estadisticos1:', data);
       });
   }
   getEstadisticos(idVar: number | string) {
@@ -164,7 +174,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         idVar
       )
       .subscribe((data) => {
-        console.log(data);
+
         this.arrEstadisticos = data;
       });
   }
@@ -187,7 +197,19 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   onSelectComponente(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const _idComponente = selectElement.value;
+
     this.idComponente = _idComponente;
+    // const selectElement = event.target as HTMLSelectElement;
+    // const index = selectElement.selectedIndex - 1;
+    // // -1 porque la primera opción es "Selecciona un componente"
+    // if (index >= 0) {
+    //   const compSeleccionado = this.arrComponentes[index];
+    //   console.log(compSeleccionado); // Objeto completo
+    //   console.log(compSeleccionado.uniqueId); // Accedes a uniqueId
+    // }
+
+
+
 
     //* limpieza de selects
     this.isSelectEnabled_Subc = true;
@@ -216,9 +238,22 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
 
   onSelectSubcomponente(event: Event) {
+
     const selectElement = event.target as HTMLSelectElement;
-    const idSubcomponente = selectElement.value;
-    this.idSubcomponente = idSubcomponente;
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const subcompSeleccionado = this.arrSubcompo[index];
+       // Accedes a uniqueId
+
+      this.idSubcomponente = subcompSeleccionado.idSubcomponente;
+      this.uniqueSubcomponente = subcompSeleccionado.uniqueId;
+    }
+
+
+    // const selectElement2 = event.target as HTMLSelectElement;
+    // const idSubcomponente = selectElement.value;
+
 
     this.isSelectEnabled_Top = true;
 
@@ -260,13 +295,25 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.getTopicos(idSubcomponente);
+    this.getTopicos(this.idSubcomponente);
   }
 
   onSelectTopico(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const idTopico = selectElement.value;
-    this.idTopico = idTopico;
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const topicoSeleccionado = this.arrTopicos[index];
+
+      this.idTopico = topicoSeleccionado.idTema;
+      this.uniqueTopico = topicoSeleccionado.uniqueId;
+
+      console.log('tema que se le puso a idtopico:', this.idTopico);
+    }
+
+    // const selectElement = event.target as HTMLSelectElement;
+    // const idTopico = selectElement.value;
+    // this.idTopico = idTopico;
 
     this.isSelectEnabled_Var = true;
 
@@ -298,13 +345,28 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.getVariables(idTopico);
+    this.getVariables(this.idTopico);
   }
 
   onSelectVariable(event: Event) {
+
     const selectElement = event.target as HTMLSelectElement;
-    const idVariable = selectElement.value;
-    this.idVariableMDEAPULL = idVariable;
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const varSeleccionado = this.arrVariables[index];
+      console.log('variable id', varSeleccionado.idEstadistico1); // Objeto completo
+      console.log(varSeleccionado.uniqueId); // Accedes a uniqueId
+
+      this.idVariableMDEAPULL = varSeleccionado.idEstadistico1;
+
+      this.uniqueEst1 = varSeleccionado.uniqueId;
+    }
+
+
+    // const selectElement = event.target as HTMLSelectElement;
+    // const idVariable = selectElement.value;
+    // this.idVariableMDEAPULL = idVariable;
 
     this.isSelectEnabled_Est = true;
 
@@ -326,14 +388,27 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.getEstadisticos(idVariable);
+    this.getEstadisticos(this.idVariableMDEAPULL);
   }
 
   onSelectEstadistico(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const idEstadistico = selectElement.value;
-    this.idEstadistico = idEstadistico;
-    console.log('Estadistico seleccionado:', idEstadistico);
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const est2Seleccionado = this.arrEstadisticos[index];
+      console.log(est2Seleccionado.idEstadistico2); // Objeto completo
+      console.log(est2Seleccionado.uniqueId); // Accedes a uniqueId
+
+      this.idEstadistico = est2Seleccionado.idEstadistico2;
+      this.uniqueEst2 = est2Seleccionado.uniqueId;
+    }
+
+
+    // const selectElement = event.target as HTMLSelectElement;
+    // const idEstadistico = selectElement.value;
+    // this.idEstadistico = idEstadistico;
+    // console.log('Estadistico seleccionado:', idEstadistico);
 
     this.isSelectEnabled_Nivel = true;
   }
@@ -424,9 +499,22 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
   onSelectMeta(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const idMeta = selectElement.value;
-    this.idMeta = idMeta;
-    console.log('Meta seleccionada:', idMeta);
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const metaSeleccionado = this.arrMetas[index];
+      // Accedes a uniqueId
+
+      this.idMeta = metaSeleccionado.idMeta;
+      this.uniqueIdMeta = metaSeleccionado.uniqueId;
+      console.log(this.idMeta,'meta seleccionada');
+      console.log(this.uniqueIdMeta,'unique meta seleccionada');
+    }
+
+    // const selectElement = event.target as HTMLSelectElement;
+    // const idMeta = selectElement.value;
+    // this.idMeta = idMeta;
+    // console.log('Meta seleccionada:', idMeta);
     this.isSelectEnabled_Ind = true;
 
     const conIndSelect = this.indicadorSelect
@@ -449,13 +537,27 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.getIndicadores(idMeta);
+    this.getIndicadores(this.idMeta);
   }
   onSelectIndicador(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const idIndicador = selectElement.value;
-    this.idIndicador = idIndicador;
-    console.log('Indicador seleccionado:', idIndicador);
+    const index = selectElement.selectedIndex - 1;
+    // -1 porque la primera opción es "Selecciona un componente"
+    if (index >= 0) {
+      const isIndicadorSeleccionado = this.arrIndicadores[index];
+      // Accedes a uniqueId
+const mm = isIndicadorSeleccionado
+      this.idIndicador = isIndicadorSeleccionado.idIndicador;
+      this.uniqueidIndicador = isIndicadorSeleccionado.uniqueId;
+      console.log(this.idIndicador, 'meta seleccionada');
+      console.log(this.uniqueidIndicador, 'unique meta seleccionada');
+      console.log(mm)
+    }
+
+    // const selectElement = event.target as HTMLSelectElement;
+    // const idIndicador = selectElement.value;
+    // this.idIndicador = idIndicador;
+    // console.log('Indicador seleccionado:', idIndicador);
     this._ods_isSelectEnabled_Nivel = true;
   }
   _ods_onSelectNivel(event: Event) {
@@ -654,10 +756,10 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       idS: this.idVariable,
 
       componente: this.idComponente.toString(),
-      subcomponente: this.idSubcomponente.toString(),
-      tema: this.idTopico.toString(),
-      estadistica1: this.idVariableMDEAPULL,
-      estadistica2: this.idEstadistico.toString(),
+      subcomponente: this.uniqueSubcomponente.toString(),
+      tema: this.uniqueTopico.toString(),
+      estadistica1: this.uniqueEst1,
+      estadistica2: this.uniqueEst2.toString(),
       contribucion: this.nivelContribucionContenidosMdeaRelation,
       comentarioS: this.comentariopullMdea,
     };
@@ -840,8 +942,8 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       idS: this.idVariable,
 
       objetivo: this.idObjetivo.toString(),
-      meta: this.idMeta.toString(),
-      indicador: this.idIndicador.toString(),
+      meta: this.uniqueIdMeta,
+      indicador: this.uniqueidIndicador,
       contribucion: this._ods_nivelContribucion,
       comentarioS: this._ods_comentarioRelacionODS,
     };
@@ -966,6 +1068,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
           (v) => v.idA !== this.idDelete!
         );
+
       },
       error: (err) => {
         alert('Error eliminando variable');
@@ -974,6 +1077,8 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     });
 
     this.cerrarModal();
+    console.error('Variable eliminada:', this.idDelete);
+    this.getVarInNewVars(this._idFuente, this._responsableRegister!);
   }
   pegarDatosVariable(event: VariableDTO) {
     console.log(event);
