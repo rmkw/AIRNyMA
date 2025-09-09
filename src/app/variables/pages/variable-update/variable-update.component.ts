@@ -434,7 +434,11 @@ export class VariableUpdateComponent implements OnInit, AfterViewInit {
       .registrarRelacion(nuevaRelacion)
       .pipe(
         catchError((error) => {
-          console.error('❌ Error al registrar la relación:', error);
+          const mensaje =
+            error?.error?.error ||
+            'Ocurrió un error inesperado al registrar la relación.';
+          console.error('❌ Error al registrar la relación:', mensaje);
+          this.mostrarError(mensaje);
           return of(null); // Evita que se rompa el flujo
         })
       )
@@ -725,7 +729,11 @@ export class VariableUpdateComponent implements OnInit, AfterViewInit {
           console.log('Relacion creada:', res);
           this.resetRelationODS_SELECTS();
         },
-        error: (err) => console.error('Error creando relación:', err),
+        error: (err) => {
+          const mensaje = err?.error?.error || 'Ocurrió un error al registrar la relación ODS.';
+          console.error('❌ Error al registrar la relación ODS:', mensaje);
+          this.mostrarError(mensaje);
+        },
       });
   }
   resetRelationODS_SELECTS() {
@@ -840,5 +848,16 @@ export class VariableUpdateComponent implements OnInit, AfterViewInit {
 
   irANuevaVariable() {
     this.router.navigate(['/nueva-variable']);
+  }
+  @ViewChild('modalError') modalError!: ElementRef<HTMLDialogElement>;
+  mensajeError: string = '';
+
+  mostrarError(mensaje: string): void {
+    this.mensajeError = mensaje;
+    this.modalError.nativeElement.showModal();
+  }
+
+  cerrarModalError(): void {
+    this.modalError.nativeElement.close();
   }
 }

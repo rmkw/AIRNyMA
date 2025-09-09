@@ -138,26 +138,21 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   getComponentes() {
     this._mdeaService.getComponentes().subscribe((data) => {
       this.arrComponentes = data;
-
     });
   }
   getSubcomponentes(idComponente: number | string) {
-
     this._mdeaService.getSubcomponentes(idComponente).subscribe((data) => {
-
       this.arrSubcompo = data;
     });
   }
   getTopicos(idSub: number | string) {
-
     this._mdeaService.getTopicos(this.idComponente, idSub).subscribe((data) => {
       this.arrTopicos = data;
-      console.log('topicos:', data)
+      console.log('topicos:', data);
     });
   }
-
   getVariables(idTop: number | string) {
-    console.log('tema que mandamos:', idTop)
+    console.log('tema que mandamos:', idTop);
     this._mdeaService
       .getVariables(this.idComponente, this.idSubcomponente, idTop)
       .subscribe((data) => {
@@ -174,10 +169,10 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
         idVar
       )
       .subscribe((data) => {
-
         this.arrEstadisticos = data;
       });
   }
+
   // ? selects habilitados MDEA
   isSelectEnabled_Subc: boolean = false;
   isSelectEnabled_Top: boolean = false;
@@ -208,9 +203,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     //   console.log(compSeleccionado.uniqueId); // Accedes a uniqueId
     // }
 
-
-
-
     //* limpieza de selects
     this.isSelectEnabled_Subc = true;
     const conSubSelect = this.subcomponenteSelect
@@ -238,22 +230,19 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
 
   onSelectSubcomponente(event: Event) {
-
     const selectElement = event.target as HTMLSelectElement;
     const index = selectElement.selectedIndex - 1;
     // -1 porque la primera opción es "Selecciona un componente"
     if (index >= 0) {
       const subcompSeleccionado = this.arrSubcompo[index];
-       // Accedes a uniqueId
+      // Accedes a uniqueId
 
       this.idSubcomponente = subcompSeleccionado.idSubcomponente;
       this.uniqueSubcomponente = subcompSeleccionado.uniqueId;
     }
 
-
     // const selectElement2 = event.target as HTMLSelectElement;
     // const idSubcomponente = selectElement.value;
-
 
     this.isSelectEnabled_Top = true;
 
@@ -349,7 +338,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   }
 
   onSelectVariable(event: Event) {
-
     const selectElement = event.target as HTMLSelectElement;
     const index = selectElement.selectedIndex - 1;
     // -1 porque la primera opción es "Selecciona un componente"
@@ -362,7 +350,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
       this.uniqueEst1 = varSeleccionado.uniqueId;
     }
-
 
     // const selectElement = event.target as HTMLSelectElement;
     // const idVariable = selectElement.value;
@@ -404,7 +391,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       this.uniqueEst2 = est2Seleccionado.uniqueId;
     }
 
-
     // const selectElement = event.target as HTMLSelectElement;
     // const idEstadistico = selectElement.value;
     // this.idEstadistico = idEstadistico;
@@ -430,6 +416,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   idObjetivo: number | string = '';
   idMeta: number | string = '';
   idIndicador: number | string = '';
+
   getObjetivos() {
     this._odsServices.getObjetivos().subscribe((data) => {
       this.arrODS = data;
@@ -458,7 +445,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
   getIndicadores(idMeta: number | string) {
     this._odsServices
       .getIndicadores(this.idObjetivo, idMeta)
@@ -496,7 +482,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
     this.getMetas(idObjetivo);
   }
-
   onSelectMeta(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const index = selectElement.selectedIndex - 1;
@@ -507,8 +492,8 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
       this.idMeta = metaSeleccionado.idMeta;
       this.uniqueIdMeta = metaSeleccionado.uniqueId;
-      console.log(this.idMeta,'meta seleccionada');
-      console.log(this.uniqueIdMeta,'unique meta seleccionada');
+      console.log(this.idMeta, 'meta seleccionada');
+      console.log(this.uniqueIdMeta, 'unique meta seleccionada');
     }
 
     // const selectElement = event.target as HTMLSelectElement;
@@ -546,12 +531,12 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     if (index >= 0) {
       const isIndicadorSeleccionado = this.arrIndicadores[index];
       // Accedes a uniqueId
-const mm = isIndicadorSeleccionado
+      const mm = isIndicadorSeleccionado;
       this.idIndicador = isIndicadorSeleccionado.idIndicador;
       this.uniqueidIndicador = isIndicadorSeleccionado.uniqueId;
       console.log(this.idIndicador, 'meta seleccionada');
       console.log(this.uniqueidIndicador, 'unique meta seleccionada');
-      console.log(mm)
+      console.log(mm);
     }
 
     // const selectElement = event.target as HTMLSelectElement;
@@ -769,7 +754,9 @@ const mm = isIndicadorSeleccionado
       .registrarRelacion(nuevaRelacion)
       .pipe(
         catchError((error) => {
-          console.error('❌ Error al registrar la relación:', error);
+          const mensaje = error?.error?.error || 'Ocurrió un error inesperado al registrar la relación.';
+          console.error('❌ Error al registrar la relación:', mensaje);
+          this.mostrarError(mensaje);
           return of(null); // Evita que se rompa el flujo
         })
       )
@@ -955,7 +942,12 @@ const mm = isIndicadorSeleccionado
           console.log('Relacion creada:', res);
           this.resetRelationODS_SELECTS();
         },
-        error: (err) => console.error('Error creando relación:', err),
+        error: (err) => {
+          const mensaje = err?.error?.error || 'Ocurrió un error al registrar la relación ODS.';
+          console.error('❌ Error al registrar la relación ODS:', mensaje);
+          this.mostrarError(mensaje);
+        },
+
       });
   }
   finalizarCaptura: boolean = true;
@@ -1068,7 +1060,6 @@ const mm = isIndicadorSeleccionado
         this.arrVARIABLES_REGISTER = this.arrVARIABLES_REGISTER.filter(
           (v) => v.idA !== this.idDelete!
         );
-
       },
       error: (err) => {
         alert('Error eliminando variable');
@@ -1172,6 +1163,18 @@ const mm = isIndicadorSeleccionado
     if (newStart < this.totalPages) {
       this.goToPage(newStart);
     }
+  }
+
+  @ViewChild('modalError') modalError!: ElementRef<HTMLDialogElement>;
+  mensajeError: string = '';
+
+  mostrarError(mensaje: string): void {
+    this.mensajeError = mensaje;
+    this.modalError.nativeElement.showModal();
+  }
+
+  cerrarModalError(): void {
+    this.modalError.nativeElement.close();
   }
 }
 

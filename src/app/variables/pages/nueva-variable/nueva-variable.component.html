@@ -844,3 +844,17 @@
     </div>
   </div>
 </dialog>
+
+<!-- Modal de Error -->
+<dialog #modalError class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-red-600">⚠️ Error</h3>
+    <p class="py-4">{{ mensajeError }}</p>
+    <div class="modal-action">
+      <button class="btn btn-primary" (click)="cerrarModalError()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+
+
