@@ -361,15 +361,20 @@
           </label>
           <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
             [disabled]="!isSelectEnabled_Meta">
-            <option disabled selected>Selecciona una meta</option>
-            <option *ngFor="let meta of arrMetas" [ngValue]="meta">{{ meta.idMeta }}.
+            <option value="__placeholder__" disabled selected>Selecciona una meta</option>
+
+            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">
+              {{ meta.idMeta }}.
               {{
               meta.meta.length > 50
-              ? (meta.meta | slice: 0: 100) + '...'
+              ? (meta.meta | slice: 0 : 100) + '...'
               : meta.meta
-              }}</option>
+              }}
+            </option>
+
             <option value="-">-</option>
           </select>
+
         </div>
 
         <div class="max-w-xs truncate">
@@ -380,7 +385,7 @@
             [disabled]="!isSelectEnabled_Ind">
             >
             <option disabled selected>Selecciona un ndicador</option>
-            <option class="truncate" *ngFor="let indic of arrIndicadores" [ngValue]="indic">
+            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
               {{indic.idIndicador}}.
               {{ indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' :
               indic.indicador }}</option>

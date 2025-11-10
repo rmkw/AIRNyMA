@@ -634,66 +634,160 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.getMetas(idObjetivo);
   }
   onSelectMeta(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const index = selectElement.selectedIndex - 1;
-    // -1 porque la primera opción es "Selecciona un componente"
-    if (index >= 0) {
-      const metaSeleccionado = this.arrMetas[index];
-      // Accedes a uniqueId
-
-      this.idMeta = metaSeleccionado.idMeta;
-      this.uniqueIdMeta = metaSeleccionado.uniqueId;
-      console.log(this.idMeta, 'meta seleccionada');
-      console.log(this.uniqueIdMeta, 'unique meta seleccionada');
-    }
-
     // const selectElement = event.target as HTMLSelectElement;
-    // const idMeta = selectElement.value;
-    // this.idMeta = idMeta;
-    // console.log('Meta seleccionada:', idMeta);
+    // const index = selectElement.selectedIndex - 1;
+    // // -1 porque la primera opción es "Selecciona un componente"
+    // if (index >= 0) {
+    //   const metaSeleccionado = this.arrMetas[index];
+    //   // Accedes a uniqueId
+
+    //   this.idMeta = metaSeleccionado.idMeta;
+    //   this.uniqueIdMeta = metaSeleccionado.uniqueId;
+    //   console.log(this.idMeta, 'meta seleccionada');
+    //   console.log(this.uniqueIdMeta, 'unique meta seleccionada');
+    // }
+
+    // // const selectElement = event.target as HTMLSelectElement;
+    // // const idMeta = selectElement.value;
+    // // this.idMeta = idMeta;
+    // // console.log('Meta seleccionada:', idMeta);
+    // this.isSelectEnabled_Ind = true;
+
+    // const conIndSelect = this.indicadorSelect
+    //   .nativeElement as HTMLSelectElement;
+    // conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
+    // this.arrIndicadores = []; // Limpiar el array de indicadores
+
+    // if (this.idMeta == '-') {
+    //   //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
+
+    //   console.log('entre a hacer el cambiio');
+    //   this.indicadorSelect.nativeElement.value = '-';
+
+    //   this.idIndicador = '-';
+
+    //   this.arrIndicadores = [];
+    //   this.isSelectEnabled_Ind = true;
+    //   this._ods_isSelectEnabled_Nivel = true;
+
+    //   return;
+    // }
+
+    // this.getIndicadores(this.idMeta);
+    const el = event.target as HTMLSelectElement;
+    const value = el.value; // id de meta o '-'
+
+    // Habilitar y resetear nivel dependiente (Indicador)
     this.isSelectEnabled_Ind = true;
+    this.arrIndicadores = [];
+    this.indicadorSelect.nativeElement.selectedIndex = 0;
+    this.idIndicador = '';
+    this.uniqueidIndicador = '';
 
-    const conIndSelect = this.indicadorSelect
-      .nativeElement as HTMLSelectElement;
-    conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    this.arrIndicadores = []; // Limpiar el array de indicadores
-
-    if (this.idMeta == '-') {
-      //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
-
-      console.log('entre a hacer el cambiio');
-      this.indicadorSelect.nativeElement.value = '-';
-
-      this.idIndicador = '-';
-
-      this.arrIndicadores = [];
-      this.isSelectEnabled_Ind = true;
-      this._ods_isSelectEnabled_Nivel = true;
-
+    // Placeholder: no hacer nada
+    if (value === '__placeholder__') {
       return;
     }
 
+    // Caso especial '-'
+    if (value === '-') {
+      this.idMeta = '-';
+      this.uniqueIdMeta = '-';
+
+      // Forzar visualmente el select de Indicador a '-'
+      this.indicadorSelect.nativeElement.value = '-';
+      this.idIndicador = '-';
+      this.uniqueidIndicador = '-';
+
+      this.arrIndicadores = [];
+      this.isSelectEnabled_Ind = true;
+      this._ods_isSelectEnabled_Nivel = true; // tu flag de nivel ODS
+
+      return; // NO llamar getIndicadores
+    }
+
+    // Parsear/normalizar id (usa string si tu servicio espera string)
+    // Si tu servicio espera number:
+    // const id = +value; if (Number.isNaN(id)) return;
+    // this.idMeta = id;
+
+    // Si tu servicio espera string (recomendable si hay ids textuales):
+    this.idMeta = value;
+
+    // (Opcional) Obtener uniqueId del objeto
+    const metaSeleccionado = (this.arrMetas || []).find(
+      (m) => String(m.idMeta) === String(value)
+    );
+    this.uniqueIdMeta = metaSeleccionado?.uniqueId ?? null;
+
+    console.log(
+      '[onSelectMeta] idMeta=',
+      this.idMeta,
+      ' uniqueIdMeta=',
+      this.uniqueIdMeta
+    );
+
+    // Cargar indicadores de la meta seleccionada
     this.getIndicadores(this.idMeta);
   }
   onSelectIndicador(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const index = selectElement.selectedIndex - 1;
-    // -1 porque la primera opción es "Selecciona un componente"
-    if (index >= 0) {
-      const isIndicadorSeleccionado = this.arrIndicadores[index];
-      // Accedes a uniqueId
-      const mm = isIndicadorSeleccionado;
-      this.idIndicador = isIndicadorSeleccionado.idIndicador;
-      this.uniqueidIndicador = isIndicadorSeleccionado.uniqueId;
-      console.log(this.idIndicador, 'meta seleccionada');
-      console.log(this.uniqueidIndicador, 'unique meta seleccionada');
-      console.log(mm);
+    // const selectElement = event.target as HTMLSelectElement;
+    // const index = selectElement.selectedIndex - 1;
+    // // -1 porque la primera opción es "Selecciona un componente"
+    // if (index >= 0) {
+    //   const isIndicadorSeleccionado = this.arrIndicadores[index];
+    //   // Accedes a uniqueId
+    //   const mm = isIndicadorSeleccionado;
+    //   this.idIndicador = isIndicadorSeleccionado.idIndicador;
+    //   this.uniqueidIndicador = isIndicadorSeleccionado.uniqueId;
+    //   console.log(this.idIndicador, 'meta seleccionada');
+    //   console.log(this.uniqueidIndicador, 'unique meta seleccionada');
+    //   console.log(mm);
+    // }
+
+    // // const selectElement = event.target as HTMLSelectElement;
+    // // const idIndicador = selectElement.value;
+    // // this.idIndicador = idIndicador;
+    // // console.log('Indicador seleccionado:', idIndicador);
+    // this._ods_isSelectEnabled_Nivel = true;
+    const el = event.target as HTMLSelectElement;
+    const value = el.value; // id del indicador o '-'
+
+    console.log('[onSelectIndicador] value=', value);
+
+    // Placeholder (si lo usas)
+    if (value === '__placeholder__') {
+      return;
     }
 
-    // const selectElement = event.target as HTMLSelectElement;
-    // const idIndicador = selectElement.value;
-    // this.idIndicador = idIndicador;
-    // console.log('Indicador seleccionado:', idIndicador);
+    // Caso especial '-'
+    if (value === '-') {
+      this.idIndicador = '-';
+      this.uniqueidIndicador = '-';
+      this._ods_isSelectEnabled_Nivel = true; // habilita el siguiente nivel
+      return; // no busques objeto ni cargues nada
+    }
+
+    // Normaliza tipo según tu servicio/DTO
+    // Si tu servicio espera número:
+    // const id = +value; if (Number.isNaN(id)) return; this.idIndicador = id;
+    // Si espera string (recomendado si puede venir como texto):
+    this.idIndicador = value;
+
+    // (Opcional) obtener uniqueId del objeto para mostrar/usar después
+    const indSel = (this.arrIndicadores || []).find(
+      (i) => String(i.idIndicador) === String(value)
+    );
+    this.uniqueidIndicador = indSel?.uniqueId ?? null;
+
+    console.log(
+      '[onSelectIndicador] idIndicador=',
+      this.idIndicador,
+      ' uniqueidIndicador=',
+      this.uniqueidIndicador
+    );
+
+    // Habilita siguiente nivel ODS
     this._ods_isSelectEnabled_Nivel = true;
   }
   _ods_onSelectNivel(event: Event) {
