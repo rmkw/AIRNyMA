@@ -7,7 +7,7 @@ import { Component, ElementRef, inject, input, OnInit, signal, ViewChild } from 
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 
 
 @Component({
@@ -51,26 +51,56 @@ export class FuentesListComponent implements OnInit {
       this._responsableRegister = Number(_responsableRegister!);
     }
   }
+  // getFuentesByidPp() {
+  //   if (!this._responsableRegister || !this.acronimo) {
+  //     console.error('Responsable o acrónimo de proceso no definidos');
+  //     return;
+  //   }
+  //   this._fuentesService
+  //     .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
+  //     .subscribe({
+  //       next: (response) => {
+  //         console.log('✅ Resultado del backend:', response);
+
+  //         this.fuentes = response.fuentes;
+  //         if (this.fuentes.length > 0) {
+  //           this.loading = false;
+  //         } else {
+  //           this.loading = true;
+  //         }
+  //       },
+  //       error: (err) => {
+  //         console.error('Error al obtener fuentes:', err);
+  //       },
+  //     });
+  // }
   getFuentesByidPp() {
+    // Arranca el loading ANTES de llamar al servicio
+    this.loading = true;
+
     if (!this._responsableRegister || !this.acronimo) {
       console.error('Responsable o acrónimo de proceso no definidos');
+      this.fuentes = []; // previene undefined
+      this.loading = false; // evita spinner colgado
       return;
     }
+
     this._fuentesService
       .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
+      .pipe(
+        // Pase lo que pase (next o error), quita el loading
+        finalize(() => {
+          this.loading = false;
+        })
+      )
       .subscribe({
         next: (response) => {
           console.log('✅ Resultado del backend:', response);
-
-          this.fuentes = response.fuentes;
-          if (this.fuentes.length > 0) {
-            this.loading = false;
-          } else {
-            this.loading = true;
-          }
+          this.fuentes = response?.fuentes ?? []; // si no viene, deja []
         },
         error: (err) => {
           console.error('Error al obtener fuentes:', err);
+          this.fuentes = []; // en error, muestra “sin registros” en la tabla
         },
       });
   }
@@ -148,7 +178,6 @@ export class FuentesListComponent implements OnInit {
         }
       }
     );
-
   }
   limpiarFormulario() {
     this.fuente = '';
@@ -232,7 +261,7 @@ export class FuentesListComponent implements OnInit {
   showModalErrorFuenteDuplicada() {
     this.modalErrorFuenteDuplicada.nativeElement.showModal();
   }
-  cerrarModalerror(){
+  cerrarModalerror() {
     this.modalErrorFuenteDuplicada.nativeElement.close();
     this.mensajeError = ''; // Limpiar el mensaje de error
     this.limpiarFormulario(); // Limpiar el formulario

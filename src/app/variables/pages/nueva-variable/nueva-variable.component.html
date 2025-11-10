@@ -31,7 +31,7 @@
     </div>
 
 
-    <div class="col-span-3">
+    <div class="col-span-6">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
         Nombre de la variable
       </label>
@@ -39,12 +39,12 @@
         class="input input-sm input-bordered w-full" placeholder="" />
     </div>
 
-    <div class="col-span-3">
+    <div class="col-span-8">
       <label class="block text-sm font-medium  mb-2 text-secondary" for="definicionVariable">
         Definición de la variable
       </label>
-      <input type="text" id="definicionVariable" [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"
-        class="input input-sm input-bordered w-full" placeholder="" />
+      <textarea type="text" id="definicionVariable" [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"
+        class="textarea textarea-bordered w-full h-31" placeholder="" ></textarea>
     </div>
 
     <div class="col-span-2">
@@ -188,10 +188,12 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
             Subcomponente
           </label>
-          <select class="select select-bordered select-sm w-full" #subcomponenteSelect
-            (change)="onSelectSubcomponente($event)" [disabled]="!isSelectEnabled_Subc">
+          <select class="select select-bordered select-sm w-full"
+            #subcomponenteSelect
+            (change)="onSelectSubcomponente($event)"
+            [disabled]="!isSelectEnabled_Subc">
             <option disabled selected>Selecciona un subcomponente</option>
-            <option *ngFor="let subcomp of arrSubcompo" [ngValue]="subcomp">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
+            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
             </option>
             <option value="-">-</option>
           </select>
@@ -201,11 +203,13 @@
           <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
             Tema
           </label>
-          <select class="select select-bordered select-sm w-full" #topicoSelect (change)="onSelectTopico($event)"
+          <select class="select select-bordered select-sm w-full"
+          #topicoSelect
+          (change)="onSelectTopico($event)"
             [disabled]="!isSelectEnabled_Top">
-            >
+
             <option disabled selected>Selecciona un tema</option>
-            <option *ngFor="let tema of arrTopicos" [ngValue]="tema">{{ tema.idTema }}. {{ tema.nombre }}</option>
+            <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
             <option value="-">-</option>
           </select>
         </div>
@@ -216,8 +220,10 @@
           </label>
           <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
             [disabled]="!isSelectEnabled_Var">
-            <option disabled selected>Selecciona un estadístico1</option>
-            <option *ngFor="let vari of arrVariables" [ngValue]="vari">{{ vari.idEstadistico1 }}. {{ vari.nombre }}</option>
+            <option value="__placeholder__" disabled selected>Selecciona una variable</option>
+            <option *ngFor="let v of arrVariables" [value]="v.idEstadistico1">
+              {{ v.idEstadistico1 }}. {{ v.nombre }}
+            </option>
             <option value="-">-</option>
           </select>
         </div>
@@ -229,7 +235,7 @@
           <select class="select select-bordered select-sm w-full" #estadisticoSelect
             (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
             <option disabled selected>Selecciona un estadístico2</option>
-            <option *ngFor="let estad of arrEstadisticos" [ngValue]="estad">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
+            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
             </option>
             <option value="-">-</option>
           </select>

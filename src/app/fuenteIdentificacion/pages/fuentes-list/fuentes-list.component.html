@@ -128,9 +128,15 @@
           </td>
         </tr>
 
+        <!-- Mensaje cuando no hay registros -->
+        <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
+          <td colspan="7" class="text-center p-4 text-gray-500">
+            No se encontraron registros.
+          </td>
+        </tr>
 
+        <!-- Filas con datos -->
         <tr *ngFor="let fuente of fuentes; let i = index">
-
           <td class="text-center">{{ fuente.acronimo }}</td>
           <td class="text-center">{{ fuente.fuente }}</td>
           <td class="text-center">
@@ -142,28 +148,19 @@
             <span class="text-yellow-500 font-semibold">Liga no disponible</span>
             }
           </td>
-
           <td class="text-center">{{ fuente.edicion }}</td>
-
           <td class="text-center">{{ fuente.totalVariables }}</td>
-
           <td class="text-center">
-
-            <!-- <button (click)="editarFuente(fuente)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
-              Editar
-            </button> -->
             <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="abrirModal(fuente.idFuente)">
               Eliminar
             </button>
-            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs ml-2 " (click)="addVars(fuente)">
+            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs ml-2" (click)="addVars(fuente)">
               Agregar variable
             </button>
           </td>
-
         </tr>
-
-
       </tbody>
+
 
     </table>
 
