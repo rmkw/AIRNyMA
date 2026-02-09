@@ -194,14 +194,6 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     const _idComponente = selectElement.value;
 
     this.idComponente = _idComponente;
-    // const selectElement = event.target as HTMLSelectElement;
-    // const index = selectElement.selectedIndex - 1;
-    // // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const compSeleccionado = this.arrComponentes[index];
-    //   console.log(compSeleccionado); // Objeto completo
-    //   console.log(compSeleccionado.uniqueId); // Accedes a uniqueId
-    // }
 
     //* limpieza de selects
     this.isSelectEnabled_Subc = true;

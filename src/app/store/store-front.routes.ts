@@ -12,6 +12,9 @@ import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/
 import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
 import { VariableUpdateComponent } from '../variables/pages/variable-update/variable-update.component';
 import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";
+import { ModuloExcelImport } from "@/excel-import/modulo-import/modulo-import.component";
+
+
 
 
 export const storeFrontRoutes: Routes = [
@@ -24,34 +27,18 @@ export const storeFrontRoutes: Routes = [
         path: '',
         component: HomePageComponent,
       },
-      // {
-      //   path: 'gender/:gender',
-      //   component: GenderPageComponent,
-      // },
-      // {
-      //   path: 'product/:idSlug',
-      //   component: ProductPageComponent,
-      // },
       {
         path: 'procesos',
         component: ProcesoProduccionComponent,
       },
       {
         path: 'nuevo-proceso',
-        component: NuevoProcesoComponent
+        component: NuevoProcesoComponent,
       },
       {
         path: 'fuentes',
         component: FuentesListComponent,
       },
-      // {
-      //   path: 'fuente/:id',
-      //   component: FuenteIdentificacionComponent,
-      // },
-      // {
-      //   path: 'nueva-fuente',
-      //   component: NuevaFuenteComponent,
-      // },
       {
         path: 'nueva-variable',
         component: NuevaVariableComponent,
@@ -61,9 +48,14 @@ export const storeFrontRoutes: Routes = [
         component: VariableUpdateComponent,
       },
       {
+        path: 'importacion',
+        component: ModuloExcelImport
+      },
+      {
         path: '**',
         component: NotFoundPageComponent,
       },
+
     ],
   },
   {

@@ -11,14 +11,36 @@
       <!-- Menú hamburguesa -->
       <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
         [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
+      <li>
+        <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
+          Flujo de captura departamento selección
+        </a>
+      </li>
 
-        <!-- <li><a routerLink="/procesos" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200 text-base-100">Procesos de producción</a></li> -->
+      <li>
+        <a class="btn btn-sm btn-ghost text-slate-300">
+          Procesos de producción
+        </a>
+      </li>
 
-        <!-- <li><a  (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Fuentes de Identificación</a></li> -->
+      <li>
+        <a class="btn btn-sm btn-ghost text-slate-300">
+          Fuentes de identificación
+        </a>
+      </li>
 
-        <!-- <li><a  (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">Identificación de variables</a></li> -->
+      <li>
+        <a class="btn btn-sm btn-ghost text-slate-300">
+          Variables
+        </a>
+      </li>
 
-        <!-- <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="block p-2 hover:bg-gray-200">TEST ZONE</a></li> -->
+      <li>
+        <a routerLink="/importacion" class="btn btn-sm btn-ghost text-slate-300">
+          Importación masiva .excel
+        </a>
+      </li>
+
 
 
       </ul>
@@ -27,7 +49,7 @@
     <a routerLink="/" class="btn btn-sm btn-ghost text-xl font-montserrat">
       <span class="text-base-100">
         Captura
-      </span><span class="text-secondary">| Forms </span>
+      </span><span class="text-secondary">| Selección </span>
     </a>
   </div>
 
@@ -35,19 +57,40 @@
     <ul class="menu menu-horizontal px-1">
       <li>
         <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Iniciar flujo de captura de información
+          Flujo de captura departamento selección
         </a> </li>
-      <!-- <li><a  (click)="navegandosinStorage()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Fuentes de Identificación</a></li> -->
 
-      <!-- <li><a (click)="cerrarMenuHamburgesa()" class="btn btn-ghost text-slate-300" routerLinkActive="text-base-100 bg-secondary">Identificación de variables</a></li> -->
+      <li>
+        <a  class="btn btn-sm btn-ghost text-slate-300">
+          Procesos de produccción
+        </a>
+      </li>
 
-      <!-- <li><a routerLink="/test-zone" (click)="cerrarMenuHamburgesa()" class="btn btn-ghost">TEST ZONE</a>
-      </li> -->
+      <li>
+        <a  class="btn btn-sm btn-ghost text-slate-300">
+          Fuentes de identificación
+        </a>
+      </li>
+
+      <li>
+        <a  class="btn btn-sm btn-ghost text-slate-300">
+          Variables
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/importacion" class="btn btn-sm btn-ghost text-slate-300">
+          Importación masiva .excel
+        </a>
+      </li>
+
+
+
 
     </ul>
   </div>
 
-  <div class="navbar-end gap-2">
+  <div class="navbar-end gap-4">
 
 
 
