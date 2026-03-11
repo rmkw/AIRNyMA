@@ -8,7 +8,8 @@ export interface UsersResponce {
 }
 
 export enum Role {
-  Admin = 'ADMIN',
   Root = 'ROOT',
+  Admin = 'ADMIN',
+  Armo = 'ARMO',
   User = 'USER',
 }

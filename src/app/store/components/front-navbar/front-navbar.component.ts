@@ -13,6 +13,8 @@ import { RouterLink } from '@angular/router';
 export class FrontNavbarComponent {
   public _authService = inject(authService);
 
+  public auth = this._authService;
+
   user = computed(() => {
     // console.log(' Computed user:', this._authService.user());
     return this._authService.user();

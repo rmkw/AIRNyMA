@@ -34,7 +34,19 @@ export class authService {
   });
 
   user = computed(() => this._user());
-  isAdmin = computed(()=> this._user()?.roles.includes(Role.Admin) ?? false)
+
+  hasRole = (role: Role) =>
+    computed(() => this._user()?.roles.includes(role) ?? false);
+
+  isUser = computed(() => this._user()?.roles.includes(Role.User) ?? false);
+  isArmo = computed(() => this._user()?.roles.includes(Role.Armo) ?? false);
+
+  isAdmin = computed(() => this._user()?.roles.includes(Role.Admin) ?? false);
+  isRoot = computed(() => this._user()?.roles.includes(Role.Root) ?? false);
+
+  isAdminOrRoot = computed(() => this.isAdmin() || this.isRoot());
+
+
 
   login(username: string, password: string): Observable<boolean> {
     return this.http
@@ -44,11 +56,11 @@ export class authService {
           username: username,
           password: password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handleAuthError(error))
+        catchError((error: any) => this.handleAuthError(error)),
       );
   }
 
@@ -78,7 +90,7 @@ export class authService {
           this._user.set(null); // Asegurar que el usuario sea nulo en caso de error
           this._authStatus.set(NOT_AUTHENTICATED);
           return of(null); // Devolver null en caso de error
-        })
+        }),
       );
   }
 
@@ -90,7 +102,7 @@ export class authService {
         {
           withCredentials: true,
           responseType: 'text',
-        }
+        },
       )
       .subscribe({
         next: () => {
@@ -133,11 +145,9 @@ export class authService {
       localStorage.setItem('aka', resp.user.aka);
       localStorage.setItem('roles', JSON.stringify(resp.user.roles));
       localStorage.setItem('useResponce', JSON.stringify(resp.user));
-
-
     } else {
       console.warn(
-        '⚠️ No hay usuario autenticado, no se guardan datos en localStorage'
+        '⚠️ No hay usuario autenticado, no se guardan datos en localStorage',
       );
       localStorage.removeItem('_id');
       localStorage.removeItem('userName');

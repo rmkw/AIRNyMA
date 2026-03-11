@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { VariableDTO } from '../interfaces/variablesCapDTO.interface';
+import { VariableRevisionPrioridadDTO } from '../interfaces/variableRevisionPrioridad.interface';
 
 const baseUrl = environment.baseUrl
 @Injectable({ providedIn: 'root' })
@@ -14,13 +15,13 @@ export class VariableService {
     responsableRegister: number,
     idFuente: string,
     page = 0,
-    size = 10
+    size = 10,
   ): Observable<any> {
     return this.http.get<any>(
       `${baseUrl}/variables/filtered?responsableRegister=${responsableRegister}&idFuente=${encodeURIComponent(
-        idFuente
+        idFuente,
       )}&page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -49,7 +50,42 @@ export class VariableService {
       payload,
       {
         withCredentials: true,
-      }
+      },
+    );
+  }
+
+  getVariablesByFuentes(
+    idFuentes: string[],
+  ): Observable<VariableRevisionPrioridadDTO[]> {
+    let params = new HttpParams();
+
+    idFuentes.forEach((idFuente) => {
+      params = params.append('idFuentes', idFuente);
+    });
+
+    return this.http.get<VariableRevisionPrioridadDTO[]>(
+      `${baseUrl}/variables/por-fuentes`,
+      {
+        params,
+        withCredentials: true,
+      },
+    );
+  }
+
+  updateRevisionPrioridad(
+    idA: string,
+    payload: {
+      prioridad: number;
+      revisada: boolean;
+      responsableRevision: number;
+    },
+  ) {
+    return this.http.put<{ message: string }>(
+      `${baseUrl}/variables/revision-prioridad/${idA}`,
+      payload,
+      {
+        withCredentials: true,
+      },
     );
   }
 }

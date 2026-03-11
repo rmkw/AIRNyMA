@@ -13,6 +13,7 @@ import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-v
 import { VariableUpdateComponent } from '../variables/pages/variable-update/variable-update.component';
 import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";
 import { ModuloExcelImport } from "@/excel-import/modulo-import/modulo-import.component";
+import { PrioridadVariableComponent } from "@/variables/pages/prioridad-variable/prioridad-variable.component";
 
 
 
@@ -49,13 +50,16 @@ export const storeFrontRoutes: Routes = [
       },
       {
         path: 'importacion',
-        component: ModuloExcelImport
+        component: ModuloExcelImport,
+      },
+      {
+        path: 'revision-variables',
+        component: PrioridadVariableComponent,
       },
       {
         path: '**',
         component: NotFoundPageComponent,
       },
-
     ],
   },
   {

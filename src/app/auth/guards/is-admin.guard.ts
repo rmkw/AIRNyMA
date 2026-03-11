@@ -11,5 +11,5 @@ export const IsAdminGuard: CanMatchFn = async (
 
   await firstValueFrom(_authService.checkUsuario());
 
-  return _authService.isAdmin();
+  return _authService.isAdminOrRoot();
 }

@@ -26,35 +26,72 @@
         <ol class="space-y-3 list-decimal list-inside">
           <li>
             <strong>Descarga la plantilla.</strong><br>
-            Da clic en <em>“Descargar plantilla”</em> y guarda el archivo.
+            Da clic en <em>“Descargar plantilla”</em> y guarda el archivo en tu computadora.
           </li>
 
           <li>
-            <strong>Abre el archivo en Excel.</strong><br>
-            Al abrirlo, da clic en <span class="text-primary font-semibold">“Habilitar edición”</span>.
-          </li>
-
-          <li>
-            <strong>No toques las columnas A y B.</strong><br>
-            (<span class="font-mono">id_fuente</span> y <span class="font-mono">id_a</span>) se llenan solas.
+            <strong>Abre el archivo en Excel y habilita la edición.</strong><br>
+            Si aparece una barra amarilla o un aviso, da clic en
+            <span class="text-primary font-semibold">“Habilitar edición”</span>.
           </li>
 
           <li>
             <strong>Pega tu información.</strong><br>
-            Copia y pega tus datos en la <strong>columna C</strong>, desde la <strong>fila 2</strong>.
+            Copia y pega tus datos en la <strong>columna C</strong>, desde la <strong>fila 2</strong>.<br>
+            <span class="text-xs opacity-80">⚠️ No pegues sobre la fila 1 (encabezados).</span>
           </li>
 
           <li>
-            <strong>Guarda y sube el archivo.</strong><br>
-            Guarda el Excel y cárgalo en el sistema para continuar.
+            <strong>Verifica que se llenen las columnas A y B.</strong><br>
+            Después de pegar, revisa que la <strong>columna A</strong> (<span class="font-mono">id_fuente</span>) y
+            la <strong>columna B</strong> (<span class="font-mono">id_a</span>) se llenen automáticamente.<br>
+            <span class="text-xs opacity-80">
+              Estas columnas se generan con fórmulas y son <strong>obligatorias</strong>.
+            </span>
+          </li>
+
+          <li>
+            <strong>No modifiques las columnas A y B.</strong><br>
+            No escribas, no borres y no cambies nada en
+            <span class="font-mono">id_fuente</span> ni <span class="font-mono">id_a</span>.
+          </li>
+
+          <li>
+            <strong>Guarda el archivo.</strong><br>
+            Guarda el Excel antes de subirlo (Ctrl + S).
+          </li>
+
+          <li>
+            <strong>Selecciona el archivo en el sistema.</strong><br>
+            Da clic en <em>“Elegir archivo”</em> y elige tu Excel.
+          </li>
+
+          <li>
+            <strong>Presiona el botón “Validar archivo”.</strong><br>
+            Espera a que aparezca el mensaje de
+            <span class="text-success font-semibold">“Archivo válido”</span>.<br>
+            <span class="text-xs opacity-80">
+              Si hay errores, corrígelos en el Excel antes de continuar.
+            </span>
+          </li>
+
+          <li>
+            <strong>Presiona el botón “Importar información”.</strong><br>
+            Este botón solo aparece cuando el archivo ya fue validado correctamente.
           </li>
         </ol>
 
         <div class="mt-4 text-xs text-error">
-          Si no habilitas la edición o modificas las columnas A y B, el archivo no se podrá importar.
+          Si no validas el archivo o si existen errores, la información NO se importará.
+        </div>
+
+        <div class="mt-2 text-xs opacity-80">
+          Tip: si algo sale mal, revisa primero los mensajes del sistema antes de volver a subir el archivo.
         </div>
       </div>
     </div>
+
+
 
     <div class="col-span-4">
       <div class="flex flex-col gap-4">
@@ -63,15 +100,21 @@
           Selecciona el archivo Excel
         </label>
 
-        <input type="file" (change)="onFileChange($event)" class="file-input file-input-bordered file-input-primary file-input-sm
+        <input id="excelFile" type="file" (change)="onFileChange($event)" class="file-input file-input-bordered file-input-primary file-input-sm
                  w-full max-w-full file:text-white" />
 
-        <button class="btn btn-primary btn-block text-white" [disabled]="!archivo || validacion?.ok" (click)="validar()">
-          Validar archivo
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button class="btn btn-primary btn-block text-white" [disabled]="!archivo || validando || importando || validacion?.ok || validando || importando"
+          (click)="validar()">
+
+          <span *ngIf="!validando">Validar archivo</span>
+          <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
+
+          <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
           </svg>
         </button>
+
 
         <!-- ✅ MENSAJE JUSTO DEBAJO DEL BOTÓN -->
         <div *ngIf="validacion" class="mt-2">
@@ -100,12 +143,102 @@
         </div>
 
         <!-- BOTÓN IMPORTAR (solo si la validación es correcta) -->
-        <button *ngIf="validacion?.ok" class="btn btn-success btn-block text-white mt-2" (click)="importar()">
-          Importar información
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button *ngIf="validacion?.ok" class="btn btn-success btn-block text-white mt-2" [disabled]="importando"
+          (click)="importar()">
+
+          <span *ngIf="!importando">Importar información</span>
+          <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
+
+          <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
           </svg>
         </button>
+
+        <!-- ====== RESULTADO IMPORTACIÓN ====== -->
+        <div *ngIf="resultado" class="mt-4">
+
+          <div class="alert text-sm" [ngClass]="resultado.ok ? 'alert-success' : 'alert-error'">
+            <span>{{ resultado.message }}</span>
+          </div>
+
+          <!-- Resumen en tarjetas -->
+          <div *ngIf="resultado.ok" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div class="card bg-base-200 shadow">
+              <div class="card-body p-4">
+                <h3 class="font-bold text-primary">Filas</h3>
+                <div class="text-sm flex justify-between"><span>Con datos</span><span
+                    class="font-semibold">{{resultado.filasConDatos}}</span></div>
+                <div class="text-sm flex justify-between"><span>Importadas</span><span
+                    class="font-semibold">{{resultado.filasImportadas}}</span></div>
+                <div class="text-sm flex justify-between"><span>Errores</span><span
+                    class="font-semibold">{{resultado.filasConError}}</span></div>
+              </div>
+            </div>
+
+            <div class="card bg-base-200 shadow">
+              <div class="card-body p-4">
+                <h3 class="font-bold text-primary">Fuentes / Variables</h3>
+                <div class="text-sm flex justify-between"><span>Fuentes insertadas</span><span
+                    class="font-semibold">{{resultado.fuentesInsertadas}}</span></div>
+                <div class="text-sm flex justify-between"><span>Fuentes actualizadas</span><span
+                    class="font-semibold">{{resultado.fuentesActualizadas}}</span></div>
+                <div class="divider my-2"></div>
+                <div class="text-sm flex justify-between"><span>Variables insertadas</span><span
+                    class="font-semibold">{{resultado.variablesInsertadas}}</span></div>
+                <div class="text-sm flex justify-between"><span>Variables actualizadas</span><span
+                    class="font-semibold">{{resultado.variablesActualizadas}}</span></div>
+              </div>
+            </div>
+
+            <div class="card bg-base-200 shadow">
+              <div class="card-body p-4">
+                <h3 class="font-bold text-primary">MDEA / ODS / Pertinencia</h3>
+                <div class="text-sm flex justify-between"><span>MDEA insertados</span><span
+                    class="font-semibold">{{resultado.mdeaInsertados}}</span></div>
+                <div class="text-sm flex justify-between"><span>MDEA omitidos</span><span
+                    class="font-semibold">{{resultado.mdeaOmitidos}}</span></div>
+                <div class="divider my-2"></div>
+                <div class="text-sm flex justify-between"><span>ODS insertados</span><span
+                    class="font-semibold">{{resultado.odsInsertados}}</span></div>
+                <div class="text-sm flex justify-between"><span>ODS omitidos</span><span
+                    class="font-semibold">{{resultado.odsOmitidos}}</span></div>
+                <div class="divider my-2"></div>
+                <div class="text-sm flex justify-between"><span>Pertinencia insertadas</span><span
+                    class="font-semibold">{{resultado.pertinenciaInsertadas}}</span></div>
+                <div class="text-sm flex justify-between"><span>Pertinencia actualizadas</span><span
+                    class="font-semibold">{{resultado.pertinenciaActualizadas}}</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de errores si falla -->
+          <div *ngIf="!resultado.ok && resultado.errors?.length" class="mt-3 overflow-x-auto">
+            <table class="table table-xs">
+              <thead>
+                <tr>
+                  <th>Fila</th>
+                  <th>Columna</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of resultado.errors">
+                  <td>{{ e.fila }}</td>
+                  <td>{{ e.columna }}</td>
+                  <td>{{ e.detalle }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Botón reiniciar (solo si OK) -->
+          <button *ngIf="resultado.ok" class="btn btn-outline btn-block mt-4" (click)="reiniciar()">
+            Reiniciar módulo
+          </button>
+
+        </div>
+
 
 
       </div>

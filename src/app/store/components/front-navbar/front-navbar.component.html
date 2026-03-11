@@ -1,3 +1,5 @@
+@if (auth.isAdminOrRoot() || (auth.isUser() && !auth.isArmo())) {
+<!-- ✅ NAVBAR SELECCIÓN (tu navbar actual) -->
 <div class="navbar bg-neutral shadow-sm">
   <div class="navbar-start">
     <div class="relative">
@@ -144,3 +146,112 @@
   </div>
 
 </div>
+}
+@if (auth.isAdminOrRoot() || auth.isArmo()) {
+<!-- ✅ NAVBAR ARMONIZACIÓN (tu navbar nuevo) -->
+<div class="navbar bg-primary text-purple-100 shadow-sm">
+  <div class="navbar-start">
+    <div class="relative">
+      <!-- Botón del menú hamburguesa -->
+      <button (click)="toggleMenuHamburgesa()" class="btn btn-ghost lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+      </button>
+
+      <!-- Menú hamburguesa -->
+      <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
+        [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
+        <li>
+          <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
+            Flujo de captura departamento armonización
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <a routerLink="/" class="btn btn-sm btn-ghost text-xl font-montserrat">
+      <span class="text-base-100">
+        Captura
+      </span><span class="">| Armonización </span>
+    </a>
+  </div>
+
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      <li>
+        <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
+          Flujo de captura departamento armonización
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/revision-variables"  class="btn btn-sm btn-ghost text-slate-300">
+          Asignación de prioridad a variables
+        </a>
+      </li>
+
+
+
+
+
+    </ul>
+  </div>
+
+  <div class="navbar-end gap-4">
+
+
+
+
+    @if (userName()) {
+    <button class="btn btn-sm btn-ghost text-slate-300">
+      {{ userName() }}
+    </button>
+
+
+    <!-- Dropdown de temas -->
+    <div class="relative">
+      <!-- Botón para abrir el dropdown -->
+      <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
+        Theme
+        <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
+          <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+        </svg>
+      </button>
+
+      <!-- Menú dropdown -->
+      <ul class="menu bg-base-100 rounded-box z-[100] w-52 p-2 shadow absolute right-0 mt-2 transition-all duration-200"
+        [ngClass]="{
+            'opacity-0 invisible scale-95': !dropdownAbierto(),
+            'opacity-100 visible scale-100': dropdownAbierto()
+          }">
+        <li *ngFor="let theme of themes">
+          <label class="btn btn-sm btn-block btn-ghost justify-start">
+            <input type="radio" name="theme-dropdown" (change)="changeTheme(theme)" [value]="theme"
+              [checked]="theme === selectedTheme()" />
+            {{ theme }}
+          </label>
+        </li>
+      </ul>
+    </div>
+
+
+
+
+
+    <button class="btn btn-sm btn-error" (click)="_authService.logout()">
+      Salir
+    </button>
+    } @else {
+    <a routerLink="/auth/login" class="btn btn-sm btn-primary">
+      Iniciar sesión
+    </a>
+    }
+
+  </div>
+
+</div>
+}
+
+
