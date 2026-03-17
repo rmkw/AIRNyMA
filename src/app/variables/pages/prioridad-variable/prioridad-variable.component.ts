@@ -90,6 +90,7 @@ export class PrioridadVariableComponent implements OnInit {
 
     this.arrFuentesByProceso = [];
     this.arrVariablesSeleccionadas = [];
+    this.arrVariablesSeleccionadasFiltradas = [];
     this.fuentesSeleccionadas = [];
 
     this._fuentes_isSelectEnabled = false;
@@ -103,32 +104,63 @@ export class PrioridadVariableComponent implements OnInit {
   arrFuentesByProceso: any[] = [];
   _fuentes_isSelectEnabled: boolean = false;
 
-  cargarFuentesPorProceso(acronimo: string) {
-    const responsableRegister = 1; // aquí luego pones el real del usuario logueado
+  // cargarFuentesPorProceso(acronimo: string) {
+  //   const responsableRegister = 1; // aquí luego pones el real del usuario logueado
 
-    if (!responsableRegister || !acronimo) {
-      console.error('Responsable o acrónimo de proceso no definidos');
+  //   if (!responsableRegister || !acronimo) {
+  //     console.error('Responsable o acrónimo de proceso no definidos');
+  //     this.arrFuentesByProceso = [];
+  //     this._fuentes_isSelectEnabled = false;
+  //     return;
+  //   }
+
+  //   this._fuentesService
+  //     .getByIdPpAndResponsable(acronimo, responsableRegister)
+  //     .subscribe({
+  //       next: (response) => {
+  //         console.log('✅ Resultado del backend:', response);
+
+  //         this.arrFuentesByProceso = response?.fuentes ?? [];
+  //         this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
+  //       },
+  //       error: (err) => {
+  //         console.error('Error al obtener fuentes:', err);
+  //         this.arrFuentesByProceso = [];
+  //         this._fuentes_isSelectEnabled = false;
+  //       },
+  //     });
+  // }
+
+  cargarFuentesPorProceso(acronimo: string) {
+    if (!acronimo) {
+      console.error('Acrónimo de proceso no definido');
       this.arrFuentesByProceso = [];
       this._fuentes_isSelectEnabled = false;
       return;
     }
 
-    this._fuentesService
-      .getByIdPpAndResponsable(acronimo, responsableRegister)
-      .subscribe({
-        next: (response) => {
-          console.log('✅ Resultado del backend:', response);
+    this.loadingFuentes = true;
+    this.arrFuentesByProceso = [];
+    this.fuentesSeleccionadas = [];
+    this.arrVariablesSeleccionadas = [];
+    this.arrVariablesSeleccionadasFiltradas = [];
+    this.filtroIdS = '';
 
-          this.arrFuentesByProceso = response?.fuentes ?? [];
-          this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
-        },
-        error: (err) => {
-          console.error('Error al obtener fuentes:', err);
-          this.arrFuentesByProceso = [];
-          this._fuentes_isSelectEnabled = false;
-        },
-      });
+    this._fuentesService.getByProceso(acronimo).subscribe({
+      next: (response) => {
+        this.arrFuentesByProceso = response?.fuentes ?? [];
+        this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
+        this.loadingFuentes = false;
+      },
+      error: (err) => {
+        console.error('Error al obtener fuentes:', err);
+        this.arrFuentesByProceso = [];
+        this._fuentes_isSelectEnabled = false;
+        this.loadingFuentes = false;
+      },
+    });
   }
+
   toggleFuenteSelection(event: Event, idFuente: string) {
     const checked = (event.target as HTMLInputElement).checked;
 
@@ -154,22 +186,33 @@ export class PrioridadVariableComponent implements OnInit {
       return;
     }
 
+    this.loadingVariables = true;
+    this.arrVariablesSeleccionadas = [];
+    this.arrVariablesSeleccionadasFiltradas = [];
+
     this._varService
       .getVariablesByFuentes(this.fuentesSeleccionadas)
       .subscribe({
         next: (data) => {
           this.arrVariablesSeleccionadas = data;
-          console.log('Variables cargadas:', data);
+          this.arrVariablesSeleccionadasFiltradas = data;
+          this.filtroIdS = '';
+          this.loadingVariables = false;
         },
         error: (err) => {
           console.error('Error al cargar variables:', err);
           this.arrVariablesSeleccionadas = [];
+          this.arrVariablesSeleccionadasFiltradas = [];
+          this.loadingVariables = false;
         },
       });
   }
+
   limpiarSeleccionFuentes() {
     this.fuentesSeleccionadas = [];
     this.arrVariablesSeleccionadas = [];
+    this.arrVariablesSeleccionadasFiltradas = [];
+    this.filtroIdS = '';
     console.log('Selección limpiada');
   }
 
@@ -203,6 +246,78 @@ export class PrioridadVariableComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al guardar revisión:', err);
+        },
+      });
+  }
+
+  arrVariablesSeleccionadasFiltradas: VariableRevisionPrioridadDTO[] = [];
+  filtroIdS: string = '';
+
+  filtrarVariablesPorIdS() {
+    const texto = this.filtroIdS.trim().toLowerCase();
+
+    if (!texto) {
+      this.arrVariablesSeleccionadasFiltradas = this.arrVariablesSeleccionadas;
+      return;
+    }
+
+    this.arrVariablesSeleccionadasFiltradas =
+      this.arrVariablesSeleccionadas.filter(
+        (variable) =>
+          variable.idS.toLowerCase().includes(texto) ||
+          variable.idA.toLowerCase().includes(texto) ||
+          variable.nombre.toLowerCase().includes(texto),
+      );
+  }
+  seleccionarTodasLasFuentes() {
+    this.fuentesSeleccionadas = this.arrFuentesByProceso.map(
+      (fuente) => fuente.idFuente,
+    );
+
+    console.log('Todas las fuentes seleccionadas:', this.fuentesSeleccionadas);
+  }
+
+  loadingFuentes: boolean = false;
+  loadingVariables: boolean = false;
+  togglePrioridad(variable: VariableRevisionPrioridadDTO, event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    const prioridad = checked ? 1 : 2;
+    this.asignarPrioridad(variable, prioridad);
+  }
+
+  asignarPrioridadMasiva(prioridad: number) {
+    const responsableRevision = Number(localStorage.getItem('_id'));
+
+    const variablesActualizar = this.arrVariablesSeleccionadasFiltradas.filter(
+      (variable) => variable.prioridad !== prioridad,
+    );
+
+    if (variablesActualizar.length === 0) {
+      return;
+    }
+
+    const idsA = variablesActualizar.map((variable) => variable.idA);
+
+    this._varService
+      .updateRevisionPrioridadMasiva({
+        idsA,
+        prioridad,
+        revisada: true,
+        responsableRevision,
+      })
+      .subscribe({
+        next: (resp) => {
+          variablesActualizar.forEach((variable) => {
+            variable.prioridad = prioridad;
+            variable.revisada = true;
+            variable.responsableRevision = responsableRevision;
+          });
+
+          console.log('Actualización masiva correcta:', resp);
+        },
+        error: (err) => {
+          console.error('Error en actualización masiva:', err);
         },
       });
   }

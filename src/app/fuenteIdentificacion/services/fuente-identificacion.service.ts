@@ -26,19 +26,28 @@ export class FuenteIdentificacionService {
       catchError((error) => {
         console.error('Error al obtener fuentes:', error);
         return of([]);
-      })
+      }),
     );
   }
 
   getByIdPpAndResponsable(
     acronimo: string,
-    responsableRegister: number
+    responsableRegister: number,
   ): Observable<any> {
     const params = new HttpParams()
       .set('acronimo', acronimo)
       .set('responsableRegister', responsableRegister.toString());
 
     return this.http.get(`${baseUrl}/fuentes/byResponsable`, { params });
+  }
+
+  getByProceso(acronimo: string): Observable<any> {
+    return this.http.get<any>(
+      `${baseUrl}/fuentes/por-proceso/${encodeURIComponent(acronimo)}`,
+      {
+        withCredentials: true,
+      },
+    );
   }
 
   //!REGISTRAR FUENTE
@@ -71,13 +80,13 @@ export class FuenteIdentificacionService {
         catchError((error) => {
           console.error('Error al registrar fuente:', error);
           return throwError(() => error); // O cualquier otro valor que indique error
-        })
+        }),
       );
   }
 
   editarFuente(
     idFuente: string,
-    datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>
+    datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>,
   ): Observable<FiEcoResponce | null> {
     const userId = this._authService.user()?.id;
     if (!userId) {
@@ -95,13 +104,13 @@ export class FuenteIdentificacionService {
       .put<FiEcoResponce>(
         `${baseUrl}/fuentes/update?idFuente=${encodedId}`,
         payload,
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .pipe(
         catchError((error) => {
           console.error('Error al editar fuente:', error);
           return of(null);
-        })
+        }),
       );
   }
 
@@ -109,7 +118,7 @@ export class FuenteIdentificacionService {
     const encodedId = encodeURIComponent(id);
     return this.http.delete(
       `${baseUrl}/fuentes/delete-full?idFuente=${encodedId}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 }

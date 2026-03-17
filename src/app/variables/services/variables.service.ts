@@ -88,4 +88,19 @@ export class VariableService {
       },
     );
   }
+  updateRevisionPrioridadMasiva(payload: {
+    idsA: string[];
+    prioridad: number;
+    revisada: boolean;
+    responsableRevision: number;
+  }) {
+    return this.http.put<{
+      message: string;
+      totalActualizadas: number;
+      prioridad: number;
+      revisada: boolean;
+    }>(`${baseUrl}/variables/revision-prioridad-masiva`, payload, {
+      withCredentials: true,
+    });
+  }
 }
