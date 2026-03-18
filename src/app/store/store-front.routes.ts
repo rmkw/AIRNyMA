@@ -14,6 +14,7 @@ import { VariableUpdateComponent } from '../variables/pages/variable-update/vari
 import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";
 import { ModuloExcelImport } from "@/excel-import/modulo-import/modulo-import.component";
 import { PrioridadVariableComponent } from "@/variables/pages/prioridad-variable/prioridad-variable.component";
+import { ArmonizacionVariablesComponent } from "@/variables/pages/armonizacion-variables/armo-variables.component";
 
 
 
@@ -57,6 +58,10 @@ export const storeFrontRoutes: Routes = [
         component: PrioridadVariableComponent,
       },
       {
+        path: 'armo',
+        component: ArmonizacionVariablesComponent,
+      },
+      {
         path: '**',
         component: NotFoundPageComponent,
       },
@@ -69,3 +74,5 @@ export const storeFrontRoutes: Routes = [
 ];
 
 export default storeFrontRoutes;
+
+

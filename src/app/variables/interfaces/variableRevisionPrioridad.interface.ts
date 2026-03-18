@@ -58,6 +58,7 @@ export interface VariableRevisionPrioridadDTO {
   acronimo: string;
   nombre: string;
   url: string | null;
+  definicion: string | null;
 
   prioridad: number | null;
   revisada: boolean;

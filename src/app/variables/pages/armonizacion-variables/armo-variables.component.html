@@ -1,0 +1,271 @@
+<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-8">
+  <!-- Encabezado -->
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <h1 class="text-2xl font-bold font-montserrat text-primary">
+        Armonización de variables
+      </h1>
+      <p class="text-sm text-base-content/70 mt-1">
+        Selecciona una unidad y un proceso de producción para consultar sus fuentes de Identificación.
+      </p>
+    </div>
+  </div>
+
+  <!-- Filtros superiores -->
+  <div class="mb-4">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Unidad -->
+      <div>
+        <label class="block text-sm font-medium mb-2 text-secondary" for="dire">
+          Selecciona unidad productora de información
+        </label>
+        <select id="dire" class="select select-bordered select-sm w-full" (change)="selectedDireccion($event)">
+          <option disabled selected>Selecciona una opción</option>
+          @for (dire of arrDirecciones; track dire.idUnidad) {
+          <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Proceso -->
+      <div>
+        <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
+          Selecciona el proceso de producción
+        </label>
+        <select id="procesoProduccion" class="select select-bordered select-sm w-full" #procesoProduccionTag
+          [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
+          <option disabled selected>Selecciona una opción</option>
+          @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
+          <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+          }
+        </select>
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+  <!-- Tabla de fuentes -->
+  <div class="card bg-base-100 shadow-sm border border-base-300">
+    <div class="card-body p-3">
+
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4 mt-2">
+        <div>
+          <h2 class="card-title text-lg text-primary">Fuentes de identificación</h2>
+          <p class="text-sm text-base-content/70">
+            Selecciona una o varias fuentes para consultar sus variables.
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button class="btn btn-outline btn-sm" type="button" [disabled]="arrFuentesByProceso.length === 0"
+            (click)="seleccionarTodasLasFuentes()">
+            Seleccionar todas
+          </button>
+
+          <button class="btn btn-outline btn-sm" type="button" [disabled]="fuentesSeleccionadas.length === 0"
+            (click)="limpiarSeleccionFuentes()">
+            Limpiar selección
+          </button>
+
+          <button class="btn btn-primary btn-sm text-slate-100" type="button" (click)="cargarVariablesSeleccionadas()">
+            Cargar variables seleccionadas
+          </button>
+        </div>
+      </div>
+
+      @if (loadingFuentes) {
+      <div class="border border-base-300 rounded-box overflow-hidden">
+        <div class="bg-base-200 px-4 py-3 border-b border-base-300">
+          <div class="grid grid-cols-4 gap-4">
+            <div class="h-4 rounded bg-base-300 animate-pulse"></div>
+            <div class="h-4 rounded bg-base-300 animate-pulse"></div>
+            <div class="h-4 rounded bg-base-300 animate-pulse"></div>
+            <div class="h-4 rounded bg-base-300 animate-pulse"></div>
+          </div>
+        </div>
+
+        <div class="divide-y divide-base-200">
+          @for (item of [1,2,3,4,5]; track item) {
+          <div class="grid grid-cols-4 gap-4 px-4 py-4">
+            <div class="h-4 rounded bg-base-200 animate-pulse"></div>
+            <div class="h-4 rounded bg-base-200 animate-pulse"></div>
+            <div class="h-4 rounded bg-base-200 animate-pulse"></div>
+            <div class="flex justify-center">
+              <div class="h-5 w-5 rounded bg-base-200 animate-pulse"></div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      } @else {
+      <!-- aquí dejas tu tabla real de fuentes -->
+      <div class="border border-base-300 rounded-box overflow-x-auto overflow-y-auto max-h-64">
+        <table class="table table-sm">
+          <thead class="bg-base-200 sticky top-0 z-10">
+            <tr>
+              <th>Fuente</th>
+              <th>URL</th>
+              <th>Edición</th>
+              <th class="text-center">Seleccionar</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (arrFuentesByProceso.length > 0) {
+            @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
+            <tr class="hover">
+              <td>
+                {{ fuente.fuente }}
+              </td>
+
+              <td>
+                @if (fuente.url) {
+                <a [href]="fuente.url" target="_blank" class="link link-primary text-xs break-all">
+                  Ver URL
+                </a>
+                } @else {
+                <span class="text-base-content/50 text-xs">Sin URL</span>
+                }
+              </td>
+
+              <td>
+                {{ fuente.edicion || 'Sin edición' }}
+              </td>
+
+              <td class="text-center">
+                <input type="checkbox" class="checkbox checkbox-sm" [value]="fuente.idFuente"
+                  [checked]="fuentesSeleccionadas.includes(fuente.idFuente)"
+                  (change)="toggleFuenteSelection($event, fuente.idFuente)" />
+              </td>
+            </tr>
+            }
+            } @else {
+            <tr>
+              <td colspan="4" class="text-center py-8 text-base-content/60">
+                No hay fuentes para mostrar.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+
+
+
+      <div class="mt-2 text-sm text-base-content/70 ">
+        Puedes seleccionar una o varias fuentes para trabajar más rápido en la asignación de prioridad.
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+  @if (loadingVariables) {
+  <div class="mt-8 space-y-6">
+    @for (item of [1,2,3]; track item) {
+    <div class="card bg-base-100 shadow-sm border border-base-300">
+      <div class="card-body px-6 py-5">
+
+        <!-- Header -->
+        <div class="flex justify-between items-start gap-4 mb-5">
+          <div class="space-y-3 w-full">
+            <div class="h-4 w-32 rounded bg-base-200 animate-pulse"></div>
+            <div class="h-5 w-2/3 rounded bg-base-300 animate-pulse"></div>
+          </div>
+          <div class="h-6 w-24 rounded-full bg-base-200 animate-pulse"></div>
+        </div>
+
+        <!-- Info general -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          @for (box of [1,2,3]; track box) {
+          <div class="rounded-xl border border-base-300 bg-base-200/40 p-4 space-y-3">
+            <div class="h-3 w-24 rounded bg-base-200 animate-pulse"></div>
+            <div class="h-4 w-3/4 rounded bg-base-300 animate-pulse"></div>
+          </div>
+          }
+        </div>
+
+        <!-- Relaciones -->
+        <div class="rounded-xl border border-base-300 bg-base-100 p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div class="h-4 w-44 rounded bg-base-300 animate-pulse"></div>
+            <div class="flex gap-2">
+              <div class="h-5 w-16 rounded-full bg-base-200 animate-pulse"></div>
+              <div class="h-5 w-16 rounded-full bg-base-200 animate-pulse"></div>
+              <div class="h-5 w-20 rounded-full bg-base-200 animate-pulse"></div>
+            </div>
+          </div>
+          <div class="h-24 rounded-xl bg-base-200 animate-pulse"></div>
+        </div>
+
+        <!-- Prioridad -->
+        <div class="mt-6 pt-4 border-t border-base-300 flex justify-between items-center gap-4">
+          <div class="flex gap-2">
+            <div class="h-9 w-24 rounded-lg bg-base-200 animate-pulse"></div>
+            <div class="h-9 w-24 rounded-lg bg-base-200 animate-pulse"></div>
+          </div>
+          <div class="h-6 w-32 rounded-full bg-base-200 animate-pulse"></div>
+        </div>
+
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <!-- aquí dejas tus fichas reales -->
+  @if (arrVariablesSeleccionadas.length > 0) {
+  <div class="card bg-base-100 shadow-sm border border-base-300 mt-6 mb-6">
+    <div class="card-body p-4">
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+
+        <div class="md:col-span-6 flex justify-between items-center mb-0">
+          <div>
+            <h2 class="text-lg font-semibold text-primary">Variables seleccionadas</h2>
+            <p class="text-sm text-base-content/70">
+              Revisa la información de cada variable.
+            </p>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-2 text-secondary" for="filtroIdS">
+            Filtrar variables por ID_S, ID_A o nombre
+          </label>
+          <input id="filtroIdS" type="text" class="input input-bordered input-sm w-full" [(ngModel)]="filtroIdS"
+            (input)="filtrarVariablesPorIdS()" placeholder="Ej. ATUS-001" />
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="text-sm font-semibold text-base-content">
+            Resultados: {{ arrVariablesSeleccionadasFiltradas.length }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Tabla de variables seleccionadas -->
+  @if (arrVariablesSeleccionadas.length > 0) {
+
+  }
+  }
+
+
+
+
+
+
+
+
+
+
+</div>

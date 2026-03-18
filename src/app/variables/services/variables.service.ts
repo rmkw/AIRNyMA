@@ -103,4 +103,22 @@ export class VariableService {
       withCredentials: true,
     });
   }
+
+  getVariablesTablaByFuentes(
+    idFuentes: string[],
+  ): Observable<any[]> {
+    let params = new HttpParams();
+
+    idFuentes.forEach((idFuente) => {
+      params = params.append('idFuentes', idFuente);
+    });
+
+    return this.http.get<any[]>(
+      `${baseUrl}/variables/por-fuentes-tabla`,
+      {
+        params,
+        withCredentials: true,
+      },
+    );
+  }
 }
