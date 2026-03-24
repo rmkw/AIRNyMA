@@ -227,4 +227,85 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
     console.log('Todas las fuentes seleccionadas:', this.fuentesSeleccionadas);
   }
+
+  variableSeleccionada: VariableTablaDTO | null = null;
+
+fuenteForm: {
+  idFuente: string;
+  acronimo: string;
+  fuente: string;
+  url: string;
+  edicion: string;
+  comentarioS: string;
+  
+} | null = null;
+
+seleccionarVariable(variable: VariableTablaDTO) {
+  this.variableSeleccionada = variable;
+  this.fuenteExisteEnArmonizacion = false;
+
+  const fuenteEncontrada = this.arrFuentesByProceso.find(
+    (fuente) => fuente.idFuente === variable.idFuente,
+  );
+
+  if (!fuenteEncontrada) {
+    console.warn('No se encontró la fuente de la variable seleccionada');
+    this.fuenteForm = null;
+    return;
+  }
+
+  const fuenteForm = {
+    idFuente: fuenteEncontrada.idFuente ?? '',
+    acronimo: fuenteEncontrada.acronimo ?? '',
+    fuente: fuenteEncontrada.fuente ?? '',
+    url: fuenteEncontrada.url ?? '',
+    edicion: fuenteEncontrada.edicion ?? '',
+    comentarioS: fuenteEncontrada.comentarioS ?? '',
+  };
+
+  this.fuenteForm = fuenteForm;
+
+  console.log('Variable seleccionada:', this.variableSeleccionada);
+  console.log('Fuente cargada en formulario:', this.fuenteForm);
+
+  this.verificarSiFuenteExisteEnArmonizacion(fuenteForm.idFuente);
+}
+verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
+  this.cargandoEstadoFuente = true;
+
+  // temporal: simulación
+  console.log('Verificando si la fuente existe en armonización:', idFuente);
+
+  // aquí luego irá el GET real
+  this.fuenteExisteEnArmonizacion = false;
+
+  this.cargandoEstadoFuente = false;
+}
+
+guardarFuenteTemporal() {
+  if (!this.fuenteForm) {
+    console.warn('No hay fuente cargada para guardar');
+    return;
+  }
+
+  const payload = {
+    ...this.fuenteForm,
+    responsableRegister: this.usuarioId(),
+    responsableActualizacion: this.usuarioId(),
+  };
+
+  console.log('Fuente lista para enviar al backend:', payload);
+
+  // Simulación temporal de guardado exitoso
+  this.fuenteGuardada = true;
+}
+
+fuenteGuardada = false;
+fuenteExisteEnArmonizacion = false;
+cargandoEstadoFuente = false;
+
+get puedeMostrarBloqueVariableSeleccion(): boolean {
+  return this.fuenteExisteEnArmonizacion;
+}
+  
 }
