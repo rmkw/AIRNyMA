@@ -6,15 +6,16 @@ import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.se
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
 import { VariableTablaDTO } from '@/variables/interfaces/variableTablaDTO';
+import { VariablesArmoService } from '@/variables/services/armonizacion/variables-armo.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-armonizacion-variables',
   templateUrl: './armo-variables.component.html',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,ReactiveFormsModule],
 })
 export class ArmonizacionVariablesComponent implements OnInit {
   _serviceDirecciones = inject(DireccionesService);
@@ -46,8 +47,11 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   usuarioId = computed(() => this._authService.user()?.id ?? null);
 
+  variableForm!: FormGroup;
+
   ngOnInit(): void {
     this.getDirecciones();
+    this.inicializarFormularioVariable();
   }
 
   getDirecciones() {
@@ -245,6 +249,10 @@ fuenteForm: {
 seleccionarVariable(variable: VariableTablaDTO) {
   this.variableSeleccionada = variable;
   this.fuenteExisteEnArmonizacion = false;
+  this.limpiarEstadoVariableSeleccionada();
+  this.limpiarClasificacionLocal();
+  this.limpiarMicrodatosLocal();
+  this.limpiarDatosAbiertosLocal();
 
   const fuenteEncontrada = this.arrFuentesByProceso.find(
     (fuente) => fuente.idFuente === variable.idFuente,
@@ -286,6 +294,10 @@ verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
       if (resp.exists) {
         this.cargarFuenteArmonizacion(idFuente);
       }
+
+      if (this.variableSeleccionada?.idA) {
+      this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+      }
     },
     error: (err) => {
       console.error('Error al verificar fuente en armonización:', err);
@@ -314,7 +326,11 @@ cargarFuenteArmonizacion(idFuenteSeleccion: string) {
           comentarioS: fuenteArm.comentarioS ?? '',
           comentarioA: fuenteArm.comentarioA ?? '',
         };
+        if (this.variableSeleccionada?.idA) {
+          this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+        }
       },
+      
       error: (err) => {
         console.error('Error al cargar fuente de armonización:', err);
       },
@@ -346,6 +362,9 @@ guardarFuenteTemporal() {
         console.log('Fuente guardada en armonización:', resp);
         this.abrirModalSuccessSave('La fuente se guardó correctamente en armonización.');
         this.fuenteExisteEnArmonizacion = true;
+        if (this.variableSeleccionada?.idA) {
+  this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+}
 
         this.fuenteForm = {
   idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
@@ -498,5 +517,282 @@ private obtenerMensajeError(err: any): string {
     err?.message ||
     'Ocurrió un error inesperado.'
   );
+}
+
+variableExisteEnArmonizacion: boolean = false;
+modoEdicionVariable: boolean = false;
+private variablesArmoService = inject(VariablesArmoService);
+
+verificarSiVariableExiste(idA: string) {
+  this.variablesArmoService.existePorIdA(idA).subscribe({
+    next: (existe) => {
+      this.variableExisteEnArmonizacion = existe;
+      this.modoEdicionVariable = existe;
+
+      if (existe) {
+        this.cargarVariableArmonizacion(idA);
+      } else {
+        this.prepararVariableNueva();
+      }
+    },
+    error: (err) => {
+      console.error('Error al verificar variable en armonización:', err);
+      this.variableExisteEnArmonizacion = false;
+      this.modoEdicionVariable = false;
+      this.prepararVariableNueva();
+    }
+  });
+}
+
+cargarVariableArmonizacion(idA: string) {
+  this.variablesArmoService.obtenerPorIdA(idA).subscribe({
+    next: (variable) => {
+      this.variableForm.patchValue({
+        idA: variable.idA,
+        idFuente: variable.idFuente,
+        acronimo: variable.acronimo,
+        idS: variable.idS,
+        variableS: variable.variableS,
+        variableA: variable.variableA,
+        url: variable.url,
+        pregunta: variable.pregunta,
+        definicion: variable.definicion,
+        universo: variable.universo,
+        anioReferencia: variable.anioReferencia,
+        tematica: variable.tematica,
+        tema1: variable.tema1,
+        subtema1: variable.subtema1,
+        tema2: variable.tema2,
+        subtema2: variable.subtema2,
+        tabulados: variable.tabulados,
+        clasificacion: variable.clasificacion,
+        microdatos: variable.microdatos,
+        datosabiertos: variable.datosabiertos,
+        mdea: variable.mdea,
+        ods: variable.ods,
+        comentarioS: variable.comentarioS,
+        comentarioA: variable.comentarioA
+      });
+    },
+    error: (err) => {
+      console.error('Error al cargar variable de armonización:', err);
+    }
+  });
+}
+
+prepararVariableNueva() {
+  const variableSeleccionada = this.variableSeleccionada;
+
+  if (!variableSeleccionada) return;
+
+  this.variableForm.patchValue({
+    idA: variableSeleccionada.idA,
+    idFuente: variableSeleccionada.idFuente,
+    acronimo: variableSeleccionada.acronimo,
+    idS: variableSeleccionada.idS,
+    variableS: variableSeleccionada.nombre,
+    variableA: '',
+    url: variableSeleccionada.url ?? '',
+    definicion: variableSeleccionada.definicion ?? '',
+    comentarioS: variableSeleccionada.comentarioS ?? '',
+
+    pregunta: '',
+    universo: '',
+    anioReferencia: null,
+    tematica: '',
+    tema1: '',
+    subtema1: '',
+    tema2: '',
+    subtema2: '',
+    tabulados: false,
+    clasificacion: false,
+    microdatos: '',
+    datosabiertos: false,
+    mdea: variableSeleccionada.mdea ?? false,
+    ods: variableSeleccionada.ods ?? false,
+    comentarioA: ''
+  });
+}
+guardarOActualizarVariable() {
+  if (!this.variableForm.valid) {
+    this.variableForm.markAllAsTouched();
+    return;
+  }
+
+  const payload = this.variableForm.getRawValue();
+
+  if (this.variableExisteEnArmonizacion) {
+    this.variablesArmoService.actualizarVariable(payload.idA, payload).subscribe({
+      next: (resp) => {
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        console.log('Variable actualizada:', resp);
+      },
+      error: (err) => {
+        console.error('Error al actualizar variable:', err);
+      }
+    });
+  } else {
+    this.variablesArmoService.guardarVariable(payload).subscribe({
+      next: (resp) => {
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        this.variableForm.patchValue(resp);
+        console.log('Variable guardada:', resp);
+      },
+      error: (err) => {
+        console.error('Error al guardar variable:', err);
+      }
+    });
+  }
+}
+private fb = inject(FormBuilder);
+inicializarFormularioVariable() {
+  this.variableForm = this.fb.group({
+    idA: [''],
+    idFuente: [''],
+    acronimo: [''],
+    idS: [''],
+    variableS: [''],
+    variableA: [''],
+    url: [''],
+    pregunta: [''],
+    definicion: [''],
+    universo: [''],
+    anioReferencia: [null],
+    tematica: [''],
+    tema1: [''],
+    subtema1: [''],
+    tema2: [''],
+    subtema2: [''],
+    tabulados: [false],
+    clasificacion: [false],
+    microdatos: [''],
+    datosabiertos: [false],
+    mdea: [false],
+    ods: [false],
+    comentarioS: [''],
+    comentarioA: ['']
+  });
+}
+
+limpiarEstadoVariableSeleccionada() {
+  this.variableExisteEnArmonizacion = false;
+  this.modoEdicionVariable = false;
+
+  this.variableForm.reset({
+    idA: '',
+    idFuente: '',
+    acronimo: '',
+    idS: '',
+    variableS: '',
+    variableA: '',
+    url: '',
+    pregunta: '',
+    definicion: '',
+    universo: '',
+    anioReferencia: null,
+    tematica: '',
+    tema1: '',
+    subtema1: '',
+    tema2: '',
+    subtema2: '',
+    tabulados: false,
+    clasificacion: false,
+    microdatos: 'No',
+    datosabiertos: false,
+    mdea: false,
+    ods: false,
+    comentarioS: '',
+    comentarioA: ''
+  });
+  this.limpiarClasificacionLocal();
+}
+
+clasificacionActiva: boolean = false;
+
+clasificacionForm = {
+  clase: '',
+  comentarioA: '',
+};
+
+toggleClasificacionLocal(event: Event) {
+  const checked = (event.target as HTMLInputElement).checked;
+  this.clasificacionActiva = checked;
+
+  if (!checked) {
+    this.limpiarClasificacionLocal();
+  }
+}
+microdatosActivo: boolean = false;
+
+microdatosForm = {
+  urlAcceso: '',
+  descriptor: '',
+  urlDescriptor: '',
+  tabla: '',
+  campo: '',
+  comentarioA: '',
+};
+datosAbiertosActivo: boolean = false;
+
+datosAbiertosForm = {
+  urlAcceso: '',
+  urlDescarga: '',
+  descriptor: '',
+  tabla: '',
+  campo: '',
+  comentarioA: '',
+};
+toggleMicrodatosLocal(event: Event) {
+  const checked = (event.target as HTMLInputElement).checked;
+  this.microdatosActivo = checked;
+
+  if (!checked) {
+    this.limpiarMicrodatosLocal();
+  }
+}
+toggleDatosAbiertosLocal(event: Event) {
+  const checked = (event.target as HTMLInputElement).checked;
+  this.datosAbiertosActivo = checked;
+
+  if (!checked) {
+    this.limpiarDatosAbiertosLocal();
+  }
+}
+limpiarClasificacionLocal() {
+  this.clasificacionActiva = false;
+  this.clasificacionForm = {
+    clase: '',
+    comentarioA: '',
+  };
+}
+
+limpiarDatosAbiertosLocal() {
+  this.datosAbiertosActivo = false;
+  this.datosAbiertosForm = {
+    urlAcceso: '',
+    urlDescarga: '',
+    descriptor: '',
+    tabla: '',
+    campo: '',
+    comentarioA: '',
+  };
+}
+microdatosEstado: string = '';
+seleccionarEstadoMicrodatos(estado: string) {
+  this.microdatosEstado = estado;
+}
+limpiarMicrodatosLocal() {
+  this.microdatosActivo = false;
+  this.microdatosEstado = '';
+  this.microdatosForm = {
+    urlAcceso: '',
+    descriptor: '',
+    urlDescriptor: '',
+    tabla: '',
+    campo: '',
+    comentarioA: '',
+  };
 }
 }
