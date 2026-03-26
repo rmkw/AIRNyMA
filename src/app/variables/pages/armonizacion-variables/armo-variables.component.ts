@@ -4,6 +4,7 @@ import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.inte
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
+import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
 import { VariableTablaDTO } from '@/variables/interfaces/variableTablaDTO';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
@@ -231,13 +232,14 @@ export class ArmonizacionVariablesComponent implements OnInit {
   variableSeleccionada: VariableTablaDTO | null = null;
 
 fuenteForm: {
-  idFuente: string;
+  idFuente?: string;
   acronimo: string;
   fuente: string;
   url: string;
   edicion: string;
   comentarioS: string;
-  
+  comentarioA: string;
+  idFuenteSeleccion?: string;
 } | null = null;
 
 seleccionarVariable(variable: VariableTablaDTO) {
@@ -261,6 +263,7 @@ seleccionarVariable(variable: VariableTablaDTO) {
     url: fuenteEncontrada.url ?? '',
     edicion: fuenteEncontrada.edicion ?? '',
     comentarioS: fuenteEncontrada.comentarioS ?? '',
+    comentarioA: '',
   };
 
   this.fuenteForm = fuenteForm;
@@ -268,18 +271,54 @@ seleccionarVariable(variable: VariableTablaDTO) {
   console.log('Variable seleccionada:', this.variableSeleccionada);
   console.log('Fuente cargada en formulario:', this.fuenteForm);
 
-  this.verificarSiFuenteExisteEnArmonizacion(fuenteForm.idFuente);
+  this.verificarSiFuenteExisteEnArmonizacionPorDatos();
 }
 verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
   this.cargandoEstadoFuente = true;
 
-  // temporal: simulación
-  console.log('Verificando si la fuente existe en armonización:', idFuente);
+  this._varService.existsFuenteArmonizacion(idFuente).subscribe({
+    next: (resp) => {
+      this.fuenteExisteEnArmonizacion = resp.exists;
+      this.cargandoEstadoFuente = false;
 
-  // aquí luego irá el GET real
-  this.fuenteExisteEnArmonizacion = false;
+      console.log('¿Fuente existe en armonización?', resp.exists);
 
-  this.cargandoEstadoFuente = false;
+      if (resp.exists) {
+        this.cargarFuenteArmonizacion(idFuente);
+      }
+    },
+    error: (err) => {
+      console.error('Error al verificar fuente en armonización:', err);
+      this.fuenteExisteEnArmonizacion = false;
+      this.cargandoEstadoFuente = false;
+    },
+  });
+}
+
+cargarFuenteArmonizacion(idFuenteSeleccion: string) {
+  this._varService
+    .getFuenteArmonizacionByIdFuenteSeleccion(idFuenteSeleccion)
+    .subscribe({
+      next: (fuenteArm) => {
+        if (!this.fuenteForm) return;
+
+        this.fuenteForm = {
+          ...this.fuenteForm,
+          idFuente: fuenteArm.idFuente ?? this.fuenteForm.idFuente,
+          idFuenteSeleccion:
+            fuenteArm.idFuenteSeleccion ?? idFuenteSeleccion,
+          acronimo: fuenteArm.acronimo ?? '',
+          fuente: fuenteArm.fuente ?? '',
+          url: fuenteArm.url ?? '',
+          edicion: fuenteArm.edicion ?? '',
+          comentarioS: fuenteArm.comentarioS ?? '',
+          comentarioA: fuenteArm.comentarioA ?? '',
+        };
+      },
+      error: (err) => {
+        console.error('Error al cargar fuente de armonización:', err);
+      },
+    });
 }
 
 guardarFuenteTemporal() {
@@ -288,24 +327,176 @@ guardarFuenteTemporal() {
     return;
   }
 
-  const payload = {
-    ...this.fuenteForm,
-    responsableRegister: this.usuarioId(),
-    responsableActualizacion: this.usuarioId(),
-  };
+  const payload: FuenteSaveDTO = {
+  idFuenteSeleccion:
+    this.fuenteForm.idFuenteSeleccion ||
+    this.variableSeleccionada?.idFuente ||
+    '',
+  acronimo: this.fuenteForm.acronimo?.trim() || '',
+  fuente: this.fuenteForm.fuente?.trim() || '',
+  url: this.fuenteForm.url?.trim() || null,
+  edicion: this.fuenteForm.edicion?.trim() || null,
+  comentarioS: this.fuenteForm.comentarioS?.trim() || null,
+  comentarioA: this.fuenteForm.comentarioA?.trim() || null,
+};
 
-  console.log('Fuente lista para enviar al backend:', payload);
+  if (!this.fuenteExisteEnArmonizacion) {
+    this._varService.createFuenteArmonizacion(payload).subscribe({
+      next: (resp) => {
+        console.log('Fuente guardada en armonización:', resp);
+        this.abrirModalSuccessSave('La fuente se guardó correctamente en armonización.');
+        this.fuenteExisteEnArmonizacion = true;
 
-  // Simulación temporal de guardado exitoso
-  this.fuenteGuardada = true;
+        this.fuenteForm = {
+  idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
+  idFuenteSeleccion:
+    resp.idFuenteSeleccion ?? this.fuenteForm!.idFuenteSeleccion,
+  acronimo: resp.acronimo ?? this.fuenteForm!.acronimo,
+  fuente: resp.fuente ?? this.fuenteForm!.fuente,
+  url: resp.url ?? '',
+  edicion: resp.edicion ?? '',
+  comentarioS: resp.comentarioS ?? '',
+  comentarioA: resp.comentarioA ?? '',
+};
+      },
+      error: (err) => {
+        console.error('Error al guardar fuente en armonización:', err);
+        this.abrirModalError(this.obtenerMensajeError(err));
+        
+      },
+    });
+
+    return;
+  }
+
+  // Esto solo funcionará cuando ya tengas PUT en backend
+  
+    this._varService.updateFuenteArmonizacion(payload)
+    .subscribe({
+      next: (resp) => {
+        console.log('Fuente actualizada en armonización:', resp);
+        this.abrirModalSuccessUpdate('La fuente se actualizó correctamente en armonización.');
+        this.fuenteExisteEnArmonizacion = true;
+
+        this.fuenteForm = {
+          idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
+          acronimo: resp.acronimo ?? this.fuenteForm!.acronimo,
+          fuente: resp.fuente ?? this.fuenteForm!.fuente,
+          url: resp.url ?? '',
+          edicion: resp.edicion ?? '',
+          comentarioS: resp.comentarioS ?? '',
+          comentarioA: resp.comentarioA ?? '',
+        };
+      },
+      error: (err) => {
+  console.error('Error al guardar fuente en armonización:', err);
+  this.abrirModalError(this.obtenerMensajeError(err));
+},
+    });
 }
 
-fuenteGuardada = false;
+
 fuenteExisteEnArmonizacion = false;
 cargandoEstadoFuente = false;
 
 get puedeMostrarBloqueVariableSeleccion(): boolean {
   return this.fuenteExisteEnArmonizacion;
 }
-  
+
+puedeGuardarFuente(): boolean {
+  return !!(
+    this.fuenteForm?.acronimo?.trim() &&
+    this.fuenteForm?.fuente?.trim() &&
+    this.fuenteForm?.url?.trim() &&
+    this.fuenteForm?.edicion?.trim() &&
+    this.fuenteForm?.comentarioS?.trim() &&
+    this.fuenteForm?.comentarioA?.trim()
+  );
+}
+
+verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
+  if (!this.fuenteForm) return;
+
+  this.cargandoEstadoFuente = true;
+
+  const payload: FuenteSaveDTO = {
+  idFuenteSeleccion:
+    this.fuenteForm.idFuenteSeleccion ||
+    this.variableSeleccionada?.idFuente ||
+    '',
+  acronimo: this.fuenteForm.acronimo?.trim() || '',
+  fuente: this.fuenteForm.fuente?.trim() || '',
+  url: this.fuenteForm.url?.trim() || null,
+  edicion: this.fuenteForm.edicion?.trim() || null,
+  comentarioS: this.fuenteForm.comentarioS?.trim() || null,
+  comentarioA: this.fuenteForm.comentarioA?.trim() || null,
+};
+
+  this._varService.existsFuenteArmonizacionByData(payload).subscribe({
+  next: (resp) => {
+    this.fuenteExisteEnArmonizacion = resp.exists;
+    this.cargandoEstadoFuente = false;
+
+    if (resp.idFuente) {
+      this.fuenteForm = {
+        ...this.fuenteForm!,
+        idFuente: resp.idFuente,
+      };
+    }
+
+    if (resp.exists) {
+      this.cargarFuenteArmonizacion(resp.idFuenteSeleccion);
+    }
+  },
+  error: (err) => {
+    console.error('Error al verificar fuente en armonización:', err);
+    this.abrirModalError(this.obtenerMensajeError(err));
+    this.fuenteExisteEnArmonizacion = false;
+    this.cargandoEstadoFuente = false;
+  },
+});
+}
+@ViewChild('SuccessSaveModal') SuccessSaveModal!: ElementRef<HTMLDialogElement>;
+@ViewChild('SuccessUpdateModal') SuccessUpdateModal!: ElementRef<HTMLDialogElement>;
+@ViewChild('ErrorModal') ErrorModal!: ElementRef<HTMLDialogElement>;
+
+mensajeSuccessSave: string = '';
+mensajeSuccessUpdate: string = '';
+mensajeError: string = '';
+abrirModalSuccessSave(mensaje: string) {
+  this.mensajeSuccessSave = mensaje;
+  this.SuccessSaveModal.nativeElement.showModal();
+}
+
+cerrarModalSuccessSave() {
+  this.SuccessSaveModal.nativeElement.close();
+}
+
+abrirModalSuccessUpdate(mensaje: string) {
+  this.mensajeSuccessUpdate = mensaje;
+  this.SuccessUpdateModal.nativeElement.showModal();
+}
+
+cerrarModalSuccessUpdate() {
+  this.SuccessUpdateModal.nativeElement.close();
+}
+
+abrirModalError(mensaje: string) {
+  this.mensajeError = mensaje;
+  this.ErrorModal.nativeElement.showModal();
+}
+
+cerrarModalError() {
+  this.ErrorModal.nativeElement.close();
+}
+
+private obtenerMensajeError(err: any): string {
+  return (
+    err?.error?.message ||
+    err?.error?.detail ||
+    err?.error?.error ||
+    err?.message ||
+    'Ocurrió un error inesperado.'
+  );
+}
 }

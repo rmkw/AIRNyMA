@@ -332,13 +332,29 @@
               <label class="mt-2">
                 <span class="label-text text-primary">Comentario selección</span>
               </label>
-              <textarea class="textarea textarea-bordered textarea-sm w-full" rows="3"
+              <textarea class="textarea textarea-bordered textarea-xs w-full" rows="1"
                 [(ngModel)]="fuenteForm.comentarioS"></textarea>
             </div>
           </div>
+
+          <div class="md:col-span-2">
+            <label class="mt-2">
+              <span class="label-text text-primary">Comentario armonización</span>
+            </label>
+            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="1"
+              [(ngModel)]="fuenteForm.comentarioA"></textarea>
+          </div>
+
+          @if (cargandoEstadoFuente) {
+          <p class="text-xs text-base-content/60 mt-2">Verificando fuente en armonización...</p>
+          } @else if (fuenteForm) {
+          <p class="text-xs mt-2" [ngClass]="fuenteExisteEnArmonizacion ? '' : ''">
+            {{ fuenteExisteEnArmonizacion ? 'La fuente ya existe en armonización.' : 'La fuente aún no existe en armonización.' }}
+          </p>
+          }
   
           <div class="mt-2 flex justify-end">
-            <button class="btn btn-primary btn-sm text-white" type="button" (click)="guardarFuenteTemporal()">
+            <button class="btn btn-primary btn-sm text-white" type="button" [disabled]="!puedeGuardarFuente()" (click)="guardarFuenteTemporal()">
               {{ fuenteExisteEnArmonizacion ? 'Actualizar' : 'Guardar' }}
             </button>
           </div>
@@ -372,3 +388,66 @@
 
 
 </div>
+
+
+
+
+<!-- Modal de asignación de prioridad -->
+<!-- Modal de Éxito Guardar -->
+<dialog #SuccessSaveModal class="modal">
+  <div class="modal-box">
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center text-success">¡Fuente guardada correctamente!</h3>
+    <p class="py-4 text-center">{{ mensajeSuccessSave }}</p>
+
+    <div class="modal-action flex justify-center">
+      <button class="btn btn-success text-white" (click)="cerrarModalSuccessSave()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal de Éxito Actualizar -->
+<dialog #SuccessUpdateModal class="modal">
+  <div class="modal-box">
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-info" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 4v5h.582M20 20v-5h-.581M5.8 9A7 7 0 0119 8m-.8 7A7 7 0 015 16" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center text-info">¡Fuente actualizada correctamente!</h3>
+    <p class="py-4 text-center">{{ mensajeSuccessUpdate }}</p>
+
+    <div class="modal-action flex justify-center">
+      <button class="btn btn-info text-white" (click)="cerrarModalSuccessUpdate()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal de Error -->
+<dialog #ErrorModal class="modal">
+  <div class="modal-box">
+    <div class="flex justify-center mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-error" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 6.5a9.5 9.5 0 1 1-9.5 9.5 9.5 9.5 0 0 1 9.5-9.5z" />
+      </svg>
+    </div>
+
+    <h3 class="text-lg font-bold text-center text-error">¡Ocurrió un error!</h3>
+    <p class="py-4 text-center">{{ mensajeError }}</p>
+
+    <div class="modal-action flex justify-center">
+      <button class="btn btn-error text-white" (click)="cerrarModalError()">Aceptar</button>
+    </div>
+  </div>
+</dialog>

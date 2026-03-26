@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { VariableDTO } from '../interfaces/variablesCapDTO.interface';
 import { VariableRevisionPrioridadDTO } from '../interfaces/variableRevisionPrioridad.interface';
+import { FuenteArmonizacionDTO, FuenteSaveDTO } from '../interfaces/fuenteArmonizacion.interface';
+import { ExistsFuenteArmonizacionResponse } from '../interfaces/ExistsFuenteArmonizacionResponse.interface';
 
 const baseUrl = environment.baseUrl
 @Injectable({ providedIn: 'root' })
@@ -121,4 +123,87 @@ export class VariableService {
       },
     );
   }
+
+
+
+
+
+
+  /* esta parte es de fuentes */
+
+
+
+  existsFuenteArmonizacion(idFuente: string): Observable<{ exists: boolean }> {
+  return this.http.get<{ exists: boolean }>(
+    `${baseUrl}/armo/fuentes/exists/${encodeURIComponent(idFuente)}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+getFuenteArmonizacionById(idFuente: string): Observable<FuenteArmonizacionDTO> {
+  return this.http.get<FuenteArmonizacionDTO>(
+    `${baseUrl}/armo/fuentes/${encodeURIComponent(idFuente)}`,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+createFuenteArmonizacion(
+  payload: FuenteSaveDTO,
+): Observable<FuenteArmonizacionDTO> {
+  return this.http.post<FuenteArmonizacionDTO>(
+    `${baseUrl}/armo/fuentes`,
+    payload,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+/**
+ * Este método lo dejamos listo,
+ * pero solo funcionará cuando exista el PUT en backend.
+ */
+updateFuenteArmonizacion(
+  payload: FuenteSaveDTO,
+): Observable<FuenteArmonizacionDTO> {
+  return this.http.put<FuenteArmonizacionDTO>(
+    `${baseUrl}/armo/fuentes`,
+    payload,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+
+
+
+existsFuenteArmonizacionByData(
+  payload: FuenteSaveDTO,
+): Observable<ExistsFuenteArmonizacionResponse> {
+  return this.http.post<ExistsFuenteArmonizacionResponse>(
+    `${baseUrl}/armo/fuentes/exists-by-data`,
+    payload,
+    {
+      withCredentials: true,
+    },
+  );
+}
+
+
+getFuenteArmonizacionByIdFuenteSeleccion(
+  idFuenteSeleccion: string,
+): Observable<FuenteArmonizacionDTO> {
+  return this.http.get<FuenteArmonizacionDTO>(
+    `${baseUrl}/armo/fuentes/by-id-fuente-seleccion`,
+    {
+      params: { idFuenteSeleccion },
+      withCredentials: true,
+    },
+  );
+}
 }
