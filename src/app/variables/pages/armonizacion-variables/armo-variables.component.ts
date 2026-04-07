@@ -1,3 +1,10 @@
+/**
+ * @author Luis Gerardo Castañeda López
+ * @organization INEGI
+ * @project Inventory
+ * @since 2026-04-07
+ * @description Lógica principal de variables
+ */
 import { authService } from '@/auth/services/auth.service';
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';

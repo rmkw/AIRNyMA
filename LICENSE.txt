@@ -1,0 +1,16 @@
+© 2026 Instituto Nacional de Estadística y Geografía (INEGI)
+
+Este software es propiedad del Instituto Nacional de Estadística y Geografía.
+
+Su uso, reproducción, modificación o distribución está estrictamente
+limitada a los fines institucionales del INEGI y queda prohibida sin
+autorización expresa por escrito.
+
+Este software es de uso interno y no constituye software libre
+ni de código abierto.
+
+/**
+ * @author Luis Gerardo Castañeda López
+ * @organization INEGI
+ * @project Inventory
+ */

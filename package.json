@@ -1,6 +1,7 @@
 {
   "name": "reactive-forms",
   "version": "0.0.0",
+  "author": "Luis Gerardo Castañeda López <luis.castanedal@inegi.org.mx>",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
