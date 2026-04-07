@@ -3,14 +3,18 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
+import { TemaSubtemaDTO } from '@/variables/interfaces/armonizacion/tema_subtema/temasubtema.interface';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
+import { TematicaDTO } from '@/variables/interfaces/tematicas_temas/tematicaDTO.interface';
 import { VariableTablaDTO } from '@/variables/interfaces/variableTablaDTO';
 import { VariablesArmoService } from '@/variables/services/armonizacion/variables-armo.service';
+import { TemasSubtemasService } from '@/variables/services/tema_subtema/TemasSubtemasService.service';
+import { TematicasService } from '@/variables/services/tematicas_temas/tematicas_temas.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-armonizacion-variables',
@@ -52,6 +56,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   ngOnInit(): void {
     this.getDirecciones();
     this.inicializarFormularioVariable();
+    this.cargarTemasCatalogo();
   }
 
   getDirecciones() {
@@ -254,6 +259,8 @@ seleccionarVariable(variable: VariableTablaDTO) {
   this.limpiarMicrodatosLocal();
   this.limpiarDatosAbiertosLocal();
 
+  this.cargarTematicasPorProceso(variable.acronimo);
+
   const fuenteEncontrada = this.arrFuentesByProceso.find(
     (fuente) => fuente.idFuente === variable.idFuente,
   );
@@ -388,6 +395,8 @@ guardarFuenteTemporal() {
     return;
   }
 
+  
+
   // Esto solo funcionará cuando ya tengas PUT en backend
   
     this._varService.updateFuenteArmonizacion(payload)
@@ -396,6 +405,7 @@ guardarFuenteTemporal() {
         console.log('Fuente actualizada en armonización:', resp);
         this.abrirModalSuccessUpdate('La fuente se actualizó correctamente en armonización.');
         this.fuenteExisteEnArmonizacion = true;
+        this.verificarSiVariableExiste(this.variableSeleccionada!.idA);
 
         this.fuenteForm = {
           idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
@@ -406,6 +416,8 @@ guardarFuenteTemporal() {
           comentarioS: resp.comentarioS ?? '',
           comentarioA: resp.comentarioA ?? '',
         };
+
+        
       },
       error: (err) => {
   console.error('Error al guardar fuente en armonización:', err);
@@ -455,6 +467,7 @@ verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
   next: (resp) => {
     this.fuenteExisteEnArmonizacion = resp.exists;
     this.cargandoEstadoFuente = false;
+    
 
     if (resp.idFuente) {
       this.fuenteForm = {
@@ -488,6 +501,7 @@ abrirModalSuccessSave(mensaje: string) {
 }
 
 cerrarModalSuccessSave() {
+  
   this.SuccessSaveModal.nativeElement.close();
 }
 
@@ -497,7 +511,9 @@ abrirModalSuccessUpdate(mensaje: string) {
 }
 
 cerrarModalSuccessUpdate() {
+  
   this.SuccessUpdateModal.nativeElement.close();
+
 }
 
 abrirModalError(mensaje: string) {
@@ -573,6 +589,13 @@ cargarVariableArmonizacion(idA: string) {
         comentarioS: variable.comentarioS,
         comentarioA: variable.comentarioA
       });
+      if (variable.tema1) {
+  this.cargarSubtemasTema1(variable.tema1);
+}
+
+if (variable.tema2) {
+  this.cargarSubtemasTema2(variable.tema2);
+}
     },
     error: (err) => {
       console.error('Error al cargar variable de armonización:', err);
@@ -602,8 +625,8 @@ prepararVariableNueva() {
     tematica: '',
     tema1: '',
     subtema1: '',
-    tema2: '',
-    subtema2: '',
+    tema2: '-',
+    subtema2: '-',
     tabulados: false,
     clasificacion: false,
     microdatos: '',
@@ -660,9 +683,9 @@ inicializarFormularioVariable() {
     definicion: [''],
     universo: [''],
     anioReferencia: [null],
-    tematica: [''],
-    tema1: [''],
-    subtema1: [''],
+    tematica: ['',Validators.required],
+    tema1: ['',Validators.required],
+    subtema1: ['',Validators.required],
     tema2: [''],
     subtema2: [''],
     tabulados: [false],
@@ -794,5 +817,83 @@ limpiarMicrodatosLocal() {
     campo: '',
     comentarioA: '',
   };
+}
+
+
+arrTematicas: TematicaDTO[] = [];
+private tematicasService = inject(TematicasService);
+cargarTematicasPorProceso(acronimo: string) {
+  this.arrTematicas = [];
+
+  if (!acronimo) return;
+
+  this.tematicasService.obtenerPorAcronimo(acronimo).subscribe({
+    next: (resp) => {
+      this.arrTematicas = resp;
+    },
+    error: (err) => {
+      console.error('Error al cargar temáticas:', err);
+      this.arrTematicas = [];
+    }
+  });
+}
+
+arrTemasCatalogo: string[] = [];
+
+arrSubtemasTema1: TemaSubtemaDTO[] = [];
+arrSubtemasTema2: TemaSubtemaDTO[] = [];
+private temasSubtemasService = inject(TemasSubtemasService);
+cargarTemasCatalogo() {
+  this.arrTemasCatalogo = [];
+
+  this.temasSubtemasService.obtenerTemas().subscribe({
+    next: (resp) => {
+      this.arrTemasCatalogo = resp;
+    },
+    error: (err) => {
+      console.error('Error al cargar temas:', err);
+      this.arrTemasCatalogo = [];
+    }
+  });
+}
+cargarSubtemasTema1(tema: string) {
+  this.arrSubtemasTema1 = [];
+  this.variableForm.patchValue({ subtema1: '' });
+
+  if (!tema) return;
+
+  this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
+    next: (resp) => {
+      this.arrSubtemasTema1 = resp;
+    },
+    error: (err) => {
+      console.error('Error al cargar subtemas de tema1:', err);
+      this.arrSubtemasTema1 = [];
+    }
+  });
+}
+cargarSubtemasTema2(tema: string) {
+  this.arrSubtemasTema2 = [];
+  this.variableForm.patchValue({ subtema2: '' });
+
+  if (!tema) return;
+
+  this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
+    next: (resp) => {
+      this.arrSubtemasTema2 = resp;
+    },
+    error: (err) => {
+      console.error('Error al cargar subtemas de tema2:', err);
+      this.arrSubtemasTema2 = [];
+    }
+  });
+}
+onTema1Change(event: Event) {
+  const tema = (event.target as HTMLSelectElement).value;
+  this.cargarSubtemasTema1(tema);
+}
+onTema2Change(event: Event) {
+  const tema = (event.target as HTMLSelectElement).value;
+  this.cargarSubtemasTema2(tema);
 }
 }

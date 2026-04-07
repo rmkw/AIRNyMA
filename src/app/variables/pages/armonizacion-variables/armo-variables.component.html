@@ -226,7 +226,7 @@
   <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 mt-2">
   
     <!-- COLUMNA IZQUIERDA: LISTA DE VARIABLES -->
-    <div class="xl:col-span-5">
+    <div class="xl:col-span-6">
       <div class="p-2">
         <div class="">
           <h2 class="card-title font-semibold text-primary">Variables seleccionadas</h2>
@@ -280,7 +280,7 @@
     </div>
   
     <!-- COLUMNA DERECHA: BLOQUE VERDE FUENTE -->
-    <div class="xl:col-span-7">
+    <div class="xl:col-span-6">
       <div class=" p-2">
         <div class="">
           <h2 class="card-title font-semibold text-primary">Fuente de la variable</h2>
@@ -326,6 +326,8 @@
               </label>
               <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.url" />
             </div>
+
+            
   
   
             <div class="md:col-span-2">
@@ -368,167 +370,215 @@
     </div>
   
   </div>
-  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada"
-    class="mt-6 rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
+  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada" 
+    class="mt-4">
     <div class="mb-4">
-      <h3 class="text-lg font-bold">Armonización de variable</h3>
+      <h3 class="text-lg font-bold text-primary">Armonización de variable</h3>
       <p class="text-sm opacity-70">
-        Primero se muestra la información proveniente de selección y debajo los
-        campos de armonización para nutrir la variable.
+        Los campos que se muestran en blanco están destinados a la captura de información por parte del área de Armonización.
+        
       </p>
+      <p class="text-sm opacity-70">La información proveniente de Selección se muestra inicialmente y puede ser editada en caso de que exista alguna
+      modificación.</p>
     </div>
   
     <form [formGroup]="variableForm" (ngSubmit)="guardarOActualizarVariable()">
       <!-- DATOS DE SELECCIÓN -->
-      <div class="mb-6">
-        <h4 class="mb-3 text-md font-semibold">Datos de selección</h4>
+      <div class="">
+       
   
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div>
+            <label class="">
+              <span class="label-text text-primary ">ID_A</span>
+            </label>
+            <input type="text" class="input input-bordered input-sm w-full" formControlName="idA" readonly />
+          </div>
+  
+          <div>
+            <label class="">
+              <span class="label-text text-primary">ID_S</span>
+            </label>
+            <input type="text" class="input input-bordered input-sm w-full" formControlName="idS" readonly />
+          </div>
+  
+          <div>
+            <label class="">
+              <span class="label-text text-primary">ID Fuente</span>
+            </label>
+            <input type="text" class="input input-bordered input-sm w-full" formControlName="idFuente" readonly />
+          </div>
+  
+          <div>
+            <label class="">
+              <span class="label-text text-primary">Acrónimo</span>
+            </label>
+            <input type="text" class="input input-bordered input-sm w-full" formControlName="acronimo" readonly />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="mt-2">
+              <label class="">
+                <span class="label-text text-primary">Variable en selección</span>
+              </label>
+              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableS" readonly />
+            </div>
+
+            <div class="mt-2">
+              <label class="">
+                <span class="label-text text-primary">Variable armonizada</span>
+              </label>
+              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableA"
+                placeholder="Escriba el nombre armonizado de la variable" />
+            </div>
+
+        </div>
+  
+        
+  
+        <div class="mt-2">
+          <label class="">
+            <span class="label-text text-primary">URL</span>
+          </label>
+          <input type="text" class="input input-bordered input-sm w-full" formControlName="url" />
+        </div>
+
+        <div class="mt-2">
+          <label class="">
+            <span class="label-text text-primary">Pregunta</span>
+          </label>
+          <input type="text" class="input input-bordered input-sm w-full" formControlName="pregunta"
+            placeholder="Escriba la pregunta asociada a la variable"/>
+        </div>
+
+        
+  
+        <div class="mt-2">
+          <label class="">
+            <span class="label-text text-primary">Definición</span>
+          </label>
+          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="definicion"
+            readonly></textarea>
+        </div>
+        
+        <div class="mt24">
+          <label class="">
+            <span class="label-text text-primary">Universo</span>
+          </label>
+          <input class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="universo"
+            placeholder="Escriba el universo asociado a la variable" />
+        </div>
+
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label class="label">
-              <span class="label-text font-semibold">ID_A</span>
+            <label class="">
+              <span class="label-text text-primary">Año de referencia</span>
             </label>
-            <input type="text" class="input input-bordered w-full" formControlName="idA" readonly />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">ID_S</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="idS" readonly />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">ID Fuente</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="idFuente" readonly />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Acrónimo</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="acronimo" readonly />
-          </div>
-        </div>
-  
-        <div class="mt-4">
-          <label class="label">
-            <span class="label-text font-semibold">Variable en selección</span>
-          </label>
-          <input type="text" class="input input-bordered w-full" formControlName="variableS" readonly />
-        </div>
-  
-        <div class="mt-4">
-          <label class="label">
-            <span class="label-text font-semibold">URL</span>
-          </label>
-          <input type="text" class="input input-bordered w-full" formControlName="url" readonly />
-        </div>
-  
-        <div class="mt-4">
-          <label class="label">
-            <span class="label-text font-semibold">Definición</span>
-          </label>
-          <textarea class="textarea textarea-bordered w-full" rows="3" formControlName="definicion" readonly></textarea>
-        </div>
-  
-        <div class="mt-4">
-          <label class="label">
-            <span class="label-text font-semibold">Comentario selección</span>
-          </label>
-          <textarea class="textarea textarea-bordered w-full" rows="3" formControlName="comentarioS" readonly></textarea>
-        </div>
-      </div>
-  
-      <!-- DATOS DE ARMONIZACIÓN -->
-      <div class="mb-6">
-        <h4 class="mb-3 text-md font-semibold">Datos de armonización</h4>
-  
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Variable armonizada</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="variableA"
-              placeholder="Escriba el nombre armonizado de la variable" />
-          </div>
-  
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Pregunta</span>
-            </label>
-            <textarea class="textarea textarea-bordered w-full" rows="3" formControlName="pregunta"
-              placeholder="Escriba la pregunta asociada a la variable"></textarea>
-          </div>
-  
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Universo</span>
-            </label>
-            <textarea class="textarea textarea-bordered w-full" rows="3" formControlName="universo"
-              placeholder="Escriba el universo"></textarea>
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Año de referencia</span>
-            </label>
-            <input type="number" class="input input-bordered w-full" formControlName="anioReferencia"
+            <input type="number" class="input input-bordered input-sm w-full" formControlName="anioReferencia"
               placeholder="Ej. 2024" />
           </div>
-  
+          
           <div>
-            <label class="label">
-              <span class="label-text font-semibold">Temática</span>
+            <label>
+              <span class="label-text text-primary">Temática</span>
             </label>
-            <input type="text" class="input input-bordered w-full" formControlName="tematica" placeholder="Temática" />
+            <select class="select select-bordered select-sm w-full" [class.select-error]="variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched" formControlName="tematica">
+              <option value="" disabled>Seleccione una temática</option>
+              <option *ngFor="let t of arrTematicas" [value]="t.tematica">
+                {{ t.tematica }}
+              </option>
+            </select>
+            @if (variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched) {
+            <span class="text-error text-xs">Debe seleccionar una temática.</span>
+            }
           </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Tema 1</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="tema1" placeholder="Tema 1" />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Subtema 1</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="subtema1" placeholder="Subtema 1" />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Tema 2</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="tema2" placeholder="Tema 2" />
-          </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Subtema 2</span>
-            </label>
-            <input type="text" class="input input-bordered w-full" formControlName="subtema2" placeholder="Subtema 2" />
-          </div>
-  
+          
           
         </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
   
-        <div class="mt-4">
-          <label class="label">
-            <span class="label-text font-semibold">Comentario armonización</span>
+          <div>
+            <label>
+              <span class="label-text text-primary">Tema 1</span>
+            </label>
+            <select class="select select-bordered select-sm w-full" formControlName="tema1" (change)="onTema1Change($event)">
+              <option value="" disabled>Seleccione un tema</option>
+              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">
+                {{ tema }}
+              </option>
+            </select>
+          </div>
+          
+          <div>
+            <label>
+              <span class="label-text text-primary">Subtema 1</span>
+            </label>
+            <select class="select select-bordered select-sm w-full" formControlName="subtema1">
+              <option value="" disabled>Seleccione un subtema</option>
+              <option *ngFor="let item of arrSubtemasTema1" [value]="item.subtema">
+                {{ item.subtema }}
+              </option>
+            </select>
+          </div>
+          
+          <div>
+            <label>
+              <span class="label-text text-primary">Tema 2</span>
+            </label>
+            <select class="select select-bordered select-sm w-full" formControlName="tema2" (change)="onTema2Change($event)">
+              <option value="" disabled>Seleccione un tema</option>
+              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">
+                {{ tema }}
+              </option>
+            </select>
+          </div>
+          
+          <div>
+            <label>
+              <span class="label-text text-primary">Subtema 2</span>
+            </label>
+            <select class="select select-bordered select-sm w-full" formControlName="subtema2">
+              <option value="" disabled>Seleccione un subtema</option>
+              <option *ngFor="let item of arrSubtemasTema2" [value]="item.subtema">
+                {{ item.subtema }}
+              </option>
+            </select>
+          </div>
+        
+        
+        </div>
+
+        
+  
+        
+
+      </div>
+  
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        
+        <div class="mt-2">
+          <label class="">
+            <span class="label-text text-primary">Comentario selección</span>
           </label>
-          <textarea class="textarea textarea-bordered w-full" rows="3" formControlName="comentarioA"
+          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="comentarioS"
+            readonly></textarea>
+        </div>
+        <div class="mt-2">
+          <label class="">
+            <span class="label-text text-primary">Comentario armonización</span>
+          </label>
+          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="comentarioA"
             placeholder="Escriba un comentario de armonización"></textarea>
         </div>
+        
+  
+        
       </div>
   
       <!-- BOTÓN -->
       <div class="flex justify-end">
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-accent">
           {{ variableExisteEnArmonizacion ? 'Actualizar variable' : 'Guardar variable' }}
         </button>
       </div>
@@ -536,9 +586,10 @@
   </div>
 
   <!-- BLOQUE DE RELACIONES: SE MUESTRA DESPUÉS DEL BLOQUE DE VARIABLE -->
-  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada" class="mt-6 space-y-6">
+  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada" class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 items-start">
     <!-- CLASIFICACIONES -->
     <div class="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
+
       <div class="flex items-center justify-between gap-4">
         <div>
           <h4 class="text-lg font-bold">Clasificaciones</h4>
@@ -547,7 +598,7 @@
           </p>
         </div>
   
-        <input type="checkbox" class="toggle toggle-primary" [checked]="clasificacionActiva"
+        <input type="checkbox" class="toggle toggle-accent" [checked]="clasificacionActiva"
           (change)="toggleClasificacionLocal($event)" />
       </div>
   
@@ -557,7 +608,7 @@
             <label class="label">
               <span class="label-text font-semibold">Clase</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="clasificacionForm.clase" name="claseLocal"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="clasificacionForm.clase" name="claseLocal"
               placeholder="Escriba la clase" />
           </div>
   
@@ -565,7 +616,7 @@
             <label class="label">
               <span class="label-text font-semibold">Comentario</span>
             </label>
-            <textarea class="textarea textarea-bordered w-full" rows="3" [(ngModel)]="clasificacionForm.comentarioA"
+            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="clasificacionForm.comentarioA"
               name="comentarioClasificacionLocal" placeholder="Escriba un comentario"></textarea>
           </div>
         </div>
@@ -575,7 +626,7 @@
             Limpiar
           </button>
   
-          <button type="button" class="btn btn-primary btn-sm">
+          <button type="button" class="btn btn-accent btn-sm">
             Agregar clasificación
           </button>
         </div>
@@ -596,7 +647,7 @@
           </p>
         </div>
   
-        <input type="checkbox" class="toggle toggle-secondary" [checked]="microdatosActivo"
+        <input type="checkbox" class="toggle toggle-accent" [checked]="microdatosActivo"
           (change)="toggleMicrodatosLocal($event)" />
       </div>
   
@@ -634,7 +685,7 @@
             <label class="label">
               <span class="label-text font-semibold">URL de acceso</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.urlAcceso"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.urlAcceso"
               name="microdatosUrlAcceso" placeholder="https://..." />
           </div>
       
@@ -642,7 +693,7 @@
             <label class="label">
               <span class="label-text font-semibold">Descriptor</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.descriptor"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.descriptor"
               name="microdatosDescriptor" placeholder="Descriptor" />
           </div>
       
@@ -650,7 +701,7 @@
             <label class="label">
               <span class="label-text font-semibold">URL descriptor</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.urlDescriptor"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.urlDescriptor"
               name="microdatosUrlDescriptor" placeholder="https://..." />
           </div>
       
@@ -658,7 +709,7 @@
             <label class="label">
               <span class="label-text font-semibold">Tabla</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.tabla" name="microdatosTabla"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.tabla" name="microdatosTabla"
               placeholder="Nombre de la tabla" />
           </div>
       
@@ -666,22 +717,37 @@
             <label class="label">
               <span class="label-text font-semibold">Campo</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.campo" name="microdatosCampo"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.campo" name="microdatosCampo"
               placeholder="Nombre del campo" />
           </div>
       
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Comentario</span>
-            </label>
-            <textarea class="textarea textarea-bordered w-full" rows="3" [(ngModel)]="microdatosForm.comentarioA"
-              name="microdatosComentarioA" placeholder="Escriba un comentario"></textarea>
-          </div>
+          
+        </div>
+        <div class="md:col-span-2">
+          <label class="label">
+            <span class="label-text font-semibold">Comentario</span>
+          </label>
+          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="microdatosForm.comentarioA"
+            name="microdatosComentarioA" placeholder="Escriba un comentario"></textarea>
+        </div>
+        <div class="mt-4 flex justify-end gap-2">
+          <button type="button" class="btn btn-outline btn-sm">
+            Limpiar
+          </button>
+        
+          <button type="button" class="btn btn-accent btn-sm text-white">
+            Agregar micro datos
+          </button>
+        </div>
+        
+        <div class="mt-4 rounded-xl border border-dashed border-base-300 p-4 text-sm opacity-70">
+          Aquí después irá la lista de micro datos registrados para la variable.
         </div>
       </div>
     </div>
   
     <!-- DATOS ABIERTOS -->
+
     <div class="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
       <div class="flex items-center justify-between gap-4">
         <div>
@@ -701,7 +767,7 @@
             <label class="label">
               <span class="label-text font-semibold">URL de acceso</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.urlAcceso"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.urlAcceso"
               name="datosAbiertosUrlAcceso" placeholder="https://..." />
           </div>
   
@@ -709,7 +775,7 @@
             <label class="label">
               <span class="label-text font-semibold">URL de descarga</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.urlDescarga"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.urlDescarga"
               name="datosAbiertosUrlDescarga" placeholder="https://..." />
           </div>
   
@@ -717,7 +783,7 @@
             <label class="label">
               <span class="label-text font-semibold">Descriptor</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.descriptor"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.descriptor"
               name="datosAbiertosDescriptor" placeholder="Descriptor" />
           </div>
   
@@ -725,7 +791,7 @@
             <label class="label">
               <span class="label-text font-semibold">Tabla</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.tabla"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.tabla"
               name="datosAbiertosTabla" placeholder="Nombre de la tabla" />
           </div>
   
@@ -733,7 +799,7 @@
             <label class="label">
               <span class="label-text font-semibold">Campo</span>
             </label>
-            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.campo"
+            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.campo"
               name="datosAbiertosCampo" placeholder="Nombre del campo" />
           </div>
   
@@ -741,9 +807,11 @@
             <label class="label">
               <span class="label-text font-semibold">Comentario</span>
             </label>
-            <textarea class="textarea textarea-bordered w-full" rows="3" [(ngModel)]="datosAbiertosForm.comentarioA"
+            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="datosAbiertosForm.comentarioA"
               name="datosAbiertosComentarioA" placeholder="Escriba un comentario"></textarea>
           </div>
+          
+          
         </div>
   
         <div class="mt-4 flex justify-end gap-2">
@@ -761,6 +829,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
 
