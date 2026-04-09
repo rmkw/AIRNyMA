@@ -1,9 +1,9 @@
-© 2026 Instituto Nacional de Estadística y Geografía (INEGI)
+© 2026 Dirección  de Análisis de Información sobre Recursos Naturales y Medio Ambiente UNIDAD DE GEOGRAFÍA Y MEDIO AMBIENTE
 
-Este software es propiedad del Instituto Nacional de Estadística y Geografía.
+Este software es propiedad de la Dirección  de Análisis de Información sobre Recursos Naturales y Medio Ambiente UNIDAD DE GEOGRAFÍA Y MEDIO AMBIENTE.
 
 Su uso, reproducción, modificación o distribución está estrictamente
-limitada a los fines institucionales del INEGI y queda prohibida sin
+limitada a los fines institucionales de la Dirección  de Análisis de Información sobre Recursos Naturales y Medio Ambiente UNIDAD DE GEOGRAFÍA Y MEDIO AMBIENTE y queda prohibida sin
 autorización expresa por escrito.
 
 Este software es de uso interno y no constituye software libre
