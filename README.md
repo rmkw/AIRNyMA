@@ -1,59 +1,154 @@
-# ReactiveForms
+# 🧩 Frontend SIERNMA
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+Frontend del sistema **SIIERNMA (Sistema Integrado de Inventarios y Encuestas sobre Recursos Naturales y Medio Ambiente)**, desarrollado con Angular, orientado a la **gestión, captura y armonización de variables**.
 
-## Development server
+Este sistema permite interactuar con el backend para registrar, consultar y enriquecer variables dentro del Inventario del SIERNMA.
 
-To start a local development server, run:
+---
 
-```bash
+## 🎯 Descripción
+
+El frontend proporciona una interfaz para:
+
+* Captura de variables provenientes de procesos estadísticos
+* Visualización de información estructurada
+* Armonización de variables (enriquecimiento de datos)
+* Gestión de catálogos relacionados:
+
+  * fuentes
+  * procesos
+  * ODS
+  * MDEA
+  * pertinencia
+
+---
+
+## 🧱 Arquitectura del proyecto
+
+El proyecto está organizado por funcionalidades:
+
+```id="m1k8vo"
+src/app/
+ ├── core/           # Servicios globales (auth, config, etc.)
+ ├── shared/         # Componentes reutilizables
+ ├── features/       # Módulos principales
+ │    ├── variables/
+ │    ├── fuentes/
+ │    ├── procesos/
+ │    ├── ods/
+ │    └── mdea/
+ └── app.routes.ts
+```
+
+---
+
+## 🚀 Tecnologías utilizadas
+
+* Angular 19
+* TypeScript
+* RxJS
+* Angular Reactive Forms
+* TailwindCSS (si aplica)
+* Angular CLI
+
+---
+
+## ⚙️ Configuración del entorno
+
+### 📡 Backend
+
+Asegúrate de que el backend esté corriendo, por ejemplo:
+
+```id="o9a2hs"
+http://localhost:3000
+```
+
+Configura la URL en tus servicios Angular (ejemplo):
+
+```ts id="h2x7qp"
+private apiUrl = 'http://localhost:3000/api';
+```
+
+---
+
+## ▶️ Ejecución del proyecto
+
+```bash id="7n9lqx"
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abrir en navegador:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```id="q1m2ds"
+http://localhost:4200/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
+## 🧩 Funcionalidades principales
+
+* 📥 Captura de variables (módulo selección)
+* 🔄 Armonización de variables (enriquecimiento)
+* 📚 Gestión de catálogos
+* 🔎 Consulta de información estructurada
+* 🧾 Formularios reactivos para validación de datos
+
+---
+
+## 🧠 Flujo del sistema
+
+El frontend sigue el flujo principal:
+
+```id="8c9lmn"
+Selección → Armonización → Consulta
 ```
 
-## Building
+Donde:
 
-To build the project run:
+* **Selección**: captura inicial de variables
+* **Armonización**: enriquecimiento y estandarización
+* **Consulta**: explotación de la información
 
-```bash
-ng build
+---
+
+## 🔌 Ejemplo de integración
+
+### Crear variable
+
+El frontend envía información al backend:
+
+```id="2f7kdl"
+POST /api/variables
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Usando servicios Angular con `HttpClient`.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🧪 Desarrollo
 
-```bash
-ng test
+Generar componentes:
+
+```bash id="c5z8ra"
+ng generate component nombre-componente
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## ⚠️ Consideraciones
 
-```bash
-ng e2e
-```
+* El frontend depende completamente del backend
+* Validar que los endpoints estén activos
+* Mantener consistencia entre modelos frontend y backend
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 📌 Estado del proyecto
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+En desarrollo 🚧
+
+---
+
+## 👨‍💻 Autor
+
+Proyecto desarrollado en el contexto del INEGI para el sistema SIERNMA.
