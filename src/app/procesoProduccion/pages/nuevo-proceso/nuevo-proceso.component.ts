@@ -115,7 +115,7 @@ export class NuevoProcesoComponent implements OnInit {
   // Redirigir al listado de procesos
   redirigirAProcesos() {
     this.RegistroExitoso.nativeElement.close();
-    window.location.href = 'http://10.109.1.13:4200/procesos'; // o usa router.navigate si estás dentro del mismo dominio
+    window.location.href = 'http://10.200.130.27:8090/procesos'; // o usa router.navigate si estás dentro del mismo dominio
   }
 
   @ViewChild('ErrorModal') ErrorModal!: ElementRef<HTMLDialogElement>;

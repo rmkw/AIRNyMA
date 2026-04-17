@@ -126,7 +126,7 @@ export class authService {
           localStorage.clear();
 
           //  Recargar la página para eliminar cualquier sesión en memoria
-          window.location.href = '/auth/login';
+          window.location.href = `${baseUrl}/auth/logout`;
           // console.log('--------');
           // console.log('this._user:', this._user());
           // console.log('this._authStatus:', this._authStatus());
