@@ -43,11 +43,5 @@ export class LoginPageComponent {
         }, 2000);
       });
   }
-  selectedTheme = signal(localStorage.getItem('theme') || 'mytheme');
-  constructor() {
-    this.applyTheme(this.selectedTheme());
-  }
-  private applyTheme(theme: string) {
-    document.documentElement.setAttribute('data-theme', theme);
-  }
+  
 }

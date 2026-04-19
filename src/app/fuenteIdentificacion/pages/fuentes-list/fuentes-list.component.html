@@ -1,231 +1,210 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-5dd">
-  <h1 class="text-2xl font-bold font-montserrat mb-6 text-primary">Nueva fuente de identificación</h1>
-
-
-  <div class="grid gap-4">
-
-    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-      <!--! PP -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="procesoProduccion">
-          Proceso de producción
-        </label>
-        <h2>{{ procesoProduccion }}</h2>
+<div class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Fuentes de identificación</div>
+        <h1 class="text-2xl font-bold tracking-tight">Nueva fuente de identificación</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Registra nuevas fuentes asociadas al proceso seleccionado y administra las ya capturadas.
+        </p>
       </div>
 
-      <!--! Acrónimo -->
-      <div class="col-span-1 text-center">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="acronimo">
-          Acrónimo
-        </label>
-        <h2 class="text-lg font-semibold" id="acronimo"> {{ acronimo }}
-        </h2>
-      </div>
-
-      <!--! Tipo Fuente -->
-      <!-- <div class="col-span-2">
-        <label class="block text-sm font-medium mb-2 text-secondary" for="fuente">
-          Fuente de identificación
-
-        </label>
-
-        <input type="text" id="fuente" [(ngModel)]="fuente" class="input input-sm input-bordered w-full" placeholder="" />
-
-
-      </div> -->
-
-      <div class="col-span-2">
-        <label class="block text-sm font-medium text-secondary mb-2" for="fuente">
-          Fuente de identificación
-        </label>
-        <select class="select select-bordered select-sm w-full "
-          [(ngModel)]="fuente" >
-          <option disabled selected>Selecciona una identificación</option>
-          <option value="DDI">DDI</option>
-          <option value="FD">FD</option>
-          <option value="DD">DD</option>
-          <option value="Cuestionario">Cuestionario</option>
-          <option value="Otro">Otro</option>
-        </select>
-
-      </div>
-
-      <!--! Año del evento -->
-      <div class="col-span-1">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="anio">
-          Año del evento
-        </label>
-        <input type="text" (input)="validateYear($event)" [(ngModel)]="edicion" maxlength="9" class="input input-sm input-bordered w-full "
-          placeholder="" />
-      </div>
-
-
-
-    </div>
-
-    <div class="grid grid-col-1 md:grid-cols-4 gap-4">
-
-
-      <!--! Liga de acceso a la fuente -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="accesoLink">
-          Liga de acceso a la fuente
-        </label>
-        <input type="text" id="accesoLink" [(ngModel)]="url" class="input input-sm input-bordered w-full "
-          placeholder="" />
-      </div>
-
-
-      <!--! Comentario de la fuente -->
-      <div class="col-span-2">
-        <label class="block text-sm font-medium  mb-2 text-secondary" for="comentario">
-          Comentario de la fuente
-        </label>
-        <input type="text" id="comentarioF" [(ngModel)]="comentarioF" class="input input-sm input-bordered w-full" />
+      <div class="grid grid-cols-2 gap-3 rounded-box border border-white/10 bg-white/10 px-4 py-3 text-sm sm:min-w-80">
+        <div>
+          <div class="text-xs text-white/70">Proceso</div>
+          <div class="font-medium leading-tight">{{ procesoProduccion || '-' }}</div>
+        </div>
+        <div>
+          <div class="text-xs text-white/70">Acrónimo</div>
+          <div class="font-medium leading-tight">{{ acronimo || '-' }}</div>
+        </div>
       </div>
     </div>
-
-    <!-- @if (!flagVarButton) { -->
-    <div class="flex justify-between items-center mt-2 mb-2">
-      <h1></h1>
-      <button class="btn btn-outline btn-primary  btn-sm " (click)="nuevaFuente()">
-        Capturar fuente
-      </button>
-    </div>
-    <!-- } -->
-
   </div>
 
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div>
+        <h2 class="card-title text-base">Captura de fuente</h2>
+        <p class="text-xs text-base-content/60">Completa los campos para registrar una nueva fuente de identificación.
+        </p>
+      </div>
 
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+        <div class="form-control xl:col-span-2">
+          <label class="label" for="procesoProduccion">
+            <span class="label-text text-xs font-medium">Proceso de producción</span>
+          </label>
+          <div class="input input-bordered flex items-center text-sm">{{ procesoProduccion || '-' }}</div>
+        </div>
 
+        <div class="form-control xl:col-span-1">
+          <label class="label" for="acronimo">
+            <span class="label-text text-xs font-medium">Acrónimo</span>
+          </label>
+          <div id="acronimo" class="input input-bordered flex items-center text-sm font-medium">{{ acronimo || '-' }}
+          </div>
+        </div>
 
+        <div class="form-control xl:col-span-2">
+          <label class="label" for="fuente">
+            <span class="label-text text-xs font-medium">Fuente de identificación</span>
+          </label>
+          <select id="fuente" class="select select-bordered w-full" [(ngModel)]="fuente">
+            <option disabled selected>Selecciona una identificación</option>
+            <option value="DDI">DDI</option>
+            <option value="FD">FD</option>
+            <option value="DD">DD</option>
+            <option value="Cuestionario">Cuestionario</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
 
+        <div class="form-control xl:col-span-1">
+          <label class="label" for="anio">
+            <span class="label-text text-xs font-medium">Año del evento</span>
+          </label>
+          <input id="anio" type="text" maxlength="9" class="input input-bordered w-full" [(ngModel)]="edicion"
+            (input)="validateYear($event)" />
+        </div>
+      </div>
 
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="form-control">
+          <label class="label" for="accesoLink">
+            <span class="label-text text-xs font-medium">Liga de acceso a la fuente</span>
+          </label>
+          <input id="accesoLink" type="text" class="input input-bordered w-full" [(ngModel)]="url" />
+        </div>
 
+        <div class="form-control">
+          <label class="label" for="comentarioF">
+            <span class="label-text text-xs font-medium">Comentario de la fuente</span>
+          </label>
+          <input id="comentarioF" type="text" class="input input-bordered w-full" [(ngModel)]="comentarioF" />
+        </div>
+      </div>
 
-<h1 class="text-1xl font-bold font-montserrat mb-6 text-primary">Lista de fuentes de identificación</h1>
-
-  <div class="overflow-auto   mt-5 " style="max-height: 40rem;">
-
-    <table class="table table-xs table-pin-rows">
-      <thead class="">
-        <tr class="">
-          <th class="text-secondary text-center">Proceso de producción</th>
-          <th class="text-secondary text-center">Fuente de identificación</th>
-          <th class="text-secondary text-center">Liga de acceso a la fuente</th>
-          <th class="text-secondary text-center">Año del evento</th>
-          <th class="text-secondary text-center">Variables capturadas</th>
-
-          <th class="text-secondary text-center">Acciónes</th>
-
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Spinner de carga -->
-        <tr *ngIf="loading">
-          <td colspan="7" class="text-center p-4">
-            <span class="loading loading-spinner loading-md"></span>
-          </td>
-        </tr>
-
-        <!-- Mensaje cuando no hay registros -->
-        <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
-          <td colspan="7" class="text-center p-4 text-gray-500">
-            No se encontraron registros.
-          </td>
-        </tr>
-
-        <!-- Filas con datos -->
-        <tr *ngFor="let fuente of fuentes; let i = index">
-          <td class="text-center">{{ fuente.acronimo }}</td>
-          <td class="text-center">{{ fuente.fuente }}</td>
-          <td class="text-center">
-            @if (fuente.url) {
-            <a [href]="fuente.url" class="text-blue-500 underline" target="_blank">
-              Liga de acceso
-            </a>
-            } @else {
-            <span class="text-yellow-500 font-semibold">Liga no disponible</span>
-            }
-          </td>
-          <td class="text-center">{{ fuente.edicion }}</td>
-          <td class="text-center">{{ fuente.totalVariables }}</td>
-          <td class="text-center">
-            <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2" (click)="abrirModal(fuente.idFuente)">
-              Eliminar
-            </button>
-            <button class="px-3 py-1 btn btn-outline btn-secondary btn-xs ml-2" (click)="addVars(fuente)">
-              Agregar variable
-            </button>
-          </td>
-        </tr>
-      </tbody>
-
-
-    </table>
-
+      <div class="flex justify-end">
+        <button class="btn btn-primary btn-sm px-6" (click)="nuevaFuente()">
+          Capturar fuente
+        </button>
+      </div>
+    </div>
   </div>
 
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body p-5">
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 class="card-title text-base">Lista de fuentes de identificación</h2>
+          <p class="text-xs text-base-content/60">Consulta, administra y agrega variables a las fuentes ya registradas.
+          </p>
+        </div>
+        <div class="badge badge-outline badge-sm">{{ fuentes?.length || 0 }} registros</div>
+      </div>
 
+      <div class="overflow-x-auto rounded-box border border-base-300">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Proceso</th>
+              <th>Fuente</th>
+              <th>Liga</th>
+              <th>Año del evento</th>
+              <th>Variables capturadas</th>
+              <th class="text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="6" class="py-8 text-center">
+                <span class="loading loading-spinner loading-md"></span>
+              </td>
+            </tr>
+
+            <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
+              <td colspan="6" class="py-8 text-center text-sm text-base-content/60">
+                No se encontraron registros.
+              </td>
+            </tr>
+
+            <tr *ngFor="let fuente of fuentes; let i = index">
+              <td class="text-sm">{{ fuente.acronimo }}</td>
+              <td class="text-sm font-medium">{{ fuente.fuente }}</td>
+              <td class="text-sm">
+                @if (fuente.url) {
+                <a [href]="fuente.url" class="link link-primary" target="_blank">
+                  Abrir liga
+                </a>
+                } @else {
+                <span class="badge badge-ghost badge-sm">No disponible</span>
+                }
+              </td>
+              <td class="text-sm">{{ fuente.edicion }}</td>
+              <td class="text-sm">{{ fuente.totalVariables }}</td>
+              <td>
+                <div class="flex justify-end gap-2">
+                  <button class="btn btn-ghost btn-xs" (click)="addVars(fuente)">
+                    Agregar variable
+                  </button>
+                  <button class="btn btn-outline btn-error btn-xs" (click)="abrirModal(fuente.idFuente)">
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-<!-- Modal -->
 <dialog #modalEliminar class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">¿Estás seguro?</h3>
     <p class="py-4">¿Deseas eliminar esta fuente de identificación? Esta acción no se puede deshacer.</p>
     <div class="modal-action">
-      <!-- Botón Cancelar -->
       <button class="btn btn-outline" (click)="cerrarModal()">Cancelar</button>
-      <!-- Botón Aceptar -->
       <button class="btn btn-error" (click)="confirmarEliminacion()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal para datos incompletos -->
 <dialog #modalSinDatos class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Datos incompletos</h3>
     <p class="py-4">Para continuar, es necesario completar todos los campos requeridos. Por favor, verifica la
       información faltante.</p>
     <div class="modal-action">
-      <!-- Botón Aceptar -->
       <button class="btn btn-primary" (click)="cloceModalSinDatos()">Entendido</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de actualización exitosa -->
 <dialog #modalFuenteNueva class="modal">
   <div class="modal-box">
-    <!-- Icono de creación (+) -->
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
     </div>
 
-    <h3 class="text-lg font-bold text-center">¡Fuente creada!</h3>
+    <h3 class="text-center text-lg font-bold">¡Fuente creada!</h3>
     <p class="py-4 text-center">La nueva fuente se ha registrado exitosamente en el sistema.</p>
 
     <div class="modal-action flex justify-center">
-      <!-- Botón para cerrar -->
-      <button class="btn btn-success" (click)="clocemodalFuenteNueva()">
-
-        Aceptar
-      </button>
+      <button class="btn btn-success" (click)="clocemodalFuenteNueva()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-
 <dialog #modalErrorFuenteDuplicada class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Error</h3>
-
     <p class="py-4">{{ mensajeError }}</p>
     <div class="modal-action">
       <button class="btn" (click)="cerrarModalerror()">Cerrar</button>

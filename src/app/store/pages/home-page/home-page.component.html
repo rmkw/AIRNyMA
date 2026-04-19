@@ -1,22 +1,191 @@
-<div class="hero min-h-screen" style="background-image: url('/assets/bg-ods.jpg'); min-height: calc(100dvh - 4rem);">
-
-  <div class="bg-opacity-60"></div>
-
-  <div class="hero-content text-neutral-content text-center">
-    <div class="max-w-md">
-      <h1 class="mb-5 text-5xl font-bold text-base-100">¡Bienvenido!</h1>
-
-      <p class="mb-5 bg-slate/70 p-4 rounded-xl backdrop-blur-sm w-auto text-base-100">
-        Te damos la bienvenida al sistema de captura de datos. Aquí podrás registrar, consultar y gestionar la
-        información de
-        forma sencilla y segura.
-      </p>
-
-      <!-- Botón debajo del párrafo -->
-      <!-- <button class="btn btn-secondary text-base-100" style="width: 20rem;" routerLink="/fuentes">
-        Iniciar flujo de captura de información
-      </button> -->
+<div class="space-y-4">
+  <div class="hero rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c]">
+    <div class="hero-content text-center py-8">
+      <div class="max-w-2xl text-white">
+        <h1 class="text-3xl font-bold tracking-tight">IISRNyMA</h1>
+        <p class="pt-2 text-sm text-white/85">
+          Sistema de captura, selección y armonización de variables.
+        </p>
+      </div>
     </div>
   </div>
 
+  <section class="space-y-2">
+    <div>
+      <h2 class="text-xl font-semibold">Resumen general</h2>
+      <p class="text-xs text-base-content/60">
+        Indicadores globales del sistema.
+      </p>
+    </div>
+
+    <div class="stats stats-vertical xl:stats-horizontal w-full border border-base-300 bg-base-100 shadow-sm">
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Procesos de producción</div>
+        <div class="stat-value text-3xl text-primary">12</div>
+        <div class="stat-desc text-xs">Total registrados</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Fuentes de identificación</div>
+        <div class="stat-value text-3xl text-primary">28</div>
+        <div class="stat-desc text-xs">Total registradas</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Variables seleccionadas</div>
+        <div class="stat-value text-3xl text-primary">145</div>
+        <div class="stat-desc text-xs">Captura acumulada</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Variables revisadas</div>
+        <div class="stat-value text-3xl text-primary">89</div>
+        <div class="stat-desc text-xs">Revisión acumulada</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Variables armonizadas</div>
+        <div class="stat-value text-3xl text-primary">54</div>
+        <div class="stat-desc text-xs">Armonización acumulada</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-2">
+    <div>
+      <h2 class="text-xl font-semibold">Mi actividad</h2>
+      <p class="text-xs text-base-content/60">
+        Información relacionada con el usuario actual.
+      </p>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="card-title text-base">Mis variables capturadas</h3>
+            <div class="badge badge-outline badge-sm">Actual</div>
+          </div>
+          <div class="text-3xl font-bold text-primary">37</div>
+          <p class="text-xs text-base-content/70">
+            Total de variables registradas por el usuario actual.
+          </p>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="card-title text-base">Mis variables armonizadas</h3>
+            <div class="badge badge-ghost badge-sm">Próximamente</div>
+          </div>
+          <div class="text-3xl font-bold text-base-content/40">--</div>
+          <p class="text-xs text-base-content/70">
+            Pendiente de tabla y relación en base de datos.
+          </p>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="card-title text-base">Estado de tabulados</h3>
+            <div class="badge badge-ghost badge-sm">En construcción</div>
+          </div>
+          <div class="text-3xl font-bold text-base-content/40">--</div>
+          <p class="text-xs text-base-content/70">
+            Módulo pendiente de implementación.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-2">
+    <div>
+      <h2 class="text-xl font-semibold">Accesos rápidos</h2>
+      <p class="text-xs text-base-content/60">
+        Acciones principales del flujo de trabajo.
+      </p>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <a routerLink="/nueva-variable" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Selección de variables</h3>
+          <p class="text-xs text-base-content/70">
+            Registro y captura de variables para selección.
+          </p>
+        </div>
+      </a>
+
+      <a routerLink="/revision-variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Revisión variables</h3>
+          <p class="text-xs text-base-content/70">
+            Validación y revisión de variables prioritarias.
+          </p>
+        </div>
+      </a>
+
+      <a routerLink="/armo" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Armonización de variables</h3>
+          <p class="text-xs text-base-content/70">
+            Flujo de trabajo para armonización de variables.
+          </p>
+        </div>
+      </a>
+
+      <a routerLink="/importacion" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Importación masiva</h3>
+          <p class="text-xs text-base-content/70">
+            Carga masiva de información desde archivos Excel.
+          </p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="space-y-2">
+    <div>
+      <h2 class="text-xl font-semibold">Módulos</h2>
+      <p class="text-xs text-base-content/60">
+        Áreas complementarias dentro del sistema.
+      </p>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <a routerLink="/procesos" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Procesos de producción</h3>
+          <p class="text-xs text-base-content/70">
+            Flujo principal de captura del proceso de producción.
+          </p>
+        </div>
+      </a>
+
+      <a routerLink="/fuentes" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+        <div class="card-body p-4">
+          <h3 class="card-title text-base">Fuentes de identificación</h3>
+          <p class="text-xs text-base-content/70">
+            Gestión y consulta de fuentes de identificación.
+          </p>
+        </div>
+      </a>
+
+      <div class="card bg-base-100 border border-base-300 shadow-sm">
+        <div class="card-body p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="card-title text-base">Tabulados</h3>
+            <div class="badge badge-ghost badge-sm">Próximamente</div>
+          </div>
+          <p class="text-xs text-base-content/70">
+            Módulo en construcción para consulta y salida tabular.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>

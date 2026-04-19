@@ -1,219 +1,223 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-10 mb-5">
+<div class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge border-white/20 bg-white/10 text-white">Importación masiva</div>
+        <h1 class="text-2xl font-bold tracking-tight">Importación con plantilla.xlsx</h1>
+        <p class="max-w-3xl text-sm text-white/85">
+          Valida primero tu archivo Excel y después ejecuta la importación para registrar fuentes, variables, relaciones
+          y pertinencia en un solo flujo.
+        </p>
+      </div>
 
-
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-2xl font-bold font-montserrat text-primary">Importación masiva con plantilla.xlsx</h1>
-    <a class="btn btn-sm btn-secondary text-base-100" href="assets/plantilla/import.xlsx" download>
-      Descargar plantilla
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
-      </svg>
-    </a>
-
+      <a class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20" href="assets/plantilla/import.xlsx"
+        download>
+        Descargar plantilla
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+        </svg>
+      </a>
+    </div>
   </div>
 
-
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-8 mb-8">
-
-    <div class="col-span-4">
-      <div class="bg-base-200 border-l-4 border-primary p-5 rounded-lg text-sm max-w-4xl">
-        <h2 class="text-base font-bold text-primary mb-4">
-          Guía rápida para usar la plantilla
-        </h2>
-
-        <ol class="space-y-3 list-decimal list-inside">
-          <li>
-            <strong>Descarga la plantilla.</strong><br>
-            Da clic en <em>“Descargar plantilla”</em> y guarda el archivo en tu computadora.
-          </li>
-
-          <li>
-            <strong>Abre el archivo en Excel y habilita la edición.</strong><br>
-            Si aparece una barra amarilla o un aviso, da clic en
-            <span class="text-primary font-semibold">“Habilitar edición”</span>.
-          </li>
-
-          <li>
-            <strong>Pega tu información.</strong><br>
-            Copia y pega tus datos en la <strong>columna C</strong>, desde la <strong>fila 2</strong>.<br>
-            <span class="text-xs opacity-80">⚠️ No pegues sobre la fila 1 (encabezados).</span>
-          </li>
-
-          <li>
-            <strong>Verifica que se llenen las columnas A y B.</strong><br>
-            Después de pegar, revisa que la <strong>columna A</strong> (<span class="font-mono">id_fuente</span>) y
-            la <strong>columna B</strong> (<span class="font-mono">id_a</span>) se llenen automáticamente.<br>
-            <span class="text-xs opacity-80">
-              Estas columnas se generan con fórmulas y son <strong>obligatorias</strong>.
-            </span>
-          </li>
-
-          <li>
-            <strong>No modifiques las columnas A y B.</strong><br>
-            No escribas, no borres y no cambies nada en
-            <span class="font-mono">id_fuente</span> ni <span class="font-mono">id_a</span>.
-          </li>
-
-          <li>
-            <strong>Guarda el archivo.</strong><br>
-            Guarda el Excel antes de subirlo (Ctrl + S).
-          </li>
-
-          <li>
-            <strong>Selecciona el archivo en el sistema.</strong><br>
-            Da clic en <em>“Elegir archivo”</em> y elige tu Excel.
-          </li>
-
-          <li>
-            <strong>Presiona el botón “Validar archivo”.</strong><br>
-            Espera a que aparezca el mensaje de
-            <span class="text-success font-semibold">“Archivo válido”</span>.<br>
-            <span class="text-xs opacity-80">
-              Si hay errores, corrígelos en el Excel antes de continuar.
-            </span>
-          </li>
-
-          <li>
-            <strong>Presiona el botón “Importar información”.</strong><br>
-            Este botón solo aparece cuando el archivo ya fue validado correctamente.
-          </li>
-        </ol>
-
-        <div class="mt-4 text-xs text-error">
-          Si no validas el archivo o si existen errores, la información NO se importará.
+  <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div>
+          <h2 class="card-title text-base">Guía rápida para usar la plantilla</h2>
+          <p class="text-xs text-base-content/60">Sigue este flujo para evitar errores antes de importar.</p>
         </div>
 
-        <div class="mt-2 text-xs opacity-80">
-          Tip: si algo sale mal, revisa primero los mensajes del sistema antes de volver a subir el archivo.
+        <div class="space-y-3 text-sm leading-6 text-base-content/80">
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">1. Descarga la plantilla.</span>
+            Da clic en <span class="font-medium">“Descargar plantilla”</span> y guarda el archivo en tu computadora.
+          </div>
+
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">2. Abre el archivo en Excel y habilita la edición.</span>
+            Si aparece un aviso, da clic en <span class="font-medium">“Habilitar edición”</span>.
+          </div>
+
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">3. Pega tu información.</span>
+            Copia y pega tus datos en la <span class="font-medium">columna C</span>, desde la <span
+              class="font-medium">fila 2</span>.
+            <div class="mt-2 text-xs text-warning">⚠️ No pegues sobre la fila 1 porque contiene encabezados.</div>
+          </div>
+
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">4. Verifica columnas automáticas.</span>
+            Revisa que <span class="font-mono">id_fuente</span> y <span class="font-mono">id_a</span> se llenen
+            correctamente.
+            <div class="mt-2 text-xs text-base-content/60">Estas columnas son obligatorias y no deben modificarse
+              manualmente.</div>
+          </div>
+
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">5. Guarda el archivo y súbelo al sistema.</span>
+            Guarda los cambios, selecciona el archivo y luego valida antes de importar.
+          </div>
+
+          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
+            <span class="font-semibold text-primary">6. Valida primero, importa después.</span>
+            Espera el mensaje de archivo válido. Si hay errores, corrígelos en Excel antes de continuar.
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-error/20 bg-error/5 px-4 py-3 text-xs text-error">
+          Si no validas el archivo o si existen errores, la información no se importará.
+        </div>
+
+        <div class="text-xs text-base-content/60">
+          Tip: si algo falla, revisa primero el detalle de validación antes de volver a subir el archivo.
         </div>
       </div>
     </div>
 
-
-
-    <div class="col-span-4">
-      <div class="flex flex-col gap-4">
-
-        <label class="text-sm font-semibold text-primary">
-          Selecciona el archivo Excel
-        </label>
-
-        <input id="excelFile" type="file" (change)="onFileChange($event)" class="file-input file-input-bordered file-input-primary file-input-sm
-                 w-full max-w-full file:text-white" />
-
-        <button class="btn btn-primary btn-block text-white" [disabled]="!archivo || validando || importando || validacion?.ok || validando || importando"
-          (click)="validar()">
-
-          <span *ngIf="!validando">Validar archivo</span>
-          <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
-
-          <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
-          </svg>
-        </button>
-
-
-        <!-- ✅ MENSAJE JUSTO DEBAJO DEL BOTÓN -->
-        <div *ngIf="validacion" class="mt-2">
-          <div class="alert text-sm" [ngClass]="validacion.ok ? 'alert-success' : 'alert-error'">
-            <span>{{ validacion.message }}</span>
+    <div class="space-y-6">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Carga y validación</h2>
+            <p class="text-xs text-base-content/60">Selecciona el archivo, valídalo y luego ejecuta la importación.</p>
           </div>
 
-          <div *ngIf="!validacion.ok && validacion.errors?.length" class="mt-3 overflow-x-auto">
-            <table class="table table-xs">
-              <thead>
-                <tr>
-                  <th>Fila</th>
-                  <th>Columna</th>
-                  <th>Detalle</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let e of validacion.errors">
-                  <td>{{ e.fila }}</td>
-                  <td>{{ e.columna }}</td>
-                  <td>{{ e.detalle }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="form-control gap-3">
+            <label class="label" for="excelFile">
+              <span class="label-text text-xs font-medium">Selecciona el archivo Excel</span>
+            </label>
+
+            <input id="excelFile" type="file" (change)="onFileChange($event)"
+              class="file-input file-input-bordered file-input-primary w-full max-w-full file:text-white" />
           </div>
+
+          <button class="btn btn-primary w-full"
+            [disabled]="!archivo || validando || importando || validacion?.ok || validando || importando"
+            (click)="validar()">
+            <span *ngIf="!validando">Validar archivo</span>
+            <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
+
+            <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+            </svg>
+          </button>
+
+          @if (validacion) {
+          <div class="space-y-3">
+            <div class="alert text-sm" [ngClass]="validacion.ok ? 'alert-success' : 'alert-error'">
+              <span>{{ validacion.message }}</span>
+            </div>
+
+            @if (!validacion.ok && validacion.errors?.length) {
+            <div class="overflow-x-auto rounded-box border border-base-300">
+              <table class="table table-xs">
+                <thead>
+                  <tr>
+                    <th>Fila</th>
+                    <th>Columna</th>
+                    <th>Detalle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let e of validacion.errors">
+                    <td>{{ e.fila }}</td>
+                    <td>{{ e.columna }}</td>
+                    <td>{{ e.detalle }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            }
+          </div>
+          }
+
+          <button *ngIf="validacion?.ok" class="btn btn-success w-full text-white" [disabled]="importando"
+            (click)="importar()">
+            <span *ngIf="!importando">Importar información</span>
+            <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
+
+            <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
+            </svg>
+          </button>
         </div>
+      </div>
 
-        <!-- BOTÓN IMPORTAR (solo si la validación es correcta) -->
-        <button *ngIf="validacion?.ok" class="btn btn-success btn-block text-white mt-2" [disabled]="importando"
-          (click)="importar()">
-
-          <span *ngIf="!importando">Importar información</span>
-          <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
-
-          <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
-          </svg>
-        </button>
-
-        <!-- ====== RESULTADO IMPORTACIÓN ====== -->
-        <div *ngIf="resultado" class="mt-4">
+      @if (resultado) {
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Resultado de la importación</h2>
+            <p class="text-xs text-base-content/60">Resumen del proceso ejecutado con el archivo cargado.</p>
+          </div>
 
           <div class="alert text-sm" [ngClass]="resultado.ok ? 'alert-success' : 'alert-error'">
             <span>{{ resultado.message }}</span>
           </div>
 
-          <!-- Resumen en tarjetas -->
-          <div *ngIf="resultado.ok" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div class="card bg-base-200 shadow">
-              <div class="card-body p-4">
-                <h3 class="font-bold text-primary">Filas</h3>
-                <div class="text-sm flex justify-between"><span>Con datos</span><span
-                    class="font-semibold">{{resultado.filasConDatos}}</span></div>
-                <div class="text-sm flex justify-between"><span>Importadas</span><span
-                    class="font-semibold">{{resultado.filasImportadas}}</span></div>
-                <div class="text-sm flex justify-between"><span>Errores</span><span
-                    class="font-semibold">{{resultado.filasConError}}</span></div>
+          @if (resultado.ok) {
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+              <h3 class="mb-3 font-semibold text-primary">Filas</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span>Con datos</span><span class="font-semibold">{{
+                    resultado.filasConDatos }}</span></div>
+                <div class="flex justify-between"><span>Importadas</span><span class="font-semibold">{{
+                    resultado.filasImportadas }}</span></div>
+                <div class="flex justify-between"><span>Errores</span><span class="font-semibold">{{
+                    resultado.filasConError }}</span></div>
               </div>
             </div>
 
-            <div class="card bg-base-200 shadow">
-              <div class="card-body p-4">
-                <h3 class="font-bold text-primary">Fuentes / Variables</h3>
-                <div class="text-sm flex justify-between"><span>Fuentes insertadas</span><span
-                    class="font-semibold">{{resultado.fuentesInsertadas}}</span></div>
-                <div class="text-sm flex justify-between"><span>Fuentes actualizadas</span><span
-                    class="font-semibold">{{resultado.fuentesActualizadas}}</span></div>
-                <div class="divider my-2"></div>
-                <div class="text-sm flex justify-between"><span>Variables insertadas</span><span
-                    class="font-semibold">{{resultado.variablesInsertadas}}</span></div>
-                <div class="text-sm flex justify-between"><span>Variables actualizadas</span><span
-                    class="font-semibold">{{resultado.variablesActualizadas}}</span></div>
+            <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+              <h3 class="mb-3 font-semibold text-primary">Fuentes y variables</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span>Fuentes insertadas</span><span class="font-semibold">{{
+                    resultado.fuentesInsertadas }}</span></div>
+                <div class="flex justify-between"><span>Fuentes actualizadas</span><span class="font-semibold">{{
+                    resultado.fuentesActualizadas }}</span></div>
+                <div class="divider my-1"></div>
+                <div class="flex justify-between"><span>Variables insertadas</span><span class="font-semibold">{{
+                    resultado.variablesInsertadas }}</span></div>
+                <div class="flex justify-between"><span>Variables actualizadas</span><span class="font-semibold">{{
+                    resultado.variablesActualizadas }}</span></div>
               </div>
             </div>
 
-            <div class="card bg-base-200 shadow">
-              <div class="card-body p-4">
-                <h3 class="font-bold text-primary">MDEA / ODS / Pertinencia</h3>
-                <div class="text-sm flex justify-between"><span>MDEA insertados</span><span
-                    class="font-semibold">{{resultado.mdeaInsertados}}</span></div>
-                <div class="text-sm flex justify-between"><span>MDEA omitidos</span><span
-                    class="font-semibold">{{resultado.mdeaOmitidos}}</span></div>
-                <div class="divider my-2"></div>
-                <div class="text-sm flex justify-between"><span>ODS insertados</span><span
-                    class="font-semibold">{{resultado.odsInsertados}}</span></div>
-                <div class="text-sm flex justify-between"><span>ODS omitidos</span><span
-                    class="font-semibold">{{resultado.odsOmitidos}}</span></div>
-                <div class="divider my-2"></div>
-                <div class="text-sm flex justify-between"><span>Pertinencia insertadas</span><span
-                    class="font-semibold">{{resultado.pertinenciaInsertadas}}</span></div>
-                <div class="text-sm flex justify-between"><span>Pertinencia actualizadas</span><span
-                    class="font-semibold">{{resultado.pertinenciaActualizadas}}</span></div>
+            <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
+              <h3 class="mb-3 font-semibold text-primary">MDEA, ODS y pertinencia</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span>MDEA insertados</span><span class="font-semibold">{{
+                    resultado.mdeaInsertados }}</span></div>
+                <div class="flex justify-between"><span>MDEA omitidos</span><span class="font-semibold">{{
+                    resultado.mdeaOmitidos }}</span></div>
+                <div class="divider my-1"></div>
+                <div class="flex justify-between"><span>ODS insertados</span><span class="font-semibold">{{
+                    resultado.odsInsertados }}</span></div>
+                <div class="flex justify-between"><span>ODS omitidos</span><span class="font-semibold">{{
+                    resultado.odsOmitidos }}</span></div>
+                <div class="divider my-1"></div>
+                <div class="flex justify-between"><span>Pertinencia insertadas</span><span class="font-semibold">{{
+                    resultado.pertinenciaInsertadas }}</span></div>
+                <div class="flex justify-between"><span>Pertinencia actualizadas</span><span class="font-semibold">{{
+                    resultado.pertinenciaActualizadas }}</span></div>
               </div>
             </div>
           </div>
 
-          <!-- Tabla de errores si falla -->
-          <div *ngIf="!resultado.ok && resultado.errors?.length" class="mt-3 overflow-x-auto">
+          <button class="btn btn-outline w-full" (click)="reiniciar()">
+            Reiniciar módulo
+          </button>
+          }
+
+          @if (!resultado.ok && resultado.errors?.length) {
+          <div class="overflow-x-auto rounded-box border border-base-300">
             <table class="table table-xs">
               <thead>
                 <tr>
@@ -231,25 +235,10 @@
               </tbody>
             </table>
           </div>
-
-          <!-- Botón reiniciar (solo si OK) -->
-          <button *ngIf="resultado.ok" class="btn btn-outline btn-block mt-4" (click)="reiniciar()">
-            Reiniciar módulo
-          </button>
-
+          }
         </div>
-
-
-
       </div>
+      }
     </div>
-
-
-
-
-
-
-
-
+  </div>
 </div>
-

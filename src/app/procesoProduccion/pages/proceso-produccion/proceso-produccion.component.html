@@ -1,204 +1,194 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-10 mb-5">
+<div class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Procesos de producción</div>
+        <h1 class="text-2xl font-bold tracking-tight">Caracterización del proceso de producción</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Consulta el proceso seleccionado, revisa sus datos generales y actualiza el comentario operativo.
+        </p>
+      </div>
 
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-2xl font-bold font-montserrat text-primary">Caracterización del proceso de producción</h1>
-    <button class="btn btn-sm btn-secondary text-base-100" (click)="setLocalStorage(procesoSeleccionado()!)">
-      Agregar fuente de identificación
-    </button>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-8 mb-8">
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="dire">
-        Selecciona unidad productora de información</label>
-      <select id="dire" class="select select-bordered select-sm w-full" (change)="selectedDireccion($event)">
-        <option disabled selected>Selecciona una opción</option>
-        @for (dire of arrDirecciones; track dire.idUnidad) {
-        <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
-        }
-      </select>
-    </div>
-
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
-        Selecciona el proceso de producción
-      </label>
-      <select id="procesoProduccion" class="select select-bordered select-sm w-full"
-        #procesoProduccionTag [disabled]="!_procesos_isSelectEnabled"
-        (change)="seleccionarProceso($event)">
-        <option disabled selected>Selecciona una opción</option>
-        @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
-        <option [value]="proceso.acronimo" >{{ proceso.proceso }}</option>
-        }
-        <option value="otro">Agregar nuevo proceso de producción +</option>
-      </select>
-    </div>
-
-    <!-- Acrónimo -->
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="acronimo">
-        Acrónimo
-      </label>
-      <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.acronimo || '-' }}</h2>
-    </div>
-
-
-
-
-
-    <!-- Estatus con botón dinámico -->
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary ">
-        Estatus
-      </label>
-      <button class="btn btn-sm text-center" [ngClass]="{
-                                  'btn-success': procesoSeleccionado()?.estatus === 'Activo',
-                                  'btn-error': procesoSeleccionado()?.estatus === 'Inactivo'
-                                }">
-        {{ procesoSeleccionado()?.estatus || 'Estatus' }}
+      <button class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20"
+        (click)="setLocalStorage(procesoSeleccionado()!)">
+        Agregar fuente de identificación
       </button>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-9 gap-4 mb-8">
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-8">
+      <div class="card-body gap-4 p-5">
+        <div>
+          <h2 class="card-title text-base">Selección del proceso</h2>
+          <p class="text-xs text-base-content/60">Primero elige unidad productora y luego el proceso de producción.</p>
+        </div>
 
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control">
+            <label class="label" for="dire">
+              <span class="label-text text-xs font-medium">Unidad productora de información</span>
+            </label>
+            <select id="dire" class="select select-bordered w-full" (change)="selectedDireccion($event)">
+              <option disabled selected>Selecciona una opción</option>
+              @for (dire of arrDirecciones; track dire.idUnidad) {
+              <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
+              }
+            </select>
+          </div>
 
-
-
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
-        Método de obtención de la información
-      </label>
-      <h2 class="text-lg font-semibold">{{ procesoSeleccionado()?.metodo || '-' }}</h2>
+          <div class="form-control">
+            <label class="label" for="procesoProduccion">
+              <span class="label-text text-xs font-medium">Proceso de producción</span>
+            </label>
+            <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
+              [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
+              <option disabled selected>Selecciona una opción</option>
+              @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
+              <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+              }
+              <option value="otro">Agregar nuevo proceso de producción +</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary">
-        Condición de información de interés nacional
-      </label>
-      <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.iin || '-' }}
-      </h2>
-    </div>
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-4">
+      <div class="card-body p-5">
+        <div class="flex items-center justify-between">
+          <h2 class="card-title text-base">Estado actual</h2>
+          <div class="badge badge-outline badge-sm">Resumen</div>
+        </div>
 
-    <div class="col-span-2 ">
-      <label class="block text-sm font-medium mb-2 text-secondary">
-        Periodicidad
-      </label>
-      <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.periodicidad || '-' }}
-      </h2>
-    </div>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <div class="text-xs text-base-content/60">Acrónimo</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.acronimo || '-' }}</div>
+          </div>
 
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary">
-        Variables
-      </label>
-      <h2 class="text-lg font-semibold">
-        {{ procesoSeleccionado()?.totalVariables || '-' }}
-      </h2>
-    </div>
+          <div>
+            <div class="text-xs text-base-content/60">Estatus</div>
+            <div class="mt-1">
+              <span class="badge" [ngClass]="{
+                'badge-success': procesoSeleccionado()?.estatus === 'Activo',
+                'badge-error': procesoSeleccionado()?.estatus === 'Inactivo',
+                'badge-ghost': !procesoSeleccionado()?.estatus
+              }">
+                {{ procesoSeleccionado()?.estatus || 'Sin estatus' }}
+              </span>
+            </div>
+          </div>
 
-  </div>
+          <div>
+            <div class="text-xs text-base-content/60">Periodicidad</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.periodicidad || '-' }}</div>
+          </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-8">
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="objetivo">
-        Objetivo del proceso
-      </label>
-      <textarea id="objetivo" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
-    </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="poblacion001">
-        Población objeto de estudio
-      </label>
-      <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.pobjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
-    </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="unidad001">
-        Unidad de observación
-      </label>
-      <textarea id="unidad001" class="textarea textarea-bordered w-full h-31"
-        readonly>{{ procesoSeleccionado()?.uobservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
-    </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="comentario">
-        Comentario del proceso de producción
-      </label>
-      <textarea id="comentario" class="textarea textarea-bordered w-full h-31" [(ngModel)]="comentario"></textarea>
-    </div>
-
-  </div>
-
-  <div *ngIf="mostrarAlerta()" class="toast toast-top toast-end mt-20">
-    <div class="alert btn-success">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ mensajeAlerta }}</span>
+          <div>
+            <div class="text-xs text-base-content/60">Variables</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.totalVariables || '-' }}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div *ngIf="mostrarAlertaNoProceso()" class="toast toast-top toast-end mt-20">
-    <div class="alert btn-error">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ mensajeAlerta }} *u*</span>
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="text-xs text-base-content/60">Método de obtención</div>
+        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.metodo || '-' }}</div>
+      </div>
+    </div>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="text-xs text-base-content/60">Información de interés nacional</div>
+        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.iin || '-' }}</div>
+      </div>
+    </div>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm md:col-span-2">
+      <div class="card-body p-4">
+        <div class="text-xs text-base-content/60">Proceso seleccionado</div>
+        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.proceso || 'Selecciona un proceso paraver su detalle.' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-2">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-5">
+        <h2 class="card-title text-base">Objetivo del proceso</h2>
+        <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
+{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
+      </div>
+    </div>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-5">
+        <h2 class="card-title text-base">Población objeto de estudio</h2>
+        <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
+{{ procesoSeleccionado()?.pobjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
+      </div>
+    </div>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-5">
+        <h2 class="card-title text-base">Unidad de observación</h2>
+        <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
+{{ procesoSeleccionado()?.uobservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
+      </div>
+    </div>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-5">
+        <div class="flex items-center justify-between">
+          <h2 class="card-title text-base">Comentario del proceso</h2>
+          <div class="badge badge-outline badge-sm">Editable</div>
+        </div>
+        <textarea class="textarea textarea-bordered min-h-32 w-full" [(ngModel)]="comentario"></textarea>
+      </div>
     </div>
   </div>
 
   @if (showWarning) {
-  <div role="alert" class="alert alert-vertical sm:alert-horizontal mt-5 mb-5 animate-fadeIn">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+  <div role="alert" class="alert alert-vertical sm:alert-horizontal animate-fadeIn border border-base-300 shadow-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 shrink-0 stroke-info">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
-    <span>¿Estás seguro de actualizar el comentario del proceso de producción?</span>
+    <span class="text-sm">¿Estás seguro de actualizar el comentario del proceso de producción?</span>
     <div>
-      <button class="btn btn-sm btn-outline mr-5 " (click)="cancelDeactivation()">Cancelar</button>
-      <button class="btn btn-sm  btn-primary" (click)="confirmDeactivation()">Aceptar</button>
+      <button class="btn btn-sm btn-ghost mr-2" (click)="cancelDeactivation()">Cancelar</button>
+      <button class="btn btn-sm btn-primary" (click)="confirmDeactivation()">Aceptar</button>
     </div>
   </div>
   }
 
-  <div class="flex flex-row-reverse">
-    <button class="btn btn-outline px-10 btn-primary" (click)="showAlertUpComentario()">
-      Actualizar
+  <div class="flex justify-end">
+    <button class="btn btn-primary btn-sm px-6" (click)="showAlertUpComentario()">
+      Actualizar comentario
     </button>
   </div>
-
 </div>
 
-
-
-
-<!-- Modal -->
 <dialog #modalNoProceso class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">Proceso no seleccionado</h3>
-    <p class="py-4">Para editar esta información, primero debes seleccionar un proceso de producción. Por favor, elige un
-      proceso e intenta nuevamente.</p>
+    <p class="py-4">Para editar esta información, primero debes seleccionar un proceso de producción. Por favor, elige
+      un proceso e intenta nuevamente.</p>
     <div class="modal-action">
-      <!-- Botón Cancelar -->
       <button class="btn btn-error" (click)="cerrarModal()">Aceptar</button>
-
     </div>
   </div>
 </dialog>
 
 <dialog #modalActualizar class="modal">
   <div class="modal-box">
-    <!-- Icono de edición (lápiz) + check -->
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-info" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -206,48 +196,38 @@
       </svg>
     </div>
 
-    <h3 class="text-lg font-bold text-center">Confirmar actualización</h3>
+    <h3 class="text-center text-lg font-bold">Confirmar actualización</h3>
     <p class="py-4 text-center">Vas a modificar el comentario del proceso de producción.<br>¿Quieres guardar los
       cambios?</p>
 
     <div class="modal-action flex justify-center gap-4">
-      <!-- Botón Cancelar -->
       <button class="btn btn-outline" (click)="cancelDeactivation()">Cancelar</button>
-      <!-- Botón Aceptar -->
-      <button class="btn btn-primary" (click)="confirmDeactivation()">
-
-        Guardar
-      </button>
+      <button class="btn btn-primary" (click)="confirmDeactivation()">Guardar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de actualización exitosa -->
 <dialog #modalActualizacionExitosa class="modal">
   <div class="modal-box">
-    <!-- Icono de check (opcional) -->
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
       </svg>
     </div>
 
-    <h3 class="text-lg font-bold text-center">¡Actualización exitosa!</h3>
-    <p class="py-4 text-center">Los datos de la fuente se han actualizado correctamente.</p>
+    <h3 class="text-center text-lg font-bold">¡Actualización exitosa!</h3>
+    <p class="py-4 text-center">Los datos del proceso se han actualizado correctamente.</p>
 
     <div class="modal-action flex justify-center">
-      <!-- Botón para cerrar -->
       <button class="btn btn-success" (click)="clocemodalActualizacionExitosa()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de Confirmación para ir a registro de proceso -->
 <dialog #AgregarProceso class="modal">
   <div class="modal-box">
-    <!-- Icono informativo -->
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-warning" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -255,20 +235,13 @@
       </svg>
     </div>
 
-    <h3 class="text-lg font-bold text-center">Agregar nuevo proceso de producción</h3>
+    <h3 class="text-center text-lg font-bold">Agregar nuevo proceso de producción</h3>
     <p class="py-4 text-center">Esta opción te llevará al formulario para registrar un nuevo proceso. ¿Deseas continuar?
     </p>
 
     <div class="modal-action flex justify-center space-x-2">
-      <!-- Botón para cancelar -->
       <button class="btn btn-outline" (click)="clocemodalAgregarProceso()">Cancelar</button>
-
-      <!-- Botón para confirmar navegación -->
       <button class="btn btn-warning" (click)="confirmarIrANuevoProceso()">Ir al formulario</button>
     </div>
   </div>
 </dialog>
-
-
-
-

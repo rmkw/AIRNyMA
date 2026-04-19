@@ -1,269 +1,106 @@
-@if (auth.isAdminOrRoot() || (auth.isUser() && !auth.isArmo())) {
-<!-- ✅ NAVBAR SELECCIÓN (tu navbar actual) -->
-<div class="navbar bg-neutral shadow-sm">
-  <div class="navbar-start">
-    <div class="relative">
-      <!-- Botón del menú hamburguesa -->
-      <button (click)="toggleMenuHamburgesa()" class="btn btn-ghost lg:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-        </svg>
-      </button>
-
-      <!-- Menú hamburguesa -->
-      <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
-        [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
-      <li>
-        <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Flujo de captura departamento selección
-        </a>
-      </li>
-
-      <li>
-        <a class="btn btn-sm btn-ghost text-slate-300">
-          Procesos de producción
-        </a>
-      </li>
-
-      <li>
-        <a class="btn btn-sm btn-ghost text-slate-300">
-          Fuentes de identificación
-        </a>
-      </li>
-
-      <li>
-        <a class="btn btn-sm btn-ghost text-slate-300">
-          Variables
-        </a>
-      </li>
-
-      <li>
-        <a routerLink="/importacion" class="btn btn-sm btn-ghost text-slate-300">
-          Importación masiva .excel
-        </a>
-      </li>
-
-
-
-      </ul>
-    </div>
-
-    <a routerLink="/" class="btn btn-sm btn-ghost text-xl font-montserrat">
-      <span class="text-base-100">
-        Captura
-      </span><span class="text-secondary">| Selección </span>
-    </a>
-  </div>
-
-  <div class="navbar-center hidden lg:flex">
-    <ul class="menu menu-horizontal px-1">
-      <li>
-        <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Flujo de captura departamento selección
-        </a> </li>
-
-      <li>
-        <a  class="btn btn-sm btn-ghost text-slate-300">
-          Procesos de produccción
-        </a>
-      </li>
-
-      <li>
-        <a  class="btn btn-sm btn-ghost text-slate-300">
-          Fuentes de identificación
-        </a>
-      </li>
-
-      <li>
-        <a  class="btn btn-sm btn-ghost text-slate-300">
-          Variables
-        </a>
-      </li>
-
-      <li>
-        <a routerLink="/importacion" class="btn btn-sm btn-ghost text-slate-300">
-          Importación masiva .excel
-        </a>
-      </li>
-
-
-
-
-    </ul>
-  </div>
-
-  <div class="navbar-end gap-4">
-
-
-
-
-    @if (userName()) {
-    <button class="btn btn-sm btn-ghost text-slate-300">
-      {{ userName() }}
-    </button>
-
-
-      <!-- Dropdown de temas -->
-      <div class="relative">
-        <!-- Botón para abrir el dropdown -->
-        <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
-          Theme
-          <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
-            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
-            <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
+<div class="flex min-h-full w-full flex-col">
+  @if (userName()) {
+  <div class="border-b border-base-300 p-3">
+    <div class="flex items-start gap-3 is-drawer-close:justify-center">
+      <div class="avatar placeholder">
+        <div class="bg-primary text-primary-content rounded-full w-10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+            <path fill-rule="evenodd"
+              d="M7.5 6a4.5 4.5 0 1 1 9 0a4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0a.75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+              clip-rule="evenodd" />
           </svg>
-        </button>
-
-        <!-- Menú dropdown -->
-        <ul class="menu bg-base-100 rounded-box z-[100] w-52 p-2 shadow absolute right-0 mt-2 transition-all duration-200"
-          [ngClass]="{
-            'opacity-0 invisible scale-95': !dropdownAbierto(),
-            'opacity-100 visible scale-100': dropdownAbierto()
-          }">
-          <li *ngFor="let theme of themes">
-            <label class="btn btn-sm btn-block btn-ghost justify-start">
-              <input type="radio" name="theme-dropdown" (change)="changeTheme(theme)" [value]="theme"
-                [checked]="theme === selectedTheme()" />
-              {{ theme }}
-            </label>
-          </li>
-        </ul>
+        </div>
       </div>
 
-
-
-
-
-    <button class="btn btn-sm btn-error" (click)="_authService.logout()">
-      Salir
-    </button>
-    } @else {
-    <a routerLink="./auth/login" class="btn btn-sm btn-primary">
-      Iniciar sesión
-    </a>
-    }
-
-  </div>
-
-</div>
-}
-@if (auth.isAdminOrRoot() || auth.isArmo()) {
-<!-- ✅ NAVBAR ARMONIZACIÓN (tu navbar nuevo) -->
-<div class="navbar bg-primary text-purple-100 shadow-sm">
-  <div class="navbar-start">
-    <div class="relative">
-      <!-- Botón del menú hamburguesa -->
-      <button (click)="toggleMenuHamburgesa()" class="btn btn-ghost lg:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-        </svg>
-      </button>
-
-      <!-- Menú hamburguesa -->
-      <ul class="absolute left-0 top-12 w-52 bg-base-100 z-[100] rounded-lg shadow-lg transition-all duration-200"
-        [ngClass]="{ 'hidden': !menuHamburgesa, 'block': menuHamburgesa }">
-        <li>
-          <a routerLink="/procesos" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-            Flujo de captura departamento armonización
-          </a>
-        </li>
-      </ul>
+      <div class="min-w-0 flex-1 is-drawer-close:hidden">
+        <div class="text-xs uppercase tracking-wide text-base-content/50">Usuario</div>
+        <div class="text-sm font-medium leading-tight text-base-content break-words">
+          {{ userName() }}
+        </div>
+      </div>
     </div>
-
-    <a routerLink="/" class="btn btn-sm btn-ghost text-xl font-montserrat">
-      <span class="text-base-100">
-        Captura
-      </span><span class="text-secondary">| Armonización </span>
-    </a>
   </div>
-
-  <div class="navbar-center hidden lg:flex">
-    <ul class="menu menu-horizontal px-1">
-
-      <li>
-        <a routerLink="/revision-variables" class="btn btn-sm btn-ghost text-slate-300">
-          Selección de variables prioritarias
-        </a>
-      </li>
-      <li>
-        <a routerLink="/armo" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Flujo de captura departamento armonización
-        </a>
-      </li>
-      <li>
-        <a routerLink="/" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Variables
-        </a>
-      </li>
-      <li>
-        <a routerLink="/" (click)="navegandosinStorage()" class="btn btn-sm btn-ghost text-slate-300">
-          Tabulados
-        </a>
-      </li>
-
-
-
-
-
-
-
-    </ul>
+  } @else {
+  <div class="p-3 border-b border-base-300">
+    <span class="text-sm font-semibold is-drawer-close:hidden">Menú</span>
   </div>
+  }
 
-  <div class="navbar-end gap-4">
+  <ul class="menu w-full grow p-2 gap-1">
+    <li>
+      <a routerLink="/" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Inicio">
+        <span>🏠</span>
+        <span class="is-drawer-close:hidden">Pantalla de inicio</span>
+      </a>
+    </li>
 
+    <li>
+      <a routerLink="/procesos" (click)="navegandosinStorage()"
+        class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Procesos">
+        <span>🏭</span>
+        <span class="is-drawer-close:hidden">Procesos de producción</span>
+      </a>
+    </li>
 
+    <li>
+      <a routerLink="/fuentes" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Fuentes">
+        <span>🗂️</span>
+        <span class="is-drawer-close:hidden">Fuentes de identificación</span>
+      </a>
+    </li>
 
+    <li>
+      <a routerLink="/nueva-variable" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+        data-tip="Selección">
+        <span>🎯</span>
+        <span class="is-drawer-close:hidden">Selección de variables</span>
+      </a>
+    </li>
 
+    <li>
+      <a routerLink="/revision-variables" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+        data-tip="Revisión">
+        <span>✅</span>
+        <span class="is-drawer-close:hidden">Revisión variables</span>
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/armo" (click)="navegandosinStorage()"
+        class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Armonización">
+        <span>🧩</span>
+        <span class="is-drawer-close:hidden">Armonización de variables</span>
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/tabulados" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tabulados">
+        <span>📊</span>
+        <span class="is-drawer-close:hidden">Tabulados</span>
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/importacion" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Importación">
+        <span>📥</span>
+        <span class="is-drawer-close:hidden">Importación masiva</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="mt-auto w-full border-t border-base-300 p-2">
     @if (userName()) {
-    <button class="btn btn-sm btn-ghost text-slate-300">
-      {{ userName() }}
-    </button>
-
-
-    <!-- Dropdown de temas -->
-    <div class="relative">
-      <!-- Botón para abrir el dropdown -->
-      <button class="btn btn-sm btn-ghost m-1 text-slate-300" (click)="toggleDropdown()">
-        Theme
-        <svg width="12px" height="12px" class="inline-block h-2 w-2 fill-current opacity-60"
-          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048">
-          <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-        </svg>
-      </button>
-
-      <!-- Menú dropdown -->
-      <ul class="menu bg-base-100 rounded-box z-[100] w-52 p-2 shadow absolute right-0 mt-2 transition-all duration-200"
-        [ngClass]="{
-            'opacity-0 invisible scale-95': !dropdownAbierto(),
-            'opacity-100 visible scale-100': dropdownAbierto()
-          }">
-        <li *ngFor="let theme of themes">
-          <label class="btn btn-sm btn-block btn-ghost justify-start">
-            <input type="radio" name="theme-dropdown" (change)="changeTheme(theme)" [value]="theme"
-              [checked]="theme === selectedTheme()" />
-            {{ theme }}
-          </label>
-        </li>
-      </ul>
-    </div>
-
-
-
-
-
-    <button class="btn btn-sm btn-error" (click)="_authService.logout()">
-      Salir
+    <button
+      class="btn btn-ghost btn-sm w-full justify-start text-base-content/70 hover:bg-base-300 hover:text-base-content"
+      (click)="_authService.logout()">
+      <span>↩️</span>
+      <span class="is-drawer-close:hidden">Cerrar sesión</span>
     </button>
     } @else {
-    <a routerLink="/auth/login" class="btn btn-sm btn-primary">
-      Iniciar sesión
+    <a routerLink="/auth/login" class="btn btn-primary btn-sm w-full">
+      <span>🔐</span>
+      <span class="is-drawer-close:hidden">Iniciar sesión</span>
     </a>
     }
-
   </div>
-
 </div>
-}
-
-

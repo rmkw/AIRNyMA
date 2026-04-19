@@ -1,704 +1,541 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-5">
-
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold font-montserrat text-primary">Identificación de la variable fuente año {{_anioEvento}}
-    </h1>
-
-
-    <button class="btn btn-sm btn-primary text-base-100" [disabled]="finalizarCaptura" (click)="registrarTema()">
-      Finalizar captura
-    </button>
-
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-5">
-
-
-    <div class="col-span-2">
-
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="idVariable">
-        Id variable
-      </label>
-
-      <div class="join">
-        <input type="text" id="idVariable" class="input input-bordered join-item w-full input-sm"
-          [(ngModel)]="idVariable" [disabled]="camposBloqueados" placeholder="Email" />
-
-        <label for="my-drawer-4" class="btn btn-sm join-item  drawer-button" (click)="abrirDrawer()">Consultar</label>
-
+<div class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Variables</div>
+        <h1 class="text-2xl font-bold tracking-tight">Identificación de la variable fuente año {{ _anioEvento }}</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Captura la variable, registra sus relaciones y completa la pertinencia para finalizar el flujo.
+        </p>
       </div>
 
+      <button class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20" [disabled]="finalizarCaptura"
+        (click)="registrarTema()">
+        Finalizar captura
+      </button>
     </div>
-
-
-    <div class="col-span-6">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="nombreVariable">
-        Nombre de la variable
-      </label>
-      <input type="text" id="nombreVariable" [(ngModel)]="nombreVariable" [disabled]="camposBloqueados"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-8">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="definicionVariable">
-        Definición de la variable
-      </label>
-      <textarea type="text" id="definicionVariable" [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"
-        class="textarea textarea-bordered w-full h-31" placeholder="" ></textarea>
-    </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="_linkVar">
-        Url de acceso variable
-      </label>
-      <input type="text" id="_linkVar" [(ngModel)]="_linkVar" [disabled]="camposBloqueados"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-4">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="comentarioVariable">
-        Comentario de la variable
-      </label>
-      <input type="text" id="comentarioVariable" [(ngModel)]="comentarioVariable" [disabled]="camposBloqueados"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_MDEA">
-        Alineación con MDEA
-      </label>
-      <input type="checkbox" id="alinea_MDEA" [checked]="flagMDEArelation" (click)="checkedAliniationMDEA($event)"
-        [disabled]="camposBloqueados" class="checkbox checkbox-md " />
-    </div>
-
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="alinea_ODS">
-        Alineación con ODS
-      </label>
-      <input type="checkbox" id="alinea_ODS" [checked]="flagODSrelation" (click)="checkedAliniationODS($event)"
-        [disabled]="camposBloqueados" class="checkbox checkbox-md" />
-    </div>
-
-
-
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mb-5">
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div>
+        <h2 class="card-title text-base">Datos de la variable</h2>
+        <p class="text-xs text-base-content/60">Completa los campos generales antes de registrar relaciones.</p>
+      </div>
 
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-8">
+        <div class="form-control xl:col-span-2">
+          <label class="label" for="idVariable">
+            <span class="label-text text-xs font-medium">Id variable</span>
+          </label>
+          <div class="join w-full">
+            <input id="idVariable" type="text" class="input input-bordered join-item w-full" [(ngModel)]="idVariable"
+              [disabled]="camposBloqueados" />
+            <label for="my-drawer-4" class="btn join-item drawer-button" (click)="abrirDrawer()">Consultar</label>
+          </div>
+        </div>
 
+        <div class="form-control xl:col-span-6">
+          <label class="label" for="nombreVariable">
+            <span class="label-text text-xs font-medium">Nombre de la variable</span>
+          </label>
+          <input id="nombreVariable" type="text" class="input input-bordered w-full" [(ngModel)]="nombreVariable"
+            [disabled]="camposBloqueados" />
+        </div>
 
+        <div class="form-control xl:col-span-8">
+          <label class="label" for="definicionVariable">
+            <span class="label-text text-xs font-medium">Definición de la variable</span>
+          </label>
+          <textarea id="definicionVariable" class="textarea textarea-bordered min-h-28 w-full"
+            [(ngModel)]="definicionVariable" [disabled]="camposBloqueados"></textarea>
+        </div>
 
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="temaCobertura">
-        Tema de cobertura de necesidades
-      </label>
-      <input type="text" id="temaCobertura" [(ngModel)]="temaCobertura" (ngModelChange)="verificarFinalizarCaptura()"
-        (click)="onComentarioClick($event)" class="input input-sm input-bordered w-full" placeholder="" />
+        <div class="form-control xl:col-span-2">
+          <label class="label" for="_linkVar">
+            <span class="label-text text-xs font-medium">Url de acceso variable</span>
+          </label>
+          <input id="_linkVar" type="text" class="input input-bordered w-full" [(ngModel)]="_linkVar"
+            [disabled]="camposBloqueados" />
+        </div>
+
+        <div class="form-control xl:col-span-4">
+          <label class="label" for="comentarioVariable">
+            <span class="label-text text-xs font-medium">Comentario de la variable</span>
+          </label>
+          <input id="comentarioVariable" type="text" class="input input-bordered w-full"
+            [(ngModel)]="comentarioVariable" [disabled]="camposBloqueados" />
+        </div>
+
+        <div class="form-control xl:col-span-1 items-center justify-end">
+          <label class="label" for="alinea_MDEA">
+            <span class="label-text text-xs font-medium">Alineación con MDEA</span>
+          </label>
+          <input id="alinea_MDEA" type="checkbox" class="checkbox checkbox-md" [checked]="flagMDEArelation"
+            (click)="checkedAliniationMDEA($event)" [disabled]="camposBloqueados" />
+        </div>
+
+        <div class="form-control xl:col-span-1 items-center justify-end">
+          <label class="label" for="alinea_ODS">
+            <span class="label-text text-xs font-medium">Alineación con ODS</span>
+          </label>
+          <input id="alinea_ODS" type="checkbox" class="checkbox checkbox-md" [checked]="flagODSrelation"
+            (click)="checkedAliniationODS($event)" [disabled]="camposBloqueados" />
+        </div>
+      </div>
     </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium  mb-2 text-secondary" for="idNivelCont">
-        Nivel de contribución
-      </label>
-      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura"
-        [(ngModel)]="nivelContribucion">
-        <option disabled selected>Selecciona un nivel</option>
-        <option value="Alto">Alto</option>
-        <option value="Intermedio">Intermedio</option>
-        <option value="Bajo">Bajo</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="col-span-2">
-      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
-        Viabilidad de generación
-      </label>
-      <select class="select select-bordered select-sm w-full " [disabled]="DISABLE_temaCobertura"
-        [(ngModel)]="viabilidad">
-        <option disabled selected>Selecciona una opción</option>
-        <option value="Viable">Viable</option>
-        <option value="No viable">No viable</option>
-        <option value="-">-</option>
-      </select>
-    </div>
-
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
-        Propuesta de generación de estadística derivada
-      </label>
-      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="propuesta" (ngModelChange)="verificarFinalizarCaptura()"
-        type="text" id="comentarioVariable" class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <div class="col-span-4">
-      <label class="block text-sm font-medium mb-2 text-secondary " for="comentarioVariable">
-        Comentario de pertinencia
-      </label>
-      <input [disabled]="DISABLE_temaCobertura" [(ngModel)]="comentarioPertinencia"
-        (ngModelChange)="verificarFinalizarCaptura()" type="text" id="comentarioVariable"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
   </div>
 
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div>
+        <h2 class="card-title text-base">Pertinencia</h2>
+        <p class="text-xs text-base-content/60">Registra el tema de cobertura, su viabilidad y propuesta de generación.
+        </p>
+      </div>
 
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-7">
+        <div class="form-control xl:col-span-3">
+          <label class="label" for="temaCobertura">
+            <span class="label-text text-xs font-medium">Tema de cobertura de necesidades</span>
+          </label>
+          <input id="temaCobertura" type="text" class="input input-bordered w-full" [(ngModel)]="temaCobertura"
+            (ngModelChange)="verificarFinalizarCaptura()" (click)="onComentarioClick($event)" />
+        </div>
+
+        <div class="form-control xl:col-span-2">
+          <label class="label" for="idNivelCont">
+            <span class="label-text text-xs font-medium">Nivel de contribución</span>
+          </label>
+          <select id="idNivelCont" class="select select-bordered w-full" [disabled]="DISABLE_temaCobertura"
+            [(ngModel)]="nivelContribucion">
+            <option disabled selected>Selecciona un nivel</option>
+            <option value="Alto">Alto</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Bajo">Bajo</option>
+            <option value="-">-</option>
+          </select>
+        </div>
+
+        <div class="form-control xl:col-span-2">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Viabilidad de generación</span>
+          </label>
+          <select class="select select-bordered w-full" [disabled]="DISABLE_temaCobertura" [(ngModel)]="viabilidad">
+            <option disabled selected>Selecciona una opción</option>
+            <option value="Viable">Viable</option>
+            <option value="No viable">No viable</option>
+            <option value="-">-</option>
+          </select>
+        </div>
+
+        <div class="form-control xl:col-span-3">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Propuesta de generación de estadística derivada</span>
+          </label>
+          <input type="text" class="input input-bordered w-full" [disabled]="DISABLE_temaCobertura"
+            [(ngModel)]="propuesta" (ngModelChange)="verificarFinalizarCaptura()" />
+        </div>
+
+        <div class="form-control xl:col-span-4">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Comentario de pertinencia</span>
+          </label>
+          <input type="text" class="input input-bordered w-full" [disabled]="DISABLE_temaCobertura"
+            [(ngModel)]="comentarioPertinencia" (ngModelChange)="verificarFinalizarCaptura()" />
+        </div>
+      </div>
+    </div>
+  </div>
 
   @if (showWarning && currentDeactivation) {
-  <div role="alert" class="alert alert-vertical sm:alert-horizontal animate-fadeIn mb-2">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
+  <div role="alert" class="alert alert-vertical sm:alert-horizontal animate-fadeIn border border-base-300 shadow-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-5 w-5 shrink-0 stroke-info">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
     </svg>
-    <span>¿Estás seguro de desactivar la alineación con {{currentDeactivation.name}}?</span>
+    <span class="text-sm">¿Estás seguro de desactivar la alineación con {{ currentDeactivation.name }}?</span>
     <div>
-      <button class="btn btn-sm mr-5" (click)="cancelDeactivation()">Cancelar</button>
+      <button class="btn btn-sm btn-ghost mr-2" (click)="cancelDeactivation()">Cancelar</button>
       <button class="btn btn-sm btn-primary" (click)="confirmDeactivation()">Aceptar</button>
     </div>
   </div>
   }
 
-  <!--! dos columnas -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!--! mdea -->
+  <div class="grid gap-4 xl:grid-cols-2">
     @if (showPOST_RELATIONES_MDE) {
-    <div class="border p-4">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <h2 class="card-title text-base">Relación MDEA</h2>
+            <p class="text-xs text-base-content/60">Agrega y administra las relaciones MDEA de la variable.</p>
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="registrarRelacion()">+ Agregar relación MDEA</button>
+        </div>
 
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-1xl font-bold font-montserrat text-primary">Relación MDEA</h1>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Componente</span></label>
+            <select class="select select-bordered w-full" (change)="onSelectComponente($event)">
+              <option disabled selected>Selecciona un componente</option>
+              <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{ comp.idComponente }}. {{
+                comp.nombre }}</option>
+            </select>
+          </div>
 
-        <button class="btn btn-outline btn-sm btn-primary " (click)="registrarRelacion()">
-          + Agregar relación MDEA
-        </button>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Subcomponente</span></label>
+            <select class="select select-bordered w-full" #subcomponenteSelect (change)="onSelectSubcomponente($event)"
+              [disabled]="!isSelectEnabled_Subc">
+              <option disabled selected>Selecciona un subcomponente</option>
+              <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente
+                }}. {{ subcomp.nombre }}</option>
+              <option value="-">-</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Tema</span></label>
+            <select class="select select-bordered w-full" #topicoSelect (change)="onSelectTopico($event)"
+              [disabled]="!isSelectEnabled_Top">
+              <option disabled selected>Selecciona un tema</option>
+              <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}
+              </option>
+              <option value="-">-</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Estadística 1</span></label>
+            <select class="select select-bordered w-full" #variableSelect (change)="onSelectVariable($event)"
+              [disabled]="!isSelectEnabled_Var">
+              <option value="__placeholder__" disabled selected>Selecciona una variable</option>
+              <option *ngFor="let v of arrVariables" [value]="v.idEstadistico1">{{ v.idEstadistico1 }}. {{ v.nombre }}
+              </option>
+              <option value="-">-</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Estadística 2</span></label>
+            <select class="select select-bordered w-full" #estadisticoSelect (change)="onSelectEstadistico($event)"
+              [disabled]="!isSelectEnabled_Est">
+              <option disabled selected>Selecciona un estadístico 2</option>
+              <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}.
+                {{ estad.nombre }}</option>
+              <option value="-">-</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Nivel de contribución</span></label>
+            <select class="select select-bordered w-full" (change)="onSelectNivel($event)"
+              [(ngModel)]="nivelContribucionContenidosMdeaRelation" [disabled]="!isSelectEnabled_Nivel">
+              <option disabled selected>Selecciona un nivel</option>
+              <option value="Alto">Alto</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Bajo">Bajo</option>
+            </select>
+          </div>
+
+          <div class="form-control md:col-span-2 xl:col-span-3">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="comentariopullMdea"
+              [disabled]="!isSelectEnabled_Comentario" />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-box border border-base-300">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Código de relación</th>
+                <th class="text-center">Nivel</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (itemRelation of relationesMDEA; track $index) {
+              <tr>
+                <td>
+                  <ul class="grid grid-cols-[auto_1fr] gap-x-2 text-sm">
+                    <li class="contents"><span class="font-medium">Componente:</span><span>{{ itemRelation.componente
+                        }}</span></li>
+                    <li class="contents"><span class="font-medium">Subcomponente:</span><span>{{
+                        itemRelation.subcomponente }}</span></li>
+                    <li class="contents"><span class="font-medium">Tema:</span><span>{{ itemRelation.tema }}</span></li>
+                    <li class="contents"><span class="font-medium">Estadística 1:</span><span>{{
+                        itemRelation.estadistica1 }}</span></li>
+                    <li class="contents"><span class="font-medium">Estadística 2:</span><span>{{
+                        itemRelation.estadistica2 }}</span></li>
+                  </ul>
+                </td>
+                <td class="text-center text-sm">{{ itemRelation.contribucion }}</td>
+                <td class="text-center">
+                  <button class="btn btn-outline btn-error btn-xs"
+                    (click)="eliminarRelacionesMDEAWhitVars(itemRelation.idUnique)">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idComponente">
-            Componente
-          </label>
-          <select class="select select-bordered select-sm w-full" (change)="onSelectComponente($event)">
-            <option disabled selected>Selecciona un componente</option>
-            <option *ngFor="let comp of arrComponentes" [value]="comp.idComponente">{{comp.idComponente}}. {{ comp.nombre }}</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
-            Subcomponente
-          </label>
-          <select class="select select-bordered select-sm w-full"
-            #subcomponenteSelect
-            (change)="onSelectSubcomponente($event)"
-            [disabled]="!isSelectEnabled_Subc">
-            <option disabled selected>Selecciona un subcomponente</option>
-            <option *ngFor="let subcomp of arrSubcompo" [value]="subcomp.idSubcomponente">{{ subcomp.idSubcomponente }}. {{ subcomp.nombre }}
-            </option>
-            <option value="-">-</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
-            Tema
-          </label>
-          <select class="select select-bordered select-sm w-full"
-          #topicoSelect
-          (change)="onSelectTopico($event)"
-            [disabled]="!isSelectEnabled_Top">
-
-            <option disabled selected>Selecciona un tema</option>
-            <option *ngFor="let tema of arrTopicos" [value]="tema.idTema">{{ tema.idTema }}. {{ tema.nombre }}</option>
-            <option value="-">-</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idVariableMDEA">
-            Estadística 1
-          </label>
-          <select class="select select-bordered select-sm w-full" #variableSelect (change)="onSelectVariable($event)"
-            [disabled]="!isSelectEnabled_Var">
-            <option value="__placeholder__" disabled selected>Selecciona una variable</option>
-            <option *ngFor="let v of arrVariables" [value]="v.idEstadistico1">
-              {{ v.idEstadistico1 }}. {{ v.nombre }}
-            </option>
-            <option value="-">-</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idEstadistico">
-            Estadística 2
-          </label>
-          <select class="select select-bordered select-sm w-full" #estadisticoSelect
-            (change)="onSelectEstadistico($event)" [disabled]="!isSelectEnabled_Est">
-            <option disabled selected>Selecciona un estadístico2</option>
-            <option *ngFor="let estad of arrEstadisticos" [value]="estad.idEstadistico2">{{ estad.idEstadistico2 }}. {{ estad.nombre }}
-            </option>
-            <option value="-">-</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
-            Nivel de contribución
-          </label>
-          <select id="idNivelCont" (change)="onSelectNivel($event)"
-            [(ngModel)]="nivelContribucionContenidosMdeaRelation" name="nivelContribucionContenidosMdeaRelation"
-            [disabled]="!isSelectEnabled_Nivel" class="select select-bordered select-sm w-full ">
-            <option disabled selected>Selecciona un nivel</option>
-            <option value="Alto">Alto</option>
-            <option value="Intermedio">Intermedio</option>
-            <option value="Bajo">Bajo</option>
-          </select>
-
-        </div>
-
-        <div class="col-span-3">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
-            Comentario
-          </label>
-          <input type="text" id="comentariopullMdea" [(ngModel)]="comentariopullMdea"
-            [disabled]="!isSelectEnabled_Comentario" class="input input-sm input-bordered w-full" placeholder="" />
-        </div>
-
-
-      </div>
-
-
-      <div class="flex justify-between items-center mb-2 mt-6">
-        <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
-      </div>
-
-
-
-      <div class="overflow-x-auto">
-        <table class="table">
-          <thead>
-            <tr>
-              <th class="text-secondary">Codigo de relación</th>
-              <th class="text-secondary text-center">Nivel</th>
-              <th class="text-secondary text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (itemRelation of relationesMDEA; track $index) {
-            <tr>
-              <th>
-                <ul class="grid grid-cols-[auto_1fr] gap-x-2">
-                  <li class="contents">
-                    <span class="font-medium">Componente:</span>
-                    <span>{{ itemRelation.componente }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Subcomponente:</span>
-                    <span>{{ itemRelation.subcomponente }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Tema:</span>
-                    <span>{{ itemRelation.tema }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Estadística 1:</span>
-                    <span>{{ itemRelation.estadistica1 }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Estadística 2:</span>
-                    <span>{{ itemRelation.estadistica2 }}</span>
-                  </li>
-                </ul>
-              </th>
-
-
-              <th class="text-center">{{itemRelation.contribucion}}</th>
-              <th class="text-center">
-                <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
-                  (click)="eliminarRelacionesMDEAWhitVars(itemRelation.idUnique)">Eliminar</button>
-              </th>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-
-
-
-
-
     </div>
     }
 
-    <!--! ods -->
     @if (showPOST_RELATIONES_ODS) {
-    <div class="border p-4">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <h2 class="card-title text-base">Relación ODS</h2>
+            <p class="text-xs text-base-content/60">Agrega y administra las relaciones ODS de la variable.</p>
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="registrarNuevaRelacion()">+ Agregar relación ODS</button>
+        </div>
 
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-1xl font-bold font-montserrat text-primary">Relación ODS</h1>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Objetivo</span></label>
+            <select class="select select-bordered w-full" (change)="onSelectObjetivo($event)">
+              <option disabled selected>Selecciona un objetivo</option>
+              <option *ngFor="let obj of arrODS" [value]="obj.idObjetivo">{{ obj.idObjetivo + '. ' + obj.objetivo }}
+              </option>
+            </select>
+          </div>
 
-        <button class="btn btn-outline btn-sm btn-primary " (click)="registrarNuevaRelacion()">
-          + Agregar relación ODS
-        </button>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Meta</span></label>
+            <select class="select select-bordered w-full" #metaSelect (change)="onSelectMeta($event)"
+              [disabled]="!isSelectEnabled_Meta">
+              <option value="__placeholder__" disabled selected>Selecciona una meta</option>
+              <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">{{ meta.idMeta }}. {{ meta.meta.length > 50 ?
+                (meta.meta | slice:0:100) + '...' : meta.meta }}</option>
+              <option value="-">-</option>
+            </select>
+          </div>
 
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Indicador</span></label>
+            <select class="select select-bordered w-full" #indicadorSelect (change)="onSelectIndicador($event)"
+              [disabled]="!isSelectEnabled_Ind">
+              <option disabled selected>Selecciona un indicador</option>
+              <option *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">{{ indic.idIndicador }}. {{
+                indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' : indic.indicador }}</option>
+              <option value="-">-</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Nivel de contribución</span></label>
+            <select class="select select-bordered w-full" (change)="_ods_onSelectNivel($event)"
+              [(ngModel)]="_ods_nivelContribucion" [disabled]="!_ods_isSelectEnabled_Nivel">
+              <option disabled selected>Selecciona un nivel</option>
+              <option value="Alto">Alto</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Bajo">Bajo</option>
+            </select>
+          </div>
+
+          <div class="form-control md:col-span-2 xl:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="_ods_comentarioRelacionODS"
+              [disabled]="!_ods_isSelectEnabled_Comentario" />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-box border border-base-300">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Código de relación</th>
+                <th class="text-center">Nivel</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (itemRelation of relacionesODS; track $index) {
+              <tr>
+                <td>
+                  <ul class="grid grid-cols-[auto_1fr] gap-x-2 text-sm">
+                    <li class="contents"><span class="font-medium">Objetivo:</span><span>{{ itemRelation.objetivo
+                        }}</span></li>
+                    <li class="contents"><span class="font-medium">Meta:</span><span>{{ itemRelation.meta }}</span></li>
+                    <li class="contents"><span class="font-medium">Indicador:</span><span>{{ itemRelation.indicador
+                        }}</span></li>
+                  </ul>
+                </td>
+                <td class="text-center text-sm">{{ itemRelation.contribucion }}</td>
+                <td class="text-center">
+                  <button class="btn btn-outline btn-error btn-xs" (click)="eliminarRelacion(itemRelation.idUnique!)">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h2 class="card-title text-base">Lista de variables</h2>
+          <p class="text-xs text-base-content/60">Consulta, reutiliza y administra las variables capturadas para esta
+            fuente.</p>
+        </div>
+        <div class="badge badge-outline badge-sm">{{ totalItems }} variables</div>
       </div>
 
-      <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idComponente">
-            Objetivo
-          </label>
-          <select class="select select-bordered select-sm w-full" (change)="onSelectObjetivo($event)">
-            <option disabled selected>Selecciona un objetivo</option>
-            <option *ngFor="let obj of arrODS" [value]="obj.idObjetivo">{{ obj.idObjetivo+'. '+obj.objetivo }}</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs ">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idSubcom">
-            Meta
-          </label>
-          <select class="select select-bordered select-sm w-full" #metaSelect (change)="onSelectMeta($event)"
-            [disabled]="!isSelectEnabled_Meta">
-            <option value="__placeholder__" disabled selected>Selecciona una meta</option>
-
-            <option *ngFor="let meta of arrMetas" [value]="meta.idMeta">
-              {{ meta.idMeta }}.
-              {{
-              meta.meta.length > 50
-              ? (meta.meta | slice: 0 : 100) + '...'
-              : meta.meta
-              }}
-            </option>
-
-            <option value="-">-</option>
-          </select>
-
-        </div>
-
-        <div class="max-w-xs truncate">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idTopico">
-            Indicador
-          </label>
-          <select class="select select-bordered select-sm w-full " #indicadorSelect (change)="onSelectIndicador($event)"
-            [disabled]="!isSelectEnabled_Ind">
-            >
-            <option disabled selected>Selecciona un ndicador</option>
-            <option class="truncate" *ngFor="let indic of arrIndicadores" [value]="indic.idIndicador">
-              {{indic.idIndicador}}.
-              {{ indic.indicador.length > 50 ? (indic.indicador | slice:0:100) + '...' :
-              indic.indicador }}</option>
-            <option value="-">-</option>
-          </select>
-        </div>
-
-        <div class="max-w-xs">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idNivelCont">
-            Nivel de contribución
-          </label>
-          <select class="select select-bordered select-sm w-full " (change)="_ods_onSelectNivel($event)"
-            [(ngModel)]="_ods_nivelContribucion" [disabled]="!_ods_isSelectEnabled_Nivel">
-            <option disabled selected>Selecciona un nivel</option>
-            <option value="Alto">Alto</option>
-            <option value="Intermedio">Intermedio</option>
-            <option value="Bajo">Bajo</option>
-          </select>
-
-        </div>
-
-        <div class="col-span-2">
-          <label class="block text-sm font-medium text-secondary mb-2" for="idComentario">
-            Comentario
-          </label>
-          <input [(ngModel)]="_ods_comentarioRelacionODS" [disabled]="!_ods_isSelectEnabled_Comentario" type="text"
-            id="comentariopullMdea" class="input input-sm input-bordered w-full" placeholder="" />
-        </div>
-
-      </div>
-
-      <div class="flex justify-between items-center mb-2 mt-6">
-        <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de relaciones</h1>
-
-
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="table">
-          <!-- head -->
+      <div class="overflow-x-auto rounded-box border border-base-300">
+        <table class="table table-zebra">
           <thead>
             <tr>
-              <th class="text-secondary">Codigo de relación</th>
-              <th class="text-center text-secondary">Nivel</th>
-              <th class="text-center text-secondary">Acciones</th>
-
+              <th style="width: 10rem;">Id Variable</th>
+              <th>Nombre</th>
+              <th class="text-center">Alineación MDEA</th>
+              <th class="text-center">Alineación ODS</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <!-- row 1 -->
-            @for (itemRelation of relacionesODS; track $index) {
+            @for (varItem of variables; track $index) {
             <tr>
-              <th>
-                <ul class="grid grid-cols-[auto_1fr] gap-x-2">
-                  <li class="contents">
-                    <span class="font-medium">Objetivo:</span>
-                    <span>{{ itemRelation.objetivo }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Meta:</span>
-                    <span>{{ itemRelation.meta }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Indicador:</span>
-                    <span>{{ itemRelation.indicador }}</span>
-                  </li>
-
-                </ul>
-              </th>
-
-
-
-              <th class="text-center">{{itemRelation.contribucion}}</th>
-
-              <th class="text-center">
-                <button class="px-3 py-1 btn btn-outline btn-error btn-xs"
-                  (click)="eliminarRelacion(itemRelation.idUnique!)">Eliminar</button>
-              </th>
+              <td class="text-sm">{{ varItem.idS }}</td>
+              <td class="text-sm">{{ varItem.nombre }}</td>
+              <td class="text-center">
+                @if (varItem.mdea) {
+                <span class="text-success">✔️</span>
+                } @else {
+                <span class="text-error">❌</span>
+                }
+              </td>
+              <td class="text-center">
+                @if (varItem.ods) {
+                <span class="text-success">✔️</span>
+                } @else {
+                <span class="text-error">❌</span>
+                }
+              </td>
+              <td class="text-center">
+                <button (click)="editarVariable(varItem)" class="btn btn-outline btn-primary btn-xs">
+                  Consultar
+                </button>
+                <button class="btn btn-outline btn-error btn-xs ml-2" (click)="eliminarVariable(varItem.idA)">
+                  Eliminar
+                </button>
+              </td>
             </tr>
             }
-
-
           </tbody>
         </table>
       </div>
 
-
-
-
-    </div>
-    }
-
-  </div>
-
-  <div class="grid grid-cols-1 gap4">
-
-    <div class="flex w-full flex-col">
-      <div class="divider"></div>
-    </div>
-
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-1xl font-bold font-montserrat text-primary">Lista de variables </h1>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="table table-xs">
-        <thead>
-          <tr>
-            <th class="text-secondary" style="width: 10rem;">Id Variable</th>
-            <th class="text-secondary">Nombre</th>
-
-            <th class="text-secondary text-center">Alineación Mdea</th>
-            <th class="text-secondary text-center">Alineación Ods</th>
-            <th class="text-secondary text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( varItem of variables; track $index) {
-
-          <tr>
-            <td class="">{{ varItem.idS }}</td>
-            <td>{{varItem.nombre }}</td>
-
-            <td class="text-center">
-              @if (varItem.mdea) {
-              <span class="text-green-600">✔️</span>
-              } @else {
-              <span class="text-red-600">❌</span>
-              }
-            </td>
-            <td class="text-center">
-              @if (varItem.ods) {
-              <span class="text-green-600">✔️</span>
-              } @else {
-              <span class="text-red-600">❌</span>
-              }
-            </td>
-            <td class="text-center">
-              <!-- <button class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
-                Ver
-              </button> -->
-              <button (click)="editarVariable(varItem)" class="px-3 py-1 btn btn-outline btn-primary btn-xs ">
-                Consultar
-                </button>
-              <button class="px-3 py-1 btn btn-outline btn-error btn-xs ml-2"
-                (click)="eliminarVariable(varItem.idA)">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- <div class="flex justify-end mt-4">
-      <div class="join">
-        <button class="join-item btn btn-sm" (click)="prevPage()" [disabled]="currentPage === 0">«</button>
-        <button class="join-item btn btn-sm">{{ currentPage + 1 }} / {{ totalPages }}</button>
-        <button class="join-item btn btn-sm btn-primary" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">»</button>
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-medium text-base-content/70">Páginas:</span>
+          <div class="join space-x-1">
+            <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">«</button>
+            <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
+              [ngClass]="{ 'btn-primary': page === currentPage }" (click)="goToPage(page)">
+              {{ page + 1 }}
+            </button>
+            <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">»</button>
+          </div>
         </div>
-    </div> -->
 
-    <div class="flex justify-between items-center mt-4 px-4">
-      <!-- Paginador a la izquierda -->
-      <div class="flex items-center space-x-2">
-        <span class="text-sm font-medium text-gray-700">Páginas:</span>
+        <div class="text-sm text-base-content/70">
+          Total de variables: {{ totalItems }}
+        </div>
 
-        <div class="join space-x-1">
-          <!-- « solo si NO estás en el primer rango -->
-          <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">
-            «
-          </button>
-
-          <!-- Botones de página -->
-          <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
-            [ngClass]="{'btn-primary': page === currentPage}" (click)="goToPage(page)">
-            {{ page + 1 }}
-          </button>
-
-          <!-- » solo si NO estás en el último rango -->
-          <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">
-            »
-          </button>
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-medium text-base-content/70">Resultados por página:</span>
+          <select class="select select-bordered select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+            <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+          </select>
         </div>
       </div>
-      <div class="flex items-center space-x-2">
-        <span class="text-sm font-medium text-gray-700">Total de variables: {{totalItems}}</span>
-      </div>
-
-      <!-- Selector a la derecha -->
-      <div class="flex items-center space-x-2">
-        <span class="text-sm font-medium text-gray-700">Resultados por página:</span>
-
-        <select class="select select-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          [(ngModel)]="pageSize" (change)="onPageSizeChange()">
-          <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
-        </select>
-      </div>
     </div>
-
-
-
-
-
-
   </div>
-
-
 </div>
-
-
-
-
-
-
-
-<!--! modal -->
 
 <dialog #miModal id="mi_modal_1" class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">¿Deseas continuar con el registro?</h3>
     <p class="py-4">
-      Si continúas, se registrarán los campos que acabas de llenar para esta variable y se habilitará la sección
-      para
+      Si continúas, se registrarán los campos que acabas de llenar para esta variable y se habilitará la sección para
       agregar las relaciones correspondientes.<br><br>
       Si aún no estás seguro, puedes cancelar para revisar o editar los datos antes de proceder.
     </p>
-
     <div class="modal-action">
       <form method="dialog">
         <button class="btn btn-error">Cancelar</button>
       </form>
-      <button class="btn btn-primary text-base-100" (click)="accionPersonalizada()">Sí, continuar</button>
+      <button class="btn btn-primary" (click)="accionPersonalizada()">Sí, continuar</button>
     </div>
   </div>
 </dialog>
 
-
 <div class="drawer drawer-end">
   <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content">
-
-  </div>
+  <div class="drawer-content"></div>
   <div class="drawer-side">
     <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu bg-base-200 text-base-content min-h-full w-100 pr-2">
-      <!-- Sidebar content here -->
+    <ul class="menu min-h-full w-[28rem] bg-base-200 pr-2 text-base-content">
       @for (item of arrVarsById; track $index) {
-      <div class="card bg-base-100 shadow-xl mt-2" style="width: 25rem;">
+      <div class="card mt-2 bg-base-100 shadow-xl">
         <div class="card-body">
-          <h3 class="font-bold text-secondary text-lg text-center">
-            {{ item.idA }}
-          </h3>
+          <h3 class="text-center text-lg font-bold text-secondary">{{ item.idA }}</h3>
 
-          <!-- Información básica -->
           <div class="mb-4">
-            <p class="text-secondary font-semibold text-lg">Nombre:</p>
+            <p class="mt-2 text-lg font-semibold text-secondary">Nombre:</p>
             <p>{{ item.nombre }}</p>
 
-            <p class="text-secondary font-semibold text-lg mt-2">Definición:</p>
+            <p class="mt-2 text-lg font-semibold text-secondary">Definición:</p>
             <p>{{ item.definicion || 'No especificado' }}</p>
 
-            <p class="text-secondary font-semibold text-lg mt-2">Link:</p>
+            <p class="mt-2 text-lg font-semibold text-secondary">Link:</p>
             <p>{{ item.url || 'No disponible' }}</p>
 
-            <p class="text-secondary font-semibold text-lg mt-2">Comentario:</p>
+            <p class="mt-2 text-lg font-semibold text-secondary">Comentario:</p>
             <p>{{ item.comentarioS || 'No disponible' }}</p>
 
-            <button class="btn btn-block btn-sm  btn-secondary mt-3" (click)="pegarDatosVariable(item)">
+            <button class="btn btn-block btn-sm btn-secondary mt-3" (click)="pegarDatosVariable(item)">
               Pegar Datos
             </button>
           </div>
 
-          <!-- Relaciones MDEA -->
           <div class="border-t pt-3">
-            <h3 class="font-bold text-lg mb-2 text-secondary text-center">MDEA</h3>
-
+            <h3 class="mb-2 text-center text-lg font-bold text-secondary">MDEA</h3>
             <ng-container *ngIf="item.mdeas && item.mdeas.length > 0; else noMdeas">
-              <div *ngFor="let mdea of item.mdeas" class="mb-3 p-2 bg-base-200 rounded-lg">
-                <ul class="text-sm  grid grid-cols-[auto_1fr] gap-x-2">
-                  <li class="contents">
-                    <span class="font-medium">Componente:</span>
-                    <span>{{ mdea.componente }}</span>
+              <div *ngFor="let mdea of item.mdeas" class="mb-3 rounded-lg bg-base-200 p-2">
+                <ul class="grid grid-cols-[auto_1fr] gap-x-2 text-sm">
+                  <li class="contents"><span class="font-medium">Componente:</span><span>{{ mdea.componente }}</span>
                   </li>
-                  <li class="contents">
-                    <span class="font-medium">Subcomponente:</span>
-                    <span>{{ mdea.subcomponente }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Tema:</span>
-                    <span>{{ mdea.tema }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Estadística 1:</span>
-                    <span>{{ mdea.estadistica1 }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Estadística 2:</span>
-                    <span>{{ mdea.estadistica2 }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Nivel de contribución:</span>
-                    <span>{{ mdea.contribucion }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Comentario:</span>
-                    <span>{{ mdea.comentarioS }}</span>
+                  <li class="contents"><span class="font-medium">Subcomponente:</span><span>{{ mdea.subcomponente
+                      }}</span></li>
+                  <li class="contents"><span class="font-medium">Tema:</span><span>{{ mdea.tema }}</span></li>
+                  <li class="contents"><span class="font-medium">Estadística 1:</span><span>{{ mdea.estadistica1
+                      }}</span></li>
+                  <li class="contents"><span class="font-medium">Estadística 2:</span><span>{{ mdea.estadistica2
+                      }}</span></li>
+                  <li class="contents"><span class="font-medium">Nivel de contribución:</span><span>{{ mdea.contribucion
+                      }}</span></li>
+                  <li class="contents"><span class="font-medium">Comentario:</span><span>{{ mdea.comentarioS }}</span>
                   </li>
                 </ul>
               </div>
             </ng-container>
-
             <ng-template #noMdeas>
               <div class="alert alert-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -711,39 +548,21 @@
             </ng-template>
           </div>
 
-          <!-- Relaciones ODS -->
           <div class="mt-4 border-t pt-3">
-            <h3 class="font-bold text-lg mb-2 text-secondary text-center">ODS</h3>
-
+            <h3 class="mb-2 text-center text-lg font-bold text-secondary">ODS</h3>
             <ng-container *ngIf="item.odsList && item.odsList.length > 0; else noOds">
-              <div *ngFor="let ods of item.odsList" class="mb-3 p-2 bg-base-200 rounded-lg">
-                <ul class="text-sm grid grid-cols-[auto_1fr] gap-x-2">
-
-                  <li class="contents">
-                    <span class="font-medium">Objetivo:</span>
-                    <span>{{ ods.objetivo }}</span>
+              <div *ngFor="let ods of item.odsList" class="mb-3 rounded-lg bg-base-200 p-2">
+                <ul class="grid grid-cols-[auto_1fr] gap-x-2 text-sm">
+                  <li class="contents"><span class="font-medium">Objetivo:</span><span>{{ ods.objetivo }}</span></li>
+                  <li class="contents"><span class="font-medium">Meta:</span><span>{{ ods.meta }}</span></li>
+                  <li class="contents"><span class="font-medium">Indicador:</span><span>{{ ods.indicador }}</span></li>
+                  <li class="contents"><span class="font-medium">Nivel de contribución:</span><span>{{ ods.contribucion
+                      }}</span></li>
+                  <li class="contents"><span class="font-medium">Comentario:</span><span>{{ ods.comentarioS }}</span>
                   </li>
-                  <li class="contents">
-                    <span class="font-medium">Meta:</span>
-                    <span>{{ ods.meta }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Indicador:</span>
-                    <span>{{ ods.indicador }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Nivel de contribución:</span>
-                    <span>{{ ods.contribucion }}</span>
-                  </li>
-                  <li class="contents">
-                    <span class="font-medium">Comentario:</span>
-                    <span>{{ ods.comentarioS }}</span>
-                  </li>
-
                 </ul>
               </div>
             </ng-container>
-
             <ng-template #noOds>
               <div class="alert alert-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -756,23 +575,21 @@
             </ng-template>
           </div>
 
-          <!-- Relaciones tema -->
           <div class="mt-4 border-t pt-3">
-            <h3 class="font-bold text-lg mb-2 text-secondary text-center">Tema Cobertura de Necesidades</h3>
-
-            <ng-container *ngIf="item.pertinencia; else noPer">
-              <div class="mb-2 p-2 rounded-lg">
+            <h3 class="mb-2 text-center text-lg font-bold text-secondary">Tema Cobertura de Necesidades</h3>
+            <ng-container *ngIf="item.pertinencia; else noPerBlock">
+              <div class="mb-2 rounded-lg p-2">
                 <div class="mb-2">
-                  <p class="text-secondary font-semibold text-lg">Tema de cobertura:</p>
+                  <p class="text-lg font-semibold text-secondary">Tema de cobertura:</p>
                   <p>{{ item.pertinencia.pertinencia }}</p>
 
-                  <p class="text-secondary font-semibold text-lg mt-2">Nivel de contribución:</p>
+                  <p class="mt-2 text-lg font-semibold text-secondary">Nivel de contribución:</p>
                   <p>{{ item.pertinencia.contribucion || 'No especificado' }}</p>
 
-                  <p class="text-secondary font-semibold text-lg mt-2">Viabilidad de generación:</p>
+                  <p class="mt-2 text-lg font-semibold text-secondary">Viabilidad de generación:</p>
                   <p>{{ item.pertinencia.viabilidad || 'No disponible' }}</p>
 
-                  <p class="text-secondary font-semibold text-lg mt-2">Propuesta de generación:</p>
+                  <p class="mt-2 text-lg font-semibold text-secondary">Propuesta de generación:</p>
                   <p>{{ item.pertinencia.propuesta || 'No disponible' }}</p>
 
                   <button class="btn btn-block btn-sm btn-secondary mt-4" [disabled]="DISABLE_temaCobertura"
@@ -782,13 +599,7 @@
                 </div>
               </div>
             </ng-container>
-
-            <ng-template #noPer>
-              <p class="text-sm text-slate-500">Sin pertinencia registrada.</p>
-            </ng-template>
-
-
-            <ng-template #noPer>
+            <ng-template #noPerBlock>
               <div class="alert alert-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
@@ -802,17 +613,13 @@
         </div>
       </div>
       }
-
-
     </ul>
   </div>
 </div>
 
-<!-- Modal para ID de variable duplicado -->
 <dialog #modalIdDuplicado class="modal">
   <div class="modal-box">
-    <!-- Icono de error -->
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-error" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -820,43 +627,27 @@
       </svg>
     </div>
 
-    <h3 class="text-lg font-bold text-center">¡ID de variable duplicado!</h3>
-    <p class="py-4 text-center">
-      Ya existe una variable con el mismo ID en el sistema.<br>
-      Por favor, modifica el ID antes de continuar con el registro.
-    </p>
+    <h3 class="text-center text-lg font-bold">¡ID de variable duplicado!</h3>
+    <p class="py-4 text-center">Ya existe una variable con el mismo ID en el sistema.<br>Por favor, modifica el ID antes
+      de continuar con el registro.</p>
 
     <div class="modal-action flex justify-center gap-4">
-      <!-- Botón para corregir -->
-      <button class="btn btn-error" (click)="corregirIdVariable()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
-        Modificar ID
-      </button>
-
+      <button class="btn btn-error" (click)="corregirIdVariable()">Modificar ID</button>
     </div>
   </div>
 </dialog>
 
-
-<!-- Modal -->
 <dialog #modalEliminar class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold">¿Estás seguro?</h3>
     <p class="py-4">¿Deseas eliminar esta variable? Esta acción no se puede deshacer.</p>
     <div class="modal-action">
-      <!-- Botón Cancelar -->
       <button class="btn btn-outline" (click)="cerrarModal()">Cancelar</button>
-      <!-- Botón Aceptar -->
       <button class="btn btn-error" (click)="confirmarEliminacion()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de Error -->
 <dialog #modalError class="modal">
   <div class="modal-box">
     <h3 class="text-lg font-bold text-red-600">⚠️ Error</h3>
@@ -866,6 +657,3 @@
     </div>
   </div>
 </dialog>
-
-
-

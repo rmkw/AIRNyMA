@@ -1,88 +1,98 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-5 mb-8">
-  <!-- Encabezado -->
-  <div class="flex justify-between items-center mb-4">
-    <div>
-      <h1 class="text-2xl font-bold font-montserrat text-primary">
-        Armonización de variables
-      </h1>
-      <p class="text-sm text-base-content/70 mt-1">
-        Selecciona una unidad y un proceso de producción para consultar sus fuentes de Identificación.
-      </p>
-    </div>
-  </div>
 
-  <!-- Filtros superiores -->
-  <div class="mb-4">
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- Unidad -->
-      <div>
-        <label class="block text-sm font-medium mb-2 text-secondary" for="dire">
-          Selecciona unidad productora de información
-        </label>
-        <select id="dire" class="select select-bordered select-sm w-full" (change)="selectedDireccion($event)">
-          <option disabled selected>Selecciona una opción</option>
-          @for (dire of arrDirecciones; track dire.idUnidad) {
-          <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
-          }
-        </select>
+<div class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge border-white/20 bg-white/10 text-white">Armonización</div>
+        <h1 class="text-2xl font-bold tracking-tight">Armonización de variables</h1>
+        <p class="max-w-3xl text-sm text-white/85">
+          Selecciona unidad, proceso y fuentes para cargar variables, armonizar su información y registrar componentes
+          complementarios.
+        </p>
       </div>
 
-      <!-- Proceso -->
-      <div>
-        <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
-          Selecciona el proceso de producción
-        </label>
-        <select id="procesoProduccion" class="select select-bordered select-sm w-full" #procesoProduccionTag
-          [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
-          <option disabled selected>Selecciona una opción</option>
-          @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
-          <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
-          }
-        </select>
-      </div>
-
-
-
-    </div>
-
-  </div>
-
-  <!-- Tabla de fuentes -->
-  <div class=" ">
-    <div class="">
-
-      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4 mt-2">
-        <div>
-          <h2 class="card-title text-lg text-primary">Fuentes de identificación</h2>
-          <p class="text-sm text-base-content/70">
-            Puedes seleccionar una o varias fuentes para trabajar más rápido en la asignación de prioridad.
-          </p>
-          
+      <div class="grid gap-2 text-sm text-white/90 sm:grid-cols-2">
+        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+          <div class="text-xs uppercase tracking-wide text-white/70">Fuentes seleccionadas</div>
+          <div class="mt-1 text-xl font-semibold">{{ fuentesSeleccionadas.length }}</div>
         </div>
-        
+        <div class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+          <div class="text-xs uppercase tracking-wide text-white/70">Variables cargadas</div>
+          <div class="mt-1 text-xl font-semibold">{{ arrVariablesSeleccionadasFiltradas.length ||
+            arrVariablesSeleccionadas.length }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="flex gap-2">
-          <button class="btn btn-outline btn-sm" type="button" [disabled]="arrFuentesByProceso.length === 0"
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div>
+        <h2 class="card-title text-base">Filtros de consulta</h2>
+        <p class="text-xs text-base-content/60">Selecciona una unidad productora y un proceso para consultar sus fuentes
+          de identificación.</p>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="form-control">
+          <label class="label" for="dire">
+            <span class="label-text text-xs font-medium">Unidad productora de información</span>
+          </label>
+          <select id="dire" class="select select-bordered w-full" (change)="selectedDireccion($event)">
+            <option disabled selected>Selecciona una opción</option>
+            @for (dire of arrDirecciones; track dire.idUnidad) {
+            <option [value]="dire.nameUnidad">{{ dire.nameUnidad }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="procesoProduccion">
+            <span class="label-text text-xs font-medium">Proceso de producción</span>
+          </label>
+          <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
+            [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
+            <option disabled selected>Selecciona una opción</option>
+            @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
+            <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <h2 class="card-title text-base">Fuentes de identificación</h2>
+          <p class="text-xs text-base-content/60">Selecciona una o varias fuentes para cargar y armonizar sus variables.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-outline" type="button" [disabled]="arrFuentesByProceso.length === 0"
             (click)="seleccionarTodasLasFuentes()">
             Seleccionar todas
           </button>
 
-          <button class="btn btn-outline btn-sm" type="button" [disabled]="fuentesSeleccionadas.length === 0"
+          <button class="btn btn-sm btn-outline" type="button" [disabled]="fuentesSeleccionadas.length === 0"
             (click)="limpiarSeleccionFuentes()">
             Limpiar selección
           </button>
 
-          <button class="btn btn-primary btn-sm text-slate-100" type="button" (click)="cargarVariablesSeleccionadas()">
+          <button class="btn btn-sm btn-primary" type="button" [disabled]="fuentesSeleccionadas.length === 0"
+            (click)="cargarVariablesSeleccionadas()">
             Cargar variables seleccionadas
           </button>
         </div>
       </div>
 
       @if (loadingFuentes) {
-      <div class="border border-base-300 rounded-box overflow-hidden">
-        <div class="bg-base-200 px-4 py-3 border-b border-base-300">
+      <div class="rounded-box border border-base-300 overflow-hidden">
+        <div class="border-b border-base-300 bg-base-200 px-4 py-3">
           <div class="grid grid-cols-4 gap-4">
             <div class="h-4 rounded bg-base-300 animate-pulse"></div>
             <div class="h-4 rounded bg-base-300 animate-pulse"></div>
@@ -105,10 +115,9 @@
         </div>
       </div>
       } @else {
-      <!-- aquí dejas tu tabla real de fuentes -->
-      <div class="border border-base-300 rounded-box overflow-x-auto overflow-y-auto max-h-64">
-        <table class="table table-sm">
-          <thead class="bg-base-200 sticky top-0 z-10">
+      <div class="overflow-x-auto rounded-box border border-base-300 max-h-72">
+        <table class="table table-pin-rows table-zebra">
+          <thead>
             <tr>
               <th>Fuente</th>
               <th>URL</th>
@@ -119,25 +128,16 @@
           <tbody>
             @if (arrFuentesByProceso.length > 0) {
             @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
-            <tr class="hover">
-              <td>
-                {{ fuente.fuente }}
-              </td>
-
-              <td>
+            <tr>
+              <td class="text-sm">{{ fuente.fuente }}</td>
+              <td class="text-sm">
                 @if (fuente.url) {
-                <a [href]="fuente.url" target="_blank" class="link link-primary text-xs break-all">
-                  Ver URL
-                </a>
+                <a [href]="fuente.url" target="_blank" class="link link-primary break-all">Ver URL</a>
                 } @else {
-                <span class="text-base-content/50 text-xs">Sin URL</span>
+                <span class="text-base-content/50">Sin URL</span>
                 }
               </td>
-
-              <td>
-                {{ fuente.edicion || 'Sin edición' }}
-              </td>
-
+              <td class="text-sm">{{ fuente.edicion || 'Sin edición' }}</td>
               <td class="text-center">
                 <input type="checkbox" class="checkbox checkbox-sm" [value]="fuente.idFuente"
                   [checked]="fuentesSeleccionadas.includes(fuente.idFuente)"
@@ -147,7 +147,7 @@
             }
             } @else {
             <tr>
-              <td colspan="4" class="text-center py-8 text-base-content/60">
+              <td colspan="4" class="py-10 text-center text-sm text-base-content/60">
                 No hay fuentes para mostrar.
               </td>
             </tr>
@@ -156,46 +156,33 @@
         </table>
       </div>
       }
-
-
-
-      
-
     </div>
-
-
-
-
   </div>
 
   @if (loadingVariables) {
-  <div class="mt-8 space-y-6">
+  <div class="space-y-6">
     @for (item of [1,2,3]; track item) {
-    <div class="card bg-base-100 shadow-sm border border-base-300">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
       <div class="card-body px-6 py-5">
-
-        <!-- Header -->
-        <div class="flex justify-between items-start gap-4 mb-5">
-          <div class="space-y-3 w-full">
+        <div class="mb-5 flex items-start justify-between gap-4">
+          <div class="w-full space-y-3">
             <div class="h-4 w-32 rounded bg-base-200 animate-pulse"></div>
             <div class="h-5 w-2/3 rounded bg-base-300 animate-pulse"></div>
           </div>
           <div class="h-6 w-24 rounded-full bg-base-200 animate-pulse"></div>
         </div>
 
-        <!-- Info general -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
           @for (box of [1,2,3]; track box) {
-          <div class="rounded-xl border border-base-300 bg-base-200/40 p-4 space-y-3">
+          <div class="space-y-3 rounded-xl border border-base-300 bg-base-200/40 p-4">
             <div class="h-3 w-24 rounded bg-base-200 animate-pulse"></div>
             <div class="h-4 w-3/4 rounded bg-base-300 animate-pulse"></div>
           </div>
           }
         </div>
 
-        <!-- Relaciones -->
         <div class="rounded-xl border border-base-300 bg-base-100 p-4">
-          <div class="flex justify-between items-center mb-3">
+          <div class="mb-3 flex items-center justify-between">
             <div class="h-4 w-44 rounded bg-base-300 animate-pulse"></div>
             <div class="flex gap-2">
               <div class="h-5 w-16 rounded-full bg-base-200 animate-pulse"></div>
@@ -205,710 +192,525 @@
           </div>
           <div class="h-24 rounded-xl bg-base-200 animate-pulse"></div>
         </div>
-
-        <!-- Prioridad -->
-        <div class="mt-6 pt-4 border-t border-base-300 flex justify-between items-center gap-4">
-          <div class="flex gap-2">
-            <div class="h-9 w-24 rounded-lg bg-base-200 animate-pulse"></div>
-            <div class="h-9 w-24 rounded-lg bg-base-200 animate-pulse"></div>
-          </div>
-          <div class="h-6 w-32 rounded-full bg-base-200 animate-pulse"></div>
-        </div>
-
       </div>
     </div>
     }
   </div>
   } @else {
-  <!-- aquí dejas tus fichas reales -->
   @if (arrVariablesSeleccionadas.length > 0) {
-  
-  <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 mt-2">
-  
-    <!-- COLUMNA IZQUIERDA: LISTA DE VARIABLES -->
-    <div class="xl:col-span-6">
-      <div class="p-2">
-        <div class="">
-          <h2 class="card-title font-semibold text-primary">Variables seleccionadas</h2>
-          <p class="text-sm text-base-content/70">
-            Revisa la información de cada variable.
-          </p>
-  
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-            <input id="filtroIdS" type="text" class="input input-bordered input-sm w-full md:max-w-xs"
-              [(ngModel)]="filtroIdS" (input)="filtrarVariablesPorIdS()" placeholder="Buscar por ID o nombre..." />
-  
-            <div class="text-sm font-semibold text-base-content">
-              Resultados: {{ arrVariablesSeleccionadasFiltradas.length }}
+  <div class="grid gap-6 xl:grid-cols-12">
+    <div class="xl:col-span-5">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Variables seleccionadas</h2>
+            <p class="text-xs text-base-content/60">Selecciona una variable para cargar su fuente y trabajar la
+              armonización.</p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+            <div class="form-control">
+              <label class="label" for="filtroIdS">
+                <span class="label-text text-xs font-medium">Buscar por ID o nombre</span>
+              </label>
+              <input id="filtroIdS" type="text" class="input input-bordered w-full" [(ngModel)]="filtroIdS"
+                (input)="filtrarVariablesPorIdS()" placeholder="Buscar por ID o nombre..." />
+            </div>
+
+            <div class="rounded-xl border border-base-300 bg-base-200/40 px-4 py-3 text-sm">
+              <div class="text-xs uppercase tracking-wide text-base-content/60">Resultados</div>
+              <div class="mt-1 font-semibold">{{ arrVariablesSeleccionadasFiltradas.length }}</div>
             </div>
           </div>
-  
-          <div class="overflow-y-auto max-h-[350px] mt-3">
-            <table class="table table-sm table-fixed w-full">
-              <thead class="sticky top-0 bg-base-200 z-10">
+
+          <div class="overflow-y-auto rounded-box border border-base-300 max-h-[30rem]">
+            <table class="table table-sm table-zebra table-pin-rows">
+              <thead>
                 <tr>
                   <th class="w-[110px]">ID</th>
                   <th>Nombre</th>
-                  <th class="w-[90px]">Estado</th>
-                  <th class="w-[100px]"></th>
+                  <th class="w-[110px] text-center">Acción</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let v of arrVariablesSeleccionadasFiltradas" class="hover">
-                  <td class="whitespace-nowrap text-xs align-top">
-                    {{ v.idA }}
-                  </td>
-                  <td class="text-sm leading-5 align-top break-words">
-                    {{ v.nombre }}
-                  </td>
-                  <td class="align-top">
-                    <span class="badge badge-warning whitespace-nowrap text-[11px]">
-                      En proceso
-                    </span>
-                  </td>
-                  <td class="align-top">
-                    <button class="btn btn-xs btn-primary whitespace-nowrap" (click)="seleccionarVariable(v)">
+                @for (v of arrVariablesSeleccionadasFiltradas; track v.idA) {
+                <tr>
+                  <td class="whitespace-nowrap text-xs align-top">{{ v.idA }}</td>
+                  <td class="text-sm leading-5 align-top break-words">{{ v.nombre }}</td>
+                  <td class="align-top text-center">
+                    <button class="btn btn-xs btn-primary" (click)="seleccionarVariable(v)">
                       Seleccionar
                     </button>
                   </td>
                 </tr>
+                }
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- COLUMNA DERECHA: BLOQUE VERDE FUENTE -->
-    <div class="xl:col-span-6">
-      <div class=" p-2">
-        <div class="">
-          <h2 class="card-title font-semibold text-primary">Fuente de la variable</h2>
-          <p class="text-sm text-base-content/70">
-            Al seleccionar una variable, aquí se mostrará la fuente asociada.
-          </p>
-  
+
+    <div class="xl:col-span-7">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Fuente asociada</h2>
+            <p class="text-xs text-base-content/60">Al seleccionar una variable se mostrará aquí la fuente asociada para
+              guardarla o actualizarla en armonización.</p>
+          </div>
+
           @if (fuenteForm) {
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
-  
-            <div class="">
-              <label class="mt-2">
-                <span class="label-text text-primary">ID fuente</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.idFuente"
-                readonly />
-            </div>
-  
-            <div>
-              <label class="mt-2">
-                <span class="label-text text-primary">Acrónimo</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.acronimo" />
-            </div>
-  
-            <div >
-              <label class="mt-2">
-                <span class="label-text text-primary">Fuente</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.fuente" />
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="form-control">
+              <label class="label"><span class="label-text text-xs font-medium">ID fuente</span></label>
+              <input type="text" class="input input-bordered w-full" [(ngModel)]="fuenteForm.idFuente" readonly />
             </div>
 
-            <div>
-              <label class="mt-2">
-                <span class="label-text text-primary">Edición</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.edicion" />
-            </div>
-  
-            <div class="md:col-span-2">
-              <label class="mt-2">
-                <span class="label-text text-primary">URL</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.url" />
+            <div class="form-control">
+              <label class="label"><span class="label-text text-xs font-medium">Acrónimo</span></label>
+              <input type="text" class="input input-bordered w-full" [(ngModel)]="fuenteForm.acronimo" />
             </div>
 
-            
-  
-  
-            <div class="md:col-span-2">
-              <label class="mt-2">
-                <span class="label-text text-primary">Comentario selección</span>
-              </label>
-              <textarea class="textarea textarea-bordered textarea-xs w-full" rows="1"
+            <div class="form-control">
+              <label class="label"><span class="label-text text-xs font-medium">Fuente</span></label>
+              <input type="text" class="input input-bordered w-full" [(ngModel)]="fuenteForm.fuente" />
+            </div>
+
+            <div class="form-control">
+              <label class="label"><span class="label-text text-xs font-medium">Edición</span></label>
+              <input type="text" class="input input-bordered w-full" [(ngModel)]="fuenteForm.edicion" />
+            </div>
+
+            <div class="form-control md:col-span-2">
+              <label class="label"><span class="label-text text-xs font-medium">URL</span></label>
+              <input type="text" class="input input-bordered w-full" [(ngModel)]="fuenteForm.url" />
+            </div>
+
+            <div class="form-control md:col-span-2">
+              <label class="label"><span class="label-text text-xs font-medium">Comentario selección</span></label>
+              <textarea class="textarea textarea-bordered min-h-24 w-full"
                 [(ngModel)]="fuenteForm.comentarioS"></textarea>
             </div>
           </div>
 
-          <div class="md:col-span-2">
-            <label class="mt-2">
-              <span class="label-text text-primary">Comentario armonización</span>
-            </label>
-            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="1"
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario armonización</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full"
               [(ngModel)]="fuenteForm.comentarioA"></textarea>
           </div>
 
           @if (cargandoEstadoFuente) {
-          <p class="text-xs text-base-content/60 mt-2">Verificando fuente en armonización...</p>
-          } @else if (fuenteForm) {
-          <p class="text-xs mt-2" [ngClass]="fuenteExisteEnArmonizacion ? '' : ''">
-            {{ fuenteExisteEnArmonizacion ? 'La fuente ya existe en armonización.' : 'La fuente aún no existe en armonización.' }}
-          </p>
+          <div class="text-xs text-base-content/60">Verificando fuente en armonización...</div>
+          } @else {
+          <div class="rounded-xl border border-base-300 bg-base-200/30 px-4 py-3 text-sm">
+            {{ fuenteExisteEnArmonizacion ? 'La fuente ya existe en armonización.' : 'La fuente aún no existe en
+            armonización.' }}
+          </div>
           }
-  
-          <div class="mt-2 flex justify-end">
-            <button class="btn btn-primary btn-sm text-white" type="button" [disabled]="!puedeGuardarFuente()" (click)="guardarFuenteTemporal()">
-              {{ fuenteExisteEnArmonizacion ? 'Actualizar' : 'Guardar' }}
+
+          <div class="flex justify-end">
+            <button class="btn btn-primary" type="button" [disabled]="!puedeGuardarFuente()"
+              (click)="guardarFuenteTemporal()">
+              {{ fuenteExisteEnArmonizacion ? 'Actualizar fuente' : 'Guardar fuente' }}
             </button>
           </div>
           } @else {
-          <div class="mt-4 rounded-lg border border-dashed border-base-300 p-6 text-sm text-base-content/60">
-            Selecciona una variable de la tabla de la izquierda para cargar su fuente aquí.
+          <div class="rounded-xl border border-dashed border-base-300 p-8 text-sm text-base-content/60">
+            Selecciona una variable de la lista para cargar aquí su fuente asociada.
           </div>
           }
         </div>
       </div>
     </div>
-  
   </div>
-  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada" 
-    class="mt-4">
-    <div class="mb-4">
-      <h3 class="text-lg font-bold text-primary">Armonización de variable</h3>
-      <p class="text-sm opacity-70">
-        Los campos que se muestran en blanco están destinados a la captura de información por parte del área de Armonización.
-        
-      </p>
-      <p class="text-sm opacity-70">La información proveniente de Selección se muestra inicialmente y puede ser editada en caso de que exista alguna
-      modificación.</p>
-    </div>
-  
-    <form [formGroup]="variableForm" (ngSubmit)="guardarOActualizarVariable()">
-      <!-- DATOS DE SELECCIÓN -->
-      <div class="">
-       
-  
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <div>
-            <label class="">
-              <span class="label-text text-primary ">ID_A</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" formControlName="idA" readonly />
+  }
+
+  @if (puedeMostrarBloqueVariableSeleccion && variableSeleccionada) {
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-5 p-5">
+      <div>
+        <h2 class="card-title text-base">Armonización de variable</h2>
+        <p class="text-xs text-base-content/60">La información de selección se muestra como base y puede complementarse
+          o ajustarse para armonización.</p>
+      </div>
+
+      <form [formGroup]="variableForm" (ngSubmit)="guardarOActualizarVariable()" class="space-y-5">
+        <div class="grid gap-4 md:grid-cols-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">ID_A</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="idA" readonly />
           </div>
-  
-          <div>
-            <label class="">
-              <span class="label-text text-primary">ID_S</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" formControlName="idS" readonly />
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">ID_S</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="idS" readonly />
           </div>
-  
-          <div>
-            <label class="">
-              <span class="label-text text-primary">ID Fuente</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" formControlName="idFuente" readonly />
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">ID fuente</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="idFuente" readonly />
           </div>
-  
-          <div>
-            <label class="">
-              <span class="label-text text-primary">Acrónimo</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" formControlName="acronimo" readonly />
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Acrónimo</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="acronimo" readonly />
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div class="mt-2">
-              <label class="">
-                <span class="label-text text-primary">Variable en selección</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableS" readonly />
-            </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Variable en selección</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="variableS" readonly />
+          </div>
 
-            <div class="mt-2">
-              <label class="">
-                <span class="label-text text-primary">Variable armonizada</span>
-              </label>
-              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableA"
-                placeholder="Escriba el nombre armonizado de la variable" />
-            </div>
-
-        </div>
-  
-        
-  
-        <div class="mt-2">
-          <label class="">
-            <span class="label-text text-primary">URL</span>
-          </label>
-          <input type="text" class="input input-bordered input-sm w-full" formControlName="url" />
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Variable armonizada</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="variableA"
+              placeholder="Escriba el nombre armonizado de la variable" />
+          </div>
         </div>
 
-        <div class="mt-2">
-          <label class="">
-            <span class="label-text text-primary">Pregunta</span>
-          </label>
-          <input type="text" class="input input-bordered input-sm w-full" formControlName="pregunta"
-            placeholder="Escriba la pregunta asociada a la variable"/>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">URL</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="url" />
+          </div>
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Pregunta</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="pregunta"
+              placeholder="Escriba la pregunta asociada a la variable" />
+          </div>
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Definición</span></label>
+            <textarea class="textarea textarea-bordered min-h-28 w-full" formControlName="definicion"
+              readonly></textarea>
+          </div>
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Universo</span></label>
+            <input type="text" class="input input-bordered w-full" formControlName="universo"
+              placeholder="Escriba el universo asociado a la variable" />
+          </div>
         </div>
 
-        
-  
-        <div class="mt-2">
-          <label class="">
-            <span class="label-text text-primary">Definición</span>
-          </label>
-          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="definicion"
-            readonly></textarea>
-        </div>
-        
-        <div class="mt24">
-          <label class="">
-            <span class="label-text text-primary">Universo</span>
-          </label>
-          <input class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="universo"
-            placeholder="Escriba el universo asociado a la variable" />
-        </div>
-
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label class="">
-              <span class="label-text text-primary">Año de referencia</span>
-            </label>
-            <input type="number" class="input input-bordered input-sm w-full" formControlName="anioReferencia"
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Año de referencia</span></label>
+            <input type="number" class="input input-bordered w-full" formControlName="anioReferencia"
               placeholder="Ej. 2024" />
           </div>
-          
-          <div>
-            <label>
-              <span class="label-text text-primary">Temática</span>
-            </label>
-            <select class="select select-bordered select-sm w-full" [class.select-error]="variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched" formControlName="tematica">
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Temática</span></label>
+            <select class="select select-bordered w-full"
+              [class.select-error]="variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched"
+              formControlName="tematica">
               <option value="" disabled>Seleccione una temática</option>
-              <option *ngFor="let t of arrTematicas" [value]="t.tematica">
-                {{ t.tematica }}
-              </option>
+              <option *ngFor="let t of arrTematicas" [value]="t.tematica">{{ t.tematica }}</option>
             </select>
             @if (variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched) {
-            <span class="text-error text-xs">Debe seleccionar una temática.</span>
+            <span class="mt-1 text-xs text-error">Debe seleccionar una temática.</span>
             }
           </div>
-          
-          
-        </div>
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-  
-          <div>
-            <label>
-              <span class="label-text text-primary">Tema 1</span>
-            </label>
-            <select class="select select-bordered select-sm w-full" formControlName="tema1" (change)="onTema1Change($event)">
-              <option value="" disabled>Seleccione un tema</option>
-              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">
-                {{ tema }}
-              </option>
-            </select>
-          </div>
-          
-          <div>
-            <label>
-              <span class="label-text text-primary">Subtema 1</span>
-            </label>
-            <select class="select select-bordered select-sm w-full" formControlName="subtema1">
-              <option value="" disabled>Seleccione un subtema</option>
-              <option *ngFor="let item of arrSubtemasTema1" [value]="item.subtema">
-                {{ item.subtema }}
-              </option>
-            </select>
-          </div>
-          
-          <div>
-            <label>
-              <span class="label-text text-primary">Tema 2</span>
-            </label>
-            <select class="select select-bordered select-sm w-full" formControlName="tema2" (change)="onTema2Change($event)">
-              <option value="" disabled>Seleccione un tema</option>
-              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">
-                {{ tema }}
-              </option>
-            </select>
-          </div>
-          
-          <div>
-            <label>
-              <span class="label-text text-primary">Subtema 2</span>
-            </label>
-            <select class="select select-bordered select-sm w-full" formControlName="subtema2">
-              <option value="" disabled>Seleccione un subtema</option>
-              <option *ngFor="let item of arrSubtemasTema2" [value]="item.subtema">
-                {{ item.subtema }}
-              </option>
-            </select>
-          </div>
-        
-        
         </div>
 
-        
-  
-        
+        <div class="grid gap-4 md:grid-cols-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Tema 1</span></label>
+            <select class="select select-bordered w-full" formControlName="tema1" (change)="onTema1Change($event)">
+              <option value="" disabled>Seleccione un tema</option>
+              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">{{ tema }}</option>
+            </select>
+          </div>
 
-      </div>
-  
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        
-        <div class="mt-2">
-          <label class="">
-            <span class="label-text text-primary">Comentario selección</span>
-          </label>
-          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="comentarioS"
-            readonly></textarea>
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Subtema 1</span></label>
+            <select class="select select-bordered w-full" formControlName="subtema1">
+              <option value="" disabled>Seleccione un subtema</option>
+              <option *ngFor="let item of arrSubtemasTema1" [value]="item.subtema">{{ item.subtema }}</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Tema 2</span></label>
+            <select class="select select-bordered w-full" formControlName="tema2" (change)="onTema2Change($event)">
+              <option value="" disabled>Seleccione un tema</option>
+              <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">{{ tema }}</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Subtema 2</span></label>
+            <select class="select select-bordered w-full" formControlName="subtema2">
+              <option value="" disabled>Seleccione un subtema</option>
+              <option *ngFor="let item of arrSubtemasTema2" [value]="item.subtema">{{ item.subtema }}</option>
+            </select>
+          </div>
         </div>
-        <div class="mt-2">
-          <label class="">
-            <span class="label-text text-primary">Comentario armonización</span>
-          </label>
-          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" formControlName="comentarioA"
-            placeholder="Escriba un comentario de armonización"></textarea>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario selección</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full" formControlName="comentarioS"
+              readonly></textarea>
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario armonización</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full" formControlName="comentarioA"
+              placeholder="Escriba un comentario de armonización"></textarea>
+          </div>
         </div>
-        
-  
-        
-      </div>
-  
-      <!-- BOTÓN -->
-      <div class="flex justify-end">
-        <button type="submit" class="btn btn-accent">
-          {{ variableExisteEnArmonizacion ? 'Actualizar variable' : 'Guardar variable' }}
-        </button>
-      </div>
-    </form>
+
+        <div class="flex justify-end">
+          <button type="submit" class="btn btn-primary">
+            {{ variableExisteEnArmonizacion ? 'Actualizar variable' : 'Guardar variable' }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <!-- BLOQUE DE RELACIONES: SE MUESTRA DESPUÉS DEL BLOQUE DE VARIABLE -->
-  <div *ngIf="puedeMostrarBloqueVariableSeleccion && variableSeleccionada" class="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-4 items-start">
-    <!-- CLASIFICACIONES -->
-    <div class="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
-
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <h4 class="text-lg font-bold">Clasificaciones</h4>
-          <p class="text-sm opacity-70">
-            Capture una o varias clasificaciones asociadas a la variable.
-          </p>
-        </div>
-  
-        <input type="checkbox" class="toggle toggle-accent" [checked]="clasificacionActiva"
-          (change)="toggleClasificacionLocal($event)" />
-      </div>
-  
-      <div *ngIf="clasificacionActiva" class="mt-4">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Clase</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="clasificacionForm.clase" name="claseLocal"
-              placeholder="Escriba la clase" />
+  <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="card-title text-base">Clasificaciones</h3>
+            <p class="text-xs text-base-content/60">Captura una o varias clasificaciones asociadas a la variable.</p>
           </div>
-  
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Comentario</span>
-            </label>
-            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="clasificacionForm.comentarioA"
+          <input type="checkbox" class="toggle toggle-accent" [checked]="clasificacionActiva"
+            (change)="toggleClasificacionLocal($event)" />
+        </div>
+
+        @if (clasificacionActiva) {
+        <div class="grid gap-4">
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Clase</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="clasificacionForm.clase"
+              name="claseLocal" placeholder="Escriba la clase" />
+          </div>
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="clasificacionForm.comentarioA"
               name="comentarioClasificacionLocal" placeholder="Escriba un comentario"></textarea>
           </div>
         </div>
-  
-        <div class="mt-4 flex justify-end gap-2">
-          <button type="button" class="btn btn-outline btn-sm" (click)="limpiarClasificacionLocal()">
-            Limpiar
-          </button>
-  
-          <button type="button" class="btn btn-accent btn-sm">
-            Agregar clasificación
-          </button>
+
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn btn-sm btn-outline" (click)="limpiarClasificacionLocal()">Limpiar</button>
+          <button type="button" class="btn btn-sm btn-accent">Agregar clasificación</button>
         </div>
-  
-        <div class="mt-4 rounded-xl border border-dashed border-base-300 p-4 text-sm opacity-70">
+
+        <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
           Aquí después irá la lista de clasificaciones registradas para la variable.
         </div>
+        }
       </div>
     </div>
-  
-    <!-- MICRODATOS -->
-    <div class="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <h4 class="text-lg font-bold">Microdatos</h4>
-          <p class="text-sm opacity-70">
-            Capture uno o varios registros de microdatos asociados a la variable.
-          </p>
+
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="card-title text-base">Microdatos</h3>
+            <p class="text-xs text-base-content/60">Capture uno o varios registros de microdatos asociados a la
+              variable.</p>
+          </div>
+          <input type="checkbox" class="toggle toggle-accent" [checked]="microdatosActivo"
+            (change)="toggleMicrodatosLocal($event)" />
         </div>
-  
-        <input type="checkbox" class="toggle toggle-accent" [checked]="microdatosActivo"
-          (change)="toggleMicrodatosLocal($event)" />
-      </div>
-  
-      <div *ngIf="microdatosActivo" class="mt-4">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Estado de microdatos</span>
-            </label>
-      
-            <div class="flex flex-wrap gap-6 rounded-xl border border-base-300 p-4">
-              <label class="label cursor-pointer justify-start gap-2 p-0">
-                <input type="checkbox" class="checkbox checkbox-sm" [checked]="microdatosEstado === 'Sí'"
-                  (change)="seleccionarEstadoMicrodatos('Sí')" />
-                <span class="label-text">Sí</span>
-              </label>
-      
-              <label class="label cursor-pointer justify-start gap-2 p-0">
-                <input type="checkbox" class="checkbox checkbox-sm" [checked]="microdatosEstado === 'No'"
-                  (change)="seleccionarEstadoMicrodatos('No')" />
-                <span class="label-text">No</span>
-              </label>
-      
-              <label class="label cursor-pointer justify-start gap-2 p-0">
-                <input type="checkbox" class="checkbox checkbox-sm"
-                  [checked]="microdatosEstado === 'Sí. (Disponible a través del laboratorio de microdatos).'"
-                  (change)="seleccionarEstadoMicrodatos('Sí. (Disponible a través del laboratorio de microdatos).')" />
-                <span class="label-text">Sí. (Disponible a través del laboratorio de microdatos).</span>
-              </label>
+
+        @if (microdatosActivo) {
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Estado de microdatos</span></label>
+            <div class="rounded-xl border border-base-300 p-4">
+              <div class="flex flex-col gap-3">
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" class="checkbox checkbox-sm" [checked]="microdatosEstado === 'Sí'"
+                    (change)="seleccionarEstadoMicrodatos('Sí')" />
+                  <span>Sí</span>
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <input type="checkbox" class="checkbox checkbox-sm" [checked]="microdatosEstado === 'No'"
+                    (change)="seleccionarEstadoMicrodatos('No')" />
+                  <span>No</span>
+                </label>
+                <label class="flex items-start gap-2 text-sm">
+                  <input type="checkbox" class="checkbox checkbox-sm mt-0.5"
+                    [checked]="microdatosEstado === 'Sí. (Disponible a través del laboratorio de microdatos).'"
+                    (change)="seleccionarEstadoMicrodatos('Sí. (Disponible a través del laboratorio de microdatos).')" />
+                  <span>Sí. (Disponible a través del laboratorio de microdatos).</span>
+                </label>
+              </div>
             </div>
           </div>
-      
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">URL de acceso</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.urlAcceso"
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">URL de acceso</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.urlAcceso"
               name="microdatosUrlAcceso" placeholder="https://..." />
           </div>
-      
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Descriptor</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.descriptor"
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Descriptor</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.descriptor"
               name="microdatosDescriptor" placeholder="Descriptor" />
           </div>
-      
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">URL descriptor</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.urlDescriptor"
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">URL descriptor</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.urlDescriptor"
               name="microdatosUrlDescriptor" placeholder="https://..." />
           </div>
-      
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Tabla</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.tabla" name="microdatosTabla"
-              placeholder="Nombre de la tabla" />
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Tabla</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.tabla"
+              name="microdatosTabla" placeholder="Nombre de la tabla" />
           </div>
-      
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Campo</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="microdatosForm.campo" name="microdatosCampo"
-              placeholder="Nombre del campo" />
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Campo</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="microdatosForm.campo"
+              name="microdatosCampo" placeholder="Nombre del campo" />
           </div>
-      
-          
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="microdatosForm.comentarioA"
+              name="microdatosComentarioA" placeholder="Escriba un comentario"></textarea>
+          </div>
         </div>
-        <div class="md:col-span-2">
-          <label class="label">
-            <span class="label-text font-semibold">Comentario</span>
-          </label>
-          <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="microdatosForm.comentarioA"
-            name="microdatosComentarioA" placeholder="Escriba un comentario"></textarea>
+
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn btn-sm btn-outline" (click)="limpiarMicrodatosLocal()">Limpiar</button>
+          <button type="button" class="btn btn-sm btn-accent text-white">Agregar microdatos</button>
         </div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button type="button" class="btn btn-outline btn-sm">
-            Limpiar
-          </button>
-        
-          <button type="button" class="btn btn-accent btn-sm text-white">
-            Agregar micro datos
-          </button>
+
+        <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+          Aquí después irá la lista de microdatos registrados para la variable.
         </div>
-        
-        <div class="mt-4 rounded-xl border border-dashed border-base-300 p-4 text-sm opacity-70">
-          Aquí después irá la lista de micro datos registrados para la variable.
-        </div>
+        }
       </div>
     </div>
-  
-    <!-- DATOS ABIERTOS -->
 
-    <div class="rounded-2xl border border-base-300 bg-base-100 p-4 shadow-sm">
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <h4 class="text-lg font-bold">Datos abiertos</h4>
-          <p class="text-sm opacity-70">
-            Capture uno o varios registros de datos abiertos asociados a la variable.
-          </p>
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-5 p-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="card-title text-base">Datos abiertos</h3>
+            <p class="text-xs text-base-content/60">Capture uno o varios registros de datos abiertos asociados a la
+              variable.</p>
+          </div>
+          <input type="checkbox" class="toggle toggle-accent" [checked]="datosAbiertosActivo"
+            (change)="toggleDatosAbiertosLocal($event)" />
         </div>
-  
-        <input type="checkbox" class="toggle toggle-accent" [checked]="datosAbiertosActivo"
-          (change)="toggleDatosAbiertosLocal($event)" />
-      </div>
-  
-      <div *ngIf="datosAbiertosActivo" class="mt-4">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">URL de acceso</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.urlAcceso"
+
+        @if (datosAbiertosActivo) {
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">URL de acceso</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.urlAcceso"
               name="datosAbiertosUrlAcceso" placeholder="https://..." />
           </div>
-  
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">URL de descarga</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.urlDescarga"
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">URL de descarga</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.urlDescarga"
               name="datosAbiertosUrlDescarga" placeholder="https://..." />
           </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Descriptor</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.descriptor"
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Descriptor</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.descriptor"
               name="datosAbiertosDescriptor" placeholder="Descriptor" />
           </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Tabla</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.tabla"
+
+          <div class="form-control">
+            <label class="label"><span class="label-text text-xs font-medium">Tabla</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.tabla"
               name="datosAbiertosTabla" placeholder="Nombre de la tabla" />
           </div>
-  
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold">Campo</span>
-            </label>
-            <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="datosAbiertosForm.campo"
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Campo</span></label>
+            <input type="text" class="input input-bordered w-full" [(ngModel)]="datosAbiertosForm.campo"
               name="datosAbiertosCampo" placeholder="Nombre del campo" />
           </div>
-  
-          <div class="md:col-span-2">
-            <label class="label">
-              <span class="label-text font-semibold">Comentario</span>
-            </label>
-            <textarea class="textarea textarea-bordered textarea-xs w-full" rows="3" [(ngModel)]="datosAbiertosForm.comentarioA"
+
+          <div class="form-control md:col-span-2">
+            <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+            <textarea class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="datosAbiertosForm.comentarioA"
               name="datosAbiertosComentarioA" placeholder="Escriba un comentario"></textarea>
           </div>
-          
-          
         </div>
-  
-        <div class="mt-4 flex justify-end gap-2">
-          <button type="button" class="btn btn-outline btn-sm" (click)="limpiarDatosAbiertosLocal()">
-            Limpiar
-          </button>
-  
-          <button type="button" class="btn btn-accent btn-sm text-white">
-            Agregar datos abiertos
-          </button>
+
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn btn-sm btn-outline" (click)="limpiarDatosAbiertosLocal()">Limpiar</button>
+          <button type="button" class="btn btn-sm btn-accent text-white">Agregar datos abiertos</button>
         </div>
-  
-        <div class="mt-4 rounded-xl border border-dashed border-base-300 p-4 text-sm opacity-70">
+
+        <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
           Aquí después irá la lista de datos abiertos registrados para la variable.
         </div>
+        }
       </div>
     </div>
-
   </div>
-
-
-  
-  }
-  <!-- Tabla de variables seleccionadas -->
-  @if (arrVariablesSeleccionadas.length > 0) {
-
   }
   }
-
-
-
-
-
-
-
-
-
-
 </div>
 
-
-
-
-<!-- Modal de asignación de prioridad -->
-<!-- Modal de Éxito Guardar -->
 <dialog #SuccessSaveModal class="modal">
   <div class="modal-box">
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
       </svg>
     </div>
-
-    <h3 class="text-lg font-bold text-center text-success">¡Fuente guardada correctamente!</h3>
+    <h3 class="text-center text-lg font-bold text-success">¡Fuente guardada correctamente!</h3>
     <p class="py-4 text-center">{{ mensajeSuccessSave }}</p>
-
     <div class="modal-action flex justify-center">
       <button class="btn btn-success text-white" (click)="cerrarModalSuccessSave()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de Éxito Actualizar -->
 <dialog #SuccessUpdateModal class="modal">
   <div class="modal-box">
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-info" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M4 4v5h.582M20 20v-5h-.581M5.8 9A7 7 0 0119 8m-.8 7A7 7 0 015 16" />
       </svg>
     </div>
-
-    <h3 class="text-lg font-bold text-center text-info">¡Fuente actualizada correctamente!</h3>
+    <h3 class="text-center text-lg font-bold text-info">¡Fuente actualizada correctamente!</h3>
     <p class="py-4 text-center">{{ mensajeSuccessUpdate }}</p>
-
     <div class="modal-action flex justify-center">
       <button class="btn btn-info text-white" (click)="cerrarModalSuccessUpdate()">Aceptar</button>
     </div>
   </div>
 </dialog>
 
-<!-- Modal de Error -->
 <dialog #ErrorModal class="modal">
   <div class="modal-box">
-    <div class="flex justify-center mb-4">
+    <div class="mb-4 flex justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-error" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M12 9v2m0 4h.01M12 6.5a9.5 9.5 0 1 1-9.5 9.5 9.5 9.5 0 0 1 9.5-9.5z" />
       </svg>
     </div>
-
-    <h3 class="text-lg font-bold text-center text-error">¡Ocurrió un error!</h3>
+    <h3 class="text-center text-lg font-bold text-error">¡Ocurrió un error!</h3>
     <p class="py-4 text-center">{{ mensajeError }}</p>
-
     <div class="modal-action flex justify-center">
       <button class="btn btn-error text-white" (click)="cerrarModalError()">Aceptar</button>
     </div>
