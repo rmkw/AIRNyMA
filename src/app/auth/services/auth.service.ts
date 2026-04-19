@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthResponse } from '../interfaces/auth-response.interface';
 import { catchError, map, Observable, of, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 const baseUrl = environment.baseUrl
@@ -16,6 +17,7 @@ export class authService {
       // console.log('effect AuthStatus:', this.authStatus());
     });
   }
+  private router = inject(Router);
 
   private _authStatus = signal<AuthStatus>('checking');
 
@@ -45,8 +47,6 @@ export class authService {
   isRoot = computed(() => this._user()?.roles.includes(Role.Root) ?? false);
 
   isAdminOrRoot = computed(() => this.isAdmin() || this.isRoot());
-
-
 
   login(username: string, password: string): Observable<boolean> {
     return this.http
@@ -113,8 +113,6 @@ export class authService {
           console.log(' Respuesta completa:', err.response || err);
         },
         complete: () => {
-          // console.log(' Limpiando sesión en frontend...');
-          // document.cookie = 'JSESSIONID=; Path=/; Max-Age=0;';
           this._user.set(null);
           this._authStatus.set('not-authenticated');
 
@@ -125,11 +123,7 @@ export class authService {
           localStorage.removeItem('useResponce');
           localStorage.clear();
 
-          //  Recargar la página para eliminar cualquier sesión en memoria
-          window.location.href = `${baseUrl}/auth/logout`;
-          // console.log('--------');
-          // console.log('this._user:', this._user());
-          // console.log('this._authStatus:', this._authStatus());
+          this.router.navigateByUrl('/auth/login');
         },
       });
   }

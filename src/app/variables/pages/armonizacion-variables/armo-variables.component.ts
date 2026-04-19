@@ -1,7 +1,7 @@
 /**
  * @author Luis Gerardo Castañeda López
  * @organization INEGI
- * @project Inventory
+ * @project IISRNyMA
  * @since 2026-04-07
  * @description Lógica principal de variables
  */
@@ -344,7 +344,7 @@ cargarFuenteArmonizacion(idFuenteSeleccion: string) {
           this.verificarSiVariableExiste(this.variableSeleccionada.idA);
         }
       },
-      
+
       error: (err) => {
         console.error('Error al cargar fuente de armonización:', err);
       },
@@ -395,17 +395,17 @@ guardarFuenteTemporal() {
       error: (err) => {
         console.error('Error al guardar fuente en armonización:', err);
         this.abrirModalError(this.obtenerMensajeError(err));
-        
+
       },
     });
 
     return;
   }
 
-  
+
 
   // Esto solo funcionará cuando ya tengas PUT en backend
-  
+
     this._varService.updateFuenteArmonizacion(payload)
     .subscribe({
       next: (resp) => {
@@ -424,7 +424,7 @@ guardarFuenteTemporal() {
           comentarioA: resp.comentarioA ?? '',
         };
 
-        
+
       },
       error: (err) => {
   console.error('Error al guardar fuente en armonización:', err);
@@ -474,7 +474,7 @@ verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
   next: (resp) => {
     this.fuenteExisteEnArmonizacion = resp.exists;
     this.cargandoEstadoFuente = false;
-    
+
 
     if (resp.idFuente) {
       this.fuenteForm = {
@@ -508,7 +508,7 @@ abrirModalSuccessSave(mensaje: string) {
 }
 
 cerrarModalSuccessSave() {
-  
+
   this.SuccessSaveModal.nativeElement.close();
 }
 
@@ -518,7 +518,7 @@ abrirModalSuccessUpdate(mensaje: string) {
 }
 
 cerrarModalSuccessUpdate() {
-  
+
   this.SuccessUpdateModal.nativeElement.close();
 
 }
