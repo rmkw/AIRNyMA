@@ -1,7 +1,7 @@
-<div class="w-full space-y-4 px-1">
+<div class="w-full space-y-2 px-1">
   <div
     class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
-    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
       <div class="space-y-2">
         <div class="badge badge-soft border-white/20 bg-white/10 text-white">Procesos de producción</div>
         <h1 class="text-2xl font-bold tracking-tight">Caracterización del proceso de producción</h1>
@@ -18,8 +18,8 @@
   </div>
 
   <div class="grid gap-4 xl:grid-cols-12">
-    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-8">
-      <div class="card-body gap-4 p-5">
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
+      <div class="card-body gap-4 p-4">
         <div>
           <h2 class="card-title text-base">Selección del proceso</h2>
           <p class="text-xs text-base-content/60">Primero elige unidad productora y luego el proceso de producción.</p>
@@ -55,18 +55,22 @@
       </div>
     </div>
 
-    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-4">
-      <div class="card-body p-5">
-        <div class="flex items-center justify-between">
-          <h2 class="card-title text-base">Estado actual</h2>
-          <div class="badge badge-outline badge-sm">Resumen</div>
-        </div>
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
+      <div class="card-body p-4">
 
-        <div class="grid grid-cols-2 gap-4 text-sm">
+
+        <div class="grid grid-cols-3 gap-4 text-sm">
           <div>
             <div class="text-xs text-base-content/60">Acrónimo</div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.acronimo || '-' }}</div>
           </div>
+
+          <div>
+            <div class="text-xs text-base-content/60">Variables</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.totalVariables || '-' }}</div>
+          </div>
+
+
 
           <div>
             <div class="text-xs text-base-content/60">Estatus</div>
@@ -80,47 +84,37 @@
               </span>
             </div>
           </div>
-
           <div>
             <div class="text-xs text-base-content/60">Periodicidad</div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.periodicidad || '-' }}</div>
           </div>
 
+
+
+
+
           <div>
-            <div class="text-xs text-base-content/60">Variables</div>
-            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.totalVariables || '-' }}</div>
+            <div class="text-xs text-base-content/60">Método de obtención</div>
+            <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.metodo || '-' }}</div>
+
           </div>
+
+          <div>
+            <div class="text-xs text-base-content/60">Información de interés nacional</div>
+            <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.iin || '-' }}</div>
+
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-4">
-        <div class="text-xs text-base-content/60">Método de obtención</div>
-        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.metodo || '-' }}</div>
-      </div>
-    </div>
 
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-4">
-        <div class="text-xs text-base-content/60">Información de interés nacional</div>
-        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.iin || '-' }}</div>
-      </div>
-    </div>
-
-    <div class="card border border-base-300 bg-base-100 shadow-sm md:col-span-2">
-      <div class="card-body p-4">
-        <div class="text-xs text-base-content/60">Proceso seleccionado</div>
-        <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.proceso || 'Selecciona un proceso paraver su detalle.' }}</div>
-      </div>
-    </div>
-  </div>
 
   <div class="grid gap-4 xl:grid-cols-2">
     <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-5">
+      <div class="card-body p-4">
         <h2 class="card-title text-base">Objetivo del proceso</h2>
         <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
 {{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
@@ -128,7 +122,7 @@
     </div>
 
     <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-5">
+      <div class="card-body p-4">
         <h2 class="card-title text-base">Población objeto de estudio</h2>
         <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
 {{ procesoSeleccionado()?.pobjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
@@ -136,7 +130,7 @@
     </div>
 
     <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-5">
+      <div class="card-body p-4">
         <h2 class="card-title text-base">Unidad de observación</h2>
         <textarea class="textarea textarea-bordered min-h-32 w-full" readonly>
 {{ procesoSeleccionado()?.uobservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
@@ -144,7 +138,7 @@
     </div>
 
     <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-5">
+      <div class="card-body p-4">
         <div class="flex items-center justify-between">
           <h2 class="card-title text-base">Comentario del proceso</h2>
           <div class="badge badge-outline badge-sm">Editable</div>
@@ -169,7 +163,7 @@
   }
 
   <div class="flex justify-end">
-    <button class="btn btn-primary btn-sm px-6" (click)="showAlertUpComentario()">
+    <button class="btn btn-primary btn-sm px-4" (click)="showAlertUpComentario()">
       Actualizar comentario
     </button>
   </div>

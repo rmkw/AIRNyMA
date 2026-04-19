@@ -6,6 +6,7 @@ import { homeService } from '../../services/home.service';
   selector: 'app-home-page',
   imports: [RouterLink],
   templateUrl: './home-page.component.html',
+  styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
   totalProcesos = 0;
