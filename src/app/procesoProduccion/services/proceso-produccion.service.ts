@@ -34,11 +34,11 @@ export class ppEcoService {
   }
 
   getPorDireccionGeneral(
-    direccionGeneral: string | number | undefined
+    direccionGeneral: string | number | undefined,
   ): Observable<interface_ProcesoP[]> {
     const params = new HttpParams().set(
       'unidad_administrativa',
-      direccionGeneral!
+      direccionGeneral!,
     );
 
     return this.http.get<interface_ProcesoP[]>(`${baseUrl}/procesos/buscar`, {
@@ -48,16 +48,16 @@ export class ppEcoService {
   }
 
   obtenerProcesosPorUnidad(
-    idUnidad: number | undefined
+    idUnidad: number | undefined,
   ): Observable<interface_ProcesoP[]> {
     return this.http.get<interface_ProcesoP[]>(
-      `${baseUrl}/procesos/unidad/${idUnidad}`
+      `${baseUrl}/procesos/unidad/${idUnidad}`,
     );
   }
 
   actualizarComentario(
     id: number | string,
-    comentario: string
+    comentario: string,
   ): Observable<any> {
     const body = { comentario };
 
@@ -70,5 +70,45 @@ export class ppEcoService {
     return this.http.post(`${baseUrl}/procesos/registrar`, proceso, {
       withCredentials: true,
     });
+  }
+
+  getComentarioSeleccionPorAcronimo(acronimo: string) {
+    return this.http.get<any>(`${baseUrl}/sele/comentarios-pp/buscar`, {
+      params: { acronimo },
+      withCredentials: true,
+    });
+  }
+
+  getComentarioArmonizacionPorAcronimo(acronimo: string) {
+    return this.http.get<any>(`${baseUrl}/armo/comentarios-pp/buscar`, {
+      params: { acronimo },
+      withCredentials: true,
+    });
+  }
+
+  guardarOActualizarComentarioSeleccion(payload: {
+    acronimo: string;
+    comentarioS: string;
+  }) {
+    return this.http.post<any>(
+      `${baseUrl}/sele/comentarios-pp/guardar-o-actualizar`,
+      payload,
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  guardarOActualizarComentarioArmonizacion(payload: {
+    acronimo: string;
+    comentarioS: string;
+  }) {
+    return this.http.post<any>(
+      `${baseUrl}/armo/comentarios-pp/guardar-o-actualizar`,
+      payload,
+      {
+        withCredentials: true,
+      },
+    );
   }
 }

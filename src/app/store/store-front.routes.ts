@@ -1,14 +1,9 @@
 import { Routes } from "@angular/router";
 import { StoreFrontLayoutComponent } from "./layouts/store-front-layout/store-front-layout.component";
 import { HomePageComponent } from "./pages/home-page/home-page.component";
-import { ProductPageComponent } from "./pages/product-page/product-page.component";
 import { NotFoundPageComponent } from "./pages/not-found-page/not-found-page.component";
-import { GenderPageComponent } from "./pages/gender-page/gender-page.component";
 import { ProcesoProduccionComponent } from "@/procesoProduccion/pages/proceso-produccion/proceso-produccion.component";
-import { NotAuthenticatedGuard } from "@/auth/guards/not-authenticated.guard";
-import { FuenteIdentificacionComponent } from "@/fuenteIdentificacion/pages/fuente-identificacion/fuente-identificacion.component";
 import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/fuentes-list.component";
-import { NuevaFuenteComponent } from "@/fuenteIdentificacion/pages/nueva-fuente/nueva-fuente.component";
 import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
 import { VariableUpdateComponent } from '../variables/pages/variable-update/variable-update.component';
 import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";

@@ -2,13 +2,13 @@ import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angul
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs';
-import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
+
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-proceso-produccion',
@@ -17,24 +17,30 @@ import { Router } from '@angular/router';
 })
 export class ProcesoProduccionComponent implements OnInit {
   _serviceDirecciones = inject(DireccionesService);
-  _pp_Service = inject(ppEcoService);
+  _procesoService = inject(ppEcoService);
   _router = inject(Router);
-
   arrDirecciones: Direccion[] = [];
-  arrProcesosPBydire: interface_ProcesoP[] = [];
-
+  arrProcesosByDir: interface_ProcesoP[] = [];
   procesoSeleccionado = signal<interface_ProcesoP | null>(null);
-  comentario = '';
-
-  mostrarAlertaNoProceso = signal(false);
-  mostrarAlerta = signal(false);
-
   idProsesoSelect: any = null;
 
-  showWarning: boolean = false;
-  mensajeAlerta = '';
-
   direccionName: string | number | undefined = undefined;
+  _procesos_isSelectEnabled: boolean = false;
+
+  @ViewChild('procesoProduccionTag')
+  procesoProduccionTag!: ElementRef<HTMLSelectElement>;
+
+  @ViewChild('modalNoProceso')
+  modalNoProceso!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('modalActualizacionExitosa')
+  modalActualizacionExitosa!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('modalActualizar')
+  modalActualizar!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('AgregarProceso')
+  AgregarProceso!: ElementRef<HTMLDialogElement>;
 
   ngOnInit(): void {
     this.getDirecciones();
@@ -51,8 +57,6 @@ export class ProcesoProduccionComponent implements OnInit {
     });
   }
 
-  @ViewChild('procesoProduccionTag')
-  procesoProduccionTag!: ElementRef<HTMLSelectElement>;
   selectedDireccion(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const nameDi = selectElement.value;
@@ -69,12 +73,11 @@ export class ProcesoProduccionComponent implements OnInit {
   }
 
   cargarProcesosProduccionByDireccionGeneral(
-    dire: string | number | undefined
+    dire: string | number | undefined,
   ) {
-    this._pp_Service.getPorDireccionGeneral(dire).subscribe({
+    this._procesoService.getPorDireccionGeneral(dire).subscribe({
       next: (data) => {
-        this.arrProcesosPBydire = data;
-        console.log(data);
+        this.arrProcesosByDir = data;
       },
       error: (err) => {
         console.error('Error al obtener procesos por DG', err);
@@ -92,15 +95,20 @@ export class ProcesoProduccionComponent implements OnInit {
     }
 
     const procesoEncontrado =
-      this.arrProcesosPBydire.find(
-        (procesoItem) => procesoItem.acronimo === proceso
+      this.arrProcesosByDir.find(
+        (procesoItem) => procesoItem.acronimo === proceso,
       ) || null;
 
     this.procesoSeleccionado.set(procesoEncontrado);
 
-    this.comentario = procesoEncontrado
-      ? procesoEncontrado.comentarioS || ''
-      : '';
+    this.comentarioSeleccion = '';
+    this.comentarioArmonizacion = '';
+    this.existeComentarioSeleccion = false;
+    this.existeComentarioArmonizacion = false;
+
+    if (procesoEncontrado?.acronimo) {
+      this.cargarComentarioSegunRol();
+    }
   }
 
   showAlertUpComentario() {
@@ -112,43 +120,12 @@ export class ProcesoProduccionComponent implements OnInit {
       return;
     }
 
-    // this.showWarning = true;
     this.showModalActualizar();
   }
 
   cancelDeactivation() {
-    // this.showWarning = false;
+    this.tipoComentarioPendiente = null;
     this.cloceModalActualizar();
-  }
-
-  confirmDeactivation() {
-    const proceso = this.procesoSeleccionado();
-
-    if (!proceso || !proceso.acronimo) {
-      console.warn('No hay un proceso seleccionado para actualizar');
-      return;
-    }
-
-    this._pp_Service
-      .actualizarComentario(proceso.acronimo, this.comentario)
-      .subscribe({
-        next: (res) => {
-          this.cargarProcesosProduccionByDireccionGeneral(this.direccionName!);
-
-          // console.log('Comentario actualizado con éxito:', res);
-          // this.mostrarAlerta.set(true);
-          // this.mensajeAlerta =
-          //   res.message || 'Proceso actualizado correctamente.';
-          // setTimeout(() => this.mostrarAlerta.set(false), 3000);
-          this.showmodalActualizacionExitosa();
-          this.showWarning = false;
-          // Aquí puedes mostrar un toast o snackbar
-        },
-        error: (err) => {
-          console.error('Error al actualizar comentario:', err);
-          // Mostrar error al usuario
-        },
-      });
   }
 
   setLocalStorage(_Pp: interface_ProcesoP) {
@@ -156,7 +133,7 @@ export class ProcesoProduccionComponent implements OnInit {
       this.modalNingunProceso();
       return;
     }
-    console.log(_Pp);
+
     const procesoEditable = {
       nombrePp: _Pp.proceso,
       acronimo: _Pp.acronimo,
@@ -165,8 +142,6 @@ export class ProcesoProduccionComponent implements OnInit {
     this._router.navigate(['/fuentes']);
   }
 
-  @ViewChild('modalNoProceso') modalNoProceso!: ElementRef<HTMLDialogElement>;
-
   modalNingunProceso() {
     this.modalNoProceso.nativeElement.showModal();
   }
@@ -174,8 +149,6 @@ export class ProcesoProduccionComponent implements OnInit {
     this.modalNoProceso.nativeElement.close();
   }
 
-  @ViewChild('modalActualizacionExitosa')
-  modalActualizacionExitosa!: ElementRef<HTMLDialogElement>;
   showmodalActualizacionExitosa() {
     this.cloceModalActualizar();
     this.modalActualizacionExitosa.nativeElement.showModal();
@@ -183,8 +156,7 @@ export class ProcesoProduccionComponent implements OnInit {
   clocemodalActualizacionExitosa() {
     this.modalActualizacionExitosa.nativeElement.close();
   }
-  @ViewChild('modalActualizar')
-  modalActualizar!: ElementRef<HTMLDialogElement>;
+
   showModalActualizar() {
     this.modalActualizar.nativeElement.showModal();
   }
@@ -192,24 +164,16 @@ export class ProcesoProduccionComponent implements OnInit {
     this.modalActualizar.nativeElement.close();
   }
 
-  _procesos_isSelectEnabled: boolean = false;
-
-
-  @ViewChild('AgregarProceso')
-  AgregarProceso!: ElementRef<HTMLDialogElement>;
   showModalAgregarProceso() {
     this.AgregarProceso.nativeElement.showModal();
   }
   clocemodalAgregarProceso() {
     this.AgregarProceso.nativeElement.close();
-    // Reiniciar el select al valor por defecto
+
     const selectElement = this.procesoProduccionTag.nativeElement;
     selectElement.selectedIndex = 0;
-
-    // Limpiar también el proceso seleccionado, por si acaso
-    this.procesoSeleccionado.set(null);
-    this.comentario = '';
   }
+
   confirmarIrANuevoProceso() {
     if (!this.direccionName) {
       alert('Primero selecciona una unidad productora de información.');
@@ -219,5 +183,191 @@ export class ProcesoProduccionComponent implements OnInit {
     this._router.navigate(['/nuevo-proceso'], {
       queryParams: { direccion: this.direccionName },
     });
+  }
+
+  //? COMENTARIOS
+
+  comentarioSeleccion: string = '';
+  comentarioArmonizacion: string = '';
+
+  existeComentarioSeleccion: boolean = false;
+  existeComentarioArmonizacion: boolean = false;
+
+  tipoComentarioPendiente: 'seleccion' | 'armonizacion' | null = null;
+
+  tieneRol(rol: string): boolean {
+    const rolesGuardados = localStorage.getItem('roles');
+    if (!rolesGuardados) return false;
+
+    try {
+      const roles = JSON.parse(rolesGuardados) as string[];
+      return roles.includes(rol);
+    } catch (error) {
+      console.error('Error al leer roles del localStorage', error);
+      return false;
+    }
+  }
+  esSeleccionPura(): boolean {
+    return this.tieneRol('USER') && !this.tieneRol('ARMO');
+  }
+
+  esArmonizacion(): boolean {
+    return this.tieneRol('ARMO');
+  }
+
+  textoBotonSeleccion(): string {
+    return this.existeComentarioSeleccion
+      ? 'Actualizar comentario'
+      : 'Guardar comentario';
+  }
+
+  textoBotonArmonizacion(): string {
+    return this.existeComentarioArmonizacion
+      ? 'Actualizar comentario'
+      : 'Guardar comentario';
+  }
+
+  obtenerComentarioSeleccion() {
+    const acronimo = this.procesoSeleccionado()?.acronimo;
+    if (!acronimo) return;
+
+    this._procesoService.getComentarioSeleccionPorAcronimo(acronimo).subscribe({
+      next: (resp) => {
+        this.comentarioSeleccion = resp?.comentarioS ?? '';
+        this.existeComentarioSeleccion = !!(resp?.comentarioS ?? '').trim();
+      },
+      error: (err) => {
+        console.error('No se pudo cargar comentario de selección', err);
+        this.comentarioSeleccion = '';
+        this.existeComentarioSeleccion = false;
+      },
+    });
+  }
+
+  obtenerComentarioArmonizacion() {
+    const acronimo = this.procesoSeleccionado()?.acronimo;
+    if (!acronimo) return;
+
+    this._procesoService
+      .getComentarioArmonizacionPorAcronimo(acronimo)
+      .subscribe({
+        next: (resp) => {
+          this.comentarioArmonizacion = resp?.comentarioS ?? '';
+          this.existeComentarioArmonizacion = !!(
+            resp?.comentarioS ?? ''
+          ).trim();
+        },
+        error: (err) => {
+          console.error('No se pudo cargar comentario de armonización', err);
+          this.comentarioArmonizacion = '';
+          this.existeComentarioArmonizacion = false;
+        },
+      });
+  }
+
+  cargarComentarioSegunRol() {
+    if (this.esArmonizacion()) {
+      this.obtenerComentarioArmonizacion();
+      return;
+    }
+
+    if (this.esSeleccionPura()) {
+      this.obtenerComentarioSeleccion();
+      return;
+    }
+
+    console.warn('El usuario no tiene rol válido para comentarios');
+  }
+  guardarComentarioSeleccion() {
+    const acronimo = this.procesoSeleccionado()?.acronimo;
+
+    if (!acronimo) {
+      this.modalNingunProceso();
+      return;
+    }
+
+    const payload = {
+      acronimo,
+      comentarioS: this.comentarioSeleccion,
+    };
+
+    this._procesoService
+      .guardarOActualizarComentarioSeleccion(payload)
+      .subscribe({
+        next: () => {
+          this.existeComentarioSeleccion = !!this.comentarioSeleccion.trim();
+          this.showmodalActualizacionExitosa();
+        },
+        error: (err) => {
+          console.error('Error al guardar comentario de selección', err);
+          this.cloceModalActualizar();
+        },
+      });
+  }
+
+  guardarComentarioArmonizacion() {
+    const acronimo = this.procesoSeleccionado()?.acronimo;
+
+    if (!acronimo) {
+      this.modalNingunProceso();
+      return;
+    }
+
+    const payload = {
+      acronimo,
+      comentarioS: this.comentarioArmonizacion,
+    };
+
+    this._procesoService
+      .guardarOActualizarComentarioArmonizacion(payload)
+      .subscribe({
+        next: () => {
+          this.existeComentarioArmonizacion =
+            !!this.comentarioArmonizacion.trim();
+          this.showmodalActualizacionExitosa();
+        },
+        error: (err) => {
+          console.error('Error al guardar comentario de armonización', err);
+          this.cloceModalActualizar();
+        },
+      });
+  }
+
+  showAlertUpComentarioSeleccion() {
+    const id = this.procesoSeleccionado()?.acronimo;
+    this.idProsesoSelect = id;
+
+    if (!id) {
+      this.modalNingunProceso();
+      return;
+    }
+
+    this.tipoComentarioPendiente = 'seleccion';
+    this.showModalActualizar();
+  }
+  showAlertUpComentarioArmonizacion() {
+    const id = this.procesoSeleccionado()?.acronimo;
+    this.idProsesoSelect = id;
+
+    if (!id) {
+      this.modalNingunProceso();
+      return;
+    }
+
+    this.tipoComentarioPendiente = 'armonizacion';
+    this.showModalActualizar();
+  }
+  confirmarActualizacionComentario() {
+    if (this.tipoComentarioPendiente === 'seleccion') {
+      this.guardarComentarioSeleccion();
+      return;
+    }
+
+    if (this.tipoComentarioPendiente === 'armonizacion') {
+      this.guardarComentarioArmonizacion();
+      return;
+    }
+
+    this.cloceModalActualizar();
   }
 }
