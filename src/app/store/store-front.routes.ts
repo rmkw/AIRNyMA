@@ -10,6 +10,7 @@ import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/n
 import { ModuloExcelImport } from "@/excel-import/modulo-import/modulo-import.component";
 import { PrioridadVariableComponent } from "@/variables/pages/prioridad-variable/prioridad-variable.component";
 import { ArmonizacionVariablesComponent } from "@/variables/pages/armonizacion-variables/armo-variables.component";
+import { FuentesComponent } from "@/fuenteIdentificacion/pages/fuentes/fuentes.component";
 
 
 
@@ -35,6 +36,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'fuentes',
         component: FuentesListComponent,
+      },
+      {
+        path: 'fuentesnew',
+        component: FuentesComponent,
       },
       {
         path: 'nueva-variable',

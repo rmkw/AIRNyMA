@@ -26,7 +26,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 @Component({
   selector: 'app-armonizacion-variables',
   templateUrl: './armo-variables.component.html',
-  imports: [CommonModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class ArmonizacionVariablesComponent implements OnInit {
   _serviceDirecciones = inject(DireccionesService);
@@ -152,9 +152,9 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.arrVariablesSeleccionadasFiltradas = [];
     this.filtroIdS = '';
 
-    this._fuentesService.getByProceso(acronimo).subscribe({
+    this._fuentesService.getByAcronimo(acronimo).subscribe({
       next: (response) => {
-        this.arrFuentesByProceso = response?.fuentes ?? [];
+        this.arrFuentesByProceso = response ?? [];
         this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
         this.loadingFuentes = false;
       },
@@ -247,170 +247,169 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   variableSeleccionada: VariableTablaDTO | null = null;
 
-fuenteForm: {
-  idFuente?: string;
-  acronimo: string;
-  fuente: string;
-  url: string;
-  edicion: string;
-  comentarioS: string;
-  comentarioA: string;
-  idFuenteSeleccion?: string;
-} | null = null;
+  fuenteForm: {
+    idFuente?: string;
+    acronimo: string;
+    fuente: string;
+    url: string;
+    edicion: string;
+    comentarioS: string;
+    comentarioA: string;
+    idFuenteSeleccion?: string;
+  } | null = null;
 
-seleccionarVariable(variable: VariableTablaDTO) {
-  this.variableSeleccionada = variable;
-  this.fuenteExisteEnArmonizacion = false;
-  this.limpiarEstadoVariableSeleccionada();
-  this.limpiarClasificacionLocal();
-  this.limpiarMicrodatosLocal();
-  this.limpiarDatosAbiertosLocal();
+  seleccionarVariable(variable: VariableTablaDTO) {
+    this.variableSeleccionada = variable;
+    this.fuenteExisteEnArmonizacion = false;
+    this.limpiarEstadoVariableSeleccionada();
+    this.limpiarClasificacionLocal();
+    this.limpiarMicrodatosLocal();
+    this.limpiarDatosAbiertosLocal();
 
-  this.cargarTematicasPorProceso(variable.acronimo);
+    this.cargarTematicasPorProceso(variable.acronimo);
 
-  const fuenteEncontrada = this.arrFuentesByProceso.find(
-    (fuente) => fuente.idFuente === variable.idFuente,
-  );
+    const fuenteEncontrada = this.arrFuentesByProceso.find(
+      (fuente) => fuente.idFuente === variable.idFuente,
+    );
 
-  if (!fuenteEncontrada) {
-    console.warn('No se encontró la fuente de la variable seleccionada');
-    this.fuenteForm = null;
-    return;
+    if (!fuenteEncontrada) {
+      console.warn('No se encontró la fuente de la variable seleccionada');
+      this.fuenteForm = null;
+      return;
+    }
+
+    const fuenteForm = {
+      idFuente: fuenteEncontrada.idFuente ?? '',
+      acronimo: fuenteEncontrada.acronimo ?? '',
+      fuente: fuenteEncontrada.fuente ?? '',
+      url: fuenteEncontrada.url ?? '',
+      edicion: fuenteEncontrada.edicion ?? '',
+      comentarioS: fuenteEncontrada.comentarioS ?? '',
+      comentarioA: '',
+    };
+
+    this.fuenteForm = fuenteForm;
+
+    console.log('Variable seleccionada:', this.variableSeleccionada);
+    console.log('Fuente cargada en formulario:', this.fuenteForm);
+
+    this.verificarSiFuenteExisteEnArmonizacionPorDatos();
   }
+  verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
+    this.cargandoEstadoFuente = true;
 
-  const fuenteForm = {
-    idFuente: fuenteEncontrada.idFuente ?? '',
-    acronimo: fuenteEncontrada.acronimo ?? '',
-    fuente: fuenteEncontrada.fuente ?? '',
-    url: fuenteEncontrada.url ?? '',
-    edicion: fuenteEncontrada.edicion ?? '',
-    comentarioS: fuenteEncontrada.comentarioS ?? '',
-    comentarioA: '',
-  };
+    this._varService.existsFuenteArmonizacion(idFuente).subscribe({
+      next: (resp) => {
+        this.fuenteExisteEnArmonizacion = resp.exists;
+        this.cargandoEstadoFuente = false;
 
-  this.fuenteForm = fuenteForm;
+        console.log('¿Fuente existe en armonización?', resp.exists);
 
-  console.log('Variable seleccionada:', this.variableSeleccionada);
-  console.log('Fuente cargada en formulario:', this.fuenteForm);
+        if (resp.exists) {
+          this.cargarFuenteArmonizacion(idFuente);
+        }
 
-  this.verificarSiFuenteExisteEnArmonizacionPorDatos();
-}
-verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
-  this.cargandoEstadoFuente = true;
-
-  this._varService.existsFuenteArmonizacion(idFuente).subscribe({
-    next: (resp) => {
-      this.fuenteExisteEnArmonizacion = resp.exists;
-      this.cargandoEstadoFuente = false;
-
-      console.log('¿Fuente existe en armonización?', resp.exists);
-
-      if (resp.exists) {
-        this.cargarFuenteArmonizacion(idFuente);
-      }
-
-      if (this.variableSeleccionada?.idA) {
-      this.verificarSiVariableExiste(this.variableSeleccionada.idA);
-      }
-    },
-    error: (err) => {
-      console.error('Error al verificar fuente en armonización:', err);
-      this.fuenteExisteEnArmonizacion = false;
-      this.cargandoEstadoFuente = false;
-    },
-  });
-}
-
-cargarFuenteArmonizacion(idFuenteSeleccion: string) {
-  this._varService
-    .getFuenteArmonizacionByIdFuenteSeleccion(idFuenteSeleccion)
-    .subscribe({
-      next: (fuenteArm) => {
-        if (!this.fuenteForm) return;
-
-        this.fuenteForm = {
-          ...this.fuenteForm,
-          idFuente: fuenteArm.idFuente ?? this.fuenteForm.idFuente,
-          idFuenteSeleccion:
-            fuenteArm.idFuenteSeleccion ?? idFuenteSeleccion,
-          acronimo: fuenteArm.acronimo ?? '',
-          fuente: fuenteArm.fuente ?? '',
-          url: fuenteArm.url ?? '',
-          edicion: fuenteArm.edicion ?? '',
-          comentarioS: fuenteArm.comentarioS ?? '',
-          comentarioA: fuenteArm.comentarioA ?? '',
-        };
         if (this.variableSeleccionada?.idA) {
           this.verificarSiVariableExiste(this.variableSeleccionada.idA);
         }
       },
-
       error: (err) => {
-        console.error('Error al cargar fuente de armonización:', err);
+        console.error('Error al verificar fuente en armonización:', err);
+        this.fuenteExisteEnArmonizacion = false;
+        this.cargandoEstadoFuente = false;
       },
     });
-}
-
-guardarFuenteTemporal() {
-  if (!this.fuenteForm) {
-    console.warn('No hay fuente cargada para guardar');
-    return;
   }
 
-  const payload: FuenteSaveDTO = {
-  idFuenteSeleccion:
-    this.fuenteForm.idFuenteSeleccion ||
-    this.variableSeleccionada?.idFuente ||
-    '',
-  acronimo: this.fuenteForm.acronimo?.trim() || '',
-  fuente: this.fuenteForm.fuente?.trim() || '',
-  url: this.fuenteForm.url?.trim() || null,
-  edicion: this.fuenteForm.edicion?.trim() || null,
-  comentarioS: this.fuenteForm.comentarioS?.trim() || null,
-  comentarioA: this.fuenteForm.comentarioA?.trim() || null,
-};
+  cargarFuenteArmonizacion(idFuenteSeleccion: string) {
+    this._varService
+      .getFuenteArmonizacionByIdFuenteSeleccion(idFuenteSeleccion)
+      .subscribe({
+        next: (fuenteArm) => {
+          if (!this.fuenteForm) return;
 
-  if (!this.fuenteExisteEnArmonizacion) {
-    this._varService.createFuenteArmonizacion(payload).subscribe({
-      next: (resp) => {
-        console.log('Fuente guardada en armonización:', resp);
-        this.abrirModalSuccessSave('La fuente se guardó correctamente en armonización.');
-        this.fuenteExisteEnArmonizacion = true;
-        if (this.variableSeleccionada?.idA) {
-  this.verificarSiVariableExiste(this.variableSeleccionada.idA);
-}
+          this.fuenteForm = {
+            ...this.fuenteForm,
+            idFuente: fuenteArm.idFuente ?? this.fuenteForm.idFuente,
+            idFuenteSeleccion: fuenteArm.idFuenteSeleccion ?? idFuenteSeleccion,
+            acronimo: fuenteArm.acronimo ?? '',
+            fuente: fuenteArm.fuente ?? '',
+            url: fuenteArm.url ?? '',
+            edicion: fuenteArm.edicion ?? '',
+            comentarioS: fuenteArm.comentarioS ?? '',
+            comentarioA: fuenteArm.comentarioA ?? '',
+          };
+          if (this.variableSeleccionada?.idA) {
+            this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+          }
+        },
 
-        this.fuenteForm = {
-  idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
-  idFuenteSeleccion:
-    resp.idFuenteSeleccion ?? this.fuenteForm!.idFuenteSeleccion,
-  acronimo: resp.acronimo ?? this.fuenteForm!.acronimo,
-  fuente: resp.fuente ?? this.fuenteForm!.fuente,
-  url: resp.url ?? '',
-  edicion: resp.edicion ?? '',
-  comentarioS: resp.comentarioS ?? '',
-  comentarioA: resp.comentarioA ?? '',
-};
-      },
-      error: (err) => {
-        console.error('Error al guardar fuente en armonización:', err);
-        this.abrirModalError(this.obtenerMensajeError(err));
-
-      },
-    });
-
-    return;
+        error: (err) => {
+          console.error('Error al cargar fuente de armonización:', err);
+        },
+      });
   }
 
+  guardarFuenteTemporal() {
+    if (!this.fuenteForm) {
+      console.warn('No hay fuente cargada para guardar');
+      return;
+    }
 
+    const payload: FuenteSaveDTO = {
+      idFuenteSeleccion:
+        this.fuenteForm.idFuenteSeleccion ||
+        this.variableSeleccionada?.idFuente ||
+        '',
+      acronimo: this.fuenteForm.acronimo?.trim() || '',
+      fuente: this.fuenteForm.fuente?.trim() || '',
+      url: this.fuenteForm.url?.trim() || null,
+      edicion: this.fuenteForm.edicion?.trim() || null,
+      comentarioS: this.fuenteForm.comentarioS?.trim() || null,
+      comentarioA: this.fuenteForm.comentarioA?.trim() || null,
+    };
 
-  // Esto solo funcionará cuando ya tengas PUT en backend
+    if (!this.fuenteExisteEnArmonizacion) {
+      this._varService.createFuenteArmonizacion(payload).subscribe({
+        next: (resp) => {
+          console.log('Fuente guardada en armonización:', resp);
+          this.abrirModalSuccessSave(
+            'La fuente se guardó correctamente en armonización.',
+          );
+          this.fuenteExisteEnArmonizacion = true;
+          if (this.variableSeleccionada?.idA) {
+            this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+          }
 
-    this._varService.updateFuenteArmonizacion(payload)
-    .subscribe({
+          this.fuenteForm = {
+            idFuente: resp.idFuente ?? this.fuenteForm!.idFuente,
+            idFuenteSeleccion:
+              resp.idFuenteSeleccion ?? this.fuenteForm!.idFuenteSeleccion,
+            acronimo: resp.acronimo ?? this.fuenteForm!.acronimo,
+            fuente: resp.fuente ?? this.fuenteForm!.fuente,
+            url: resp.url ?? '',
+            edicion: resp.edicion ?? '',
+            comentarioS: resp.comentarioS ?? '',
+            comentarioA: resp.comentarioA ?? '',
+          };
+        },
+        error: (err) => {
+          console.error('Error al guardar fuente en armonización:', err);
+          this.abrirModalError(this.obtenerMensajeError(err));
+        },
+      });
+
+      return;
+    }
+
+    // Esto solo funcionará cuando ya tengas PUT en backend
+
+    this._varService.updateFuenteArmonizacion(payload).subscribe({
       next: (resp) => {
         console.log('Fuente actualizada en armonización:', resp);
-        this.abrirModalSuccessUpdate('La fuente se actualizó correctamente en armonización.');
+        this.abrirModalSuccessUpdate(
+          'La fuente se actualizó correctamente en armonización.',
+        );
         this.fuenteExisteEnArmonizacion = true;
         this.verificarSiVariableExiste(this.variableSeleccionada!.idA);
 
@@ -423,400 +422,337 @@ guardarFuenteTemporal() {
           comentarioS: resp.comentarioS ?? '',
           comentarioA: resp.comentarioA ?? '',
         };
-
-
       },
       error: (err) => {
-  console.error('Error al guardar fuente en armonización:', err);
-  this.abrirModalError(this.obtenerMensajeError(err));
-},
+        console.error('Error al guardar fuente en armonización:', err);
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
     });
-}
+  }
 
+  fuenteExisteEnArmonizacion = false;
+  cargandoEstadoFuente = false;
 
-fuenteExisteEnArmonizacion = false;
-cargandoEstadoFuente = false;
+  get puedeMostrarBloqueVariableSeleccion(): boolean {
+    return this.fuenteExisteEnArmonizacion;
+  }
 
-get puedeMostrarBloqueVariableSeleccion(): boolean {
-  return this.fuenteExisteEnArmonizacion;
-}
+  puedeGuardarFuente(): boolean {
+    return !!(
+      this.fuenteForm?.acronimo?.trim() &&
+      this.fuenteForm?.fuente?.trim() &&
+      this.fuenteForm?.url?.trim() &&
+      this.fuenteForm?.edicion?.trim() &&
+      this.fuenteForm?.comentarioS?.trim() &&
+      this.fuenteForm?.comentarioA?.trim()
+    );
+  }
 
-puedeGuardarFuente(): boolean {
-  return !!(
-    this.fuenteForm?.acronimo?.trim() &&
-    this.fuenteForm?.fuente?.trim() &&
-    this.fuenteForm?.url?.trim() &&
-    this.fuenteForm?.edicion?.trim() &&
-    this.fuenteForm?.comentarioS?.trim() &&
-    this.fuenteForm?.comentarioA?.trim()
-  );
-}
+  verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
+    if (!this.fuenteForm) return;
 
-verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
-  if (!this.fuenteForm) return;
+    this.cargandoEstadoFuente = true;
 
-  this.cargandoEstadoFuente = true;
+    const payload: FuenteSaveDTO = {
+      idFuenteSeleccion:
+        this.fuenteForm.idFuenteSeleccion ||
+        this.variableSeleccionada?.idFuente ||
+        '',
+      acronimo: this.fuenteForm.acronimo?.trim() || '',
+      fuente: this.fuenteForm.fuente?.trim() || '',
+      url: this.fuenteForm.url?.trim() || null,
+      edicion: this.fuenteForm.edicion?.trim() || null,
+      comentarioS: this.fuenteForm.comentarioS?.trim() || null,
+      comentarioA: this.fuenteForm.comentarioA?.trim() || null,
+    };
 
-  const payload: FuenteSaveDTO = {
-  idFuenteSeleccion:
-    this.fuenteForm.idFuenteSeleccion ||
-    this.variableSeleccionada?.idFuente ||
-    '',
-  acronimo: this.fuenteForm.acronimo?.trim() || '',
-  fuente: this.fuenteForm.fuente?.trim() || '',
-  url: this.fuenteForm.url?.trim() || null,
-  edicion: this.fuenteForm.edicion?.trim() || null,
-  comentarioS: this.fuenteForm.comentarioS?.trim() || null,
-  comentarioA: this.fuenteForm.comentarioA?.trim() || null,
-};
+    this._varService.existsFuenteArmonizacionByData(payload).subscribe({
+      next: (resp) => {
+        this.fuenteExisteEnArmonizacion = resp.exists;
+        this.cargandoEstadoFuente = false;
 
-  this._varService.existsFuenteArmonizacionByData(payload).subscribe({
-  next: (resp) => {
-    this.fuenteExisteEnArmonizacion = resp.exists;
-    this.cargandoEstadoFuente = false;
+        if (resp.idFuente) {
+          this.fuenteForm = {
+            ...this.fuenteForm!,
+            idFuente: resp.idFuente,
+          };
+        }
 
+        if (resp.exists) {
+          this.cargarFuenteArmonizacion(resp.idFuenteSeleccion);
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar fuente en armonización:', err);
+        this.abrirModalError(this.obtenerMensajeError(err));
+        this.fuenteExisteEnArmonizacion = false;
+        this.cargandoEstadoFuente = false;
+      },
+    });
+  }
+  @ViewChild('SuccessSaveModal')
+  SuccessSaveModal!: ElementRef<HTMLDialogElement>;
+  @ViewChild('SuccessUpdateModal')
+  SuccessUpdateModal!: ElementRef<HTMLDialogElement>;
+  @ViewChild('ErrorModal') ErrorModal!: ElementRef<HTMLDialogElement>;
 
-    if (resp.idFuente) {
-      this.fuenteForm = {
-        ...this.fuenteForm!,
-        idFuente: resp.idFuente,
-      };
-    }
+  mensajeSuccessSave: string = '';
+  mensajeSuccessUpdate: string = '';
+  mensajeError: string = '';
+  abrirModalSuccessSave(mensaje: string) {
+    this.mensajeSuccessSave = mensaje;
+    this.SuccessSaveModal.nativeElement.showModal();
+  }
 
-    if (resp.exists) {
-      this.cargarFuenteArmonizacion(resp.idFuenteSeleccion);
-    }
-  },
-  error: (err) => {
-    console.error('Error al verificar fuente en armonización:', err);
-    this.abrirModalError(this.obtenerMensajeError(err));
-    this.fuenteExisteEnArmonizacion = false;
-    this.cargandoEstadoFuente = false;
-  },
-});
-}
-@ViewChild('SuccessSaveModal') SuccessSaveModal!: ElementRef<HTMLDialogElement>;
-@ViewChild('SuccessUpdateModal') SuccessUpdateModal!: ElementRef<HTMLDialogElement>;
-@ViewChild('ErrorModal') ErrorModal!: ElementRef<HTMLDialogElement>;
+  cerrarModalSuccessSave() {
+    this.SuccessSaveModal.nativeElement.close();
+  }
 
-mensajeSuccessSave: string = '';
-mensajeSuccessUpdate: string = '';
-mensajeError: string = '';
-abrirModalSuccessSave(mensaje: string) {
-  this.mensajeSuccessSave = mensaje;
-  this.SuccessSaveModal.nativeElement.showModal();
-}
+  abrirModalSuccessUpdate(mensaje: string) {
+    this.mensajeSuccessUpdate = mensaje;
+    this.SuccessUpdateModal.nativeElement.showModal();
+  }
 
-cerrarModalSuccessSave() {
+  cerrarModalSuccessUpdate() {
+    this.SuccessUpdateModal.nativeElement.close();
+  }
 
-  this.SuccessSaveModal.nativeElement.close();
-}
+  abrirModalError(mensaje: string) {
+    this.mensajeError = mensaje;
+    this.ErrorModal.nativeElement.showModal();
+  }
 
-abrirModalSuccessUpdate(mensaje: string) {
-  this.mensajeSuccessUpdate = mensaje;
-  this.SuccessUpdateModal.nativeElement.showModal();
-}
+  cerrarModalError() {
+    this.ErrorModal.nativeElement.close();
+  }
 
-cerrarModalSuccessUpdate() {
+  private obtenerMensajeError(err: any): string {
+    return (
+      err?.error?.message ||
+      err?.error?.detail ||
+      err?.error?.error ||
+      err?.message ||
+      'Ocurrió un error inesperado.'
+    );
+  }
 
-  this.SuccessUpdateModal.nativeElement.close();
+  variableExisteEnArmonizacion: boolean = false;
+  modoEdicionVariable: boolean = false;
+  private variablesArmoService = inject(VariablesArmoService);
 
-}
+  verificarSiVariableExiste(idA: string) {
+    this.variablesArmoService.existePorIdA(idA).subscribe({
+      next: (existe) => {
+        this.variableExisteEnArmonizacion = existe;
+        this.modoEdicionVariable = existe;
 
-abrirModalError(mensaje: string) {
-  this.mensajeError = mensaje;
-  this.ErrorModal.nativeElement.showModal();
-}
-
-cerrarModalError() {
-  this.ErrorModal.nativeElement.close();
-}
-
-private obtenerMensajeError(err: any): string {
-  return (
-    err?.error?.message ||
-    err?.error?.detail ||
-    err?.error?.error ||
-    err?.message ||
-    'Ocurrió un error inesperado.'
-  );
-}
-
-variableExisteEnArmonizacion: boolean = false;
-modoEdicionVariable: boolean = false;
-private variablesArmoService = inject(VariablesArmoService);
-
-verificarSiVariableExiste(idA: string) {
-  this.variablesArmoService.existePorIdA(idA).subscribe({
-    next: (existe) => {
-      this.variableExisteEnArmonizacion = existe;
-      this.modoEdicionVariable = existe;
-
-      if (existe) {
-        this.cargarVariableArmonizacion(idA);
-      } else {
+        if (existe) {
+          this.cargarVariableArmonizacion(idA);
+        } else {
+          this.prepararVariableNueva();
+        }
+      },
+      error: (err) => {
+        console.error('Error al verificar variable en armonización:', err);
+        this.variableExisteEnArmonizacion = false;
+        this.modoEdicionVariable = false;
         this.prepararVariableNueva();
-      }
-    },
-    error: (err) => {
-      console.error('Error al verificar variable en armonización:', err);
-      this.variableExisteEnArmonizacion = false;
-      this.modoEdicionVariable = false;
-      this.prepararVariableNueva();
-    }
-  });
-}
+      },
+    });
+  }
 
-cargarVariableArmonizacion(idA: string) {
-  this.variablesArmoService.obtenerPorIdA(idA).subscribe({
-    next: (variable) => {
-      this.variableForm.patchValue({
-        idA: variable.idA,
-        idFuente: variable.idFuente,
-        acronimo: variable.acronimo,
-        idS: variable.idS,
-        variableS: variable.variableS,
-        variableA: variable.variableA,
-        url: variable.url,
-        pregunta: variable.pregunta,
-        definicion: variable.definicion,
-        universo: variable.universo,
-        anioReferencia: variable.anioReferencia,
-        tematica: variable.tematica,
-        tema1: variable.tema1,
-        subtema1: variable.subtema1,
-        tema2: variable.tema2,
-        subtema2: variable.subtema2,
-        tabulados: variable.tabulados,
-        clasificacion: variable.clasificacion,
-        microdatos: variable.microdatos,
-        datosabiertos: variable.datosabiertos,
-        mdea: variable.mdea,
-        ods: variable.ods,
-        comentarioS: variable.comentarioS,
-        comentarioA: variable.comentarioA
+  cargarVariableArmonizacion(idA: string) {
+    this.variablesArmoService.obtenerPorIdA(idA).subscribe({
+      next: (variable) => {
+        this.variableForm.patchValue({
+          idA: variable.idA,
+          idFuente: variable.idFuente,
+          acronimo: variable.acronimo,
+          idS: variable.idS,
+          variableS: variable.variableS,
+          variableA: variable.variableA,
+          url: variable.url,
+          pregunta: variable.pregunta,
+          definicion: variable.definicion,
+          universo: variable.universo,
+          anioReferencia: variable.anioReferencia,
+          tematica: variable.tematica,
+          tema1: variable.tema1,
+          subtema1: variable.subtema1,
+          tema2: variable.tema2,
+          subtema2: variable.subtema2,
+          tabulados: variable.tabulados,
+          clasificacion: variable.clasificacion,
+          microdatos: variable.microdatos,
+          datosabiertos: variable.datosabiertos,
+          mdea: variable.mdea,
+          ods: variable.ods,
+          comentarioS: variable.comentarioS,
+          comentarioA: variable.comentarioA,
+        });
+        if (variable.tema1) {
+          this.cargarSubtemasTema1(variable.tema1);
+        }
+
+        if (variable.tema2) {
+          this.cargarSubtemasTema2(variable.tema2);
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar variable de armonización:', err);
+      },
+    });
+  }
+
+  prepararVariableNueva() {
+    const variableSeleccionada = this.variableSeleccionada;
+
+    if (!variableSeleccionada) return;
+
+    this.variableForm.patchValue({
+      idA: variableSeleccionada.idA,
+      idFuente: variableSeleccionada.idFuente,
+      acronimo: variableSeleccionada.acronimo,
+      idS: variableSeleccionada.idS,
+      variableS: variableSeleccionada.nombre,
+      variableA: '',
+      url: variableSeleccionada.url ?? '',
+      definicion: variableSeleccionada.definicion ?? '',
+      comentarioS: variableSeleccionada.comentarioS ?? '',
+
+      pregunta: '',
+      universo: '',
+      anioReferencia: null,
+      tematica: '',
+      tema1: '',
+      subtema1: '',
+      tema2: '-',
+      subtema2: '-',
+      tabulados: false,
+      clasificacion: false,
+      microdatos: '',
+      datosabiertos: false,
+      mdea: variableSeleccionada.mdea ?? false,
+      ods: variableSeleccionada.ods ?? false,
+      comentarioA: '',
+    });
+  }
+  guardarOActualizarVariable() {
+    if (!this.variableForm.valid) {
+      this.variableForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = this.variableForm.getRawValue();
+
+    if (this.variableExisteEnArmonizacion) {
+      this.variablesArmoService
+        .actualizarVariable(payload.idA, payload)
+        .subscribe({
+          next: (resp) => {
+            this.variableExisteEnArmonizacion = true;
+            this.modoEdicionVariable = true;
+            console.log('Variable actualizada:', resp);
+          },
+          error: (err) => {
+            console.error('Error al actualizar variable:', err);
+          },
+        });
+    } else {
+      this.variablesArmoService.guardarVariable(payload).subscribe({
+        next: (resp) => {
+          this.variableExisteEnArmonizacion = true;
+          this.modoEdicionVariable = true;
+          this.variableForm.patchValue(resp);
+          console.log('Variable guardada:', resp);
+        },
+        error: (err) => {
+          console.error('Error al guardar variable:', err);
+        },
       });
-      if (variable.tema1) {
-  this.cargarSubtemasTema1(variable.tema1);
-}
-
-if (variable.tema2) {
-  this.cargarSubtemasTema2(variable.tema2);
-}
-    },
-    error: (err) => {
-      console.error('Error al cargar variable de armonización:', err);
     }
-  });
-}
-
-prepararVariableNueva() {
-  const variableSeleccionada = this.variableSeleccionada;
-
-  if (!variableSeleccionada) return;
-
-  this.variableForm.patchValue({
-    idA: variableSeleccionada.idA,
-    idFuente: variableSeleccionada.idFuente,
-    acronimo: variableSeleccionada.acronimo,
-    idS: variableSeleccionada.idS,
-    variableS: variableSeleccionada.nombre,
-    variableA: '',
-    url: variableSeleccionada.url ?? '',
-    definicion: variableSeleccionada.definicion ?? '',
-    comentarioS: variableSeleccionada.comentarioS ?? '',
-
-    pregunta: '',
-    universo: '',
-    anioReferencia: null,
-    tematica: '',
-    tema1: '',
-    subtema1: '',
-    tema2: '-',
-    subtema2: '-',
-    tabulados: false,
-    clasificacion: false,
-    microdatos: '',
-    datosabiertos: false,
-    mdea: variableSeleccionada.mdea ?? false,
-    ods: variableSeleccionada.ods ?? false,
-    comentarioA: ''
-  });
-}
-guardarOActualizarVariable() {
-  if (!this.variableForm.valid) {
-    this.variableForm.markAllAsTouched();
-    return;
   }
-
-  const payload = this.variableForm.getRawValue();
-
-  if (this.variableExisteEnArmonizacion) {
-    this.variablesArmoService.actualizarVariable(payload.idA, payload).subscribe({
-      next: (resp) => {
-        this.variableExisteEnArmonizacion = true;
-        this.modoEdicionVariable = true;
-        console.log('Variable actualizada:', resp);
-      },
-      error: (err) => {
-        console.error('Error al actualizar variable:', err);
-      }
-    });
-  } else {
-    this.variablesArmoService.guardarVariable(payload).subscribe({
-      next: (resp) => {
-        this.variableExisteEnArmonizacion = true;
-        this.modoEdicionVariable = true;
-        this.variableForm.patchValue(resp);
-        console.log('Variable guardada:', resp);
-      },
-      error: (err) => {
-        console.error('Error al guardar variable:', err);
-      }
+  private fb = inject(FormBuilder);
+  inicializarFormularioVariable() {
+    this.variableForm = this.fb.group({
+      idA: [''],
+      idFuente: [''],
+      acronimo: [''],
+      idS: [''],
+      variableS: [''],
+      variableA: [''],
+      url: [''],
+      pregunta: [''],
+      definicion: [''],
+      universo: [''],
+      anioReferencia: [null],
+      tematica: ['', Validators.required],
+      tema1: ['', Validators.required],
+      subtema1: ['', Validators.required],
+      tema2: [''],
+      subtema2: [''],
+      tabulados: [false],
+      clasificacion: [false],
+      microdatos: [''],
+      datosabiertos: [false],
+      mdea: [false],
+      ods: [false],
+      comentarioS: [''],
+      comentarioA: [''],
     });
   }
-}
-private fb = inject(FormBuilder);
-inicializarFormularioVariable() {
-  this.variableForm = this.fb.group({
-    idA: [''],
-    idFuente: [''],
-    acronimo: [''],
-    idS: [''],
-    variableS: [''],
-    variableA: [''],
-    url: [''],
-    pregunta: [''],
-    definicion: [''],
-    universo: [''],
-    anioReferencia: [null],
-    tematica: ['',Validators.required],
-    tema1: ['',Validators.required],
-    subtema1: ['',Validators.required],
-    tema2: [''],
-    subtema2: [''],
-    tabulados: [false],
-    clasificacion: [false],
-    microdatos: [''],
-    datosabiertos: [false],
-    mdea: [false],
-    ods: [false],
-    comentarioS: [''],
-    comentarioA: ['']
-  });
-}
 
-limpiarEstadoVariableSeleccionada() {
-  this.variableExisteEnArmonizacion = false;
-  this.modoEdicionVariable = false;
+  limpiarEstadoVariableSeleccionada() {
+    this.variableExisteEnArmonizacion = false;
+    this.modoEdicionVariable = false;
 
-  this.variableForm.reset({
-    idA: '',
-    idFuente: '',
-    acronimo: '',
-    idS: '',
-    variableS: '',
-    variableA: '',
-    url: '',
-    pregunta: '',
-    definicion: '',
-    universo: '',
-    anioReferencia: null,
-    tematica: '',
-    tema1: '',
-    subtema1: '',
-    tema2: '',
-    subtema2: '',
-    tabulados: false,
-    clasificacion: false,
-    microdatos: 'No',
-    datosabiertos: false,
-    mdea: false,
-    ods: false,
-    comentarioS: '',
-    comentarioA: ''
-  });
-  this.limpiarClasificacionLocal();
-}
-
-clasificacionActiva: boolean = false;
-
-clasificacionForm = {
-  clase: '',
-  comentarioA: '',
-};
-
-toggleClasificacionLocal(event: Event) {
-  const checked = (event.target as HTMLInputElement).checked;
-  this.clasificacionActiva = checked;
-
-  if (!checked) {
+    this.variableForm.reset({
+      idA: '',
+      idFuente: '',
+      acronimo: '',
+      idS: '',
+      variableS: '',
+      variableA: '',
+      url: '',
+      pregunta: '',
+      definicion: '',
+      universo: '',
+      anioReferencia: null,
+      tematica: '',
+      tema1: '',
+      subtema1: '',
+      tema2: '',
+      subtema2: '',
+      tabulados: false,
+      clasificacion: false,
+      microdatos: 'No',
+      datosabiertos: false,
+      mdea: false,
+      ods: false,
+      comentarioS: '',
+      comentarioA: '',
+    });
     this.limpiarClasificacionLocal();
   }
-}
-microdatosActivo: boolean = false;
 
-microdatosForm = {
-  urlAcceso: '',
-  descriptor: '',
-  urlDescriptor: '',
-  tabla: '',
-  campo: '',
-  comentarioA: '',
-};
-datosAbiertosActivo: boolean = false;
+  clasificacionActiva: boolean = false;
 
-datosAbiertosForm = {
-  urlAcceso: '',
-  urlDescarga: '',
-  descriptor: '',
-  tabla: '',
-  campo: '',
-  comentarioA: '',
-};
-toggleMicrodatosLocal(event: Event) {
-  const checked = (event.target as HTMLInputElement).checked;
-  this.microdatosActivo = checked;
-
-  if (!checked) {
-    this.limpiarMicrodatosLocal();
-  }
-}
-toggleDatosAbiertosLocal(event: Event) {
-  const checked = (event.target as HTMLInputElement).checked;
-  this.datosAbiertosActivo = checked;
-
-  if (!checked) {
-    this.limpiarDatosAbiertosLocal();
-  }
-}
-limpiarClasificacionLocal() {
-  this.clasificacionActiva = false;
-  this.clasificacionForm = {
+  clasificacionForm = {
     clase: '',
     comentarioA: '',
   };
-}
 
-limpiarDatosAbiertosLocal() {
-  this.datosAbiertosActivo = false;
-  this.datosAbiertosForm = {
-    urlAcceso: '',
-    urlDescarga: '',
-    descriptor: '',
-    tabla: '',
-    campo: '',
-    comentarioA: '',
-  };
-}
-microdatosEstado: string = '';
-seleccionarEstadoMicrodatos(estado: string) {
-  this.microdatosEstado = estado;
-}
-limpiarMicrodatosLocal() {
-  this.microdatosActivo = false;
-  this.microdatosEstado = '';
-  this.microdatosForm = {
+  toggleClasificacionLocal(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.clasificacionActiva = checked;
+
+    if (!checked) {
+      this.limpiarClasificacionLocal();
+    }
+  }
+  microdatosActivo: boolean = false;
+
+  microdatosForm = {
     urlAcceso: '',
     descriptor: '',
     urlDescriptor: '',
@@ -824,83 +760,142 @@ limpiarMicrodatosLocal() {
     campo: '',
     comentarioA: '',
   };
-}
+  datosAbiertosActivo: boolean = false;
 
+  datosAbiertosForm = {
+    urlAcceso: '',
+    urlDescarga: '',
+    descriptor: '',
+    tabla: '',
+    campo: '',
+    comentarioA: '',
+  };
+  toggleMicrodatosLocal(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.microdatosActivo = checked;
 
-arrTematicas: TematicaDTO[] = [];
-private tematicasService = inject(TematicasService);
-cargarTematicasPorProceso(acronimo: string) {
-  this.arrTematicas = [];
-
-  if (!acronimo) return;
-
-  this.tematicasService.obtenerPorAcronimo(acronimo).subscribe({
-    next: (resp) => {
-      this.arrTematicas = resp;
-    },
-    error: (err) => {
-      console.error('Error al cargar temáticas:', err);
-      this.arrTematicas = [];
+    if (!checked) {
+      this.limpiarMicrodatosLocal();
     }
-  });
-}
+  }
+  toggleDatosAbiertosLocal(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.datosAbiertosActivo = checked;
 
-arrTemasCatalogo: string[] = [];
-
-arrSubtemasTema1: TemaSubtemaDTO[] = [];
-arrSubtemasTema2: TemaSubtemaDTO[] = [];
-private temasSubtemasService = inject(TemasSubtemasService);
-cargarTemasCatalogo() {
-  this.arrTemasCatalogo = [];
-
-  this.temasSubtemasService.obtenerTemas().subscribe({
-    next: (resp) => {
-      this.arrTemasCatalogo = resp;
-    },
-    error: (err) => {
-      console.error('Error al cargar temas:', err);
-      this.arrTemasCatalogo = [];
+    if (!checked) {
+      this.limpiarDatosAbiertosLocal();
     }
-  });
-}
-cargarSubtemasTema1(tema: string) {
-  this.arrSubtemasTema1 = [];
-  this.variableForm.patchValue({ subtema1: '' });
+  }
+  limpiarClasificacionLocal() {
+    this.clasificacionActiva = false;
+    this.clasificacionForm = {
+      clase: '',
+      comentarioA: '',
+    };
+  }
 
-  if (!tema) return;
+  limpiarDatosAbiertosLocal() {
+    this.datosAbiertosActivo = false;
+    this.datosAbiertosForm = {
+      urlAcceso: '',
+      urlDescarga: '',
+      descriptor: '',
+      tabla: '',
+      campo: '',
+      comentarioA: '',
+    };
+  }
+  microdatosEstado: string = '';
+  seleccionarEstadoMicrodatos(estado: string) {
+    this.microdatosEstado = estado;
+  }
+  limpiarMicrodatosLocal() {
+    this.microdatosActivo = false;
+    this.microdatosEstado = '';
+    this.microdatosForm = {
+      urlAcceso: '',
+      descriptor: '',
+      urlDescriptor: '',
+      tabla: '',
+      campo: '',
+      comentarioA: '',
+    };
+  }
 
-  this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
-    next: (resp) => {
-      this.arrSubtemasTema1 = resp;
-    },
-    error: (err) => {
-      console.error('Error al cargar subtemas de tema1:', err);
-      this.arrSubtemasTema1 = [];
-    }
-  });
-}
-cargarSubtemasTema2(tema: string) {
-  this.arrSubtemasTema2 = [];
-  this.variableForm.patchValue({ subtema2: '' });
+  arrTematicas: TematicaDTO[] = [];
+  private tematicasService = inject(TematicasService);
+  cargarTematicasPorProceso(acronimo: string) {
+    this.arrTematicas = [];
 
-  if (!tema) return;
+    if (!acronimo) return;
 
-  this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
-    next: (resp) => {
-      this.arrSubtemasTema2 = resp;
-    },
-    error: (err) => {
-      console.error('Error al cargar subtemas de tema2:', err);
-      this.arrSubtemasTema2 = [];
-    }
-  });
-}
-onTema1Change(event: Event) {
-  const tema = (event.target as HTMLSelectElement).value;
-  this.cargarSubtemasTema1(tema);
-}
-onTema2Change(event: Event) {
-  const tema = (event.target as HTMLSelectElement).value;
-  this.cargarSubtemasTema2(tema);
-}
+    this.tematicasService.obtenerPorAcronimo(acronimo).subscribe({
+      next: (resp) => {
+        this.arrTematicas = resp;
+      },
+      error: (err) => {
+        console.error('Error al cargar temáticas:', err);
+        this.arrTematicas = [];
+      },
+    });
+  }
+
+  arrTemasCatalogo: string[] = [];
+
+  arrSubtemasTema1: TemaSubtemaDTO[] = [];
+  arrSubtemasTema2: TemaSubtemaDTO[] = [];
+  private temasSubtemasService = inject(TemasSubtemasService);
+  cargarTemasCatalogo() {
+    this.arrTemasCatalogo = [];
+
+    this.temasSubtemasService.obtenerTemas().subscribe({
+      next: (resp) => {
+        this.arrTemasCatalogo = resp;
+      },
+      error: (err) => {
+        console.error('Error al cargar temas:', err);
+        this.arrTemasCatalogo = [];
+      },
+    });
+  }
+  cargarSubtemasTema1(tema: string) {
+    this.arrSubtemasTema1 = [];
+    this.variableForm.patchValue({ subtema1: '' });
+
+    if (!tema) return;
+
+    this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
+      next: (resp) => {
+        this.arrSubtemasTema1 = resp;
+      },
+      error: (err) => {
+        console.error('Error al cargar subtemas de tema1:', err);
+        this.arrSubtemasTema1 = [];
+      },
+    });
+  }
+  cargarSubtemasTema2(tema: string) {
+    this.arrSubtemasTema2 = [];
+    this.variableForm.patchValue({ subtema2: '' });
+
+    if (!tema) return;
+
+    this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
+      next: (resp) => {
+        this.arrSubtemasTema2 = resp;
+      },
+      error: (err) => {
+        console.error('Error al cargar subtemas de tema2:', err);
+        this.arrSubtemasTema2 = [];
+      },
+    });
+  }
+  onTema1Change(event: Event) {
+    const tema = (event.target as HTMLSelectElement).value;
+    this.cargarSubtemasTema1(tema);
+  }
+  onTema2Change(event: Event) {
+    const tema = (event.target as HTMLSelectElement).value;
+    this.cargarSubtemasTema2(tema);
+  }
 }

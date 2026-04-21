@@ -1,11 +1,12 @@
 export interface FiEcoResponce {
-  idFuente: number;
-  acronimo?: string;
+  idFuente: string;
+  acronimo: string;
   fuente: string;
-  url?: string;
-  edicion: string;
-  comentarioS: string;
+  url?: string | null;
+  edicion?: string | number | null;
+  comentarioS?: string | null;
   responsableRegister?: number;
   responsableActualizacion: number | null;
+  totalVariables?: number;
 
 }

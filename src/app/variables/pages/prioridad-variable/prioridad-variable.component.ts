@@ -146,9 +146,9 @@ export class PrioridadVariableComponent implements OnInit {
     this.arrVariablesSeleccionadasFiltradas = [];
     this.filtroIdS = '';
 
-    this._fuentesService.getByProceso(acronimo).subscribe({
+    this._fuentesService.getByAcronimo(acronimo).subscribe({
       next: (response) => {
-        this.arrFuentesByProceso = response?.fuentes ?? [];
+        this.arrFuentesByProceso = response ?? [];
         this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
         this.loadingFuentes = false;
       },
@@ -198,7 +198,7 @@ export class PrioridadVariableComponent implements OnInit {
           this.arrVariablesSeleccionadasFiltradas = data;
           this.filtroIdS = '';
           this.loadingVariables = false;
-          console.log(data)
+          console.log(data);
         },
         error: (err) => {
           console.error('Error al cargar variables:', err);

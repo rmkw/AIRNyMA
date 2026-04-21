@@ -1,13 +1,11 @@
 import { FiEcoResponce } from '@/fuenteIdentificacion/interfaces/fiEco-responce.interface';
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
-import { PpEconomicas } from '@/procesoProduccion/interfaces/ppEco-responce.interface';
-import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, input, OnInit, signal, ViewChild } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { Component, ElementRef, inject, OnInit,  ViewChild } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { finalize, tap } from 'rxjs';
+import { Router,  } from '@angular/router';
+import { finalize,  } from 'rxjs';
 
 
 @Component({
@@ -36,7 +34,7 @@ export class FuentesListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPropsLocalStorage();
-    this.getFuentesByidPp();
+
   }
 
   getPropsLocalStorage() {
@@ -51,84 +49,14 @@ export class FuentesListComponent implements OnInit {
       this._responsableRegister = Number(_responsableRegister!);
     }
   }
-  // getFuentesByidPp() {
-  //   if (!this._responsableRegister || !this.acronimo) {
-  //     console.error('Responsable o acrónimo de proceso no definidos');
-  //     return;
-  //   }
-  //   this._fuentesService
-  //     .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
-  //     .subscribe({
-  //       next: (response) => {
-  //         console.log('✅ Resultado del backend:', response);
 
-  //         this.fuentes = response.fuentes;
-  //         if (this.fuentes.length > 0) {
-  //           this.loading = false;
-  //         } else {
-  //           this.loading = true;
-  //         }
-  //       },
-  //       error: (err) => {
-  //         console.error('Error al obtener fuentes:', err);
-  //       },
-  //     });
-  // }
-  getFuentesByidPp() {
-    // Arranca el loading ANTES de llamar al servicio
-    this.loading = true;
 
-    if (!this._responsableRegister || !this.acronimo) {
-      console.error('Responsable o acrónimo de proceso no definidos');
-      this.fuentes = []; // previene undefined
-      this.loading = false; // evita spinner colgado
-      return;
-    }
-
-    this._fuentesService
-      .getByIdPpAndResponsable(this.acronimo, this._responsableRegister)
-      .pipe(
-        // Pase lo que pase (next o error), quita el loading
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          console.log('✅ Resultado del backend:', response);
-          this.fuentes = response?.fuentes ?? []; // si no viene, deja []
-        },
-        error: (err) => {
-          console.error('Error al obtener fuentes:', err);
-          this.fuentes = []; // en error, muestra “sin registros” en la tabla
-        },
-      });
-  }
 
   async validateYear(event: Event) {
     const inputElement = event.target as HTMLInputElement;
     const rawValue = inputElement.value;
 
-    // // Solo procedemos si tiene exactamente 4 caracteres
-    // if (rawValue.length !== 9) return;
 
-    // // Limpiamos todo lo que no sea número
-    // const cleanedValue = rawValue.replace(/[^0-9]/g, '');
-
-    // // Verificamos si el resultado sigue teniendo 4 caracteres
-    // if (cleanedValue.length !== 9) {
-    //   await this.limpiarAnio();
-    //   return;
-    // }
-
-    // const parsedYear = parseInt(cleanedValue, 10);
-
-    // if (isNaN(parsedYear) || parsedYear < 1800 || parsedYear > 2099) {
-    //   await this.limpiarAnio();
-    //   return;
-    // }
-
-    // Si todo está bien, asignamos el valor limpio
     this.edicion = rawValue;
     console.log(this.edicion);
   }
@@ -155,7 +83,7 @@ export class FuentesListComponent implements OnInit {
       comentarioS: this.comentarioF,
     };
 
-    // console.log('Datos a registrar:', datosFuente);
+
 
     this._fuentesService.registrarFuente(datosFuente).subscribe(
       (response) => {
@@ -223,23 +151,8 @@ export class FuentesListComponent implements OnInit {
     this.modalEliminar.nativeElement.close();
     this.idFuenteSeleccionada = null;
   }
-  confirmarEliminacion() {
-    if (this.idFuenteSeleccionada !== null) {
-      this.desactivar(this.idFuenteSeleccionada);
-    }
-    this.cerrarModal();
-  }
-  desactivar(id: string): void {
-    this._fuentesService.deactivateRecord(id).subscribe({
-      next: (res) => {
-        console.log('Registro eliminado:', res);
-        this.getFuentesByidPp();
-      },
-      error: (err) => {
-        console.error('Error al desactivar:', err);
-      },
-    });
-  }
+
+
   @ViewChild('modalSinDatos') modalSinDatos!: ElementRef<HTMLDialogElement>;
   showModalSinDatos() {
     this.modalSinDatos.nativeElement.showModal();
@@ -261,6 +174,7 @@ export class FuentesListComponent implements OnInit {
   showModalErrorFuenteDuplicada() {
     this.modalErrorFuenteDuplicada.nativeElement.showModal();
   }
+
   cerrarModalerror() {
     this.modalErrorFuenteDuplicada.nativeElement.close();
     this.mensajeError = ''; // Limpiar el mensaje de error

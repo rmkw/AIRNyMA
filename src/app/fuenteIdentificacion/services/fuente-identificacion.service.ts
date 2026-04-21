@@ -5,7 +5,7 @@ import { catchError, Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FiEcoResponce } from '../interfaces/fiEco-responce.interface';
 
-const baseUrl = environment.baseUrl
+const baseUrl = environment.baseUrl;
 
 @Injectable({ providedIn: 'root' })
 export class FuenteIdentificacionService {
@@ -14,98 +14,96 @@ export class FuenteIdentificacionService {
   private _authService = inject(authService);
   private http = inject(HttpClient);
 
-  //!OBTENER FUENTES
-  obtenerFuentes(): Observable<FiEcoResponce[]> {
-    const userId = this._authService.user()?.id;
-    if (!userId) {
-      console.log('No hay usuario autenticado');
-      return of([]);
-    }
-
-    return this.http.get<FiEcoResponce[]>(`${baseUrl}/fuentes/${userId}`).pipe(
-      catchError((error) => {
-        console.error('Error al obtener fuentes:', error);
-        return of([]);
-      }),
-    );
-  }
-
-  getByIdPpAndResponsable(
-    acronimo: string,
-    responsableRegister: number,
-  ): Observable<any> {
-    const params = new HttpParams()
-      .set('acronimo', acronimo)
-      .set('responsableRegister', responsableRegister.toString());
-
-    return this.http.get(`${baseUrl}/fuentes/byResponsable`, { params });
-  }
-
-  getByProceso(acronimo: string): Observable<any> {
-    return this.http.get<any>(
-      `${baseUrl}/fuentes/por-proceso/${encodeURIComponent(acronimo)}`,
-      {
-        withCredentials: true,
-      },
-    );
-  }
-
-  //!REGISTRAR FUENTE
-  registrarFuente(datos: {
-    acronimo: string;
-    fuente: string;
-    url: string;
-    edicion: string | number;
-    comentarioS: string;
-  }): Observable<FiEcoResponce | null> {
-    const userId = this._authService.user()?.id;
-    // console.log('Usuario autenticado en servicio fuente:', userId);
-
-    // Si no hay usuario logeado, no se puede registrar
-    if (!userId) {
-      console.log('No hay usuario autenticado');
-      return of(null); // O puedes lanzar un error, dependiendo de cómo lo manejes
-    }
-
-    // Se agrega responsableRegister con el userId
-    const datosConResponsable = {
-      ...datos,
-      responsableRegister: userId,
-    };
-    // console.log('Datos enviados al backend:', datosConResponsable);
+  //! OBTENER FUENTES POR ACRONIMO
+  getByAcronimo(acronimo: string): Observable<FiEcoResponce[]> {
+    const params = new HttpParams().set('acronimo', acronimo);
 
     return this.http
-      .post<FiEcoResponce>(`${baseUrl}/fuentes`, datosConResponsable)
+      .get<FiEcoResponce[]>(`${baseUrl}/fuentes/por-acronimo`, {
+        params,
+        withCredentials: true,
+      })
       .pipe(
         catchError((error) => {
-          console.error('Error al registrar fuente:', error);
-          return throwError(() => error); // O cualquier otro valor que indique error
+          console.error('Error al obtener fuentes por acrónimo:', error);
+          return of([]);
         }),
       );
   }
 
-  editarFuente(
-    idFuente: string,
-    datos: Omit<FiEcoResponce, 'idFuente' | 'responsableActualizacion'>,
-  ): Observable<FiEcoResponce | null> {
+  //! OBTENER FUENTE POR ID
+  getByIdFuente(idFuente: string): Observable<FiEcoResponce | null> {
+    const params = new HttpParams().set('idFuente', idFuente);
+
+    return this.http
+      .get<FiEcoResponce>(`${baseUrl}/fuentes/by-id`, {
+        params,
+        withCredentials: true,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error al obtener fuente por id:', error);
+          return of(null);
+        }),
+      );
+  }
+
+  //! REGISTRAR FUENTE
+  registrarFuente(datos: {
+    acronimo: string;
+    fuente: string;
+    url: string | null;
+    edicion: string | number | null;
+    comentarioS: string;
+    comentarioA?: string | null;
+    idFuenteSeleccion?: string | null;
+  }): Observable<FiEcoResponce | null> {
     const userId = this._authService.user()?.id;
+
     if (!userId) {
       console.log('No hay usuario autenticado');
       return of(null);
     }
 
-    console.log('Usuario autenticado en servicio fuente:', userId);
+    const datosConResponsable = {
+      ...datos,
+      responsableRegister: userId,
+    };
 
-    const payload = { ...datos, idFuente, responsableActualizacion: userId };
-    console.log('Enviando datos al backend:', payload);
-
-    const encodedId = encodeURIComponent(idFuente);
     return this.http
-      .put<FiEcoResponce>(
-        `${baseUrl}/fuentes/update?idFuente=${encodedId}`,
-        payload,
-        { withCredentials: true },
-      )
+      .post<FiEcoResponce>(`${baseUrl}/fuentes`, datosConResponsable, {
+        withCredentials: true,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error al registrar fuente:', error);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  //! EDITAR FUENTE
+  editarFuente(
+    idFuente: string,
+    datos: {
+      acronimo: string;
+      fuente: string;
+      url: string | null;
+      edicion: string | number | null;
+      comentarioS: string;
+      comentarioA?: string | null;
+      responsableRegister: number;
+      responsableActualizacion: number | null;
+      idFuenteSeleccion?: string | null;
+    },
+  ): Observable<FiEcoResponce | null> {
+    const params = new HttpParams().set('idFuente', idFuente);
+
+    return this.http
+      .put<FiEcoResponce>(`${baseUrl}/fuentes/update`, datos, {
+        params,
+        withCredentials: true,
+      })
       .pipe(
         catchError((error) => {
           console.error('Error al editar fuente:', error);
@@ -114,11 +112,20 @@ export class FuenteIdentificacionService {
       );
   }
 
-  deactivateRecord(id: string): Observable<any> {
-    const encodedId = encodeURIComponent(id);
-    return this.http.delete(
-      `${baseUrl}/fuentes/delete-full?idFuente=${encodedId}`,
-      { withCredentials: true },
-    );
+  //! ELIMINAR FUENTE
+  eliminarFuente(idFuente: string): Observable<any> {
+    const params = new HttpParams().set('idFuente', idFuente);
+
+    return this.http.delete(`${baseUrl}/fuentes/delete`, {
+      params,
+      withCredentials: true,
+    });
+  }
+
+  //! CONTAR FUENTES
+  countFuentes(): Observable<{ total: number }> {
+    return this.http.get<{ total: number }>(`${baseUrl}/fuentes/count`, {
+      withCredentials: true,
+    });
   }
 }

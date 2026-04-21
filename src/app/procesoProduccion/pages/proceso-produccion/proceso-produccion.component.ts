@@ -23,7 +23,6 @@ export class ProcesoProduccionComponent implements OnInit {
   arrProcesosByDir: interface_ProcesoP[] = [];
   procesoSeleccionado = signal<interface_ProcesoP | null>(null);
   idProsesoSelect: any = null;
-
   direccionName: string | number | undefined = undefined;
   _procesos_isSelectEnabled: boolean = false;
 
@@ -137,9 +136,12 @@ export class ProcesoProduccionComponent implements OnInit {
     const procesoEditable = {
       nombrePp: _Pp.proceso,
       acronimo: _Pp.acronimo,
+      direccion: this.direccionName, // 👈 aquí guardas la unidad
     };
+
     localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
-    this._router.navigate(['/fuentes']);
+
+    this._router.navigate(['/fuentesnew']);
   }
 
   modalNingunProceso() {

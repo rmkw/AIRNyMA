@@ -1,0 +1,281 @@
+<div class="w-full space-y-4 px-1">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Fuentes de identificación</div>
+        <h1 class="text-2xl font-bold tracking-tight">Nueva fuente de identificación</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Registra nuevas fuentes asociadas al proceso seleccionado y administra las ya capturadas.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 rounded-box border border-white/10 bg-white/10 px-4 py-3 text-sm sm:min-w-80">
+        <div>
+          <div class="text-xs text-white/70">Proceso</div>
+          <div class="font-medium leading-tight">{{ procesoSeleccionado()?.proceso || '-' }}</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-12">
+    <!-- IZQUIERDA -->
+    <div class="space-y-4 xl:col-span-5">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-4 p-4">
+          <div>
+            <h2 class="card-title text-base">Selección del proceso</h2>
+            <p class="text-xs text-base-content/60">
+              Primero elige unidad productora y luego el proceso de producción.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="form-control">
+              <label class="label" for="dire">
+                <span class="label-text text-xs font-medium">Unidad productora de información</span>
+              </label>
+              <select id="dire" class="select select-bordered w-full" [(ngModel)]="direccionSeleccionada"
+                (change)="selectedDireccion($event)">
+                <option value="" disabled>Selecciona una opción</option>
+
+                @for (dire of arrDirecciones; track dire.idUnidad) {
+                <option [value]="dire.nameUnidad">
+                  {{ dire.nameUnidad }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label" for="procesoProduccion">
+                <span class="label-text text-xs font-medium">Proceso de producción</span>
+              </label>
+              <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
+                [(ngModel)]="procesoSeleccionadoValue" [disabled]="!_procesos_isSelectEnabled"
+                (change)="seleccionarProceso($event)">
+                <option value="" disabled>Selecciona una opción</option>
+
+                @for (proceso of arrProcesosByDir; track proceso.acronimo) {
+                <option [value]="proceso.acronimo">
+                  {{ proceso.proceso }}
+                </option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Captura de fuente</h2>
+            <p class="text-xs text-base-content/60">
+              Completa los campos para registrar una nueva fuente de identificación.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+
+
+            <div class="form-control xl:col-span-2">
+              <label class="label">
+                <span class="label-text text-xs font-medium">Acrónimo</span>
+              </label>
+              <div class="input input-bordered flex items-center text-sm font-medium">
+                {{ procesoSeleccionado()?.acronimo || '-' }}
+              </div>
+            </div>
+
+            <div class="form-control xl:col-span-2">
+              <label class="label" for="fuente">
+                <span class="label-text text-xs font-medium">Fuente de identificación</span>
+              </label>
+              <select id="fuente" class="select select-bordered w-full" [(ngModel)]="fuente">
+                <option value="" disabled>Selecciona una identificación</option>
+                <option value="DDI">DDI</option>
+                <option value="FD">FD</option>
+                <option value="DD">DD</option>
+                <option value="Cuestionario">Cuestionario</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-control xl:col-span-2">
+              <label class="label" for="anio">
+                <span class="label-text text-xs font-medium">Año del evento</span>
+              </label>
+              <input id="anio" type="text" maxlength="9" class="input input-bordered w-full" [(ngModel)]="edicion" />
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-1">
+            <div class="form-control">
+              <label class="label" for="accesoLink">
+                <span class="label-text text-xs font-medium">Liga de acceso a la fuente</span>
+              </label>
+              <input id="accesoLink" type="text" class="input input-bordered w-full" [(ngModel)]="url" />
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-1">
+            <div class="form-control">
+              <label class="label" for="comentarioS">
+                <span class="label-text text-xs font-medium">Comentario</span>
+              </label>
+              <textarea id="comentarioS" class="textarea textarea-bordered min-h-24 w-full"
+                [(ngModel)]="comentarioS"></textarea>
+            </div>
+
+          </div>
+
+          <div class="flex justify-end gap-2">
+            <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormularioFuente()">
+              Limpiar
+            </button>
+
+            <button class="btn btn-primary btn-sm px-6"
+              (click)="guardarFuente()">
+              {{ fuenteEditando ? 'Actualizar fuente' : 'Capturar fuente' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DERECHA -->
+    <div class="xl:col-span-7">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body p-4">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <div>
+              <h2 class="card-title text-base">Lista de fuentes de identificación</h2>
+              <p class="text-xs text-base-content/60">
+                Consulta y administra las fuentes asociadas al proceso seleccionado.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="overflow-x-auto rounded-box border border-base-300">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Proceso</th>
+                  <th>Fuente</th>
+                  <th>Liga</th>
+                  <th class="text-center">Año del evento</th>
+                  <th class="text-center">Variables capturadas</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loading">
+                  <td colspan="6" class="py-8 text-center">
+                    <span class="loading loading-spinner loading-md"></span>
+                  </td>
+                </tr>
+
+                <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
+                  <td colspan="6" class="py-8 text-center text-sm text-base-content/60">
+                    No se encontraron registros.
+                  </td>
+                </tr>
+
+                <tr *ngFor="let item of paginatedFuentes; let i = index">
+                  <td class="text-sm">{{ item.acronimo }}</td>
+                  <td class="text-sm font-medium">{{ item.fuente }}</td>
+                  <td class="text-sm">
+                    @if (item.url) {
+                    <a [href]="item.url" class="link link-info" target="_blank">
+                      Abrir liga
+                    </a>
+                    } @else {
+                    <span class="badge badge-ghost badge-sm">No disponible</span>
+                    }
+                  </td>
+                  <td class="text-sm text-center">{{ item.edicion || '-' }}</td>
+                  <td class="text-sm text-center">{{ item.totalVariables || 0 }}</td>
+                  <td>
+                    <div class="flex justify-center gap-2">
+                      <button class="btn btn-warning btn-xs" (click)="editarFuente(item)">
+                        Editar
+                      </button>
+                      <button class="btn btn-error btn-xs" (click)="abrirModalEliminar(item.idFuente)">
+                        Eliminar
+                      </button>
+                      <button class="btn btn-primary btn-xs" (click)="addVars(item)">
+                        Asignar variables
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-2 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between" *ngIf="!loading && totalItems > 0">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Páginas:</span>
+              <div class="join space-x-1">
+                <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">«</button>
+
+                <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
+                  [ngClass]="{ 'btn-primary': page === currentPage }" (click)="goToPage(page)">
+                  {{ page + 1 }}
+                </button>
+
+                <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">»</button>
+              </div>
+            </div>
+
+            <div class="text-sm text-base-content/70">
+              Total de fuentes: {{ totalItems }}
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Resultados por página:</span>
+              <select class="select select-bordered select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog #modalEliminar class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">¿Estás seguro?</h3>
+    <p class="py-4">¿Deseas eliminar esta fuente de identificación? Esta acción no se puede deshacer.</p>
+    <div class="modal-action">
+      <button class="btn btn-outline" (click)="cerrarModalEliminar()">Cancelar</button>
+      <button class="btn btn-error" (click)="confirmarEliminarFuente()">Aceptar</button>
+    </div>
+  </div>
+</dialog>
+<dialog #modalSinDatos class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Faltan datos obligatorios</h3>
+
+    <p class="py-2">
+      Antes de continuar, completa los siguientes campos:
+    </p>
+
+    <ul class="list-disc pl-5 text-sm">
+      <li *ngFor="let campo of camposFaltantes">
+        {{ campo }}
+      </li>
+    </ul>
+
+    <div class="modal-action">
+      <button class="btn btn-primary" (click)="cloceModalSinDatos()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
