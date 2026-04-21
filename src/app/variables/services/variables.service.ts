@@ -106,104 +106,115 @@ export class VariableService {
     });
   }
 
-  getVariablesTablaByFuentes(
-    idFuentes: string[],
-  ): Observable<any[]> {
+  getVariablesTablaByFuentes(idFuentes: string[]): Observable<any[]> {
     let params = new HttpParams();
 
     idFuentes.forEach((idFuente) => {
       params = params.append('idFuentes', idFuente);
     });
 
-    return this.http.get<any[]>(
-      `${baseUrl}/variables/por-fuentes-tabla`,
+    return this.http.get<any[]>(`${baseUrl}/variables/por-fuentes-tabla`, {
+      params,
+      withCredentials: true,
+    });
+  }
+
+  /* esta parte es de fuentes */
+
+  existsFuenteArmonizacion(idFuente: string): Observable<{ exists: boolean }> {
+    return this.http.get<{ exists: boolean }>(
+      `${baseUrl}/armo/fuentes/exists/${encodeURIComponent(idFuente)}`,
       {
-        params,
         withCredentials: true,
       },
     );
   }
 
+  getFuenteArmonizacionById(
+    idFuente: string,
+  ): Observable<FuenteArmonizacionDTO> {
+    return this.http.get<FuenteArmonizacionDTO>(
+      `${baseUrl}/armo/fuentes/${encodeURIComponent(idFuente)}`,
+      {
+        withCredentials: true,
+      },
+    );
+  }
 
+  createFuenteArmonizacion(
+    payload: FuenteSaveDTO,
+  ): Observable<FuenteArmonizacionDTO> {
+    return this.http.post<FuenteArmonizacionDTO>(
+      `${baseUrl}/armo/fuentes`,
+      payload,
+      {
+        withCredentials: true,
+      },
+    );
+  }
 
+  /**
+   * Este método lo dejamos listo,
+   * pero solo funcionará cuando exista el PUT en backend.
+   */
+  updateFuenteArmonizacion(
+    payload: FuenteSaveDTO,
+  ): Observable<FuenteArmonizacionDTO> {
+    return this.http.put<FuenteArmonizacionDTO>(
+      `${baseUrl}/armo/fuentes`,
+      payload,
+      {
+        withCredentials: true,
+      },
+    );
+  }
 
+  existsFuenteArmonizacionByData(
+    payload: FuenteSaveDTO,
+  ): Observable<ExistsFuenteArmonizacionResponse> {
+    return this.http.post<ExistsFuenteArmonizacionResponse>(
+      `${baseUrl}/armo/fuentes/exists-by-data`,
+      payload,
+      {
+        withCredentials: true,
+      },
+    );
+  }
 
+  getFuenteArmonizacionByIdFuenteSeleccion(
+    idFuenteSeleccion: string,
+  ): Observable<FuenteArmonizacionDTO> {
+    return this.http.get<FuenteArmonizacionDTO>(
+      `${baseUrl}/armo/fuentes/by-id-fuente-seleccion`,
+      {
+        params: { idFuenteSeleccion },
+        withCredentials: true,
+      },
+    );
+  }
 
-  /* esta parte es de fuentes */
-
-
-
-  existsFuenteArmonizacion(idFuente: string): Observable<{ exists: boolean }> {
-  return this.http.get<{ exists: boolean }>(
-    `${baseUrl}/armo/fuentes/exists/${encodeURIComponent(idFuente)}`,
-    {
+  getVarsByFuente(idFuente: string) {
+    return this.http.get<any[]>(`${baseUrl}/variables/por-fuente`, {
+      params: { idFuente },
       withCredentials: true,
-    },
-  );
-}
+    });
+  }
 
-getFuenteArmonizacionById(idFuente: string): Observable<FuenteArmonizacionDTO> {
-  return this.http.get<FuenteArmonizacionDTO>(
-    `${baseUrl}/armo/fuentes/${encodeURIComponent(idFuente)}`,
-    {
-      withCredentials: true,
-    },
-  );
-}
-
-createFuenteArmonizacion(
-  payload: FuenteSaveDTO,
-): Observable<FuenteArmonizacionDTO> {
-  return this.http.post<FuenteArmonizacionDTO>(
-    `${baseUrl}/armo/fuentes`,
-    payload,
-    {
-      withCredentials: true,
-    },
-  );
-}
-
-/**
- * Este método lo dejamos listo,
- * pero solo funcionará cuando exista el PUT en backend.
- */
-updateFuenteArmonizacion(
-  payload: FuenteSaveDTO,
-): Observable<FuenteArmonizacionDTO> {
-  return this.http.put<FuenteArmonizacionDTO>(
-    `${baseUrl}/armo/fuentes`,
-    payload,
-    {
-      withCredentials: true,
-    },
-  );
-}
-
-
-
-
-existsFuenteArmonizacionByData(
-  payload: FuenteSaveDTO,
-): Observable<ExistsFuenteArmonizacionResponse> {
-  return this.http.post<ExistsFuenteArmonizacionResponse>(
-    `${baseUrl}/armo/fuentes/exists-by-data`,
-    payload,
-    {
-      withCredentials: true,
-    },
-  );
-}
-
-
-getFuenteArmonizacionByIdFuenteSeleccion(
-  idFuenteSeleccion: string,
-): Observable<FuenteArmonizacionDTO> {
-  return this.http.get<FuenteArmonizacionDTO>(
-    `${baseUrl}/armo/fuentes/by-id-fuente-seleccion`,
-    {
-      params: { idFuenteSeleccion },
-      withCredentials: true,
-    },
-  );
-}
+  editarVariable(idA: string, variable: VariableDTO): Observable<any> {
+    return this.http.put(
+      `${baseUrl}/variables/edit/${encodeURIComponent(idA)}`,
+      variable,
+      {
+        withCredentials: true,
+      },
+    );
+  }
+  deleteVariableFull(idA: string): Observable<any> {
+    return this.http.delete(
+      `${baseUrl}/variables/delete-full/${encodeURIComponent(idA)}`,
+      {
+        withCredentials: true,
+      },
+    );
+  }
 }

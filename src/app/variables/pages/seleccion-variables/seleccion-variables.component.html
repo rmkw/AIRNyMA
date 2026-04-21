@@ -1,0 +1,247 @@
+<div class="w-full space-y-4 px-1">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Variables</div>
+        <h1 class="text-2xl font-bold tracking-tight">Identificación de la variable</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Captura la variable, registra sus relaciones y completa la pertinencia para finalizar el flujo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-12">
+    <!-- IZQUIERDA -->
+    <div class="space-y-4 xl:col-span-5">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-4 p-4">
+          <div>
+            <h2 class="card-title text-base">Selección del proceso</h2>
+            <p class="text-xs text-base-content/60">
+              Primero elige unidad productora, luego proceso y después la fuente.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="form-control">
+              <label class="label" for="dire">
+                <span class="label-text text-xs font-medium">Unidad productora de información</span>
+              </label>
+              <select id="dire" class="select select-bordered w-full" [(ngModel)]="direccionSeleccionada"
+                (change)="selectedDireccion($event)">
+                <option value="" disabled>Selecciona una opción</option>
+
+                @for (dire of arrDirecciones; track dire.idUnidad) {
+                <option [value]="dire.nameUnidad">
+                  {{ dire.nameUnidad }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label" for="procesoProduccion">
+                <span class="label-text text-xs font-medium">Proceso de producción</span>
+              </label>
+              <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
+                [(ngModel)]="procesoSeleccionadoValue" [disabled]="!_procesos_isSelectEnabled"
+                (change)="seleccionarProceso($event)">
+                <option value="" disabled>Selecciona una opción</option>
+
+                @for (proceso of arrProcesosByDir; track proceso.acronimo) {
+                <option [value]="proceso.acronimo">
+                  {{ proceso.proceso }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label" for="fuenteSelect">
+                <span class="label-text text-xs font-medium">Fuente</span>
+              </label>
+              <select id="fuenteSelect" class="select select-bordered w-full" [(ngModel)]="fuenteSeleccionadaValue"
+                [disabled]="!_fuentes_isSelectEnabled" (change)="seleccionarFuente($event)">
+                <option value="" disabled>Selecciona una fuente</option>
+
+                @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
+                <option [value]="fuente.idFuente">
+                  {{ fuente.fuente }} {{ fuente.edicion ? ('- ' + fuente.edicion) : '' }}
+                </option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-4">
+
+          <div>
+            <h2 class="card-title text-base">Datos de la variable</h2>
+            <p class="text-xs text-base-content/60">
+              Captura la información de la variable.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-3">
+            <!-- ID_S -->
+            <div class="form-control">
+              <label class="label" for="idS">
+                <span class="label-text text-xs font-medium">ID_S</span>
+              </label>
+
+              <div class="flex gap-2">
+                <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS" placeholder="Ej. VAR001" />
+
+                <!-- BOTÓN CONSULTAR -->
+                <button class="btn btn-sm" type="button" (click)="consultarPorIdS()">
+                  🔍
+                </button>
+              </div>
+            </div>
+
+            <!-- NOMBRE -->
+            <div class="form-control md:col-span-2">
+              <label class="label" for="nombreVar">
+                <span class="label-text text-xs font-medium">Nombre</span>
+              </label>
+              <input id="nombreVar" type="text" class="input input-bordered w-full" [(ngModel)]="nombre"
+                placeholder="Nombre de la variable" />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="definicionVar">
+              <span class="label-text text-xs font-medium">Definición</span>
+            </label>
+            <textarea id="definicionVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="definicion"
+              placeholder="Definición de la variable"></textarea>
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="urlVar">
+              <span class="label-text text-xs font-medium">URL de acceso</span>
+            </label>
+            <input id="urlVar" type="text" class="input input-bordered w-full" [(ngModel)]="url" placeholder="https://..." />
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="comentarioVar">
+              <span class="label-text text-xs font-medium">Comentario</span>
+            </label>
+            <textarea id="comentarioVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="comentarioS"
+              placeholder="Comentario de la variable"></textarea>
+          </div>
+
+          <div class="flex justify-end gap-2">
+            <button class="btn btn-outline btn-sm px-6" (click)="resetFormularioVariable()">
+              Limpiar
+            </button>
+
+            <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()">
+              {{ variableEditando ? 'Actualizar variable' : 'Capturar variable' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DERECHA -->
+    <div class="space-y-4 xl:col-span-7">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body p-5">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <div>
+              <h2 class="card-title text-base">Lista de variables</h2>
+              <p class="text-xs text-base-content/60">
+                Variables registradas para la fuente seleccionada.
+              </p>
+            </div>
+            <div class="badge  badge-sm">{{ variables.length || 0 }} registros</div>
+          </div>
+
+          <div class="overflow-x-auto rounded-box border border-base-300">
+            <table class="table table-zebra table-sm">
+              <thead>
+                <tr>
+                  <th>Id variable</th>
+                  <th>Nombre</th>
+                  <th>Definición</th>
+                  <th>URL</th>
+                  <th class="text-center">MDEA</th>
+                  <th class="text-center">ODS</th>
+
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngIf="loadingVariables">
+                  <td colspan="9" class="py-8 text-center">
+                    <span class="loading loading-spinner loading-md"></span>
+                  </td>
+                </tr>
+
+                <tr *ngIf="!loadingVariables && variables.length === 0">
+                  <td colspan="9" class="py-8 text-center text-sm text-base-content/60">
+                    No se encontraron variables para esta fuente.
+                  </td>
+                </tr>
+
+                <tr *ngFor="let item of variables">
+                  <td class="text-sm">{{ item.idA }}</td>
+
+                  <td class="max-w-44 truncate text-sm" [title]="item.nombre || ''">
+                    {{ item.nombre || '-' }}
+                  </td>
+
+                  <td class="max-w-56 truncate text-sm" [title]="item.definicion || ''">
+                    {{ item.definicion || '-' }}
+                  </td>
+
+                  <td class="text-sm">
+                    <ng-container *ngIf="item.url; else sinUrl">
+                      <a [href]="item.url" class="link link-neutral" target="_blank" rel="noopener noreferrer">
+                        Abrir liga
+                      </a>
+                    </ng-container>
+                    <ng-template #sinUrl>
+                      <span class="badge badge-ghost badge-sm">No disponible</span>
+                    </ng-template>
+                  </td>
+
+                  <td class="text-center">
+                    <span *ngIf="item.mdea; else noMdea" class="text-success">✔️</span>
+                    <ng-template #noMdea><span class="text-error">❌</span></ng-template>
+                  </td>
+
+                  <td class="text-center">
+                    <span *ngIf="item.ods; else noOds" class="text-success">✔️</span>
+                    <ng-template #noOds><span class="text-error">❌</span></ng-template>
+                  </td>
+
+
+
+                  <td>
+                    <div class="flex justify-end gap-2">
+                      <button class="btn btn-primary btn-xs" (click)="editarVariable(item)">
+                        Editar
+                      </button>
+                      <button class="btn btn-error btn-xs" (click)="eliminarVariable(item.idA)">
+                        Borrar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

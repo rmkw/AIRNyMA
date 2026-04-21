@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
   templateUrl: './fuentes.component.html',
 })
 export class FuentesComponent implements OnInit {
+
   _serviceDirecciones = inject(DireccionesService);
   _procesoService = inject(ppEcoService);
   _fuenteService = inject(FuenteIdentificacionService);
@@ -390,22 +391,33 @@ export class FuentesComponent implements OnInit {
 
   private _router = inject(Router);
   addVars(fuente: FiEcoResponce) {
-    if (!fuente?.idFuente) {
-      console.warn('Fuente inválida para asignar variables');
+    const proceso = this.arrProcesosByDir.find(
+      (p) => p.acronimo === this.procesoSeleccionadoValue,
+    );
+
+    if (
+      !fuente?.idFuente ||
+      !this.direccionSeleccionada ||
+      !this.procesoSeleccionadoValue
+    ) {
+      console.warn('Faltan datos para enviar a variables');
       return;
     }
 
     localStorage.removeItem('fuenteEditable');
 
     const fuenteEditable = {
+      direccion: this.direccionSeleccionada,
+      acronimo: this.procesoSeleccionadoValue,
+      proceso: proceso?.proceso ?? '',
       idFuente: fuente.idFuente,
-      acronimo: fuente.acronimo,
-      edicion: fuente.edicion,
+      fuente: fuente.fuente,
+      edicion: fuente.edicion ?? '',
     };
 
     localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
 
-    this._router.navigate(['/nueva-variable']);
+    this._router.navigate(['/variables']);
   }
   pageSize = 10;
   pageSizes = [10, 20, 50];

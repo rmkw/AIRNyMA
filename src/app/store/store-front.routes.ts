@@ -3,7 +3,7 @@ import { StoreFrontLayoutComponent } from "./layouts/store-front-layout/store-fr
 import { HomePageComponent } from "./pages/home-page/home-page.component";
 import { NotFoundPageComponent } from "./pages/not-found-page/not-found-page.component";
 import { ProcesoProduccionComponent } from "@/procesoProduccion/pages/proceso-produccion/proceso-produccion.component";
-import { FuentesListComponent } from "@/fuenteIdentificacion/pages/fuentes-list/fuentes-list.component";
+
 import { NuevaVariableComponent } from "@/variables/pages/nueva-variable/nueva-variable.component";
 import { VariableUpdateComponent } from '../variables/pages/variable-update/variable-update.component';
 import { NuevoProcesoComponent } from "@/procesoProduccion/pages/nuevo-proceso/nuevo-proceso.component";
@@ -11,6 +11,7 @@ import { ModuloExcelImport } from "@/excel-import/modulo-import/modulo-import.co
 import { PrioridadVariableComponent } from "@/variables/pages/prioridad-variable/prioridad-variable.component";
 import { ArmonizacionVariablesComponent } from "@/variables/pages/armonizacion-variables/armo-variables.component";
 import { FuentesComponent } from "@/fuenteIdentificacion/pages/fuentes/fuentes.component";
+import { SeleccionVariablesComponent } from "@/variables/pages/seleccion-variables/seleccion-variables.component";
 
 
 
@@ -35,15 +36,16 @@ export const storeFrontRoutes: Routes = [
       },
       {
         path: 'fuentes',
-        component: FuentesListComponent,
-      },
-      {
-        path: 'fuentesnew',
         component: FuentesComponent,
       },
+
       {
         path: 'nueva-variable',
         component: NuevaVariableComponent,
+      },
+      {
+        path: 'variables',
+        component: SeleccionVariablesComponent,
       },
       {
         path: 'update-variable/:idA',

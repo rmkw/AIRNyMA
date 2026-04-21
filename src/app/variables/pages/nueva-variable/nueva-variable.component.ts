@@ -32,13 +32,12 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.getComponentes();
     this.getObjetivos();
     this.getPropetiesLocalStorage();
-    // this.getRelation_MDEA_Var();
-    // this.obtenerRelaciones_ods();
+
   }
   ngAfterViewInit() {
-    // Esto se ejecuta después de que el DOM ya está cargado
+
     setTimeout(() => {
-      this.verificarFinalizarCaptura(); // aquí aseguras evaluar campos autocompletados
+      this.verificarFinalizarCaptura();
     });
   }
 
@@ -57,7 +56,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
 
   //? seguro de eliminar ALERT
 
-  activacionInicialMDEA = false; // <-- esta controla si ya se hizo la primera vez
+  activacionInicialMDEA = false; //
 
   checkedAliniationMDEA(event: Event) {
     const checkbox = event.target as HTMLInputElement;
@@ -345,51 +344,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     // Cargar variables del tema seleccionado
     this.getVariables(this.idTopico);
 
-    // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const topicoSeleccionado = this.arrTopicos[index];
 
-    //   this.idTopico = topicoSeleccionado.idTema;
-    //   this.uniqueTopico = topicoSeleccionado.uniqueId;
-
-    //   console.log('tema que se le puso a idtopico:', this.idTopico);
-    // }
-
-    // const selectElement = event.target as HTMLSelectElement;
-    // const idTopico = selectElement.value;
-    // this.idTopico = idTopico;
-
-    // this.isSelectEnabled_Var = true;
-
-    // const conVarSelect = this.variableSelect.nativeElement as HTMLSelectElement;
-    // conVarSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    // this.arrVariables = []; // Limpiar el array de variables
-
-    // this.isSelectEnabled_Est = false;
-    // const conEstSelect = this.estadisticoSelect
-    //   .nativeElement as HTMLSelectElement;
-    // conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    // this.arrEstadisticos = []; // Limpiar el array de estadísticos
-
-    // if (this.idTopico == '-') {
-    //   //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
-
-    //   this.variableSelect.nativeElement.value = '-';
-    //   this.estadisticoSelect.nativeElement.value = '-';
-
-    //   this.idVariableMDEAPULL = '-';
-    //   this.idEstadistico = '-';
-
-    //   this.isSelectEnabled_Est = true;
-    //   this.isSelectEnabled_Nivel = true;
-
-    //   this.arrVariables = [];
-    //   this.arrEstadisticos = [];
-
-    //   return;
-    // }
-
-    // this.getVariables(this.idTopico);
   }
 
   onSelectVariable(event: Event) {
@@ -417,15 +372,10 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Si tu backend espera NÚMERO:
-    // const id = +value;
-    // if (Number.isNaN(id)) { return; }
-    // this.idVariableMDEAPULL = id;
 
-    // Si tu backend espera STRING (recomendado si el id puede venir como texto):
     this.idVariableMDEAPULL = value;
 
-    // (Opcional) obtener uniqueId del objeto si lo necesitas:
+
     const varSel = (this.arrVariables || []).find((v) => {
       const idA = String((v as any).idEstadistico1 ?? (v as any).idVariable);
       return idA === String(value);
@@ -439,67 +389,15 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       this.uniqueEst1
     );
 
-    // Llamada final
+
     this.getEstadisticos(this.idVariableMDEAPULL);
-    // const selectElement = event.target as HTMLSelectElement;
-    // const index = selectElement.selectedIndex - 1;
-    // // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const varSeleccionado = this.arrVariables[index];
-    //   console.log('variable id', varSeleccionado.idEstadistico1); // Objeto completo
-    //   console.log(varSeleccionado.uniqueId); // Accedes a uniqueId
 
-    //   this.idVariableMDEAPULL = varSeleccionado.idEstadistico1;
-
-    //   this.uniqueEst1 = varSeleccionado.uniqueId;
-    // }
-
-    // // const selectElement = event.target as HTMLSelectElement;
-    // // const idVariable = selectElement.value;
-    // // this.idVariableMDEAPULL = idVariable;
-
-    // this.isSelectEnabled_Est = true;
-
-    // const conEstSelect = this.estadisticoSelect
-    //   .nativeElement as HTMLSelectElement;
-    // conEstSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    // this.arrEstadisticos = []; // Limpiar el array de estadísticos
-
-    // if (this.idVariableMDEAPULL == '-') {
-    //   //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
-
-    //   this.estadisticoSelect.nativeElement.value = '-';
-    //   this.idEstadistico = '-';
-
-    //   this.arrEstadisticos = [];
-
-    //   this.isSelectEnabled_Nivel = true;
-
-    //   return;
-    // }
 
 
   }
 
   onSelectEstadistico(event: Event) {
-    // const selectElement = event.target as HTMLSelectElement;
-    // const index = selectElement.selectedIndex - 1;
-    // // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const est2Seleccionado = this.arrEstadisticos[index];
-    //   console.log(est2Seleccionado.idEstadistico2); // Objeto completo
-    //   console.log(est2Seleccionado.uniqueId); // Accedes a uniqueId
 
-    //   this.idEstadistico = est2Seleccionado.idEstadistico2;
-    //   this.uniqueEst2 = est2Seleccionado.uniqueId;
-    // }
-
-    // // const selectElement = event.target as HTMLSelectElement;
-    // // const idEstadistico = selectElement.value;
-    // // this.idEstadistico = idEstadistico;
-    // // console.log('Estadistico seleccionado:', idEstadistico);
-
-    // this.isSelectEnabled_Nivel = true;
     const selectElement = event.target as HTMLSelectElement;
     const value = selectElement.value; // <- obtiene el value directamente
 
@@ -626,46 +524,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.getMetas(idObjetivo);
   }
   onSelectMeta(event: Event) {
-    // const selectElement = event.target as HTMLSelectElement;
-    // const index = selectElement.selectedIndex - 1;
-    // // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const metaSeleccionado = this.arrMetas[index];
-    //   // Accedes a uniqueId
 
-    //   this.idMeta = metaSeleccionado.idMeta;
-    //   this.uniqueIdMeta = metaSeleccionado.uniqueId;
-    //   console.log(this.idMeta, 'meta seleccionada');
-    //   console.log(this.uniqueIdMeta, 'unique meta seleccionada');
-    // }
-
-    // // const selectElement = event.target as HTMLSelectElement;
-    // // const idMeta = selectElement.value;
-    // // this.idMeta = idMeta;
-    // // console.log('Meta seleccionada:', idMeta);
-    // this.isSelectEnabled_Ind = true;
-
-    // const conIndSelect = this.indicadorSelect
-    //   .nativeElement as HTMLSelectElement;
-    // conIndSelect.selectedIndex = 0; // Resetear el índice seleccionado
-    // this.arrIndicadores = []; // Limpiar el array de indicadores
-
-    // if (this.idMeta == '-') {
-    //   //! Forzar visualmente el cambio en el otro select cuando se selecciona el valor '-' en subcomponente
-
-    //   console.log('entre a hacer el cambiio');
-    //   this.indicadorSelect.nativeElement.value = '-';
-
-    //   this.idIndicador = '-';
-
-    //   this.arrIndicadores = [];
-    //   this.isSelectEnabled_Ind = true;
-    //   this._ods_isSelectEnabled_Nivel = true;
-
-    //   return;
-    // }
-
-    // this.getIndicadores(this.idMeta);
     const el = event.target as HTMLSelectElement;
     const value = el.value; // id de meta o '-'
 
@@ -698,12 +557,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return; // NO llamar getIndicadores
     }
 
-    // Parsear/normalizar id (usa string si tu servicio espera string)
-    // Si tu servicio espera number:
-    // const id = +value; if (Number.isNaN(id)) return;
-    // this.idMeta = id;
 
-    // Si tu servicio espera string (recomendable si hay ids textuales):
     this.idMeta = value;
 
     // (Opcional) Obtener uniqueId del objeto
@@ -723,24 +577,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
     this.getIndicadores(this.idMeta);
   }
   onSelectIndicador(event: Event) {
-    // const selectElement = event.target as HTMLSelectElement;
-    // const index = selectElement.selectedIndex - 1;
-    // // -1 porque la primera opción es "Selecciona un componente"
-    // if (index >= 0) {
-    //   const isIndicadorSeleccionado = this.arrIndicadores[index];
-    //   // Accedes a uniqueId
-    //   const mm = isIndicadorSeleccionado;
-    //   this.idIndicador = isIndicadorSeleccionado.idIndicador;
-    //   this.uniqueidIndicador = isIndicadorSeleccionado.uniqueId;
-    //   console.log(this.idIndicador, 'meta seleccionada');
-    //   console.log(this.uniqueidIndicador, 'unique meta seleccionada');
-    //   console.log(mm);
-    // }
 
-    // // const selectElement = event.target as HTMLSelectElement;
-    // // const idIndicador = selectElement.value;
-    // // this.idIndicador = idIndicador;
-    // // console.log('Indicador seleccionado:', idIndicador);
     // this._ods_isSelectEnabled_Nivel = true;
     const el = event.target as HTMLSelectElement;
     const value = el.value; // id del indicador o '-'
@@ -760,10 +597,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       return; // no busques objeto ni cargues nada
     }
 
-    // Normaliza tipo según tu servicio/DTO
-    // Si tu servicio espera número:
-    // const id = +value; if (Number.isNaN(id)) return; this.idIndicador = id;
-    // Si espera string (recomendado si puede venir como texto):
+
     this.idIndicador = value;
 
     // (Opcional) obtener uniqueId del objeto para mostrar/usar después
@@ -1251,12 +1085,7 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
       odsValido
     );
 
-    // Debug (puedes borrar esto después)
-    // console.log('✅ comentario:', comentarioValido);
-    // console.log('✅ tema:', temaValido);
-    // console.log('✅ propuesta:', propuestaValida);
-    // console.log('✅ MDEA válido:', mdeaValido);
-    // console.log('¿Botón deshabilitado?', this.finalizarCaptura);
+
   }
 
   abrirDrawer() {

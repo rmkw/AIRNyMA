@@ -141,7 +141,7 @@ export class ProcesoProduccionComponent implements OnInit {
 
     localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
 
-    this._router.navigate(['/fuentesnew']);
+    this._router.navigate(['/fuentes']);
   }
 
   modalNingunProceso() {
