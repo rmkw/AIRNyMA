@@ -14,9 +14,9 @@
 
   <div class="grid gap-4 xl:grid-cols-12">
     <!-- IZQUIERDA -->
-    <div class="space-y-4 xl:col-span-5">
+    <div class="space-y-2 xl:col-span-5">
       <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body gap-4 p-4">
+        <div class="card-body gap-2 p-4">
           <div>
             <h2 class="card-title text-base">Selección del proceso</h2>
             <p class="text-xs text-base-content/60">
@@ -78,7 +78,7 @@
       </div>
 
       <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body gap-5 p-4">
+        <div class="card-body gap-2 p-4">
 
           <div>
             <h2 class="card-title text-base">Datos de la variable</h2>
@@ -95,13 +95,22 @@
               </label>
 
               <div class="flex gap-2">
-                <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS" placeholder="Ej. VAR001" />
+                <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS" [disabled]="bloquearIdS"
+                  placeholder="Ej. VAR-001" />
 
-                <!-- BOTÓN CONSULTAR -->
-                <button class="btn btn-sm" type="button" (click)="consultarPorIdS()">
-                  🔍
+                <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center"
+                  (click)="consultarPorIdS()" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.5 5.5a7.5 7.5 0 0 0 11.15 11.15Z" />
+                  </svg>
                 </button>
               </div>
+
+              <p *ngIf="bloquearIdS" class="mt-1 text-xs text-warning">
+                El ID_S no puede modificarse.
+              </p>
             </div>
 
             <!-- NOMBRE -->
@@ -118,7 +127,7 @@
             <label class="label" for="definicionVar">
               <span class="label-text text-xs font-medium">Definición</span>
             </label>
-            <textarea id="definicionVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="definicion"
+            <textarea id="definicionVar" class="textarea textarea-bordered min-h-23 w-full" [(ngModel)]="definicion"
               placeholder="Definición de la variable"></textarea>
           </div>
 
@@ -161,11 +170,11 @@
                 Variables registradas para la fuente seleccionada.
               </p>
             </div>
-            <div class="badge  badge-sm">{{ variables.length || 0 }} registros</div>
+
           </div>
 
           <div class="overflow-x-auto rounded-box border border-base-300">
-            <table class="table table-zebra table-sm">
+            <table class="table table-zebra table-sm [&_td]:py-2 [&_th]:py-2">
               <thead>
                 <tr>
                   <th>Id variable</th>
@@ -192,7 +201,7 @@
                   </td>
                 </tr>
 
-                <tr *ngFor="let item of variables">
+                <tr *ngFor="let item of paginatedVariables">
                   <td class="text-sm">{{ item.idA }}</td>
 
                   <td class="max-w-44 truncate text-sm" [title]="item.nombre || ''">
@@ -240,8 +249,99 @@
               </tbody>
             </table>
           </div>
+
+          <div class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+            *ngIf="!loadingVariables && totalItems > 0">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Páginas:</span>
+              <div class="join space-x-1">
+                <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">
+                  «
+                </button>
+
+                <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
+                  [ngClass]="{ 'btn-primary': page === currentPage }" (click)="goToPage(page)">
+                  {{ page + 1 }}
+                </button>
+
+                <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">
+                  »
+                </button>
+              </div>
+            </div>
+
+            <div class="text-sm text-base-content/70">
+              Total de variables: {{ totalItems }}
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Resultados por página:</span>
+              <select class="select select-bordered select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="space-y-2 xl:col-span-5">
+      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada">
+        <div class="card-body gap-4 p-4">
+          <div>
+            <h2 class="card-title text-base">Captura complementaria</h2>
+            <p class="text-xs text-base-content/60">
+              La variable ya fue registrada. Ahora puedes capturar relaciones y pertinencia.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-outline btn-sm" (click)="mostrarBloqueMdea = !mostrarBloqueMdea">
+              {{ mostrarBloqueMdea ? 'Ocultar MDEA' : 'Capturar MDEA' }}
+            </button>
+
+            <button class="btn btn-outline btn-sm" (click)="mostrarBloqueOds = !mostrarBloqueOds">
+              {{ mostrarBloqueOds ? 'Ocultar ODS' : 'Capturar ODS' }}
+            </button>
+
+            <button class="btn btn-outline btn-sm" (click)="mostrarBloquePertinencia = !mostrarBloquePertinencia">
+              {{ mostrarBloquePertinencia ? 'Ocultar pertinencia' : 'Capturar pertinencia' }}
+            </button>
+          </div>
         </div>
       </div>
+
+      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada && mostrarBloqueMdea">
+        <div class="card-body p-4">
+          <h2 class="card-title text-base">Relaciones MDEA</h2>
+          <p class="text-xs text-base-content/60">Aquí va el bloque MDEA.</p>
+        </div>
+      </div>
+
+      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada && mostrarBloqueOds">
+        <div class="card-body p-4">
+          <h2 class="card-title text-base">Relaciones ODS</h2>
+          <p class="text-xs text-base-content/60">Aquí va el bloque ODS.</p>
+        </div>
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+  </div>
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="space-y-2 xl:col-span-12">
+      <app-captura-pertinencia-variable *ngIf="variableGuardada" [idA]="idAVariableActual" [idS]="idSVariableActual"
+        (pertinenciaGuardada)="finalizarCapturaVariable()">
+      </app-captura-pertinencia-variable>
     </div>
   </div>
 </div>

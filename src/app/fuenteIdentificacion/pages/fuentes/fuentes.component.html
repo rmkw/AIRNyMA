@@ -161,7 +161,7 @@
           </div>
 
           <div class="overflow-x-auto rounded-box border border-base-300">
-            <table class="table table-zebra">
+            <table class="table  table-zebra">
               <thead>
                 <tr>
                   <th>Proceso</th>
@@ -174,21 +174,21 @@
               </thead>
               <tbody>
                 <tr *ngIf="loading">
-                  <td colspan="6" class="py-8 text-center">
+                  <td colspan="6" class="py-55 text-center">
                     <span class="loading loading-spinner loading-md"></span>
                   </td>
                 </tr>
 
                 <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
-                  <td colspan="6" class="py-8 text-center text-sm text-base-content/60">
+                  <td colspan="6" class="py-55 text-center text-sm text-base-content/60">
                     No se encontraron registros.
                   </td>
                 </tr>
 
                 <tr *ngFor="let item of paginatedFuentes; let i = index">
-                  <td class="text-sm">{{ item.acronimo }}</td>
-                  <td class="text-sm font-medium">{{ item.fuente }}</td>
-                  <td class="text-sm">
+                  <td class="text-xs">{{ item.acronimo }}</td>
+                  <td class="text-xs font-medium">{{ item.fuente }}</td>
+                  <td class="text-xs">
                     @if (item.url) {
                     <a [href]="item.url" class="link link-neutral" target="_blank">
                       Abrir liga
@@ -197,8 +197,8 @@
                     <span class="badge badge-ghost badge-sm">No disponible</span>
                     }
                   </td>
-                  <td class="text-sm text-center">{{ item.edicion || '-' }}</td>
-                  <td class="text-sm text-center">{{ item.totalVariables || 0 }}</td>
+                  <td class="text-xs text-center">{{ item.edicion || '-' }}</td>
+                  <td class="text-xs text-center">{{ item.totalVariables || 0 }}</td>
                   <td>
                     <div class="flex justify-center gap-2">
                       <button class="btn btn-warning btn-xs" (click)="editarFuente(item)">

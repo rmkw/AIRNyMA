@@ -3,6 +3,7 @@ import { FuenteIdentificacionService } from "@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from "@/procesoProduccion/interfaces/procesos.interface";
 import { DireccionesService } from "@/procesoProduccion/services/direcciones.service";
 import { ppEcoService } from "@/procesoProduccion/services/proceso-produccion.service";
+import { CapturaPertinenciaVariableComponent } from "@/variables/components/captura-pertinencia-variable/captura-pertinencia-variable.component";
 import { Direccion } from "@/variables/interfaces/direcciones.interface";
 import { VariableService } from "@/variables/services/variables.service";
 import { CommonModule } from "@angular/common";
@@ -11,7 +12,7 @@ import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-seleccion-variables',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CapturaPertinenciaVariableComponent],
   templateUrl: './seleccion-variables.component.html',
 })
 export class SeleccionVariablesComponent implements OnInit {
@@ -151,6 +152,11 @@ export class SeleccionVariablesComponent implements OnInit {
     this.arrProcesosByDir = [];
     this.arrFuentesByProceso = [];
     this.variables = [];
+    this.paginatedVariables = [];
+    this.currentPage = 0;
+    this.totalItems = 0;
+    this.totalPages = 0;
+    this.pageRange = [];
 
     this.resetFormularioVariable();
     localStorage.removeItem('fuenteEditable');
@@ -180,6 +186,11 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this.arrFuentesByProceso = [];
     this.variables = [];
+    this.paginatedVariables = [];
+    this.currentPage = 0;
+    this.totalItems = 0;
+    this.totalPages = 0;
+    this.pageRange = [];
     this._fuentes_isSelectEnabled = false;
 
     this.idFuenteActual = '';
@@ -220,6 +231,11 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this.fuenteSeleccionadaValue = idFuente;
     this.variables = [];
+    this.paginatedVariables = [];
+    this.currentPage = 0;
+    this.totalItems = 0;
+    this.totalPages = 0;
+    this.pageRange = [];
 
     const fuenteActual = this.arrFuentesByProceso.find(
       (f) => f.idFuente === idFuente,
@@ -246,20 +262,25 @@ export class SeleccionVariablesComponent implements OnInit {
   cargarVariablesPorFuente(idFuente: string) {
     if (!idFuente) {
       this.variables = [];
+      this.paginatedVariables = [];
       return;
     }
 
     this.loadingVariables = true;
     this.variables = [];
+    this.paginatedVariables = [];
 
     this._varService.getVarsByFuente(idFuente).subscribe({
       next: (data) => {
         this.variables = data ?? [];
+        this.currentPage = 0;
+        this.updatePagination();
         this.loadingVariables = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error al obtener variables por fuente:', err);
         this.variables = [];
+        this.paginatedVariables = [];
         this.loadingVariables = false;
       },
     });
@@ -328,8 +349,8 @@ export class SeleccionVariablesComponent implements OnInit {
     }
 
     const payload = {
-      idA: this.idAGenerado,
-      idS: this.idS.trim(),
+      idA: this.variableEditando?.idA ?? this.idAGenerado,
+      idS: this.variableEditando?.idS ?? this.idS.trim(),
       idFuente: this.idFuenteActual,
       acronimo: this.acronimoActual,
       nombre: this.nombre.trim(),
@@ -351,6 +372,14 @@ export class SeleccionVariablesComponent implements OnInit {
         .editarVariable(this.variableEditando.idA, payload)
         .subscribe({
           next: () => {
+            this.idAVariableActual = this.variableEditando?.idA ?? payload.idA;
+            this.idSVariableActual = this.variableEditando?.idS ?? payload.idS;
+
+            this.variableGuardada = true;
+            this.mostrarBloqueMdea = false;
+            this.mostrarBloqueOds = false;
+            this.mostrarBloquePertinencia = true;
+
             this.resetFormularioVariable();
             this.cargarVariablesPorFuente(this.idFuenteActual);
           },
@@ -363,6 +392,14 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this._varService.crearVar(payload).subscribe({
       next: () => {
+        this.idAVariableActual = payload.idA;
+        this.idSVariableActual = payload.idS;
+
+        this.variableGuardada = true;
+        this.mostrarBloqueMdea = false;
+        this.mostrarBloqueOds = false;
+        this.mostrarBloquePertinencia = true;
+
         this.resetFormularioVariable();
         this.cargarVariablesPorFuente(this.idFuenteActual);
       },
@@ -374,11 +411,19 @@ export class SeleccionVariablesComponent implements OnInit {
 
   editarVariable(item: any) {
     this.variableEditando = item;
+    this.bloquearIdS = true;
+
     this.idS = item.idS ?? '';
     this.nombre = item.nombre ?? '';
     this.definicion = item.definicion ?? '';
     this.url = item.url ?? '';
     this.comentarioS = item.comentarioS ?? '-';
+
+    this.idAVariableActual = item.idA ?? '';
+    this.idSVariableActual = item.idS ?? '';
+
+    this.variableGuardada = true;
+    this.mostrarBloquePertinencia = true;
   }
 
   eliminarVariable(idA: string) {
@@ -402,6 +447,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.url = '';
     this.comentarioS = '-';
     this.variableEditando = null;
+    this.bloquearIdS = false;
   }
   consultarPorIdS() {
     if (!this.idS?.trim()) {
@@ -413,5 +459,108 @@ export class SeleccionVariablesComponent implements OnInit {
 
     // aquí luego conectamos backend:
     // this._varService.getByIdS(this.idS).subscribe(...)
+  }
+
+  pageSize = 10;
+  pageSizes = [5, 10, 20, 50];
+
+  currentPage = 0;
+  pagesPerRange = 5;
+
+  totalItems = 0;
+  totalPages = 0;
+
+  paginatedVariables: any[] = [];
+  pageRange: number[] = [];
+  get isFirstRange(): boolean {
+    return this.pageRange.length === 0 || this.pageRange[0] === 0;
+  }
+
+  get isLastRange(): boolean {
+    return (
+      this.pageRange.length === 0 ||
+      this.pageRange[this.pageRange.length - 1] >= this.totalPages - 1
+    );
+  }
+  updatePagination() {
+    this.totalItems = this.variables.length;
+    this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+
+    if (this.currentPage >= this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages - 1;
+    }
+
+    if (this.totalPages === 0) {
+      this.currentPage = 0;
+    }
+
+    const start = this.currentPage * this.pageSize;
+    const end = start + this.pageSize;
+
+    this.paginatedVariables = this.variables.slice(start, end);
+
+    this.updatePageRange();
+  }
+
+  updatePageRange() {
+    const rangeStart =
+      Math.floor(this.currentPage / this.pagesPerRange) * this.pagesPerRange;
+    const rangeEnd = Math.min(rangeStart + this.pagesPerRange, this.totalPages);
+
+    this.pageRange = Array.from(
+      { length: rangeEnd - rangeStart },
+      (_, i) => rangeStart + i,
+    );
+  }
+
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  goToPrevPageRange() {
+    const newPage = Math.max(0, this.pageRange[0] - this.pagesPerRange);
+    this.currentPage = newPage;
+    this.updatePagination();
+  }
+
+  goToNextPageRange() {
+    const newPage = Math.min(
+      this.totalPages - 1,
+      this.pageRange[this.pageRange.length - 1] + 1,
+    );
+    this.currentPage = newPage;
+    this.updatePagination();
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 0;
+    this.updatePagination();
+  }
+  bloquearIdS = false;
+
+  //? comenzamos con las relaciones
+  variableGuardada = false;
+  mostrarBloqueMdea = false;
+  mostrarBloqueOds = false;
+  mostrarBloquePertinencia = false;
+
+  idAVariableActual = '';
+  idSVariableActual = '';
+
+  finalizarCapturaVariable() {
+    this.variableGuardada = false;
+    this.mostrarBloqueMdea = false;
+    this.mostrarBloqueOds = false;
+    this.mostrarBloquePertinencia = false;
+
+    this.idAVariableActual = '';
+    this.idSVariableActual = '';
+
+    this.variableEditando = null;
+    this.bloquearIdS = false;
+
+    this.resetFormularioVariable();
+    this.cargarVariablesPorFuente(this.idFuenteActual);
   }
 }

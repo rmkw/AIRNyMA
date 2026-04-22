@@ -1,0 +1,154 @@
+<div class="card border border-base-300 bg-base-100 shadow-sm">
+  <div class="card-body gap-4 p-4">
+    <div>
+      <h2 class="card-title text-base">Pertinencia</h2>
+      <p class="text-xs text-base-content/60">
+        Registra la pertinencia de la variable seleccionada.
+      </p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-xs font-medium">ID_A</span>
+        </label>
+        <input type="text" class="input input-bordered w-full" [value]="idA || '-'" disabled />
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-xs font-medium">ID_S</span>
+        </label>
+        <input type="text" class="input input-bordered w-full" [value]="idS || '-'" disabled />
+      </div>
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="temaCobertura">
+        <span class="label-text text-xs font-medium">Tema de cobertura</span>
+      </label>
+      <input id="temaCobertura" type="text" class="input input-bordered w-full" [(ngModel)]="temaCobertura"
+        placeholder="Tema de cobertura de necesidades" />
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="form-control">
+        <label class="label" for="nivelContribucion">
+          <span class="label-text text-xs font-medium">Nivel de contribución</span>
+        </label>
+
+        <select id="nivelContribucion" class="select select-bordered w-full" [(ngModel)]="nivelContribucion">
+          <option value="" disabled selected>Selecciona un nivel</option>
+          <option value="Alto">Alto</option>
+          <option value="Intermedio">Intermedio</option>
+          <option value="Bajo">Bajo</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="viabilidad">
+          <span class="label-text text-xs font-medium">Viabilidad de generación</span>
+        </label>
+        <select id="viabilidad" class="select select-bordered w-full" [(ngModel)]="viabilidad">
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option value="Viable">Viable</option>
+          <option value="No viable">No viable</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="propuesta">
+        <span class="label-text text-xs font-medium">Propuesta</span>
+      </label>
+      <input id="propuesta" type="text" class="input input-bordered w-full" [(ngModel)]="propuesta"
+        placeholder="Propuesta de generación" />
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="comentarioPertinencia">
+        <span class="label-text text-xs font-medium">Comentario</span>
+      </label>
+      <textarea id="comentarioPertinencia" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="comentarioS"
+        placeholder="Comentario de pertinencia"></textarea>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormulario()">
+        Limpiar
+      </button>
+
+      <button class="btn btn-primary btn-sm px-6" (click)="guardarPertinencia()">
+        {{ pertinenciaExistente ? 'Actualizar pertinencia y finalizar' : 'Guardar pertinencia y finalizar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<dialog #modalOkPertinencia class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Pertinencia guardada</h3>
+    <p class="py-4">
+      La pertinencia se registró correctamente y la captura de esta variable quedó finalizada.
+    </p>
+    <div class="modal-action">
+      <button class="btn btn-primary" (click)="cerrarModalOkPertinencia()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalErrorPertinencia class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">No se pudo guardar</h3>
+    <p class="py-4">
+      {{ mensajeErrorPertinencia }}
+    </p>
+    <div class="modal-action">
+      <button class="btn btn-error" (click)="cerrarModalErrorPertinencia()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalSinDatosPertinencia class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Faltan datos obligatorios</h3>
+
+    <p class="py-2">
+      Antes de continuar, completa los siguientes campos:
+    </p>
+
+    <ul class="list-disc pl-5 text-sm">
+      <li *ngFor="let campo of camposFaltantes">
+        {{ campo }}
+      </li>
+    </ul>
+
+    <div class="modal-action">
+      <button class="btn btn-primary" (click)="cerrarModalSinDatosPertinencia()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalSinPertinencia class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Variable sin pertinencia</h3>
+    <p class="py-4">
+      Esta variable no cuenta con pertinencia registrada. Agrégala, guárdala y finaliza la captura.
+    </p>
+    <div class="modal-action">
+      <button class="btn btn-primary" (click)="cerrarModalSinPertinencia()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
