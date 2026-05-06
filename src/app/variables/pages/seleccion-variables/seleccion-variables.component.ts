@@ -3,16 +3,24 @@ import { FuenteIdentificacionService } from "@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from "@/procesoProduccion/interfaces/procesos.interface";
 import { DireccionesService } from "@/procesoProduccion/services/direcciones.service";
 import { ppEcoService } from "@/procesoProduccion/services/proceso-produccion.service";
+import { CapturaMdeaVariableComponent } from "@/variables/components/captura-mdea-variable/captura-mdea-variable.component";
 import { CapturaPertinenciaVariableComponent } from "@/variables/components/captura-pertinencia-variable/captura-pertinencia-variable.component";
 import { Direccion } from "@/variables/interfaces/direcciones.interface";
 import { VariableService } from "@/variables/services/variables.service";
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { CapturaOdsVariableComponent } from '@/variables/components/captura-ods-variable/captura-ods-variable.component';
 
 @Component({
   selector: 'app-seleccion-variables',
-  imports: [CommonModule, FormsModule, CapturaPertinenciaVariableComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CapturaPertinenciaVariableComponent,
+    CapturaMdeaVariableComponent,
+    CapturaOdsVariableComponent,
+  ],
   templateUrl: './seleccion-variables.component.html',
 })
 export class SeleccionVariablesComponent implements OnInit {
@@ -195,9 +203,13 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this.idFuenteActual = '';
     this.acronimoActual = proceso;
+
     this.edicionFuenteActual = '';
 
     this.resetFormularioVariable();
+
+    this.idS = proceso ? `${proceso}-` : '';
+
     localStorage.removeItem('fuenteEditable');
 
     if (proceso) {
@@ -246,6 +258,7 @@ export class SeleccionVariablesComponent implements OnInit {
     }
 
     this.resetFormularioVariable();
+    this.idS = this.acronimoActual ? `${this.acronimoActual}-` : '';
     localStorage.removeItem('fuenteEditable');
 
     if (idFuente) {
@@ -376,14 +389,19 @@ export class SeleccionVariablesComponent implements OnInit {
             this.idSVariableActual = this.variableEditando?.idS ?? payload.idS;
 
             this.variableGuardada = true;
-            this.mostrarBloqueMdea = false;
-            this.mostrarBloqueOds = false;
-            this.mostrarBloquePertinencia = true;
+            this.formularioVariableBloqueado = true;
+            this.bloquearIdS = true;
 
-            this.resetFormularioVariable();
+            this.mostrarBloqueMdea = true;
+            this.mostrarBloqueOds = true;
+
             this.cargarVariablesPorFuente(this.idFuenteActual);
           },
           error: (err) => {
+            if (err.status === 409 || err.status === 403) {
+              this.abrirModalVariableDuplicada();
+              return;
+            }
             console.error('Error al actualizar variable:', err);
           },
         });
@@ -396,14 +414,21 @@ export class SeleccionVariablesComponent implements OnInit {
         this.idSVariableActual = payload.idS;
 
         this.variableGuardada = true;
-        this.mostrarBloqueMdea = false;
-        this.mostrarBloqueOds = false;
-        this.mostrarBloquePertinencia = true;
+        this.formularioVariableBloqueado = true;
+        this.bloquearIdS = true;
 
-        this.resetFormularioVariable();
+        this.mostrarBloqueMdea = true;
+        this.mostrarBloqueOds = true;
+
         this.cargarVariablesPorFuente(this.idFuenteActual);
+        this.abrirModalVariableCapturada();
+
       },
       error: (err) => {
+        if (err.status === 409 || err.status === 403) {
+          this.abrirModalVariableDuplicada();
+          return;
+        }
         console.error('Error al registrar variable:', err);
       },
     });
@@ -423,7 +448,9 @@ export class SeleccionVariablesComponent implements OnInit {
     this.idSVariableActual = item.idS ?? '';
 
     this.variableGuardada = true;
-    this.mostrarBloquePertinencia = true;
+
+    this.mostrarBloqueMdea = true;
+    this.mostrarBloqueOds = true;
   }
 
   eliminarVariable(idA: string) {
@@ -448,6 +475,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.comentarioS = '-';
     this.variableEditando = null;
     this.bloquearIdS = false;
+    this.formularioVariableBloqueado = false;
   }
   consultarPorIdS() {
     if (!this.idS?.trim()) {
@@ -543,7 +571,8 @@ export class SeleccionVariablesComponent implements OnInit {
   variableGuardada = false;
   mostrarBloqueMdea = false;
   mostrarBloqueOds = false;
-  mostrarBloquePertinencia = false;
+
+  formularioVariableBloqueado = false;
 
   idAVariableActual = '';
   idSVariableActual = '';
@@ -552,7 +581,6 @@ export class SeleccionVariablesComponent implements OnInit {
     this.variableGuardada = false;
     this.mostrarBloqueMdea = false;
     this.mostrarBloqueOds = false;
-    this.mostrarBloquePertinencia = false;
 
     this.idAVariableActual = '';
     this.idSVariableActual = '';
@@ -563,4 +591,26 @@ export class SeleccionVariablesComponent implements OnInit {
     this.resetFormularioVariable();
     this.cargarVariablesPorFuente(this.idFuenteActual);
   }
+
+  @ViewChild('modalVariableDuplicada')
+  modalVariableDuplicada!: ElementRef<HTMLDialogElement>;
+
+  abrirModalVariableDuplicada() {
+    this.modalVariableDuplicada?.nativeElement.showModal();
+  }
+
+  cerrarModalVariableDuplicada() {
+    this.modalVariableDuplicada?.nativeElement.close();
+  }
+  @ViewChild('modalVariableCapturada')
+  modalVariableCapturada!: ElementRef<HTMLDialogElement>;
+
+  abrirModalVariableCapturada() {
+    this.modalVariableCapturada?.nativeElement.showModal();
+  }
+
+  cerrarModalVariableCapturada() {
+    this.modalVariableCapturada?.nativeElement.close();
+  }
+
 }

@@ -54,7 +54,7 @@ export class CapturaPertinenciaVariableComponent implements OnChanges {
 
         if (err?.status === 404 && !this.yaMostroAvisoSinPertinencia) {
           this.yaMostroAvisoSinPertinencia = true;
-          this.abrirModalSinPertinencia();
+          //this.abrirModalSinPertinencia();
         } else {
           console.error('Error al cargar pertinencia:', err);
         }

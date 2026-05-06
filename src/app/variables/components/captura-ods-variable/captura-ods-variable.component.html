@@ -1,1 +1,185 @@
-<p>captura-ods-variable works!</p>
+<div class="grid gap-4 xl:grid-cols-12">
+  <!-- FORMULARIO -->
+  <div class="xl:col-span-5">
+    <div class="card h-full border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-4 p-4">
+        <div>
+          <h2 class="card-title text-base">Relación ODS</h2>
+          <p class="text-xs text-base-content/60">
+            Captura una relación ODS para la variable {{idA}}.
+          </p>
+        </div>
+
+
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Objetivo</span>
+          </label>
+          <select class="select select-bordered w-full" [(ngModel)]="idObjetivo" (change)="onObjetivoChange()">
+            <option value="" disabled>Selecciona objetivo</option>
+
+            @for (obj of objetivos; track obj.idObjetivo) {
+            <option [value]="obj.idObjetivo">
+              {{ obj.idObjetivo }} - {{ obj.objetivo }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Meta</span>
+          </label>
+          <select class="select select-bordered w-full" [(ngModel)]="idMeta" [disabled]="!idObjetivo"
+            (change)="onMetaChange()">
+            <option value="" disabled>Selecciona meta</option>
+
+            @for (meta of metas; track meta.uniqueId) {
+            <option [value]="meta.idMeta">
+              {{ meta.idMeta }} - {{ meta.meta }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Indicador</span>
+          </label>
+          <select class="select select-bordered w-full" [(ngModel)]="idIndicador" [disabled]="!idMeta">
+            <option value="" disabled>Selecciona indicador</option>
+
+            @for (ind of indicadores; track ind.uniqueId) {
+            <option [value]="ind.idIndicador">
+              {{ ind.idIndicador }} - {{ ind.indicador }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Contribución</span>
+          </label>
+          <select class="select select-bordered w-full" [(ngModel)]="contribucion">
+            <option value="" disabled>Selecciona un nivel</option>
+            <option value="Alto">Alto</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Bajo">Bajo</option>
+            <option value="-">-</option>
+          </select>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-xs font-medium">Comentario</span>
+          </label>
+          <textarea class="textarea textarea-bordered min-h-20 w-full" [(ngModel)]="comentarioS"
+            placeholder="Comentario ODS"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormularioOds()">
+            Limpiar
+          </button>
+
+          <button class="btn btn-primary btn-sm px-6" (click)="guardarOds()">
+            Guardar ODS
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div class="xl:col-span-7">
+    <div class="card h-full border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="card-title text-base">Relaciones ODS capturadas</h2>
+            <p class="text-xs text-base-content/60">
+              Relaciones registradas para esta variable.
+            </p>
+          </div>
+
+          <span class="badge badge-outline badge-sm">
+            {{ relacionesOds.length || 0 }} registros
+          </span>
+        </div>
+
+        <div class="overflow-x-auto rounded-box border border-base-300">
+          <table class="table table-zebra table-sm [&_td]:py-2 [&_th]:py-2">
+            <thead>
+              <tr>
+                <th>Objetivo</th>
+                <th>Meta</th>
+                <th>Indicador</th>
+                <th>Contrib.</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngIf="!relacionesOds.length">
+                <td colspan="5" class="py-6 text-center text-sm text-base-content/60">
+                  No hay relaciones ODS capturadas.
+                </td>
+              </tr>
+
+              <tr *ngFor="let rel of relacionesOds">
+                <td class="max-w-36 truncate text-sm" [title]="rel.objetivo || ''">
+                  {{ rel.objetivo || '-' }}
+                </td>
+
+                <td class="max-w-36 truncate text-sm" [title]="rel.meta || ''">
+                  {{ rel.meta || '-' }}
+                </td>
+
+                <td class="max-w-44 truncate text-sm" [title]="rel.indicador || ''">
+                  {{ rel.indicador || '-' }}
+                </td>
+
+                <td class="text-sm">
+                  {{ rel.contribucion || '-' }}
+                </td>
+
+                <td>
+                  <div class="flex justify-center">
+                    <button class="btn btn-error btn-xs" (click)="eliminarRelacionOds(rel.idUnique)">
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog #modalSinDatosOds class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Faltan datos obligatorios</h3>
+
+    <p class="py-2">
+      Antes de guardar ODS, completa los siguientes campos:
+    </p>
+
+    <ul class="list-disc pl-5 text-sm">
+      <li *ngFor="let campo of camposFaltantes">
+        {{ campo }}
+      </li>
+    </ul>
+
+    <div class="modal-action">
+      <button class="btn btn-primary" type="button" (click)="cerrarModalSinDatosOds()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>

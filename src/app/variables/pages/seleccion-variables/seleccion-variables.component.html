@@ -95,8 +95,9 @@
               </label>
 
               <div class="flex gap-2">
-                <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS" [disabled]="bloquearIdS"
-                  placeholder="Ej. VAR-001" />
+                <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS"
+                  [disabled]="bloquearIdS || formularioVariableBloqueado" placeholder="Ej. VAR-001" />
+
 
                 <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center"
                   (click)="consultarPorIdS()" type="button">
@@ -108,9 +109,7 @@
                 </button>
               </div>
 
-              <p *ngIf="bloquearIdS" class="mt-1 text-xs text-warning">
-                El ID_S no puede modificarse.
-              </p>
+
             </div>
 
             <!-- NOMBRE -->
@@ -119,7 +118,8 @@
                 <span class="label-text text-xs font-medium">Nombre</span>
               </label>
               <input id="nombreVar" type="text" class="input input-bordered w-full" [(ngModel)]="nombre"
-                placeholder="Nombre de la variable" />
+                [disabled]="formularioVariableBloqueado" placeholder="Nombre de la variable" />
+
             </div>
           </div>
 
@@ -127,15 +127,19 @@
             <label class="label" for="definicionVar">
               <span class="label-text text-xs font-medium">Definición</span>
             </label>
-            <textarea id="definicionVar" class="textarea textarea-bordered min-h-23 w-full" [(ngModel)]="definicion"
-              placeholder="Definición de la variable"></textarea>
+            <textarea id="definicionVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="definicion"
+              [disabled]="formularioVariableBloqueado" placeholder="Definición de la variable">
+            </textarea>
+
           </div>
 
           <div class="form-control">
             <label class="label" for="urlVar">
               <span class="label-text text-xs font-medium">URL de acceso</span>
             </label>
-            <input id="urlVar" type="text" class="input input-bordered w-full" [(ngModel)]="url" placeholder="https://..." />
+            <input id="urlVar" type="text" class="input input-bordered w-full" [(ngModel)]="url"
+              [disabled]="formularioVariableBloqueado" placeholder="https://..." />
+
           </div>
 
           <div class="form-control">
@@ -143,17 +147,21 @@
               <span class="label-text text-xs font-medium">Comentario</span>
             </label>
             <textarea id="comentarioVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="comentarioS"
-              placeholder="Comentario de la variable"></textarea>
+              [disabled]="formularioVariableBloqueado" placeholder="Comentario de la variable">
+            </textarea>
+
           </div>
 
-          <div class="flex justify-end gap-2">
-            <button class="btn btn-outline btn-sm px-6" (click)="resetFormularioVariable()">
+          <div class="flex justify-end gap-2 mt-5">
+            <button class="btn btn-outline btn-sm px-6" (click)="resetFormularioVariable()"
+              [disabled]="formularioVariableBloqueado">
               Limpiar
             </button>
 
-            <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()">
+            <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()" [disabled]="formularioVariableBloqueado">
               {{ variableEditando ? 'Actualizar variable' : 'Capturar variable' }}
             </button>
+
           </div>
         </div>
       </div>
@@ -162,7 +170,7 @@
     <!-- DERECHA -->
     <div class="space-y-4 xl:col-span-7">
       <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body p-5">
+        <div class="card-body p-4">
           <div class="mb-2 flex items-center justify-between gap-3">
             <div>
               <h2 class="card-title text-base">Lista de variables</h2>
@@ -287,56 +295,22 @@
     </div>
   </div>
 
-  <div class="grid gap-4 xl:grid-cols-12">
-    <div class="space-y-2 xl:col-span-5">
-      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada">
-        <div class="card-body gap-4 p-4">
-          <div>
-            <h2 class="card-title text-base">Captura complementaria</h2>
-            <p class="text-xs text-base-content/60">
-              La variable ya fue registrada. Ahora puedes capturar relaciones y pertinencia.
-            </p>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <button class="btn btn-outline btn-sm" (click)="mostrarBloqueMdea = !mostrarBloqueMdea">
-              {{ mostrarBloqueMdea ? 'Ocultar MDEA' : 'Capturar MDEA' }}
-            </button>
-
-            <button class="btn btn-outline btn-sm" (click)="mostrarBloqueOds = !mostrarBloqueOds">
-              {{ mostrarBloqueOds ? 'Ocultar ODS' : 'Capturar ODS' }}
-            </button>
-
-            <button class="btn btn-outline btn-sm" (click)="mostrarBloquePertinencia = !mostrarBloquePertinencia">
-              {{ mostrarBloquePertinencia ? 'Ocultar pertinencia' : 'Capturar pertinencia' }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada && mostrarBloqueMdea">
-        <div class="card-body p-4">
-          <h2 class="card-title text-base">Relaciones MDEA</h2>
-          <p class="text-xs text-base-content/60">Aquí va el bloque MDEA.</p>
-        </div>
-      </div>
-
-      <div class="card border border-base-300 bg-base-100 shadow-sm" *ngIf="variableGuardada && mostrarBloqueOds">
-        <div class="card-body p-4">
-          <h2 class="card-title text-base">Relaciones ODS</h2>
-          <p class="text-xs text-base-content/60">Aquí va el bloque ODS.</p>
-        </div>
-      </div>
+  <div class="grid gap-4 xl:grid-cols-12" *ngIf="variableGuardada">
 
 
-
-
-
-
-
+    <div class="space-y-2 xl:col-span-12">
+      <app-captura-mdea-variable *ngIf="mostrarBloqueMdea" [idA]="idAVariableActual" [idS]="idSVariableActual">
+      </app-captura-mdea-variable>
     </div>
 
+    <div class="space-y-2 xl:col-span-12" *ngIf="mostrarBloqueOds">
+      <div class="space-y-2 xl:col-span-12" *ngIf="mostrarBloqueOds">
+        <app-captura-ods-variable [idA]="idAVariableActual" [idS]="idSVariableActual">
+        </app-captura-ods-variable>
+      </div>
+    </div>
   </div>
+
   <div class="grid gap-4 xl:grid-cols-12">
     <div class="space-y-2 xl:col-span-12">
       <app-captura-pertinencia-variable *ngIf="variableGuardada" [idA]="idAVariableActual" [idS]="idSVariableActual"
@@ -345,3 +319,40 @@
     </div>
   </div>
 </div>
+
+
+<dialog #modalVariableDuplicada class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Variable duplicada</h3>
+
+    <p class="py-4">
+      Ya existe una variable registrada con ese ID_A. Cambia el ID_S para generar un identificador diferente.
+    </p>
+
+    <div class="modal-action">
+      <button class="btn btn-warning" type="button" (click)="cerrarModalVariableDuplicada()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+
+<dialog #modalVariableCapturada class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Variable capturada correctamente</h3>
+
+    <p class="py-4">
+      Ahora agrega sus relaciones MDEA, ODS y pertinencia.
+    </p>
+    <p class="py-4">
+      Después finaliza la captura.
+    </p>
+
+    <div class="modal-action">
+      <button class="btn btn-primary" type="button" (click)="cerrarModalVariableCapturada()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>

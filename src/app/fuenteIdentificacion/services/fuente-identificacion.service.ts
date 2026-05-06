@@ -1,4 +1,3 @@
-import { authService } from '@/auth/services/auth.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of, throwError } from 'rxjs';
@@ -7,11 +6,18 @@ import { FiEcoResponce } from '../interfaces/fiEco-responce.interface';
 
 const baseUrl = environment.baseUrl;
 
+export interface FuentePayload {
+  idFuenteSeleccion?: string | null;
+  acronimo: string;
+  fuente: string;
+  url: string;
+  edicion: string;
+  comentarioS?: string | null;
+  comentarioA?: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class FuenteIdentificacionService {
-  constructor() {}
-
-  private _authService = inject(authService);
   private http = inject(HttpClient);
 
   //! OBTENER FUENTES POR ACRONIMO
@@ -31,47 +37,32 @@ export class FuenteIdentificacionService {
       );
   }
 
-  //! OBTENER FUENTE POR ID
-  getByIdFuente(idFuente: string): Observable<FiEcoResponce | null> {
-    const params = new HttpParams().set('idFuente', idFuente);
+  //! OBTENER FUENTE POR ID FUENTE SELECCION
+  getByIdFuenteSeleccion(
+    idFuenteSeleccion: string,
+  ): Observable<FiEcoResponce | null> {
+    const params = new HttpParams().set('idFuenteSeleccion', idFuenteSeleccion);
 
     return this.http
-      .get<FiEcoResponce>(`${baseUrl}/fuentes/by-id`, {
+      .get<FiEcoResponce>(`${baseUrl}/fuentes/by-id-fuente-seleccion`, {
         params,
         withCredentials: true,
       })
       .pipe(
         catchError((error) => {
-          console.error('Error al obtener fuente por id:', error);
+          console.error(
+            'Error al obtener fuente por idFuenteSeleccion:',
+            error,
+          );
           return of(null);
         }),
       );
   }
 
   //! REGISTRAR FUENTE
-  registrarFuente(datos: {
-    acronimo: string;
-    fuente: string;
-    url: string | null;
-    edicion: string | number | null;
-    comentarioS: string;
-    comentarioA?: string | null;
-    idFuenteSeleccion?: string | null;
-  }): Observable<FiEcoResponce | null> {
-    const userId = this._authService.user()?.id;
-
-    if (!userId) {
-      console.log('No hay usuario autenticado');
-      return of(null);
-    }
-
-    const datosConResponsable = {
-      ...datos,
-      responsableRegister: userId,
-    };
-
+  registrarFuente(datos: FuentePayload): Observable<FiEcoResponce | null> {
     return this.http
-      .post<FiEcoResponce>(`${baseUrl}/fuentes`, datosConResponsable, {
+      .post<FiEcoResponce>(`${baseUrl}/fuentes`, datos, {
         withCredentials: true,
       })
       .pipe(
@@ -84,20 +75,10 @@ export class FuenteIdentificacionService {
 
   //! EDITAR FUENTE
   editarFuente(
-    idFuente: string,
-    datos: {
-      acronimo: string;
-      fuente: string;
-      url: string | null;
-      edicion: string | number | null;
-      comentarioS: string;
-      comentarioA?: string | null;
-      responsableRegister: number;
-      responsableActualizacion: number | null;
-      idFuenteSeleccion?: string | null;
-    },
+    idFuenteSeleccion: string,
+    datos: FuentePayload,
   ): Observable<FiEcoResponce | null> {
-    const params = new HttpParams().set('idFuente', idFuente);
+    const params = new HttpParams().set('idFuenteSeleccion', idFuenteSeleccion);
 
     return this.http
       .put<FiEcoResponce>(`${baseUrl}/fuentes/update`, datos, {
@@ -107,16 +88,16 @@ export class FuenteIdentificacionService {
       .pipe(
         catchError((error) => {
           console.error('Error al editar fuente:', error);
-          return of(null);
+          return throwError(() => error);
         }),
       );
   }
 
   //! ELIMINAR FUENTE
-  eliminarFuente(idFuente: string): Observable<any> {
-    const params = new HttpParams().set('idFuente', idFuente);
+  eliminarFuente(idFuenteSeleccion: string): Observable<any> {
+    const params = new HttpParams().set('idFuenteSeleccion', idFuenteSeleccion);
 
-    return this.http.delete(`${baseUrl}/fuentes/delete`, {
+    return this.http.delete(`${baseUrl}/fuentes`, {
       params,
       withCredentials: true,
     });

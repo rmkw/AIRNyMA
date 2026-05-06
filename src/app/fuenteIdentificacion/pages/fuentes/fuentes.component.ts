@@ -23,7 +23,6 @@ import { Router } from '@angular/router';
   templateUrl: './fuentes.component.html',
 })
 export class FuentesComponent implements OnInit {
-
   _serviceDirecciones = inject(DireccionesService);
   _procesoService = inject(ppEcoService);
   _fuenteService = inject(FuenteIdentificacionService);
@@ -217,9 +216,17 @@ export class FuentesComponent implements OnInit {
     });
   }
 
+  generarIdFuenteSeleccion(
+    acronimo: string,
+    fuente: string,
+    edicion: string,
+    url: string,
+  ): string {
+    return `${acronimo}-${fuente.trim()}-${edicion.trim()}-${url.trim()}`;
+  }
+
   guardarFuente() {
     const acronimo = this.procesoSeleccionado()?.acronimo;
-    const userId = this.obtenerUsuarioId();
 
     if (!acronimo) {
       console.error('No hay proceso seleccionado');
@@ -231,34 +238,34 @@ export class FuentesComponent implements OnInit {
       return;
     }
 
-    if (!userId) {
-      console.error('No se pudo obtener el id del usuario logueado');
-      return;
-    }
+    const idFuenteSeleccion =
+      this.fuenteEditando?.idFuenteSeleccion ??
+      this.generarIdFuenteSeleccion(
+        acronimo,
+        this.fuente,
+        this.edicion,
+        this.url,
+      );
 
     const payload = {
+      idFuenteSeleccion,
       acronimo,
       fuente: this.fuente.trim(),
-      url: this.url?.trim() || null,
-      edicion: this.edicion?.toString().trim() || null,
-      comentarioS: this.comentarioS?.trim() || '',
-      comentarioA: '-',
-      idFuenteSeleccion: this.fuenteEditando?.idFuente ?? null,
+      url: this.url.trim(),
+      edicion: this.edicion.toString().trim(),
+      comentarioS: this.comentarioS?.trim() || null,
+      comentarioA: this.comentarioA?.trim() || null,
     };
 
-    if (this.fuenteEditando?.idFuente) {
+    if (this.fuenteEditando?.idFuenteSeleccion) {
       this._fuenteService
-        .editarFuente(this.fuenteEditando.idFuente, {
-          ...payload,
-          responsableRegister:
-            this.fuenteEditando.responsableRegister ?? userId,
-          responsableActualizacion: userId,
-        })
+        .editarFuente(this.fuenteEditando.idFuenteSeleccion, payload)
         .subscribe({
           next: (resp) => {
             if (!resp) return;
             this.limpiarFormularioFuente();
             this.cargarFuentesPorProceso(acronimo);
+            this.abrirModalActualizado();
           },
           error: (err) => {
             console.error('Error al actualizar fuente:', err);
@@ -273,8 +280,13 @@ export class FuentesComponent implements OnInit {
         if (!resp) return;
         this.limpiarFormularioFuente();
         this.cargarFuentesPorProceso(acronimo);
+        this.abrirModalGuardado();
       },
       error: (err) => {
+        if (err.status === 409) {
+          this.abrirModalFuenteDuplicada();
+          return;
+        }
         console.error('Error al registrar fuente:', err);
       },
     });
@@ -297,8 +309,8 @@ export class FuentesComponent implements OnInit {
     this.comentarioS = item.comentarioS ?? '';
   }
 
-  abrirModalEliminar(idFuente: string) {
-    this.idFuenteAEliminar = idFuente;
+  abrirModalEliminar(idFuenteSeleccion: string) {
+    this.idFuenteAEliminar = idFuenteSeleccion;
     this.modalEliminar?.nativeElement.showModal();
   }
 
@@ -319,7 +331,7 @@ export class FuentesComponent implements OnInit {
       next: () => {
         this.cerrarModalEliminar();
 
-        if (this.fuenteEditando?.idFuente === this.idFuenteAEliminar) {
+        if (this.fuenteEditando?.idFuenteSeleccion === this.idFuenteAEliminar) {
           this.limpiarFormularioFuente();
         }
 
@@ -396,7 +408,7 @@ export class FuentesComponent implements OnInit {
     );
 
     if (
-      !fuente?.idFuente ||
+      !fuente?.idFuenteSeleccion ||
       !this.direccionSeleccionada ||
       !this.procesoSeleccionadoValue
     ) {
@@ -410,7 +422,9 @@ export class FuentesComponent implements OnInit {
       direccion: this.direccionSeleccionada,
       acronimo: this.procesoSeleccionadoValue,
       proceso: proceso?.proceso ?? '',
-      idFuente: fuente.idFuente,
+      idFuente: fuente.idFuenteSeleccion,
+      idFuenteSeleccion: fuente.idFuenteSeleccion,
+      idFuenteGenerado: fuente.idFuente,
       fuente: fuente.fuente,
       edicion: fuente.edicion ?? '',
     };
@@ -494,5 +508,35 @@ export class FuentesComponent implements OnInit {
   onPageSizeChange() {
     this.currentPage = 0;
     this.updatePagination();
+  }
+
+  @ViewChild('modalGuardado') modalGuardado!: ElementRef<HTMLDialogElement>;
+  @ViewChild('modalActualizado')
+  modalActualizado!: ElementRef<HTMLDialogElement>;
+
+  abrirModalGuardado() {
+    this.modalGuardado?.nativeElement.showModal();
+  }
+
+  cerrarModalGuardado() {
+    this.modalGuardado?.nativeElement.close();
+  }
+
+  abrirModalActualizado() {
+    this.modalActualizado?.nativeElement.showModal();
+  }
+
+  cerrarModalActualizado() {
+    this.modalActualizado?.nativeElement.close();
+  }
+
+  @ViewChild('modalFuenteDuplicada')
+  modalFuenteDuplicada!: ElementRef<HTMLDialogElement>;
+  abrirModalFuenteDuplicada() {
+    this.modalFuenteDuplicada?.nativeElement.showModal();
+  }
+
+  cerrarModalFuenteDuplicada() {
+    this.modalFuenteDuplicada?.nativeElement.close();
   }
 }

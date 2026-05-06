@@ -3,25 +3,11 @@
     <div>
       <h2 class="card-title text-base">Pertinencia</h2>
       <p class="text-xs text-base-content/60">
-        Registra la pertinencia de la variable seleccionada.
+        Registra la pertinencia de la variable {{idA}}.
       </p>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-xs font-medium">ID_A</span>
-        </label>
-        <input type="text" class="input input-bordered w-full" [value]="idA || '-'" disabled />
-      </div>
 
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-xs font-medium">ID_S</span>
-        </label>
-        <input type="text" class="input input-bordered w-full" [value]="idS || '-'" disabled />
-      </div>
-    </div>
 
     <div class="form-control">
       <label class="label" for="temaCobertura">
