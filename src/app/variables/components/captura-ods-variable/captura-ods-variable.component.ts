@@ -27,15 +27,15 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
   private _relacionODSService = inject(relacionODS_Service);
 
   idObjetivo = '';
-  idMeta = '';
-  idIndicador = '';
+  idMeta = '-';
+  idIndicador = '-';
 
   objetivos: any[] = [];
   metas: any[] = [];
   indicadores: any[] = [];
 
   contribucion = '';
-  comentarioS = '';
+  comentarioS = '-';
 
   relacionesOds: any[] = [];
 
@@ -50,8 +50,9 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
   }
 
   onObjetivoChange() {
-    this.idMeta = '';
-    this.idIndicador = '';
+    this.idMeta = '-';
+    this.idIndicador = '-';
+
     this.metas = [];
     this.indicadores = [];
 
@@ -59,8 +60,10 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
   }
 
   onMetaChange() {
-    this.idIndicador = '';
+    this.idIndicador = '-';
     this.indicadores = [];
+
+    if (this.idMeta === '-') return;
 
     this.cargarIndicadores();
   }
@@ -92,7 +95,7 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
   }
 
   cargarIndicadores() {
-    if (!this.idObjetivo || !this.idMeta) return;
+    if (!this.idObjetivo || this.idMeta === '-') return;
 
     this._odsService.getIndicadores(this.idObjetivo, this.idMeta).subscribe({
       next: (data) => {
@@ -117,20 +120,34 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (!this.idObjetivo || !this.idMeta || !this.idIndicador) {
+    if (!this.idObjetivo) {
       console.error('Faltan campos obligatorios de ODS');
       return;
     }
+
+    const metaSeleccionada = this.metas.find(
+      (meta) => String(meta.idMeta) === String(this.idMeta),
+    );
+
+    const indicadorSeleccionado = this.indicadores.find(
+      (ind) => String(ind.idIndicador) === String(this.idIndicador),
+    );
 
     const payload = {
       idA: this.idA,
       idS: this.idS,
       objetivo: this.idObjetivo,
-      meta: this.idMeta,
-      indicador: this.idIndicador,
+      meta:
+        metaSeleccionada?.uniqueId ?? metaSeleccionada?.idUnique ?? this.idMeta,
+      indicador:
+        indicadorSeleccionado?.uniqueId ??
+        indicadorSeleccionado?.idUnique ??
+        this.idIndicador,
       contribucion: this.contribucion || '-',
       comentarioS: this.comentarioS?.trim() || '-',
     };
+
+    console.log('Payload ODS:', payload);
 
     this._relacionODSService.registrarRelacion_ods(payload).subscribe({
       next: () => {
@@ -142,18 +159,21 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
       },
     });
   }
+
   cargarRelacionesOds() {
     if (!this.idA) return;
 
-    this._relacionODSService.getRelacionesPorVariable_ods(this.idA).subscribe({
-      next: (data) => {
-        this.relacionesOds = data ?? [];
-      },
-      error: (err: any) => {
-        console.error('Error al cargar relaciones ODS:', err);
-        this.relacionesOds = [];
-      },
-    });
+    this._relacionODSService
+      .getRelacionesTablaPorVariable_ods(this.idA)
+      .subscribe({
+        next: (data) => {
+          this.relacionesOds = data ?? [];
+        },
+        error: (err: any) => {
+          console.error('Error al cargar relaciones ODS:', err);
+          this.relacionesOds = [];
+        },
+      });
   }
   eliminarRelacionOds(idUnique: number) {
     if (!idUnique) return;
@@ -169,8 +189,8 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
   }
   limpiarFormularioOds() {
     this.idObjetivo = '';
-    this.idMeta = '';
-    this.idIndicador = '';
+    this.idMeta = '-';
+    this.idIndicador = '-';
 
     this.metas = [];
     this.indicadores = [];
@@ -178,6 +198,7 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
     this.contribucion = '';
     this.comentarioS = '';
   }
+
   @ViewChild('modalSinDatosOds')
   modalSinDatosOds!: ElementRef<HTMLDialogElement>;
 
@@ -198,5 +219,11 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
 
   cerrarModalSinDatosOds() {
     this.modalSinDatosOds?.nativeElement.close();
+  }
+  mostrarCatalogo(id: any, nombre: any): string {
+    if (!id || id === '-') return '-';
+    if (!nombre || nombre === '-') return id;
+
+    return `${id} - ${nombre}`;
   }
 }

@@ -12,51 +12,55 @@
 
 
 
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text text-xs font-medium">Objetivo</span>
-          </label>
-          <select class="select select-bordered w-full" [(ngModel)]="idObjetivo" (change)="onObjetivoChange()">
-            <option value="" disabled>Selecciona objetivo</option>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Objetivo</span>
+            </label>
+            <select class="select select-bordered w-full" [(ngModel)]="idObjetivo" (change)="onObjetivoChange()">
+              <option value="" disabled>Selecciona objetivo</option>
 
-            @for (obj of objetivos; track obj.idObjetivo) {
-            <option [value]="obj.idObjetivo">
-              {{ obj.idObjetivo }} - {{ obj.objetivo }}
-            </option>
-            }
-          </select>
+              @for (obj of objetivos; track obj.idObjetivo) {
+              <option [value]="obj.idObjetivo">
+                {{ obj.idObjetivo }} - {{ obj.objetivo }}
+              </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Meta</span>
+            </label>
+            <select class="select select-bordered w-full" [(ngModel)]="idMeta" [disabled]="!idObjetivo" (change)="onMetaChange()">
+              <option value="-">-</option>
+
+              @for (meta of metas; track meta.uniqueId) {
+              <option [value]="meta.idMeta">
+                {{ meta.idMeta }} - {{ meta.meta }}
+              </option>
+              }
+            </select>
+
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Indicador</span>
+            </label>
+            <select class="select select-bordered w-full" [(ngModel)]="idIndicador" [disabled]="idMeta === '-'">
+              <option value="-">-</option>
+
+              @for (ind of indicadores; track ind.uniqueId) {
+              <option [value]="ind.idIndicador">
+                {{ ind.idIndicador }} - {{ ind.indicador }}
+              </option>
+              }
+            </select>
+
+          </div>
         </div>
 
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text text-xs font-medium">Meta</span>
-          </label>
-          <select class="select select-bordered w-full" [(ngModel)]="idMeta" [disabled]="!idObjetivo"
-            (change)="onMetaChange()">
-            <option value="" disabled>Selecciona meta</option>
-
-            @for (meta of metas; track meta.uniqueId) {
-            <option [value]="meta.idMeta">
-              {{ meta.idMeta }} - {{ meta.meta }}
-            </option>
-            }
-          </select>
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text text-xs font-medium">Indicador</span>
-          </label>
-          <select class="select select-bordered w-full" [(ngModel)]="idIndicador" [disabled]="!idMeta">
-            <option value="" disabled>Selecciona indicador</option>
-
-            @for (ind of indicadores; track ind.uniqueId) {
-            <option [value]="ind.idIndicador">
-              {{ ind.idIndicador }} - {{ ind.indicador }}
-            </option>
-            }
-          </select>
-        </div>
 
         <div class="form-control">
           <label class="label">
@@ -104,7 +108,7 @@
             </p>
           </div>
 
-          <span class="badge badge-outline badge-sm">
+          <span class="text-xs text-base-content/60">
             {{ relacionesOds.length || 0 }} registros
           </span>
         </div>
@@ -129,17 +133,18 @@
               </tr>
 
               <tr *ngFor="let rel of relacionesOds">
-                <td class="max-w-36 truncate text-sm" [title]="rel.objetivo || ''">
-                  {{ rel.objetivo || '-' }}
+                <td class="max-w-36 truncate text-sm" [title]="mostrarCatalogo(rel.objetivo, rel.objetivoNombre)">
+                  {{ mostrarCatalogo(rel.objetivo, rel.objetivoNombre) }}
                 </td>
 
-                <td class="max-w-36 truncate text-sm" [title]="rel.meta || ''">
-                  {{ rel.meta || '-' }}
+                <td class="max-w-36 truncate text-sm" [title]="mostrarCatalogo(rel.meta, rel.metaNombre)">
+                  {{ mostrarCatalogo(rel.meta, rel.metaNombre) }}
                 </td>
 
-                <td class="max-w-44 truncate text-sm" [title]="rel.indicador || ''">
-                  {{ rel.indicador || '-' }}
+                <td class="max-w-44 truncate text-sm" [title]="mostrarCatalogo(rel.indicador, rel.indicadorNombre)">
+                  {{ mostrarCatalogo(rel.indicador, rel.indicadorNombre) }}
                 </td>
+
 
                 <td class="text-sm">
                   {{ rel.contribucion || '-' }}

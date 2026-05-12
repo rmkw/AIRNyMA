@@ -15,15 +15,21 @@ export class relacionODS_Service {
     return this.http.post<any>(`${baseUrl}/ods`, relacion);
   }
   getRelacionesPorVariable_ods(
-    idVariableUnique: string
+    idVariableUnique: string,
   ): Observable<RelacionODS[]> {
-    return this.http.get<RelacionODS[]>(
-      `${baseUrl}/ods/${idVariableUnique}`,
-      { withCredentials: true }
-    );
+    return this.http.get<RelacionODS[]>(`${baseUrl}/ods/${idVariableUnique}`, {
+      withCredentials: true,
+    });
   }
   eliminarRelacion_ods(id: number): Observable<void> {
     return this.http.delete<void>(`${baseUrl}/ods/${id}`, {
+      withCredentials: true,
+    });
+  }
+  getRelacionesTablaPorVariable_ods(
+    idVariableUnique: string,
+  ): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/ods/tabla/${idVariableUnique}`, {
       withCredentials: true,
     });
   }

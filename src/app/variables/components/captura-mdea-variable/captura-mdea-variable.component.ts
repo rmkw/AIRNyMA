@@ -44,17 +44,18 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
   estadisticas2: any[] = [];
 
   contribucion = '';
-  comentarioS = '';
+  comentarioS = '-';
 
   ngOnInit(): void {
     this.cargarComponentes();
   }
+
   cargarRelacionesMdea() {
     if (!this.idA) return;
 
     this.loadingRelacionesMdea = true;
 
-    this._capturaMdeaService.getRelacionesPorVariable(this.idA).subscribe({
+    this._capturaMdeaService.getRelacionesTablaPorVariable(this.idA).subscribe({
       next: (data) => {
         this.relacionesMdea = data ?? [];
         this.loadingRelacionesMdea = false;
@@ -245,17 +246,45 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
       return;
     }
 
+    const subcomponenteSeleccionado = this.subcomponentes.find(
+      (sub) => String(sub.idSubcomponente) === String(this.idSubcomponente),
+    );
+
+    const temaSeleccionado = this.temas.find(
+      (tema) => String(tema.idTema) === String(this.idTema),
+    );
+
+    const estadistico1Seleccionado = this.estadisticas1.find(
+      (est) => String(est.idEstadistico1) === String(this.idEstadistico1),
+    );
+
+    const estadistico2Seleccionado = this.estadisticas2.find(
+      (est) => String(est.idEstadistico2) === String(this.idEstadistico2),
+    );
+
     const payload = {
       idA: this.idA,
       idS: this.idS,
       componente: this.idComponente,
-      subcomponente: this.idSubcomponente,
-      tema: this.idTema,
-      estadistica1: this.idEstadistico1,
-      estadistica2: this.idEstadistico2,
+      subcomponente:
+        subcomponenteSeleccionado?.uniqueId ??
+        subcomponenteSeleccionado?.idUnique ??
+        this.idSubcomponente,
+      tema:
+        temaSeleccionado?.uniqueId ?? temaSeleccionado?.idUnique ?? this.idTema,
+      estadistica1:
+        estadistico1Seleccionado?.uniqueId ??
+        estadistico1Seleccionado?.idUnique ??
+        this.idEstadistico1,
+      estadistica2:
+        estadistico2Seleccionado?.uniqueId ??
+        estadistico2Seleccionado?.idUnique ??
+        this.idEstadistico2,
       contribucion: this.contribucion || '-',
       comentarioS: this.comentarioS?.trim() || '-',
     };
+
+    console.log('Payload MDEA:', payload);
 
     this._capturaMdeaService.registrarRelacion(payload).subscribe({
       next: () => {
@@ -267,6 +296,7 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
       },
     });
   }
+
   eliminarRelacion(idUnique: number) {
     if (!idUnique) return;
 
@@ -292,7 +322,7 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
     this.estadisticas2 = [];
 
     this.contribucion = '';
-    this.comentarioS = '';
+    this.comentarioS = '-';
   }
   @ViewChild('modalSinDatosMdea')
   modalSinDatosMdea!: ElementRef<HTMLDialogElement>;
@@ -315,5 +345,175 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
 
   cerrarModalSinDatosMdea() {
     this.modalSinDatosMdea?.nativeElement.close();
+  }
+
+  obtenerTextoComponente(idComponente: any): string {
+    if (!idComponente || idComponente === '-') return '-';
+
+    const componente = this.componentes.find(
+      (comp) => String(comp.idComponente) === String(idComponente),
+    );
+
+    return componente
+      ? `${componente.idComponente} - ${componente.nombre}`
+      : idComponente;
+  }
+  catalogoSubcomponentesTabla: any[] = [];
+  catalogoTemasTabla: any[] = [];
+  catalogoEstadisticas1Tabla: any[] = [];
+  catalogoEstadisticas2Tabla: any[] = [];
+  cargarCatalogosTablaMdea() {
+    this.catalogoSubcomponentesTabla = [];
+    this.catalogoTemasTabla = [];
+    this.catalogoEstadisticas1Tabla = [];
+    this.catalogoEstadisticas2Tabla = [];
+
+    this.relacionesMdea.forEach((rel) => {
+      if (!rel.componente || rel.componente === '-') return;
+
+      this._mdeaService.getSubcomponentes(rel.componente).subscribe({
+        next: (subcomponentes) => {
+          this.catalogoSubcomponentesTabla = [
+            ...this.catalogoSubcomponentesTabla,
+            ...(subcomponentes ?? []),
+          ];
+
+          const subcomponente = subcomponentes?.find(
+            (sub: any) =>
+              String(sub.idSubcomponente) === String(rel.subcomponente) ||
+              String(sub.uniqueId) === String(rel.subcomponente) ||
+              String(sub.idUnique) === String(rel.subcomponente),
+          );
+
+          const idSubcomponenteParaApi =
+            subcomponente?.uniqueId ??
+            subcomponente?.idUnique ??
+            rel.subcomponente;
+
+          if (!idSubcomponenteParaApi || rel.subcomponente === '-') return;
+
+          this._mdeaService
+            .getTopicos(rel.componente, idSubcomponenteParaApi)
+            .subscribe({
+              next: (temas) => {
+                this.catalogoTemasTabla = [
+                  ...this.catalogoTemasTabla,
+                  ...(temas ?? []),
+                ];
+
+                const tema = temas?.find(
+                  (item: any) =>
+                    String(item.idTema) === String(rel.tema) ||
+                    String(item.uniqueId) === String(rel.tema) ||
+                    String(item.idUnique) === String(rel.tema),
+                );
+
+                const idTemaParaApi =
+                  tema?.uniqueId ?? tema?.idUnique ?? rel.tema;
+
+                if (!idTemaParaApi || rel.tema === '-') return;
+
+                this._mdeaService
+                  .getVariables(
+                    rel.componente,
+                    idSubcomponenteParaApi,
+                    idTemaParaApi,
+                  )
+                  .subscribe({
+                    next: (estadisticas1) => {
+                      this.catalogoEstadisticas1Tabla = [
+                        ...this.catalogoEstadisticas1Tabla,
+                        ...(estadisticas1 ?? []),
+                      ];
+
+                      const estadistica1 = estadisticas1?.find(
+                        (item: any) =>
+                          String(item.idEstadistico1) ===
+                            String(rel.estadistica1) ||
+                          String(item.uniqueId) === String(rel.estadistica1) ||
+                          String(item.idUnique) === String(rel.estadistica1),
+                      );
+
+                      const idEstadistica1ParaApi =
+                        estadistica1?.uniqueId ??
+                        estadistica1?.idUnique ??
+                        rel.estadistica1;
+
+                      if (!idEstadistica1ParaApi || rel.estadistica1 === '-')
+                        return;
+
+                      this._mdeaService
+                        .getEstadisticos(
+                          rel.componente,
+                          idSubcomponenteParaApi,
+                          idTemaParaApi,
+                          idEstadistica1ParaApi,
+                        )
+                        .subscribe({
+                          next: (estadisticas2) => {
+                            this.catalogoEstadisticas2Tabla = [
+                              ...this.catalogoEstadisticas2Tabla,
+                              ...(estadisticas2 ?? []),
+                            ];
+                          },
+                        });
+                    },
+                  });
+              },
+            });
+        },
+      });
+    });
+  }
+  obtenerTextoSubcomponente(idSubcomponente: any): string {
+    if (!idSubcomponente || idSubcomponente === '-') return '-';
+
+    const sub = this.catalogoSubcomponentesTabla.find(
+      (item) =>
+        String(item.idSubcomponente) === String(idSubcomponente) ||
+        String(item.uniqueId) === String(idSubcomponente) ||
+        String(item.idUnique) === String(idSubcomponente),
+    );
+
+    return sub ? `${sub.idSubcomponente} - ${sub.nombre}` : idSubcomponente;
+  }
+
+  obtenerTextoTema(idTema: any): string {
+    if (!idTema || idTema === '-') return '-';
+
+    const tema = this.catalogoTemasTabla.find(
+      (item) =>
+        String(item.idTema) === String(idTema) ||
+        String(item.uniqueId) === String(idTema) ||
+        String(item.idUnique) === String(idTema),
+    );
+
+    return tema ? `${tema.idTema} - ${tema.nombre}` : idTema;
+  }
+
+  obtenerTextoEstadistica1(idEstadistico1: any): string {
+    if (!idEstadistico1 || idEstadistico1 === '-') return '-';
+
+    const est = this.catalogoEstadisticas1Tabla.find(
+      (item) =>
+        String(item.idEstadistico1) === String(idEstadistico1) ||
+        String(item.uniqueId) === String(idEstadistico1) ||
+        String(item.idUnique) === String(idEstadistico1),
+    );
+
+    return est ? `${est.idEstadistico1} - ${est.nombre}` : idEstadistico1;
+  }
+
+  obtenerTextoEstadistica2(idEstadistico2: any): string {
+    if (!idEstadistico2 || idEstadistico2 === '-') return '-';
+
+    const est = this.catalogoEstadisticas2Tabla.find(
+      (item) =>
+        String(item.idEstadistico2) === String(idEstadistico2) ||
+        String(item.uniqueId) === String(idEstadistico2) ||
+        String(item.idUnique) === String(idEstadistico2),
+    );
+
+    return est ? `${est.idEstadistico2} - ${est.nombre}` : idEstadistico2;
   }
 }

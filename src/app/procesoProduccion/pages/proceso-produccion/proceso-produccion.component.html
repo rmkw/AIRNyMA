@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <button class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20"
+      <button *ngIf="esSeleccionPura()" class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20"
         (click)="setLocalStorage(procesoSeleccionado()!)">
         Agregar fuente de identificación
       </button>

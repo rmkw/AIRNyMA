@@ -42,22 +42,22 @@
       </a>
     </li>
 
-    <li>
+    <li *ngIf="esSeleccionPura()">
       <a routerLink="/fuentes" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Fuentes">
         <span>🗂️</span>
         <span class="is-drawer-close:hidden">Fuentes de identificación</span>
       </a>
     </li>
 
-    <li>
-      <a routerLink="/nueva-variable" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+    <li *ngIf="esSeleccionPura()">
+      <a routerLink="/variables" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
         data-tip="Selección">
         <span>🎯</span>
         <span class="is-drawer-close:hidden">Selección de variables</span>
       </a>
     </li>
 
-    <li>
+    <li *ngIf="esArmonizacion()">
       <a routerLink="/revision-variables" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
         data-tip="Revisión">
         <span>✅</span>
@@ -65,7 +65,7 @@
       </a>
     </li>
 
-    <li>
+    <li *ngIf="esArmonizacion()">
       <a routerLink="/armo" (click)="navegandosinStorage()"
         class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Armonización">
         <span>🧩</span>
@@ -73,15 +73,15 @@
       </a>
     </li>
 
-    <li>
+    <li *ngIf="esArmonizacion()">
       <a routerLink="/tabulados" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tabulados">
         <span>📊</span>
         <span class="is-drawer-close:hidden">Tabulados</span>
       </a>
     </li>
 
-    <li>
-      <a routerLink="/importacion" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Importación">
+    <li *ngIf="esSeleccionPura()">
+      <a  routerLink="/importacion" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Importación">
         <span>📥</span>
         <span class="is-drawer-close:hidden">Importación masiva</span>
       </a>

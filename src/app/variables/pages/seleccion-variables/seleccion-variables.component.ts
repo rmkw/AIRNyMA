@@ -124,6 +124,10 @@ export class SeleccionVariablesComponent implements OnInit {
                     this.setContextoFuente(fuenteActual);
                   }
 
+                  this.idS = this.acronimoActual
+                    ? `${this.acronimoActual}-`
+                    : '';
+
                   this.cargarVariablesPorFuente(fuenteGuardada.idFuente);
                 },
                 error: (err) => {
@@ -167,6 +171,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.pageRange = [];
 
     this.resetFormularioVariable();
+    this.resetContextoVariableActual();
     localStorage.removeItem('fuenteEditable');
 
     this.cargarProcesosProduccionByDireccionGeneral(nameDi);
@@ -207,6 +212,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.edicionFuenteActual = '';
 
     this.resetFormularioVariable();
+    this.resetContextoVariableActual();
 
     this.idS = proceso ? `${proceso}-` : '';
 
@@ -258,6 +264,7 @@ export class SeleccionVariablesComponent implements OnInit {
     }
 
     this.resetFormularioVariable();
+    this.resetContextoVariableActual();
     this.idS = this.acronimoActual ? `${this.acronimoActual}-` : '';
     localStorage.removeItem('fuenteEditable');
 
@@ -422,7 +429,6 @@ export class SeleccionVariablesComponent implements OnInit {
 
         this.cargarVariablesPorFuente(this.idFuenteActual);
         this.abrirModalVariableCapturada();
-
       },
       error: (err) => {
         if (err.status === 409 || err.status === 403) {
@@ -477,6 +483,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.bloquearIdS = false;
     this.formularioVariableBloqueado = false;
   }
+
   consultarPorIdS() {
     if (!this.idS?.trim()) {
       console.warn('No hay ID_S para consultar');
@@ -589,6 +596,9 @@ export class SeleccionVariablesComponent implements OnInit {
     this.bloquearIdS = false;
 
     this.resetFormularioVariable();
+
+    this.idS = this.acronimoActual ? `${this.acronimoActual}-` : '';
+
     this.cargarVariablesPorFuente(this.idFuenteActual);
   }
 
@@ -613,4 +623,22 @@ export class SeleccionVariablesComponent implements OnInit {
     this.modalVariableCapturada?.nativeElement.close();
   }
 
+  aplicarPrefijoIdS() {
+    this.idS = this.acronimoActual ? `${this.acronimoActual}-` : '';
+  }
+  resetContextoVariableActual() {
+    this.variableGuardada = false;
+
+    this.mostrarBloqueMdea = false;
+    this.mostrarBloqueOds = false;
+
+    // Si tienes pertinencia con una bandera parecida, agrégala aquí:
+    // this.mostrarBloquePertinencia = false;
+
+    this.idAVariableActual = '';
+    this.idSVariableActual = '';
+
+    this.variableEditando = null;
+    this.bloquearIdS = false;
+  }
 }

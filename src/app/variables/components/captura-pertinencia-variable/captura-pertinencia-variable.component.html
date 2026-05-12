@@ -1,4 +1,4 @@
-<div class="card border border-base-300 bg-base-100 shadow-sm">
+<div class="card border border-base-300 bg-base-100 shadow-sm mb-4">
   <div class="card-body gap-4 p-4">
     <div>
       <h2 class="card-title text-base">Pertinencia</h2>
@@ -9,15 +9,17 @@
 
 
 
-    <div class="form-control">
-      <label class="label" for="temaCobertura">
-        <span class="label-text text-xs font-medium">Tema de cobertura</span>
-      </label>
-      <input id="temaCobertura" type="text" class="input input-bordered w-full" [(ngModel)]="temaCobertura"
-        placeholder="Tema de cobertura de necesidades" />
-    </div>
 
-    <div class="grid gap-4 md:grid-cols-2">
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div class="form-control">
+        <label class="label" for="temaCobertura">
+          <span class="label-text text-xs font-medium">Tema de cobertura</span>
+        </label>
+        <input id="temaCobertura" type="text" class="input input-bordered w-full" [(ngModel)]="temaCobertura"
+          placeholder="Tema de cobertura de necesidades" />
+      </div>
+
       <div class="form-control">
         <label class="label" for="nivelContribucion">
           <span class="label-text text-xs font-medium">Nivel de contribución</span>
@@ -45,21 +47,25 @@
       </div>
     </div>
 
-    <div class="form-control">
-      <label class="label" for="propuesta">
-        <span class="label-text text-xs font-medium">Propuesta</span>
-      </label>
-      <input id="propuesta" type="text" class="input input-bordered w-full" [(ngModel)]="propuesta"
-        placeholder="Propuesta de generación" />
+    <div class="grid gap-4 md:grid-cols-2">
+      <div class="form-control">
+        <label class="label" for="propuesta">
+          <span class="label-text text-xs font-medium">Propuesta</span>
+        </label>
+        <textarea id="propuesta" type="text" class="textarea w-full" [(ngModel)]="propuesta"
+          placeholder="Propuesta de generación"></textarea>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="comentarioPertinencia">
+          <span class="label-text text-xs font-medium">Comentario</span>
+        </label>
+        <textarea id="comentarioPertinencia" class="textarea w-full" [(ngModel)]="comentarioS"
+          placeholder="Comentario de pertinencia"></textarea>
+      </div>
     </div>
 
-    <div class="form-control">
-      <label class="label" for="comentarioPertinencia">
-        <span class="label-text text-xs font-medium">Comentario</span>
-      </label>
-      <textarea id="comentarioPertinencia" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="comentarioS"
-        placeholder="Comentario de pertinencia"></textarea>
-    </div>
+
 
     <div class="flex justify-end gap-2">
       <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormulario()">

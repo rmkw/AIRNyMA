@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { homeService } from '../../services/home.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink],
+  imports: [RouterLink,CommonModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
@@ -60,5 +61,25 @@ export class HomePageComponent {
         console.error('Error al obtener total de variables armonizadas', err);
       },
     });
+  }
+  tieneRol(rol: string): boolean {
+    const rolesGuardados = localStorage.getItem('roles');
+    if (!rolesGuardados) return false;
+
+    try {
+      const roles = JSON.parse(rolesGuardados) as string[];
+      return roles.includes(rol);
+    } catch (error) {
+      console.error('Error al leer roles del localStorage', error);
+      return false;
+    }
+  }
+
+  esSeleccionPura(): boolean {
+    return this.tieneRol('USER') && !this.tieneRol('ARMO');
+  }
+
+  esArmonizacion(): boolean {
+    return this.tieneRol('ARMO');
   }
 }

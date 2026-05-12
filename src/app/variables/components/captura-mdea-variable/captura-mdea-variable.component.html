@@ -152,10 +152,10 @@
             <thead>
               <tr>
                 <th>Componente</th>
-                <th>Sub</th>
+                <th>Subcomponente</th>
                 <th>Tema</th>
-                <th>E1</th>
-                <th>E2</th>
+                <th>Estadistica1</th>
+                <th>Estadistica2</th>
                 <th>Contrib.</th>
                 <th class="text-center">Acciones</th>
               </tr>
@@ -164,12 +164,13 @@
             <tbody>
               @for (rel of relacionesMdea; track rel.idUnique) {
               <tr>
-                <td>{{ rel.componente }}</td>
-                <td>{{ rel.subcomponente }}</td>
-                <td>{{ rel.tema }}</td>
-                <td>{{ rel.estadistica1 }}</td>
-                <td>{{ rel.estadistica2 }}</td>
-                <td>{{ rel.contribucion }}</td>
+                <td class="max-w-36 truncate text-sm"  [title]="rel.componenteNombre">{{ rel.componente }} - {{ rel.componenteNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.subcomponenteNombre">{{ rel.subcomponente }} - {{ rel.subcomponenteNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.temaNombre">{{ rel.tema }} - {{ rel.temaNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica1Nombre">{{ rel.estadistica1 }} - {{ rel.estadistica1Nombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica2Nombre">{{ rel.estadistica2 }} - {{ rel.estadistica2Nombre }}</td>
+
+                <td class="max-w-36 truncate text-sm" [title]="rel.contribucion">{{ rel.contribucion }}</td>
 
                 <td class="text-center">
                   <button class="btn btn-xs btn-error" (click)="eliminarRelacion(rel.idUnique)">

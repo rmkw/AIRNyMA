@@ -160,8 +160,8 @@
 
           </div>
 
-          <div class="overflow-x-auto rounded-box border border-base-300">
-            <table class="table  table-zebra table-sm [&_td]:py-2 [&_th]:py-2">
+          <div class="h-114 overflow-x-auto rounded-box border border-base-300">
+            <table class="table  table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>
                   <th>Proceso</th>
@@ -180,7 +180,7 @@
                 </tr>
 
                 <tr *ngIf="!loading && (!fuentes || fuentes.length === 0)">
-                  <td colspan="6" class="py-55 text-center text-sm text-base-content/60">
+                  <td colspan="6" class="h-100 py-8 text-center text-sm text-base-content/60">
                     No se encontraron registros.
                   </td>
                 </tr>
@@ -216,7 +216,35 @@
               </tbody>
             </table>
           </div>
+
           <div class="mt-2 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between" *ngIf="!loading && totalItems > 0">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Páginas:</span>
+              <div class="join space-x-1">
+                <button class="join-item btn btn-sm" *ngIf="!isFirstRange" (click)="goToPrevPageRange()">«</button>
+
+                <button class="join-item btn btn-sm" *ngFor="let page of pageRange"
+                  [ngClass]="{ 'btn-primary': page === currentPage }" (click)="goToPage(page)">
+                  {{ page + 1 }}
+                </button>
+
+                <button class="join-item btn btn-sm" *ngIf="!isLastRange" (click)="goToNextPageRange()">»</button>
+              </div>
+            </div>
+
+            <div class="text-sm text-base-content/70">
+              Total de fuentes: {{ totalItems }}
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-base-content/70">Resultados por página:</span>
+              <select class="select select-bordered select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+                <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-2 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between" *ngIf="!loading && (!fuentes || fuentes.length === 0)">
             <div class="flex items-center space-x-2">
               <span class="text-sm font-medium text-base-content/70">Páginas:</span>
               <div class="join space-x-1">
