@@ -60,7 +60,7 @@
     </div>
 
     <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-      <div *ngIf="esSeleccionPura()" class="card bg-base-100 border border-base-300 shadow-sm">
+      <div *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-base">Mis variables capturadas</h3>
@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <div *ngIf="esArmonizacion()" class="card bg-base-100 border border-base-300 shadow-sm">
+      <div *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-base">Mis variables armonizadas</h3>
@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <div *ngIf="esArmonizacion()" class="card bg-base-100 border border-base-300 shadow-sm">
+      <div *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-base">Estado de tabulados</h3>
@@ -110,7 +110,7 @@
     </div>
 
     <div  class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-      <a *ngIf="esSeleccionPura()" routerLink="/variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+      <a *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
           <h3 class="card-title text-base">Selección de variables</h3>
           <p class="text-xs text-base-content/70">
@@ -119,7 +119,7 @@
         </div>
       </a>
 
-      <a *ngIf="esArmonizacion()" routerLink="/revision-variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+      <a *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/revision-variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
           <h3 class="card-title text-base">Revisión variables</h3>
           <p class="text-xs text-base-content/70">
@@ -128,7 +128,7 @@
         </div>
       </a>
 
-      <a *ngIf="esArmonizacion()" routerLink="/armo" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+      <a *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/armo" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
           <h3 class="card-title text-base">Armonización de variables</h3>
           <p class="text-xs text-base-content/70">
@@ -137,7 +137,7 @@
         </div>
       </a>
 
-      <a *ngIf="esSeleccionPura()" routerLink="/importacion" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+      <a *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/importacion" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
           <h3 class="card-title text-base">Importación masiva</h3>
           <p class="text-xs text-base-content/70">
@@ -166,7 +166,7 @@
         </div>
       </a>
 
-      <a *ngIf="esSeleccionPura()" routerLink="/fuentes" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
+      <a *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/fuentes" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
           <h3 class="card-title text-base">Fuentes de identificación</h3>
           <p class="text-xs text-base-content/70">
@@ -175,7 +175,7 @@
         </div>
       </a>
 
-      <div *ngIf="esArmonizacion()" class="card bg-base-100 border border-base-300 shadow-sm">
+      <div *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-base">Tabulados</h3>

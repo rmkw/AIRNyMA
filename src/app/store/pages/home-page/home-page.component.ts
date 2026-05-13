@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
-  imports: [RouterLink,CommonModule],
+  imports: [RouterLink, CommonModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
@@ -75,11 +75,54 @@ export class HomePageComponent {
     }
   }
 
-  esSeleccionPura(): boolean {
-    return this.tieneRol('USER') && !this.tieneRol('ARMO');
+  esSeleccion(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      !this.tieneRol('ARMO') &&
+      !this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
   }
 
   esArmonizacion(): boolean {
-    return this.tieneRol('ARMO');
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      !this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
+  }
+
+  esAdmin(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
+  }
+
+  esRoot(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      this.tieneRol('ADMIN') &&
+      this.tieneRol('ROOT')
+    );
+  }
+  puedeVerSeleccion(): boolean {
+    return this.esSeleccion();
+  }
+
+  puedeVerArmonizacion(): boolean {
+    return this.esArmonizacion();
+  }
+
+  puedeVerAdmin(): boolean {
+    return this.esAdmin();
+  }
+
+  puedeVerRoot(): boolean {
+    return this.esRoot();
   }
 }

@@ -42,14 +42,14 @@
       </a>
     </li>
 
-    <li *ngIf="esSeleccionPura()">
+    <li *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/fuentes" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Fuentes">
         <span>🗂️</span>
         <span class="is-drawer-close:hidden">Fuentes de identificación</span>
       </a>
     </li>
 
-    <li *ngIf="esSeleccionPura()">
+    <li *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/variables" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
         data-tip="Selección">
         <span>🎯</span>
@@ -57,7 +57,7 @@
       </a>
     </li>
 
-    <li *ngIf="esArmonizacion()">
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/revision-variables" class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
         data-tip="Revisión">
         <span>✅</span>
@@ -65,7 +65,7 @@
       </a>
     </li>
 
-    <li *ngIf="esArmonizacion()">
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/armo" (click)="navegandosinStorage()"
         class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Armonización">
         <span>🧩</span>
@@ -73,14 +73,14 @@
       </a>
     </li>
 
-    <li *ngIf="esArmonizacion()">
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/tabulados" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tabulados">
         <span>📊</span>
         <span class="is-drawer-close:hidden">Tabulados</span>
       </a>
     </li>
 
-    <li *ngIf="esSeleccionPura()">
+    <li *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()">
       <a  routerLink="/importacion" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Importación">
         <span>📥</span>
         <span class="is-drawer-close:hidden">Importación masiva</span>

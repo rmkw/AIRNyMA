@@ -23,135 +23,184 @@
     </div>
   </div>
 
-  <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+  <div class="grid gap-3 xl:grid-cols-2">
     <div class="card border border-base-300 bg-base-100 shadow-sm">
       <div class="card-body gap-5 p-5">
         <div>
+
           <h2 class="card-title text-base">Guía rápida para usar la plantilla</h2>
-          <p class="text-xs text-base-content/60">Sigue este flujo para evitar errores antes de importar.</p>
+          <p class="text-xs text-base-content/60">
+            Sigue este flujo antes de validar e importar el archivo.
+          </p>
         </div>
 
-        <div class="space-y-3 text-sm leading-6 text-base-content/80">
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">1. Descarga la plantilla.</span>
-            Da clic en <span class="font-medium">“Descargar plantilla”</span> y guarda el archivo en tu computadora.
-          </div>
+        <ol class="relative space-y-4 border-s border-base-300 ps-5 text-sm">
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              1
+            </span>
+            <h3 class="font-semibold text-base-content">Descarga la plantilla</h3>
+            <p class="mt-1 text-base-content/70">
+              Da clic en <span class="font-medium">Descargar plantilla</span> y guarda el archivo en tu computadora.
+            </p>
+          </li>
 
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">2. Abre el archivo en Excel y habilita la edición.</span>
-            Si aparece un aviso, da clic en <span class="font-medium">“Habilitar edición”</span>.
-          </div>
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              2
+            </span>
+            <h3 class="font-semibold text-base-content">Abre el archivo en Excel</h3>
+            <p class="mt-1 text-base-content/70">
+              Si aparece un aviso, selecciona <span class="font-medium">Habilitar edición</span>.
+            </p>
+          </li>
 
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">3. Pega tu información.</span>
-            Copia y pega tus datos en la <span class="font-medium">columna C</span>, desde la <span
-              class="font-medium">fila 2</span>.
-            <div class="mt-2 text-xs text-warning">⚠️ No pegues sobre la fila 1 porque contiene encabezados.</div>
-          </div>
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              3
+            </span>
+            <h3 class="font-semibold text-base-content">Pega tu información</h3>
+            <p class="mt-1 text-base-content/70">
+              Copia tus datos en la <span class="font-medium">columna C</span>, desde la
+              <span class="font-medium">fila 2</span>.
+            </p>
+            <div class="alert alert-warning mt-3 py-2 text-xs">
+              <span>No pegues información sobre la fila 1 porque contiene encabezados.</span>
+            </div>
+          </li>
 
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">4. Verifica columnas automáticas.</span>
-            Revisa que <span class="font-mono">id_fuente</span> y <span class="font-mono">id_a</span> se llenen
-            correctamente.
-            <div class="mt-2 text-xs text-base-content/60">Estas columnas son obligatorias y no deben modificarse
-              manualmente.</div>
-          </div>
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              4
+            </span>
+            <h3 class="font-semibold text-base-content">Verifica columnas automáticas</h3>
+            <p class="mt-1 text-base-content/70">
+              Revisa que <span class="font-mono text-xs">id_fuente</span> y
+              <span class="font-mono text-xs">id_a</span> se llenen correctamente.
+            </p>
+            <p class="mt-1 text-xs text-base-content/50">
+              Estas columnas son obligatorias y no deben modificarse manualmente.
+            </p>
+          </li>
 
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">5. Guarda el archivo y súbelo al sistema.</span>
-            Guarda los cambios, selecciona el archivo y luego valida antes de importar.
-          </div>
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              5
+            </span>
+            <h3 class="font-semibold text-base-content">Guarda y sube el archivo</h3>
+            <p class="mt-1 text-base-content/70">
+              Guarda los cambios, selecciona el archivo desde el sistema y ejecuta la validación.
+            </p>
+          </li>
 
-          <div class="rounded-xl border border-base-300 bg-base-200/30 p-4">
-            <span class="font-semibold text-primary">6. Valida primero, importa después.</span>
-            Espera el mensaje de archivo válido. Si hay errores, corrígelos en Excel antes de continuar.
-          </div>
+          <li class="relative">
+            <span
+              class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
+              6
+            </span>
+            <h3 class="font-semibold text-base-content">Valida antes de importar</h3>
+            <p class="mt-1 text-base-content/70">
+              Espera el mensaje de archivo válido. Si hay errores, corrígelos en Excel antes de continuar.
+            </p>
+          </li>
+        </ol>
+
+
+
+        <div class="alert alert-error mt-3 py-2 text-xs">
+          <span>Si no validas el archivo o existen errores, la información no se importará.</span>
         </div>
 
-        <div class="rounded-xl border border-error/20 bg-error/5 px-4 py-3 text-xs text-error">
-          Si no validas el archivo o si existen errores, la información no se importará.
-        </div>
+        <p class="text-xs text-base-content/50">
+          Tip: si algo falla, revisa primero el detalle de validación. Si el problema continúa, contacta al desarrollador del
+          sistema.
+        </p>
 
-        <div class="text-xs text-base-content/60">
-          Tip: si algo falla, revisa primero el detalle de validación antes de volver a subir el archivo.
-        </div>
       </div>
     </div>
 
-    <div class="space-y-6">
+
+    <div class="space-y-2">
       <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body gap-5 p-5">
+        <div class="card-body gap-3 p-4">
           <div>
             <h2 class="card-title text-base">Carga y validación</h2>
             <p class="text-xs text-base-content/60">Selecciona el archivo, valídalo y luego ejecuta la importación.</p>
           </div>
 
           <div class="form-control gap-3">
-            <label class="label" for="excelFile">
-              <span class="label-text text-xs font-medium">Selecciona el archivo Excel</span>
-            </label>
+
 
             <input id="excelFile" type="file" (change)="onFileChange($event)"
-              class="file-input file-input-bordered file-input-primary w-full max-w-full file:text-white" />
+              class="file-input file-input-bordered file-input-neutral w-full max-w-full file:text-white" />
           </div>
 
-          <button class="btn btn-primary w-full"
-            [disabled]="!archivo || validando || importando || validacion?.ok || validando || importando"
-            (click)="validar()">
-            <span *ngIf="!validando">Validar archivo</span>
-            <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
+          <div class="grid gap-3 md:grid-cols-3">
+            <button class="btn btn-neutral w-full" [disabled]="!archivo || validando || importando || validacion?.ok"
+              (click)="validar()">
+              <span *ngIf="!validando">Validar archivo</span>
+              <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
 
-            <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
-            </svg>
-          </button>
+              <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+              </svg>
+            </button>
 
-          @if (validacion) {
-          <div class="space-y-3">
-            <div class="alert text-sm" [ngClass]="validacion.ok ? 'alert-success' : 'alert-error'">
-              <span>{{ validacion.message }}</span>
+            <div class="btn no-animation w-full cursor-default border" [ngClass]="{
+                'btn-success text-white': validacion?.ok,
+                'btn-error text-white': validacion && !validacion.ok,
+                'btn-outline border-base-300 text-base-content/50': !validacion
+              }">
+              <span class="truncate text-center text-xs">
+                {{ validacion?.message || 'Pendiente de validación' }}
+              </span>
             </div>
 
-            @if (!validacion.ok && validacion.errors.length) {
-            <div class="overflow-x-auto rounded-box border border-base-300">
-              <table class="table table-xs">
-                <thead>
-                  <tr>
-                    <th>Fila</th>
-                    <th>Columna</th>
-                    <th>Detalle</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let e of validacion.errors">
-                    <td>{{ e.fila }}</td>
-                    <td>{{ e.columna }}</td>
-                    <td>{{ e.detalle }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            }
+            <button class="btn btn-success w-full text-white" [disabled]="!validacion?.ok || importando" (click)="importar()">
+              <span *ngIf="!importando">Importar información</span>
+              <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
+
+              <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
+              </svg>
+            </button>
+          </div>
+
+          @if (validacion && !validacion.ok && validacion.errors.length) {
+          <div class="overflow-x-auto rounded-box border border-base-300">
+            <table class="table table-xs">
+              <thead>
+                <tr>
+                  <th>Fila</th>
+                  <th>Columna</th>
+                  <th>Detalle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let e of validacion.errors">
+                  <td>{{ e.fila }}</td>
+                  <td>{{ e.columna }}</td>
+                  <td>{{ e.detalle }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           }
 
-          <button *ngIf="validacion?.ok" class="btn btn-success w-full text-white" [disabled]="importando"
-            (click)="importar()">
-            <span *ngIf="!importando">Importar información</span>
-            <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
 
-            <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
-            </svg>
-          </button>
         </div>
       </div>
 
       @if (resultado) {
       <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body gap-5 p-5">
+        <div class="card-body gap-3 p-4">
           <div>
             <h2 class="card-title text-base">Resultado de la importación</h2>
             <p class="text-xs text-base-content/60">Resumen del proceso ejecutado con el archivo cargado.</p>

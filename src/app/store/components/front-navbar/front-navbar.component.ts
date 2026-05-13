@@ -31,11 +31,54 @@ export class FrontNavbarComponent {
     }
   }
 
-  esSeleccionPura(): boolean {
-    return this.tieneRol('USER') && !this.tieneRol('ARMO');
+  esSeleccion(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      !this.tieneRol('ARMO') &&
+      !this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
   }
 
   esArmonizacion(): boolean {
-    return this.tieneRol('ARMO');
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      !this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
+  }
+
+  esAdmin(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      this.tieneRol('ADMIN') &&
+      !this.tieneRol('ROOT')
+    );
+  }
+
+  esRoot(): boolean {
+    return (
+      this.tieneRol('USER') &&
+      this.tieneRol('ARMO') &&
+      this.tieneRol('ADMIN') &&
+      this.tieneRol('ROOT')
+    );
+  }
+  puedeVerSeleccion(): boolean {
+    return this.esSeleccion();
+  }
+
+  puedeVerArmonizacion(): boolean {
+    return this.esArmonizacion();
+  }
+
+  puedeVerAdmin(): boolean {
+    return this.esAdmin();
+  }
+
+  puedeVerRoot(): boolean {
+    return this.esRoot();
   }
 }
