@@ -3,10 +3,10 @@
     class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
     <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="space-y-2">
-        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Fuentes de identificación</div>
-        <h1 class="text-2xl font-bold tracking-tight">Nueva fuente de identificación</h1>
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Fuentes de identificación y selección de variables</div>
+        <h1 class="text-2xl font-bold tracking-tight">Registro de fuentes de identificación y selección de variables</h1>
         <p class="max-w-2xl text-sm text-white/85">
-          Registra nuevas fuentes asociadas al proceso seleccionado y administra las ya capturadas.
+          Registra las fuentes de identificación y selección de variables asociadas al Proceso de Producción
         </p>
       </div>
 
@@ -26,16 +26,14 @@
       <div class="card border border-base-300 bg-base-100 shadow-sm">
         <div class="card-body gap-4 p-4">
           <div>
-            <h2 class="card-title text-base">Selección del proceso</h2>
-            <p class="text-xs text-base-content/60">
-              Primero elige unidad productora y luego el proceso de producción.
-            </p>
+            <h2 class="card-title text-base">Selección del Proceso de Producción</h2>
+
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
             <div class="form-control">
               <label class="label" for="dire">
-                <span class="label-text text-xs font-medium">Unidad productora de información</span>
+                <span class="label-text text-xs font-medium">Unidad Administrativa</span>
               </label>
               <select id="dire" class="select select-bordered w-full" [(ngModel)]="direccionSeleccionada"
                 (change)="selectedDireccion($event)">
@@ -51,7 +49,7 @@
 
             <div class="form-control">
               <label class="label" for="procesoProduccion">
-                <span class="label-text text-xs font-medium">Proceso de producción</span>
+                <span class="label-text text-xs font-medium">Proceso de Producción</span>
               </label>
               <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
                 [(ngModel)]="procesoSeleccionadoValue" [disabled]="!_procesos_isSelectEnabled"
@@ -72,9 +70,9 @@
       <div class="card border border-base-300 bg-base-100 shadow-sm">
         <div class="card-body gap-5 p-5">
           <div>
-            <h2 class="card-title text-base">Captura de fuente</h2>
+            <h2 class="card-title text-base">Registra una nueva fuente de identificación y selección de variables</h2>
             <p class="text-xs text-base-content/60">
-              Completa los campos para registrar una nueva fuente de identificación.
+              Completa los campos requeridos para agregar una nueva fuente de identificación y selección de variables.
             </p>
           </div>
 
@@ -106,7 +104,7 @@
 
             <div class="form-control xl:col-span-2">
               <label class="label" for="anio">
-                <span class="label-text text-xs font-medium">Año del evento</span>
+                <span class="label-text text-xs font-medium">Año de la edición</span>
               </label>
               <input id="anio" type="text" maxlength="9" class="input input-bordered w-full" [(ngModel)]="edicion" />
             </div>
@@ -115,7 +113,7 @@
           <div class="grid gap-4 md:grid-cols-1">
             <div class="form-control">
               <label class="label" for="accesoLink">
-                <span class="label-text text-xs font-medium">Liga de acceso a la fuente</span>
+                <span class="label-text text-xs font-medium">URL de acceso a la fuente</span>
               </label>
               <input id="accesoLink" type="text" class="input input-bordered w-full" [(ngModel)]="url" />
             </div>
@@ -152,9 +150,9 @@
         <div class="card-body p-4">
           <div class="mb-2 flex items-center justify-between gap-3">
             <div>
-              <h2 class="card-title text-base">Lista de fuentes de identificación</h2>
+              <h2 class="card-title text-base">Listado de fuentes de identificación y selección de variables</h2>
               <p class="text-xs text-base-content/60">
-                Consulta y administra las fuentes asociadas al proceso seleccionado.
+                Consulta y administra las fuentes asociadas al Proceso de Producción seleccionado.
               </p>
             </div>
 
@@ -164,11 +162,11 @@
             <table class="table  table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>
-                  <th>Proceso</th>
+                  <th>Acrónimo</th>
                   <th>Fuente</th>
-                  <th>Liga</th>
-                  <th class="text-center">Año del evento</th>
-                  <th class="text-center">Variables capturadas</th>
+                  <th>URL</th>
+                  <th class="text-center">Año de la edición</th>
+                  <th class="text-center">Variables registradas</th>
                   <th class="text-center">Acciones</th>
                 </tr>
               </thead>
@@ -201,15 +199,16 @@
                   <td class="text-xs text-center">{{ item.totalVariables || 0 }}</td>
                   <td>
                     <div class="flex justify-center gap-2">
+                      <button class="btn btn-primary btn-xs" (click)="addVars(item)">
+                        Registrar variables
+                      </button>
                       <button class="btn btn-warning btn-xs" (click)="editarFuente(item)">
                         Editar
                       </button>
                       <button class="btn btn-error btn-xs" (click)="abrirModalEliminar(item.idFuenteSeleccion)">
                         Eliminar
                       </button>
-                      <button class="btn btn-primary btn-xs" (click)="addVars(item)">
-                        Asignar variables
-                      </button>
+
                     </div>
                   </td>
                 </tr>
@@ -233,7 +232,7 @@
             </div>
 
             <div class="text-sm text-base-content/70">
-              Total de fuentes: {{ totalItems }}
+              Total de fuentes registradas: {{ totalItems }}
             </div>
 
             <div class="flex items-center space-x-2">
@@ -260,7 +259,7 @@
             </div>
 
             <div class="text-sm text-base-content/70">
-              Total de fuentes: {{ totalItems }}
+              Total de fuentes registradas: {{ totalItems }}
             </div>
 
             <div class="flex items-center space-x-2">

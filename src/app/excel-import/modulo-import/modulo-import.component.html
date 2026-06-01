@@ -3,15 +3,15 @@
     class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
     <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="space-y-2">
-        <div class="badge border-white/20 bg-white/10 text-white">Importación masiva</div>
-        <h1 class="text-2xl font-bold tracking-tight">Importación con plantilla.xlsx</h1>
+        <div class="badge border-white/20 bg-white/10 text-white">Importación masiva de registros</div>
+        <h1 class="text-2xl font-bold tracking-tight">Importación masiva de registros con la plantilla DSIRNMA_import</h1>
         <p class="max-w-3xl text-sm text-white/85">
           Valida primero tu archivo Excel y después ejecuta la importación para registrar fuentes, variables, relaciones
           y pertinencia en un solo flujo.
         </p>
       </div>
 
-      <a class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20" href="assets/plantilla/import.xlsx"
+      <a class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20" href="assets/plantilla/DSIRNMA_import.xlsx"
         download>
         Descargar plantilla
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -28,10 +28,8 @@
       <div class="card-body gap-5 p-5">
         <div>
 
-          <h2 class="card-title text-base">Guía rápida para usar la plantilla</h2>
-          <p class="text-xs text-base-content/60">
-            Sigue este flujo antes de validar e importar el archivo.
-          </p>
+          <h2 class="card-title text-base">Guía para la importación de registros a través de la plantilla predefinida</h2>
+
         </div>
 
         <ol class="relative space-y-4 border-s border-base-300 ps-5 text-sm">
@@ -40,9 +38,9 @@
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               1
             </span>
-            <h3 class="font-semibold text-base-content">Descarga la plantilla</h3>
+            <h3 class="font-semibold text-base-content">Descargar plantilla</h3>
             <p class="mt-1 text-base-content/70">
-              Da clic en <span class="font-medium">Descargar plantilla</span> y guarda el archivo en tu computadora.
+              Dar clic en <span class="font-medium">Descargar plantilla</span> y guardar el archivo en tu equipo de computo.
             </p>
           </li>
 
@@ -51,7 +49,7 @@
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               2
             </span>
-            <h3 class="font-semibold text-base-content">Abre el archivo en Excel</h3>
+            <h3 class="font-semibold text-base-content">Abrir el archivo</h3>
             <p class="mt-1 text-base-content/70">
               Si aparece un aviso, selecciona <span class="font-medium">Habilitar edición</span>.
             </p>
@@ -62,28 +60,24 @@
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               3
             </span>
-            <h3 class="font-semibold text-base-content">Pega tu información</h3>
+            <h3 class="font-semibold text-base-content">Agrega los registros de las variables</h3>
             <p class="mt-1 text-base-content/70">
-              Copia tus datos en la <span class="font-medium">columna C</span>, desde la
-              <span class="font-medium">fila 2</span>.
+              Pega los datos apartir de la <span class="font-medium">columna A</span>,
+              <span class="font-medium">fila 2 (celda A2)</span>, con la opción de pegado especial <span class="font-medium">Pegar solo valores</span>.
             </p>
-            <div class="alert alert-warning mt-3 py-2 text-xs">
-              <span>No pegues información sobre la fila 1 porque contiene encabezados.</span>
-            </div>
+
           </li>
+
+
 
           <li class="relative">
             <span
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               4
             </span>
-            <h3 class="font-semibold text-base-content">Verifica columnas automáticas</h3>
+            <h3 class="font-semibold text-base-content">Guardar y cargar el archivo</h3>
             <p class="mt-1 text-base-content/70">
-              Revisa que <span class="font-mono text-xs">id_fuente</span> y
-              <span class="font-mono text-xs">id_a</span> se llenen correctamente.
-            </p>
-            <p class="mt-1 text-xs text-base-content/50">
-              Estas columnas son obligatorias y no deben modificarse manualmente.
+              Guarda los cambios y carga el archivo en el sistema.
             </p>
           </li>
 
@@ -92,9 +86,9 @@
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               5
             </span>
-            <h3 class="font-semibold text-base-content">Guarda y sube el archivo</h3>
+            <h3 class="font-semibold text-base-content">Antes de importar valida los registros</h3>
             <p class="mt-1 text-base-content/70">
-              Guarda los cambios, selecciona el archivo desde el sistema y ejecuta la validación.
+              Espera el mensaje de archivo válido. Si hay errores, corrígelos antes de continuar.
             </p>
           </li>
 
@@ -103,21 +97,20 @@
               class="absolute -start-[35px] flex h-7 w-7 items-center justify-center rounded-full bg-neutral text-xs font-semibold text-neutral-content">
               6
             </span>
-            <h3 class="font-semibold text-base-content">Valida antes de importar</h3>
+            <h3 class="font-semibold text-base-content">Importar los registros</h3>
             <p class="mt-1 text-base-content/70">
-              Espera el mensaje de archivo válido. Si hay errores, corrígelos en Excel antes de continuar.
+              Revisa el resultado de la importación.
             </p>
           </li>
+
         </ol>
 
 
 
-        <div class="alert alert-error mt-3 py-2 text-xs">
-          <span>Si no validas el archivo o existen errores, la información no se importará.</span>
-        </div>
+
 
         <p class="text-xs text-base-content/50">
-          Tip: si algo falla, revisa primero el detalle de validación. Si el problema continúa, contacta al desarrollador del
+          Nota: si presentas problemas al importar los registros, contacta al desarrollador del
           sistema.
         </p>
 
@@ -130,7 +123,7 @@
         <div class="card-body gap-3 p-4">
           <div>
             <h2 class="card-title text-base">Carga y validación</h2>
-            <p class="text-xs text-base-content/60">Selecciona el archivo, valídalo y luego ejecuta la importación.</p>
+            <p class="text-xs text-base-content/60">Selecciona el archivo, valídalo y ejecuta la importación.</p>
           </div>
 
           <div class="form-control gap-3">
@@ -163,7 +156,7 @@
             </div>
 
             <button class="btn btn-success w-full text-white" [disabled]="!validacion?.ok || importando" (click)="importar()">
-              <span *ngIf="!importando">Importar información</span>
+              <span *ngIf="!importando">Importar registros</span>
               <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
 
               <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"

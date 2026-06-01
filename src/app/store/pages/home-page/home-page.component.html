@@ -2,7 +2,7 @@
   <div class="hero rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c]">
     <div class="hero-content text-center py-8">
       <div class="max-w-2xl text-white">
-        <h1 class="text-3xl font-bold tracking-tight">SIIRNyMA</h1>
+        <h1 class="text-3xl font-bold tracking-tight">SIIRNMA</h1>
         <p class="pt-2 text-sm text-white/85">
           Sistema de captura, selección y armonización de variables.
         </p>
@@ -32,7 +32,7 @@
       </div>
 
       <div class="stat py-4">
-        <div class="stat-title text-xs">Variables seleccionadas</div>
+        <div class="stat-title text-xs">Variables registradas</div>
         <div class="stat-value text-3xl text-neutral">{{ totalVariables }}</div>
         <div class="stat-desc text-xs">Captura acumulada</div>
       </div>
@@ -112,7 +112,7 @@
     <div  class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
       <a *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" routerLink="/variables" class="card bg-base-100 border border-base-300 shadow-sm transition hover:shadow-md">
         <div class="card-body p-4">
-          <h3 class="card-title text-base">Selección de variables</h3>
+          <h3 class="card-title text-base">Registro de variables</h3>
           <p class="text-xs text-base-content/70">
             Registro y captura de variables para selección.
           </p>
@@ -141,7 +141,7 @@
         <div class="card-body p-4">
           <h3 class="card-title text-base">Importación masiva</h3>
           <p class="text-xs text-base-content/70">
-            Carga masiva de información desde archivos Excel.
+            Carga masiva desde plantilla Excel.
           </p>
         </div>
       </a>
@@ -161,7 +161,7 @@
         <div class="card-body p-4">
           <h3 class="card-title text-base">Procesos de producción</h3>
           <p class="text-xs text-base-content/70">
-            Flujo principal de captura del proceso de producción.
+            Flujo de captura del proceso de producción.
           </p>
         </div>
       </a>
@@ -170,7 +170,7 @@
         <div class="card-body p-4">
           <h3 class="card-title text-base">Fuentes de identificación</h3>
           <p class="text-xs text-base-content/70">
-            Gestión y consulta de fuentes de identificación.
+            Gestión y consulta de fuentes de identificación y selección de variables.
           </p>
         </div>
       </a>

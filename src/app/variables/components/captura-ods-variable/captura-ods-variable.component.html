@@ -4,9 +4,9 @@
     <div class="card h-full border border-base-300 bg-base-100 shadow-sm">
       <div class="card-body gap-4 p-4">
         <div>
-          <h2 class="card-title text-base">Relación ODS</h2>
-          <p class="text-xs text-base-content/60">
-            Captura una relación ODS para la variable {{idA}}.
+          <h2 class="card-title text-base">Relación con los ODS</h2>
+          <p class="text-xs text-base-content/60">Registra la(s) relación(es) que tiene la variable {{idA}} con los ODS.
+
           </p>
         </div>
 
@@ -64,7 +64,7 @@
 
         <div class="form-control">
           <label class="label">
-            <span class="label-text text-xs font-medium">Contribución</span>
+            <span class="label-text text-xs font-medium">Nivel de contribución</span>
           </label>
           <select class="select select-bordered w-full" [(ngModel)]="contribucion">
             <option value="" disabled>Selecciona un nivel</option>
@@ -84,13 +84,14 @@
         </div>
 
         <div class="flex justify-end gap-2">
+          <button class="btn btn-primary btn-sm px-6" (click)="guardarOds()">
+            Guardar relación
+          </button>
           <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormularioOds()">
             Limpiar
           </button>
 
-          <button class="btn btn-primary btn-sm px-6" (click)="guardarOds()">
-            Guardar ODS
-          </button>
+
         </div>
       </div>
     </div>
@@ -102,10 +103,8 @@
       <div class="card-body p-4">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="card-title text-base">Relaciones ODS capturadas</h2>
-            <p class="text-xs text-base-content/60">
-              Relaciones registradas para esta variable.
-            </p>
+            <h2 class="card-title text-base">Relaciones con el ODS registradas</h2>
+
           </div>
 
           <span class="text-xs text-base-content/60">

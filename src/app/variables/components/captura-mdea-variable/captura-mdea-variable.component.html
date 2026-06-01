@@ -8,9 +8,9 @@
     <div class="card border border-base-300 bg-base-100 shadow-sm">
       <div class="card-body gap-4 p-4">
         <div>
-          <h2 class="card-title text-base">Relaciones MDEA</h2>
+          <h2 class="card-title text-base">Relacion con el MDEA</h2>
           <p class="text-xs text-base-content/60">
-            Captura una relación MDEA para la variable {{idA}}.
+            Registra la(s) relación(es) que tiene la variable {{idA}} con el MDEA.
           </p>
         </div>
 
@@ -103,7 +103,7 @@
 
           <div class="form-control">
             <label class="label">
-              <span class="label-text text-xs font-medium">Contribución</span>
+              <span class="label-text text-xs font-medium">Nivel de contribución</span>
             </label>
             <select class="select select-bordered w-full" [(ngModel)]="contribucion">
               <option value="" disabled>Selecciona un nivel</option>
@@ -124,13 +124,14 @@
         </div>
 
         <div class="flex justify-end gap-2">
+          <button class="btn btn-primary btn-sm px-6" (click)="guardarMdea()">
+            Guardar relación
+          </button>
           <button class="btn btn-outline btn-sm px-6" (click)="limpiarFormularioMdea()">
             Limpiar
           </button>
 
-          <button class="btn btn-primary btn-sm px-6" (click)="guardarMdea()">
-            Guardar MDEA
-          </button>
+
         </div>
       </div>
     </div>
@@ -141,7 +142,7 @@
     <div class="card border border-base-300 bg-base-100 shadow-sm h-full">
       <div class="card-body p-4">
         <div class="flex items-center justify-between">
-          <h2 class="card-title text-base">Relaciones MDEA capturadas</h2>
+          <h2 class="card-title text-base">Relaciones con el MDEA registradas</h2>
           <span class="text-xs text-base-content/60">
             {{ relacionesMdea.length }} registros
           </span>

@@ -3,14 +3,15 @@
     class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
     <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="space-y-2">
-        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Procesos de producción</div>
-        <h1 class="text-2xl font-bold tracking-tight">Caracterización del proceso de producción</h1>
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Procesos de
+          Producción</div>
+        <h1 class="text-2xl font-bold tracking-tight">Caracterización del Proceso de Producción</h1>
         <p class="max-w-2xl text-sm text-white/85">
-          Consulta el proceso seleccionado, revisa sus datos generales y actualiza el comentario operativo.
+          Selecciona el Proceso de Producción, verifica sus elementos descriptivos y, en caso de ser necesario, agrega un comentario.
         </p>
       </div>
 
-      <button *ngIf="esSeleccionPura()" class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20"
+      <button *ngIf="esSeleccionPura()" class="btn btn-sm border-white/20 bg-sky-950 text-white hover:bg-white/20"
         (click)="setLocalStorage(procesoSeleccionado()!)">
         Agregar fuente de identificación
       </button>
@@ -22,14 +23,14 @@
     <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
       <div class="card-body gap-4 p-4">
         <div>
-          <h2 class="card-title text-base">Selección del proceso</h2>
-          <p class="text-xs text-base-content/60">Primero elige unidad productora y luego el proceso de producción.</p>
+          <h2 class="card-title text-base">Selección del Proceso de Producción</h2>
+
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
           <div class="form-control">
             <label class="label" for="dire">
-              <span class="label-text text-xs font-medium">Unidad productora de información</span>
+              <span class="label-text text-xs font-medium">Unidad Administrativa</span>
             </label>
             <select id="dire" class="select select-bordered w-full" (change)="selectedDireccion($event)">
               <option disabled selected>Selecciona una opción</option>
@@ -41,7 +42,7 @@
 
           <div class="form-control">
             <label class="label" for="procesoProduccion">
-              <span class="label-text text-xs font-medium">Proceso de producción</span>
+              <span class="label-text text-xs font-medium">Proceso de Producción</span>
             </label>
             <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
               [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
@@ -67,7 +68,7 @@
           </div>
 
           <div>
-            <div class="text-xs text-base-content/60">Variables</div>
+            <div class="text-xs text-base-content/60">Variables registradas</div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.totalVariables || '-' }}</div>
           </div>
 
@@ -86,7 +87,8 @@
             </div>
           </div>
           <div>
-            <div class="text-xs text-base-content/60">Periodicidad</div>
+            <div class="text-xs text-base-content/60">Periodicidad de producción
+            </div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.periodicidad || '-' }}</div>
           </div>
 
@@ -95,13 +97,13 @@
 
 
           <div>
-            <div class="text-xs text-base-content/60">Método de obtención</div>
+            <div class="text-xs text-base-content/60">Método de generación de la información</div>
             <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.metodo || '-' }}</div>
 
           </div>
 
           <div>
-            <div class="text-xs text-base-content/60">Información de interés nacional</div>
+            <div class="text-xs text-base-content/60">Condición de Información de Interés Nacional</div>
             <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.iin || '-' }}</div>
 
           </div>
@@ -114,7 +116,7 @@
   <div class="grid gap-4 xl:grid-cols-1">
     <div class="card border border-base-300 bg-base-100 shadow-sm">
       <div class="card-body p-4">
-        <h2 class="card-title text-base">Objetivo del proceso</h2>
+        <h2 class="card-title text-base">Objetivo</h2>
         <textarea class="textarea textarea-bordered min-h-24 w-full" readonly>{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
       </div>
     </div>

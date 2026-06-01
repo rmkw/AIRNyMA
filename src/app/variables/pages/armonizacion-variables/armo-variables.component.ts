@@ -1,7 +1,7 @@
 /**
  * @author Luis Gerardo Castañeda López
  * @organization INEGI
- * @project SIIRNyMA
+ * @project SIIRNMA
  * @since 2026-04-07
  * @description Lógica principal de variables
  */

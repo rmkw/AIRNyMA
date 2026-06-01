@@ -3,10 +3,10 @@
     class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
     <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="space-y-2">
-        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Variables</div>
-        <h1 class="text-2xl font-bold tracking-tight">Identificación de la variable</h1>
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Variables relacionadas con temáticas ambientales y de recursos naturales</div>
+        <h1 class="text-2xl font-bold tracking-tight">Registro de variables relacionadas con temáticas ambientales y de recursos naturales</h1>
         <p class="max-w-2xl text-sm text-white/85">
-          Captura la variable, registra sus relaciones y completa la pertinencia para finalizar el flujo.
+          Registra las variables relacionadas con temáticas ambientales y de recursos naturales asociadas al Proceso de Producción y fuente de identificacion y selección.
         </p>
       </div>
     </div>
@@ -19,15 +19,13 @@
         <div class="card-body gap-2 p-4">
           <div>
             <h2 class="card-title text-base">Selección del proceso</h2>
-            <p class="text-xs text-base-content/60">
-              Primero elige unidad productora, luego proceso y después la fuente.
-            </p>
+
           </div>
 
           <div class="grid gap-4 md:grid-cols-3">
             <div class="form-control">
               <label class="label" for="dire">
-                <span class="label-text text-xs font-medium">Unidad productora de información</span>
+                <span class="label-text text-xs font-medium">Unidad Administrativa</span>
               </label>
               <select id="dire" class="select select-bordered w-full" [(ngModel)]="direccionSeleccionada"
                 (change)="selectedDireccion($event)">
@@ -43,7 +41,7 @@
 
             <div class="form-control">
               <label class="label" for="procesoProduccion">
-                <span class="label-text text-xs font-medium">Proceso de producción</span>
+                <span class="label-text text-xs font-medium">Proceso de Producción</span>
               </label>
               <select id="procesoProduccion" class="select select-bordered w-full" #procesoProduccionTag
                 [(ngModel)]="procesoSeleccionadoValue" [disabled]="!_procesos_isSelectEnabled"
@@ -60,7 +58,7 @@
 
             <div class="form-control">
               <label class="label" for="fuenteSelect">
-                <span class="label-text text-xs font-medium">Fuente</span>
+                <span class="label-text text-xs font-medium">Fuente de identificación de la variables</span>
               </label>
               <select id="fuenteSelect" class="select select-bordered w-full" [(ngModel)]="fuenteSeleccionadaValue"
                 [disabled]="!_fuentes_isSelectEnabled" (change)="seleccionarFuente($event)">
@@ -81,9 +79,9 @@
         <div class="card-body gap-2 p-4">
 
           <div>
-            <h2 class="card-title text-base">Datos de la variable</h2>
+            <h2 class="card-title text-base">Registra una nueva variable relacionada con temáticas ambientales y de recursos naturales</h2>
             <p class="text-xs text-base-content/60">
-              Captura la información de la variable.
+              Completa los campos requeridos para agregar una nueva variable.
             </p>
           </div>
 
@@ -91,12 +89,12 @@
             <!-- ID_S -->
             <div class="form-control">
               <label class="label" for="idS">
-                <span class="label-text text-xs font-medium">ID_S</span>
+                <span class="label-text text-xs font-medium">Identificador único</span>
               </label>
 
               <div class="flex gap-2">
                 <input id="idS" type="text" class="input input-bordered w-full" [(ngModel)]="idS"
-                  [disabled]="bloquearIdS || formularioVariableBloqueado" placeholder="Ej. VAR-001" />
+                  [disabled]="bloquearIdS || formularioVariableBloqueado" placeholder="Ej. Acrónimo-001" />
 
 
                 <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center"
@@ -115,10 +113,10 @@
             <!-- NOMBRE -->
             <div class="form-control md:col-span-2">
               <label class="label" for="nombreVar">
-                <span class="label-text text-xs font-medium">Nombre</span>
+                <span class="label-text text-xs font-medium">Nombre de la variable</span>
               </label>
               <input id="nombreVar" type="text" class="input input-bordered w-full" [(ngModel)]="nombre"
-                [disabled]="formularioVariableBloqueado" placeholder="Nombre de la variable" />
+                [disabled]="formularioVariableBloqueado" placeholder="Nombre de la variable tal como aparece en la fuente" />
 
             </div>
           </div>
@@ -153,14 +151,17 @@
           </div>
 
           <div class="flex justify-end gap-2 mt-5">
+
+            <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()" [disabled]="formularioVariableBloqueado">
+              {{ variableEditando ? 'Actualizar variable' : 'Registrar variable' }}
+            </button>
+
             <button class="btn btn-outline btn-sm px-6" (click)="resetFormularioVariable()"
               [disabled]="formularioVariableBloqueado">
               Limpiar
             </button>
 
-            <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()" [disabled]="formularioVariableBloqueado">
-              {{ variableEditando ? 'Actualizar variable' : 'Capturar variable' }}
-            </button>
+
 
           </div>
         </div>
@@ -279,7 +280,7 @@
             </div>
 
             <div class="text-sm text-base-content/70">
-              Total de variables: {{ totalItems }}
+              Total de variables registradas: {{ totalItems }}
             </div>
 
             <div class="flex items-center space-x-2">
@@ -310,7 +311,7 @@
             </div>
 
             <div class="text-sm text-base-content/70">
-              Total de variables: {{ totalItems }}
+              Total de variables registradas: {{ totalItems }}
             </div>
 
             <div class="flex items-center space-x-2">
