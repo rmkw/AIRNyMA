@@ -12,5 +12,7 @@ export interface interface_ProcesoP {
   comentarioS: null;
   comentarioA: null;
   totalVariables?: number;
+  inicio: string;
+  conclusion: string;
 }
 

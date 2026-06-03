@@ -11,7 +11,7 @@
         </p>
       </div>
 
-      <button *ngIf="esSeleccionPura()" class="btn btn-sm border-white/20 bg-sky-950 text-white hover:bg-white/20"
+      <button *ngIf="esSeleccionPura()" class="btn btn-sm border-sky-900 bg-sky-950 text-white"
         (click)="setLocalStorage(procesoSeleccionado()!)">
         Agregar fuente de identificación
       </button>
@@ -59,9 +59,8 @@
 
     <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
       <div class="card-body p-4">
+        <div class="grid grid-cols-4 gap-4 text-sm">
 
-
-        <div class="grid grid-cols-3 gap-4 text-sm">
           <div>
             <div class="text-xs text-base-content/60">Acrónimo</div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.acronimo || '-' }}</div>
@@ -71,8 +70,6 @@
             <div class="text-xs text-base-content/60">Variables registradas</div>
             <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.totalVariables || '-' }}</div>
           </div>
-
-
 
           <div>
             <div class="text-xs text-base-content/60">Estatus</div>
@@ -86,31 +83,36 @@
               </span>
             </div>
           </div>
+
           <div>
-            <div class="text-xs text-base-content/60">Periodicidad de producción
-            </div>
-            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.periodicidad || '-' }}</div>
+            <div class="text-xs text-base-content/60">Inicio</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.inicio || '-' }}</div>
           </div>
 
-
-
-
+          <div>
+            <div class="text-xs text-base-content/60">Periodicidad de producción</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.periodicidad || '-' }}</div>
+          </div>
 
           <div>
             <div class="text-xs text-base-content/60">Método de generación de la información</div>
             <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.metodo || '-' }}</div>
-
           </div>
 
           <div>
             <div class="text-xs text-base-content/60">Condición de Información de Interés Nacional</div>
             <div class="text-sm font-medium leading-snug">{{ procesoSeleccionado()?.iin || '-' }}</div>
+          </div>
 
+          <div>
+            <div class="text-xs text-base-content/60">Conclusión</div>
+            <div class="mt-1 font-semibold">{{ procesoSeleccionado()?.conclusion || '-' }}</div>
           </div>
 
         </div>
       </div>
     </div>
+
   </div>
 
   <div class="grid gap-4 xl:grid-cols-1">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImportExcelService } from '../services/import_excel.service';
 import { ImportExcelValidacionDto } from '../interfaces/import-excel.models';
@@ -9,6 +9,9 @@ import { ImportExcelValidacionDto } from '../interfaces/import-excel.models';
   templateUrl: './modulo-import.component.html',
 })
 export class ModuloExcelImport {
+  @ViewChild('modalValidacionArchivo')
+  modalValidacionArchivo!: ElementRef<HTMLDialogElement>;
+
   archivo: File | null = null;
 
   validacion: ImportExcelValidacionDto | null = null;
@@ -27,6 +30,15 @@ export class ModuloExcelImport {
     this.resultado = null;
   }
 
+  validarOMostrarModal() {
+    if (this.validacion) {
+      this.abrirModalValidacionArchivo();
+      return;
+    }
+
+    this.validar();
+  }
+
   validar() {
     if (!this.archivo) return;
 
@@ -38,6 +50,7 @@ export class ModuloExcelImport {
       next: (res) => {
         this.validacion = res;
         this.validando = false;
+        this.abrirModalValidacionArchivo();
       },
       error: (err) => {
         this.validacion = {
@@ -52,6 +65,7 @@ export class ModuloExcelImport {
           ],
         };
         this.validando = false;
+        this.abrirModalValidacionArchivo();
       },
     });
   }
@@ -66,6 +80,7 @@ export class ModuloExcelImport {
       next: (res) => {
         this.resultado = res;
         this.importando = false;
+        this.cerrarModalValidacionArchivo();
       },
       error: (err) => {
         this.resultado = {
@@ -80,8 +95,17 @@ export class ModuloExcelImport {
           ],
         };
         this.importando = false;
+        this.cerrarModalValidacionArchivo();
       },
     });
+  }
+
+  abrirModalValidacionArchivo() {
+    this.modalValidacionArchivo?.nativeElement.showModal();
+  }
+
+  cerrarModalValidacionArchivo() {
+    this.modalValidacionArchivo?.nativeElement.close();
   }
 
   reiniciar() {

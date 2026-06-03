@@ -11,7 +11,7 @@
         </p>
       </div>
 
-      <a class="btn btn-sm border-white/20 bg-white/10 text-white hover:bg-white/20" href="assets/plantilla/DSIRNMA_import.xlsx"
+      <a class="btn btn-sm  border-sky-900 bg-sky-950 text-white" href="assets/plantilla/DSIRNMA_import.xlsx"
         download>
         Descargar plantilla
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -133,10 +133,10 @@
               class="file-input file-input-bordered file-input-neutral w-full max-w-full file:text-white" />
           </div>
 
-          <div class="grid gap-3 md:grid-cols-3">
-            <button class="btn btn-neutral w-full" [disabled]="!archivo || validando || importando || validacion?.ok"
-              (click)="validar()">
-              <span *ngIf="!validando">Validar archivo</span>
+          <div>
+            <button class="btn btn-neutral w-full" [disabled]="!archivo || validando || importando"
+              (click)="validarOMostrarModal()">
+              <span *ngIf="!validando">{{ validacion ? 'Ver validación' : 'Validar archivo' }}</span>
               <span *ngIf="validando" class="loading loading-spinner loading-sm"></span>
 
               <svg *ngIf="!validando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -144,49 +144,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
               </svg>
             </button>
-
-            <div class="btn no-animation w-full cursor-default border" [ngClass]="{
-                'btn-success text-white': validacion?.ok,
-                'btn-error text-white': validacion && !validacion.ok,
-                'btn-outline border-base-300 text-base-content/50': !validacion
-              }">
-              <span class="truncate text-center text-xs">
-                {{ validacion?.message || 'Pendiente de validación' }}
-              </span>
-            </div>
-
-            <button class="btn btn-success w-full text-white" [disabled]="!validacion?.ok || importando" (click)="importar()">
-              <span *ngIf="!importando">Importar registros</span>
-              <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
-
-              <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
-              </svg>
-            </button>
           </div>
-
-          @if (validacion && !validacion.ok && validacion.errors.length) {
-          <div class="overflow-x-auto rounded-box border border-base-300">
-            <table class="table table-xs">
-              <thead>
-                <tr>
-                  <th>Fila</th>
-                  <th>Columna</th>
-                  <th>Detalle</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let e of validacion.errors">
-                  <td>{{ e.fila }}</td>
-                  <td>{{ e.columna }}</td>
-                  <td>{{ e.detalle }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          }
-
 
         </div>
       </div>
@@ -284,3 +242,66 @@
     </div>
   </div>
 </div>
+
+<dialog #modalValidacionArchivo class="modal">
+  <div class="modal-box">
+    <div class="mb-4 flex justify-center">
+      <svg *ngIf="validacion?.ok" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-success" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+
+      <svg *ngIf="validacion && !validacion.ok" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500"
+        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 6.5a9.5 9.5 0 1 1-9.5 9.5 9.5 9.5 0 0 1 9.5-9.5z" />
+      </svg>
+    </div>
+
+    <h3 class="text-center text-lg font-bold" [ngClass]="{
+      'text-success': validacion?.ok,
+      'text-red-500': validacion && !validacion.ok
+    }">
+      {{ validacion?.ok ? '¡Archivo validado correctamente!' : 'Validación del archivo' }}
+    </h3>
+
+    <p class="py-4 text-center">
+      {{ validacion?.message || 'Pendiente de validación' }}
+    </p>
+
+    @if (validacion && !validacion.ok && validacion.errors.length) {
+    <div class="mb-4 max-h-72 overflow-x-auto rounded-box border border-base-300">
+      <table class="table table-xs">
+        <thead>
+          <tr>
+            <th>Fila</th>
+            <th>Columna</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of validacion.errors">
+            <td>{{ e.fila }}</td>
+            <td>{{ e.columna }}</td>
+            <td>{{ e.detalle }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    }
+
+    <div class="modal-action flex justify-center gap-3">
+      <button class="btn btn-outline" [disabled]="importando" (click)="cerrarModalValidacionArchivo()">Cerrar</button>
+
+      <button *ngIf="validacion?.ok" class="btn btn-success text-white" [disabled]="importando" (click)="importar()">
+        <span *ngIf="!importando">Importar registros</span>
+        <span *ngIf="importando" class="loading loading-spinner loading-sm"></span>
+
+        <svg *ngIf="!importando" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 12l4-4 4 4 6-6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</dialog>

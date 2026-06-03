@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <section class="space-y-2">
+  <section *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()"  class="space-y-2">
     <div>
       <h2 class="text-xl font-semibold">Resumen general</h2>
       <p class="text-xs text-base-content/60">
@@ -48,6 +48,36 @@
         <div class="stat-value text-3xl text-neutral">{{ totalVariablesArmonizadas }}</div>
         <div class="stat-desc text-xs">Armonización acumulada</div>
       </div>
+    </div>
+  </section>
+
+  <section *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" class="space-y-2">
+    <div>
+      <h2 class="text-xl font-semibold">Resumen general</h2>
+      <p class="text-xs text-base-content/60">
+        Indicadores globales del sistema.
+      </p>
+    </div>
+
+    <div  class="stats stats-vertical xl:stats-horizontal w-full border border-base-300 bg-base-100 shadow-sm">
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Procesos de producción</div>
+        <div class="stat-value text-3xl text-neutral">{{ totalProcesos }}</div>
+        <div class="stat-desc text-xs">Total registrados</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Fuentes de identificación</div>
+        <div class="stat-value text-3xl text-neutral">{{ totalFuentes }}</div>
+        <div class="stat-desc text-xs">Total registradas</div>
+      </div>
+
+      <div class="stat py-4">
+        <div class="stat-title text-xs">Variables registradas</div>
+        <div class="stat-value text-3xl text-neutral">{{ totalVariables }}</div>
+        <div class="stat-desc text-xs">Captura acumulada</div>
+      </div>
+
     </div>
   </section>
 

@@ -99,6 +99,7 @@ export class ProcesoProduccionComponent implements OnInit {
       ) || null;
 
     this.procesoSeleccionado.set(procesoEncontrado);
+    console.log('Proceso seleccionado:', procesoEncontrado);
 
     this.comentarioSeleccion = '';
     this.comentarioArmonizacion = '';

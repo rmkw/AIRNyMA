@@ -1,136 +1,143 @@
-<div class="w-full max-w-screen-xl mx-auto px-5 mt-10 mb-5">
+<div class="w-full space-y-4 px-1">
+  <div
+    class="rounded-box overflow-hidden border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="space-y-2">
+        <div class="badge badge-soft border-white/20 bg-white/10 text-white">Procesos de Producción</div>
+        <h1 class="text-2xl font-bold tracking-tight">Caracterización del proceso de producción</h1>
+        <p class="max-w-2xl text-sm text-white/85">
+          Captura los datos generales del proceso de producción y registra sus elementos descriptivos.
+        </p>
+      </div>
 
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-2xl font-bold font-montserrat text-primary">Caracterización del proceso de producción</h1>
-    <button class="btn btn-sm btn-secondary text-base-100" (click)="registrar()">
-      Agregar nuevo proceso de producción
-    </button>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-8 mb-8">
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="dire">
-        Selecciona unidad productora de información</label>
-
-      <label for="" class="label-text w-full">{{direccionRecibida}}</label>
-    </div>
-
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="procesoProduccion">
-        Nombre del proceso de producción
-      </label>
-
-      <input type="text" id="nombreProceso" [(ngModel)]="proceso" name="proceso"
-        class="input input-sm input-bordered w-full" placeholder="" />
-    </div>
-
-    <!-- Acrónimo -->
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="acronimo">
-        Acrónimo
-      </label>
-      <input type="text" id="acronimo" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="acronimo" name="acronimo" />
-    </div>
-
-
-
-
-
-    <!-- Estatus con botón dinámico -->
-    <div class="col-span-1 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary ">
-        Estatus
-      </label>
-      <select class="select select-bordered select-sm w-full " [(ngModel)]="estatus" name="estatus">
-        <option disabled selected>Selecciona un estatus</option>
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
-        <option value="Histórico">Histórico</option>
-
-      </select>
+      <button class="btn btn-sm  border-sky-900 bg-sky-950 text-white"  (click)="registrar()">
+        Agregar nuevo proceso de producción
+      </button>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-8 gap-4 mb-8">
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
+      <div class="card-body gap-4 p-4">
+        <h2 class="card-title text-base">Datos del proceso</h2>
 
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control md:col-span-2">
+            <label class="label" for="dire">
+              <span class="label-text text-xs font-medium">Selecciona unidad productora de información</span>
+            </label>
+            <label for="" class="input input-bordered flex min-h-12 w-full items-center bg-base-200 text-sm">
+              {{direccionRecibida}}
+            </label>
+          </div>
 
+          <div class="form-control md:col-span-2">
+            <label class="label" for="procesoProduccion">
+              <span class="label-text text-xs font-medium">Nombre del proceso de producción</span>
+            </label>
+            <input type="text" id="nombreProceso" [(ngModel)]="proceso" name="proceso"
+              class="input input-bordered w-full" placeholder="" />
+          </div>
 
+          <div class="form-control">
+            <label class="label" for="acronimo">
+              <span class="label-text text-xs font-medium">Acrónimo</span>
+            </label>
+            <input type="text" id="acronimo" class="input input-bordered w-full" placeholder="" [(ngModel)]="acronimo"
+              name="acronimo" />
+          </div>
 
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="metodo">
-        Método de obtención de la información
-      </label>
-      <input type="text" id="metodo" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="metodo" name="metodo" />
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Estatus</span>
+            </label>
+            <select class="select select-bordered w-full" [(ngModel)]="estatus" name="estatus">
+              <option disabled selected>Selecciona un estatus</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+              <option value="Histórico">Histórico</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="col-span-3">
-      <label class="block text-sm font-medium mb-2 text-secondary">
-        Condición de información de interés nacional
-      </label>
-      <!-- <input type="text" id="condicion" class="input input-sm input-bordered w-full" placeholder="" [(ngModel)]="iin" name="iin" /> -->
-      <select class="select select-bordered select-sm w-full " [(ngModel)]="iin" name="iin">
-        <option disabled selected>Selecciona una opción</option>
-        <option value="Sí">Sí</option>
-        <option value="No">No</option>
-        <!-- <option value="Histórico">Histórico</option> -->
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-6">
+      <div class="card-body gap-4 p-4">
+        <h2 class="card-title text-base">Clasificación</h2>
 
-      </select>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="form-control md:col-span-2">
+            <label class="label" for="metodo">
+              <span class="label-text text-xs font-medium">Método de obtención de la información</span>
+            </label>
+            <input type="text" id="metodo" class="input input-bordered w-full" placeholder="" [(ngModel)]="metodo"
+              name="metodo" />
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Condición de información de interés nacional</span>
+            </label>
+            <select class="select select-bordered w-full" [(ngModel)]="iin" name="iin">
+              <option disabled selected>Selecciona una opción</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-xs font-medium">Periodicidad</span>
+            </label>
+            <input type="text" id="periodicidad" class="input input-bordered w-full" placeholder=""
+              [(ngModel)]="periodicidad" name="periodicidad" />
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="col-span-2 text-center">
-      <label class="block text-sm font-medium mb-2 text-secondary">
-        Periodicidad
-      </label>
-      <input type="text" id="periodicidad" class="input input-sm input-bordered w-full" placeholder=""  [(ngModel)]="periodicidad" name="periodicidad"/>
-    </div>
-
-
-
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-8">
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="objetivo">
-        Objetivo del proceso
-      </label>
-      <textarea id="objetivo" class="textarea textarea-bordered w-full h-31" [(ngModel)]="objetivo" name="objetivo"
-        ></textarea>
+  <div class="grid gap-4 xl:grid-cols-1">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-base">Objetivo del proceso</h2>
+        <textarea id="objetivo" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="objetivo"
+          name="objetivo"></textarea>
+      </div>
     </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="poblacion001">
-        Población objeto de estudio
-      </label>
-      <textarea id="poblacion001" class="textarea textarea-bordered w-full h-31" [(ngModel)]="pobjeto" name="pobjeto"
-        ></textarea>
-    </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="unidad001">
-        Unidad de observación
-      </label>
-      <textarea id="unidad001" class="textarea textarea-bordered w-full h-31" [(ngModel)]="uobservacion" name="uobservacion"
-        ></textarea>
-    </div>
-
-    <div class="col-span-1">
-      <label class="block text-sm font-medium mb-2 text-secondary" for="comentario">
-        Comentario del proceso de producción
-      </label>
-      <textarea id="comentario" class="textarea textarea-bordered w-full h-31" [(ngModel)]="comentarioS" name="comentarioS" ></textarea>
-    </div>
-
   </div>
 
+  <div class="grid gap-4 xl:grid-cols-2">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-base">Población objeto de estudio</h2>
+        <textarea id="poblacion001" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="pobjeto"
+          name="pobjeto"></textarea>
+      </div>
+    </div>
 
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="card-title text-base">Unidad de observación</h2>
+        <textarea id="unidad001" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="uobservacion"
+          name="uobservacion"></textarea>
+      </div>
+    </div>
+  </div>
 
-
-
-
-
-
-
+  <div class="grid gap-4 xl:grid-cols-2">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-center justify-between">
+          <h2 class="card-title text-base">Comentario del proceso de producción</h2>
+          <div class="badge badge-outline badge-sm">Editable</div>
+        </div>
+        <textarea id="comentario" class="textarea textarea-bordered min-h-24 w-full" [(ngModel)]="comentarioS"
+          name="comentarioS"></textarea>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- Modal de Registro Exitoso -->
 <dialog #RegistroExitoso class="modal">
