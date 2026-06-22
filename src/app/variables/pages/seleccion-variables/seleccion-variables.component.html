@@ -247,9 +247,9 @@
                   <td>
                     <div class="flex justify-center gap-2">
                       <button class="btn btn-primary btn-xs" (click)="editarVariable(item)">
-                        Editar
+                        Consultar
                       </button>
-                      <button class="btn btn-error btn-xs" (click)="eliminarVariable(item.idA)">
+                      <button class="btn btn-error btn-xs" (click)="abrirModalConfirmarEliminacion(item.idA)">
                         Borrar
                       </button>
                     </div>
@@ -364,6 +364,26 @@
     <div class="modal-action">
       <button class="btn btn-warning" type="button" (click)="cerrarModalVariableDuplicada()">
         Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+
+<dialog #modalConfirmarEliminacion class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">¿Estás seguro?</h3>
+
+    <p class="py-4">
+      Esta acción eliminará la variable seleccionada y sus relaciones asociadas.
+    </p>
+
+    <div class="modal-action">
+      <button class="btn" type="button" (click)="cerrarModalConfirmarEliminacion()">
+        Cancelar
+      </button>
+      <button class="btn btn-error" type="button" (click)="confirmarEliminacionVariable()">
+        Sí, borrar
       </button>
     </div>
   </div>

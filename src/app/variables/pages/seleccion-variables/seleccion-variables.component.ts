@@ -58,6 +58,7 @@ export class SeleccionVariablesComponent implements OnInit {
 
   // modo edición
   variableEditando: any = null;
+  variableAEliminarId = '';
 
   @ViewChild('procesoProduccionTag')
   procesoProduccionTag!: ElementRef<HTMLSelectElement>;
@@ -459,6 +460,26 @@ export class SeleccionVariablesComponent implements OnInit {
     this.mostrarBloqueOds = true;
   }
 
+  abrirModalConfirmarEliminacion(idA: string) {
+    this.variableAEliminarId = idA;
+    this.modalConfirmarEliminacion?.nativeElement.showModal();
+  }
+
+  cerrarModalConfirmarEliminacion() {
+    this.variableAEliminarId = '';
+    this.modalConfirmarEliminacion?.nativeElement.close();
+  }
+
+  confirmarEliminacionVariable() {
+    if (!this.variableAEliminarId) {
+      return;
+    }
+
+    const idA = this.variableAEliminarId;
+    this.cerrarModalConfirmarEliminacion();
+    this.eliminarVariable(idA);
+  }
+
   eliminarVariable(idA: string) {
     this._varService.deleteVariableFull(idA).subscribe({
       next: () => {
@@ -614,6 +635,9 @@ export class SeleccionVariablesComponent implements OnInit {
   }
   @ViewChild('modalVariableCapturada')
   modalVariableCapturada!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('modalConfirmarEliminacion')
+  modalConfirmarEliminacion!: ElementRef<HTMLDialogElement>;
 
   abrirModalVariableCapturada() {
     this.modalVariableCapturada?.nativeElement.showModal();
