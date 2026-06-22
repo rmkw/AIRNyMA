@@ -5,7 +5,6 @@ import { environment } from 'src/environments/environment';
 import { VariableDTO } from '../interfaces/variablesCapDTO.interface';
 import { VariableRevisionPrioridadDTO } from '../interfaces/variableRevisionPrioridad.interface';
 import { FuenteArmonizacionDTO, FuenteSaveDTO } from '../interfaces/fuenteArmonizacion.interface';
-import { ExistsFuenteArmonizacionResponse } from '../interfaces/ExistsFuenteArmonizacionResponse.interface';
 
 const baseUrl = environment.baseUrl
 @Injectable({ providedIn: 'root' })
@@ -121,15 +120,6 @@ export class VariableService {
 
   /* esta parte es de fuentes */
 
-  existsFuenteArmonizacion(idFuente: string): Observable<{ exists: boolean }> {
-    return this.http.get<{ exists: boolean }>(
-      `${baseUrl}/armo/fuentes/exists/${encodeURIComponent(idFuente)}`,
-      {
-        withCredentials: true,
-      },
-    );
-  }
-
   getFuenteArmonizacionById(
     idFuente: string,
   ): Observable<FuenteArmonizacionDTO> {
@@ -162,18 +152,6 @@ export class VariableService {
   ): Observable<FuenteArmonizacionDTO> {
     return this.http.put<FuenteArmonizacionDTO>(
       `${baseUrl}/armo/fuentes`,
-      payload,
-      {
-        withCredentials: true,
-      },
-    );
-  }
-
-  existsFuenteArmonizacionByData(
-    payload: FuenteSaveDTO,
-  ): Observable<ExistsFuenteArmonizacionResponse> {
-    return this.http.post<ExistsFuenteArmonizacionResponse>(
-      `${baseUrl}/armo/fuentes/exists-by-data`,
       payload,
       {
         withCredentials: true,

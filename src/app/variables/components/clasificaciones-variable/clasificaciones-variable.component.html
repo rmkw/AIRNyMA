@@ -1,0 +1,40 @@
+<div class="card border border-base-300 border-t-accent border-t-4 bg-base-100 shadow-sm">
+  <div class="card-body gap-5 p-5">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h3 class="card-title text-base">Clasificaciones</h3>
+        <p class="text-xs text-base-content/60">Captura una o varias clasificaciones asociadas a la variable.</p>
+      </div>
+      <input type="checkbox" class="toggle toggle-accent" [checked]="activa"
+        (change)="toggleClasificacion($event)" />
+    </div>
+
+    @if (activa) {
+    <div class="rounded-box border border-accent/20 bg-accent/5 p-4">
+      <div class="grid gap-4">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-xs font-medium">Clase</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.clase"
+            (ngModelChange)="actualizarCampo('clase', $event)" name="claseLocal" placeholder="Escriba la clase" />
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+          <textarea class="textarea textarea-bordered min-h-24 w-full" [ngModel]="form.comentarioA"
+            (ngModelChange)="actualizarCampo('comentarioA', $event)" name="comentarioClasificacionLocal"
+            placeholder="Escriba un comentario"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
+      <button type="button" class="btn btn-sm btn-accent" (click)="agregar()">Agregar clasificación</button>
+    </div>
+
+    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      Aquí después irá la lista de clasificaciones registradas para la variable.
+    </div>
+    }
+  </div>
+</div>

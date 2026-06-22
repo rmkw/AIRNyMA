@@ -10,6 +10,9 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
+import { ClasificacionesVariableComponent, ClasificacionVariableForm } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
+import { DatosAbiertosVariableComponent, DatosAbiertosVariableForm } from '@/variables/components/datos-abiertos-variable/datos-abiertos-variable.component';
+import { MicrodatosVariableComponent, MicrodatosVariableForm } from '@/variables/components/microdatos-variable/microdatos-variable.component';
 import { TemaSubtemaDTO } from '@/variables/interfaces/armonizacion/tema_subtema/temasubtema.interface';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
@@ -25,8 +28,16 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 
 @Component({
   selector: 'app-armonizacion-variables',
+  standalone: true,
   templateUrl: './armo-variables.component.html',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ClasificacionesVariableComponent,
+    DatosAbiertosVariableComponent,
+    MicrodatosVariableComponent,
+  ],
 })
 export class ArmonizacionVariablesComponent implements OnInit {
   _serviceDirecciones = inject(DireccionesService);
@@ -293,21 +304,34 @@ export class ArmonizacionVariablesComponent implements OnInit {
     console.log('Variable seleccionada:', this.variableSeleccionada);
     console.log('Fuente cargada en formulario:', this.fuenteForm);
 
-    this.verificarSiFuenteExisteEnArmonizacionPorDatos();
+    this.verificarSiFuenteExisteEnArmonizacionPorIdFuenteSeleccion(
+      variable.idFuente,
+    );
   }
-  verificarSiFuenteExisteEnArmonizacion(idFuente: string) {
+
+  verificarSiFuenteExisteEnArmonizacionPorIdFuenteSeleccion(
+    idFuenteSeleccion: string,
+  ) {
     this.cargandoEstadoFuente = true;
 
-    this._varService.existsFuenteArmonizacion(idFuente).subscribe({
-      next: (resp) => {
-        this.fuenteExisteEnArmonizacion = resp.exists;
+    this._varService.getFuenteArmonizacionByIdFuenteSeleccion(idFuenteSeleccion).subscribe({
+      next: (fuenteArm) => {
+        if (!this.fuenteForm) return;
+
+        this.fuenteExisteEnArmonizacion = true;
         this.cargandoEstadoFuente = false;
 
-        console.log('¿Fuente existe en armonización?', resp.exists);
-
-        if (resp.exists) {
-          this.cargarFuenteArmonizacion(idFuente);
-        }
+        this.fuenteForm = {
+          ...this.fuenteForm,
+          idFuente: fuenteArm.idFuente ?? this.fuenteForm.idFuente,
+          idFuenteSeleccion: fuenteArm.idFuenteSeleccion ?? idFuenteSeleccion,
+          acronimo: fuenteArm.acronimo ?? '',
+          fuente: fuenteArm.fuente ?? '',
+          url: fuenteArm.url ?? '',
+          edicion: fuenteArm.edicion ?? '',
+          comentarioS: fuenteArm.comentarioS ?? '',
+          comentarioA: fuenteArm.comentarioA ?? '',
+        };
 
         if (this.variableSeleccionada?.idA) {
           this.verificarSiVariableExiste(this.variableSeleccionada.idA);
@@ -317,6 +341,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
         console.error('Error al verificar fuente en armonización:', err);
         this.fuenteExisteEnArmonizacion = false;
         this.cargandoEstadoFuente = false;
+
+        if (err.status && err.status !== 404) {
+          this.abrirModalError(this.obtenerMensajeError(err));
+        }
       },
     });
   }
@@ -448,48 +476,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
     );
   }
 
-  verificarSiFuenteExisteEnArmonizacionPorDatos(): void {
-    if (!this.fuenteForm) return;
-
-    this.cargandoEstadoFuente = true;
-
-    const payload: FuenteSaveDTO = {
-      idFuenteSeleccion:
-        this.fuenteForm.idFuenteSeleccion ||
-        this.variableSeleccionada?.idFuente ||
-        '',
-      acronimo: this.fuenteForm.acronimo?.trim() || '',
-      fuente: this.fuenteForm.fuente?.trim() || '',
-      url: this.fuenteForm.url?.trim() || null,
-      edicion: this.fuenteForm.edicion?.trim() || null,
-      comentarioS: this.fuenteForm.comentarioS?.trim() || null,
-      comentarioA: this.fuenteForm.comentarioA?.trim() || null,
-    };
-
-    this._varService.existsFuenteArmonizacionByData(payload).subscribe({
-      next: (resp) => {
-        this.fuenteExisteEnArmonizacion = resp.exists;
-        this.cargandoEstadoFuente = false;
-
-        if (resp.idFuente) {
-          this.fuenteForm = {
-            ...this.fuenteForm!,
-            idFuente: resp.idFuente,
-          };
-        }
-
-        if (resp.exists) {
-          this.cargarFuenteArmonizacion(resp.idFuenteSeleccion);
-        }
-      },
-      error: (err) => {
-        console.error('Error al verificar fuente en armonización:', err);
-        this.abrirModalError(this.obtenerMensajeError(err));
-        this.fuenteExisteEnArmonizacion = false;
-        this.cargandoEstadoFuente = false;
-      },
-    });
-  }
   @ViewChild('SuccessSaveModal')
   SuccessSaveModal!: ElementRef<HTMLDialogElement>;
   @ViewChild('SuccessUpdateModal')
@@ -737,22 +723,14 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   clasificacionActiva: boolean = false;
 
-  clasificacionForm = {
+  clasificacionForm: ClasificacionVariableForm = {
     clase: '',
     comentarioA: '',
   };
 
-  toggleClasificacionLocal(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.clasificacionActiva = checked;
-
-    if (!checked) {
-      this.limpiarClasificacionLocal();
-    }
-  }
   microdatosActivo: boolean = false;
 
-  microdatosForm = {
+  microdatosForm: MicrodatosVariableForm = {
     urlAcceso: '',
     descriptor: '',
     urlDescriptor: '',
@@ -762,7 +740,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   };
   datosAbiertosActivo: boolean = false;
 
-  datosAbiertosForm = {
+  datosAbiertosForm: DatosAbiertosVariableForm = {
     urlAcceso: '',
     urlDescarga: '',
     descriptor: '',
@@ -770,28 +748,16 @@ export class ArmonizacionVariablesComponent implements OnInit {
     campo: '',
     comentarioA: '',
   };
-  toggleMicrodatosLocal(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.microdatosActivo = checked;
-
-    if (!checked) {
-      this.limpiarMicrodatosLocal();
-    }
-  }
-  toggleDatosAbiertosLocal(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.datosAbiertosActivo = checked;
-
-    if (!checked) {
-      this.limpiarDatosAbiertosLocal();
-    }
-  }
   limpiarClasificacionLocal() {
     this.clasificacionActiva = false;
     this.clasificacionForm = {
       clase: '',
       comentarioA: '',
     };
+  }
+
+  agregarClasificacionLocal(form: ClasificacionVariableForm) {
+    console.log('Clasificación capturada:', form);
   }
 
   limpiarDatosAbiertosLocal() {
@@ -806,9 +772,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
     };
   }
   microdatosEstado: string = '';
-  seleccionarEstadoMicrodatos(estado: string) {
-    this.microdatosEstado = estado;
-  }
   limpiarMicrodatosLocal() {
     this.microdatosActivo = false;
     this.microdatosEstado = '';
@@ -820,6 +783,17 @@ export class ArmonizacionVariablesComponent implements OnInit {
       campo: '',
       comentarioA: '',
     };
+  }
+
+  agregarDatosAbiertosLocal(form: DatosAbiertosVariableForm) {
+    console.log('Datos abiertos capturados:', form);
+  }
+
+  agregarMicrodatosLocal(payload: {
+    estado: string;
+    form: MicrodatosVariableForm;
+  }) {
+    console.log('Microdatos capturados:', payload);
   }
 
   arrTematicas: TematicaDTO[] = [];

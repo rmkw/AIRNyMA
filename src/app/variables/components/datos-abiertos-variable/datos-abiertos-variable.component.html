@@ -1,0 +1,69 @@
+<div class="card border border-base-300 border-t-success border-t-4 bg-base-100 shadow-sm">
+  <div class="card-body gap-5 p-5">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <h3 class="card-title text-base">Datos abiertos</h3>
+        <p class="text-xs text-base-content/60">Capture uno o varios registros de datos abiertos asociados a la variable.</p>
+      </div>
+      <input type="checkbox" class="toggle toggle-accent" [checked]="activo"
+        (change)="toggleDatosAbiertos($event)" />
+    </div>
+
+    @if (activo) {
+    <div class="rounded-box border border-success/20 bg-success/5 p-4">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-xs font-medium">URL de acceso</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.urlAcceso"
+            (ngModelChange)="actualizarCampo('urlAcceso', $event)" name="datosAbiertosUrlAcceso"
+            placeholder="https://..." />
+        </div>
+
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-xs font-medium">URL de descarga</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.urlDescarga"
+            (ngModelChange)="actualizarCampo('urlDescarga', $event)" name="datosAbiertosUrlDescarga"
+            placeholder="https://..." />
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text text-xs font-medium">Descriptor</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.descriptor"
+            (ngModelChange)="actualizarCampo('descriptor', $event)" name="datosAbiertosDescriptor"
+            placeholder="Descriptor" />
+        </div>
+
+        <div class="form-control">
+          <label class="label"><span class="label-text text-xs font-medium">Tabla</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.tabla"
+            (ngModelChange)="actualizarCampo('tabla', $event)" name="datosAbiertosTabla"
+            placeholder="Nombre de la tabla" />
+        </div>
+
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-xs font-medium">Campo</span></label>
+          <input type="text" class="input input-bordered w-full" [ngModel]="form.campo"
+            (ngModelChange)="actualizarCampo('campo', $event)" name="datosAbiertosCampo"
+            placeholder="Nombre del campo" />
+        </div>
+
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
+          <textarea class="textarea textarea-bordered min-h-24 w-full" [ngModel]="form.comentarioA"
+            (ngModelChange)="actualizarCampo('comentarioA', $event)" name="datosAbiertosComentarioA"
+            placeholder="Escriba un comentario"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2">
+      <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
+      <button type="button" class="btn btn-sm btn-accent text-white" (click)="agregar()">Agregar datos abiertos</button>
+    </div>
+
+    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      Aquí después irá la lista de datos abiertos registrados para la variable.
+    </div>
+    }
+  </div>
+</div>
