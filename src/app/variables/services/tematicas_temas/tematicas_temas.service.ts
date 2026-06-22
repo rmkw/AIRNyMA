@@ -14,7 +14,7 @@ export class TematicasService {
   private baseUrl = `${environment.baseUrl}/catalog/tematicas`;
 
   obtenerPorAcronimo(acronimo: string): Observable<TematicaDTO[]> {
-    return this.http.get<TematicaDTO[]>(`${this.baseUrl}/proceso/${acronimo}`, {
+    return this.http.get<TematicaDTO[]>(`${this.baseUrl}/proceso/${encodeURIComponent(acronimo)}`, {
       withCredentials: true
     });
   }

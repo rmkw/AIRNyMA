@@ -20,8 +20,19 @@ export class TemasSubtemasService {
   }
 
   obtenerSubtemasPorTema(tema: string): Observable<TemaSubtemaDTO[]> {
-    return this.http.get<TemaSubtemaDTO[]>(`${this.baseUrl}/subtemas/${encodeURIComponent(tema)}`, {
+    return this.http.get<TemaSubtemaDTO[]>(`${this.baseUrl}/subtemas/${this.encodePathLatin1(tema)}`, {
       withCredentials: true
     });
+  }
+
+  private encodePathLatin1(value: string): string {
+    return Array.from(value).map((char) => {
+      if (/^[A-Za-z0-9_.~-]$/.test(char)) {
+        return char;
+      }
+
+      const code = char.charCodeAt(0);
+      return `%${code.toString(16).toUpperCase().padStart(2, '0')}`;
+    }).join('');
   }
 }

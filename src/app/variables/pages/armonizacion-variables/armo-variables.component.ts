@@ -277,8 +277,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.limpiarMicrodatosLocal();
     this.limpiarDatosAbiertosLocal();
 
-    this.cargarTematicasPorProceso(variable.acronimo);
-
     const fuenteEncontrada = this.arrFuentesByProceso.find(
       (fuente) => fuente.idFuente === variable.idFuente,
     );
@@ -288,6 +286,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
       this.fuenteForm = null;
       return;
     }
+
+    const acronimoProceso =
+      variable.acronimo || fuenteEncontrada.acronimo || '';
+    this.cargarTematicasPorProceso(acronimoProceso);
 
     const fuenteForm = {
       idFuente: fuenteEncontrada.idFuente ?? '',
@@ -801,11 +803,17 @@ export class ArmonizacionVariablesComponent implements OnInit {
   cargarTematicasPorProceso(acronimo: string) {
     this.arrTematicas = [];
 
-    if (!acronimo) return;
+    if (!acronimo) {
+      console.warn('No se pudo cargar temáticas: acrónimo no definido');
+      return;
+    }
 
     this.tematicasService.obtenerPorAcronimo(acronimo).subscribe({
       next: (resp) => {
-        this.arrTematicas = resp;
+        this.arrTematicas = resp ?? [];
+        if (this.arrTematicas.length === 0) {
+          console.warn(`No se encontraron temáticas para el acrónimo ${acronimo}`);
+        }
       },
       error: (err) => {
         console.error('Error al cargar temáticas:', err);
