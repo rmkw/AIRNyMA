@@ -5,26 +5,18 @@
         <h3 class="card-title text-base">Microdatos</h3>
         <p class="text-xs text-base-content/60">Capture uno o varios registros de microdatos asociados a la variable.</p>
       </div>
-      <input type="checkbox" class="toggle toggle-accent" [checked]="activo" (change)="toggleMicrodatos($event)" />
+      <input type="checkbox" class="toggle toggle-info" [checked]="activo" (change)="toggleMicrodatos($event)" />
     </div>
 
     @if (activo) {
-    <div class="rounded-box border border-info/20 bg-info/5 p-4">
-      <div class="grid gap-4 md:grid-cols-2">
-        <div class="form-control md:col-span-2">
+    <div class="">
+      <div class="grid gap-3 md:grid-cols-6">
+
+        <div class="form-control md:col-span-6">
           <label class="label"><span class="label-text text-xs font-medium">Estado de microdatos</span></label>
-          <div class="rounded-xl border border-base-300 p-4">
+          <div class="">
             <div class="flex flex-col gap-3">
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" class="checkbox checkbox-sm" [checked]="estado === 'Sí'"
-                  (change)="seleccionarEstado('Sí')" />
-                <span>Sí</span>
-              </label>
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" class="checkbox checkbox-sm" [checked]="estado === 'No'"
-                  (change)="seleccionarEstado('No')" />
-                <span>No</span>
-              </label>
+
               <label class="flex items-start gap-2 text-sm">
                 <input type="checkbox" class="checkbox checkbox-sm mt-0.5"
                   [checked]="estado === 'Sí. (Disponible a través del laboratorio de microdatos).'"
@@ -35,44 +27,46 @@
           </div>
         </div>
 
-        <div class="form-control md:col-span-2">
+        <div class="form-control md:col-span-6">
           <label class="label"><span class="label-text text-xs font-medium">URL de acceso</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.urlAcceso"
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.urlAcceso"
             (ngModelChange)="actualizarCampo('urlAcceso', $event)" name="microdatosUrlAcceso"
             placeholder="https://..." />
         </div>
 
-        <div class="form-control">
-          <label class="label"><span class="label-text text-xs font-medium">Descriptor</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.descriptor"
-            (ngModelChange)="actualizarCampo('descriptor', $event)" name="microdatosDescriptor"
-            placeholder="Descriptor" />
-        </div>
-
-        <div class="form-control">
+        <div class="form-control  md:col-span-6">
           <label class="label"><span class="label-text text-xs font-medium">URL descriptor</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.urlDescriptor"
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.urlDescriptor"
             (ngModelChange)="actualizarCampo('urlDescriptor', $event)" name="microdatosUrlDescriptor"
             placeholder="https://..." />
         </div>
 
-        <div class="form-control">
+        <div class="form-control md:col-span-2">
+          <label class="label"><span class="label-text text-xs font-medium">Descriptor</span></label>
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.descriptor"
+            (ngModelChange)="actualizarCampo('descriptor', $event)" name="microdatosDescriptor"
+            placeholder="Descriptor" />
+        </div>
+
+
+
+        <div class="form-control md:col-span-2">
           <label class="label"><span class="label-text text-xs font-medium">Tabla</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.tabla"
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.tabla"
             (ngModelChange)="actualizarCampo('tabla', $event)" name="microdatosTabla"
             placeholder="Nombre de la tabla" />
         </div>
 
-        <div class="form-control">
+        <div class="form-control md:col-span-2">
           <label class="label"><span class="label-text text-xs font-medium">Campo</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.campo"
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.campo"
             (ngModelChange)="actualizarCampo('campo', $event)" name="microdatosCampo"
             placeholder="Nombre del campo" />
         </div>
 
-        <div class="form-control md:col-span-2">
+        <div class="form-control md:col-span-6">
           <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
-          <textarea class="textarea textarea-bordered min-h-24 w-full" [ngModel]="form.comentarioA"
+          <textarea class="textarea textarea-sm textarea-bordered min-h-18 w-full" [ngModel]="form.comentarioA"
             (ngModelChange)="actualizarCampo('comentarioA', $event)" name="microdatosComentarioA"
             placeholder="Escriba un comentario"></textarea>
         </div>
@@ -81,7 +75,7 @@
 
     <div class="flex justify-end gap-2">
       <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
-      <button type="button" class="btn btn-sm btn-accent text-white" (click)="agregar()">Agregar microdatos</button>
+      <button type="button" class="btn btn-sm btn-info" (click)="agregar()">Agregar microdatos</button>
     </div>
 
     <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">

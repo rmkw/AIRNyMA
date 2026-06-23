@@ -10,17 +10,17 @@
     </div>
 
     @if (activa) {
-    <div class="rounded-box border border-accent/20 bg-accent/5 p-4">
+    <div class="">
       <div class="grid gap-4">
         <div class="form-control">
           <label class="label"><span class="label-text text-xs font-medium">Clase</span></label>
-          <input type="text" class="input input-bordered w-full" [ngModel]="form.clase"
+          <input type="text" class="input input-sm input-bordered w-full" [ngModel]="form.clase"
             (ngModelChange)="actualizarCampo('clase', $event)" name="claseLocal" placeholder="Escriba la clase" />
         </div>
 
         <div class="form-control">
           <label class="label"><span class="label-text text-xs font-medium">Comentario</span></label>
-          <textarea class="textarea textarea-bordered min-h-24 w-full" [ngModel]="form.comentarioA"
+          <textarea class="textarea textarea-sm textarea-bordered min-h-18 w-full" [ngModel]="form.comentarioA"
             (ngModelChange)="actualizarCampo('comentarioA', $event)" name="comentarioClasificacionLocal"
             placeholder="Escriba un comentario"></textarea>
         </div>
