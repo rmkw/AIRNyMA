@@ -483,10 +483,13 @@ export class ArmonizacionVariablesComponent implements OnInit {
   @ViewChild('SuccessUpdateModal')
   SuccessUpdateModal!: ElementRef<HTMLDialogElement>;
   @ViewChild('ErrorModal') ErrorModal!: ElementRef<HTMLDialogElement>;
+  @ViewChild('CamposFaltantesModal')
+  CamposFaltantesModal!: ElementRef<HTMLDialogElement>;
 
   mensajeSuccessSave: string = '';
   mensajeSuccessUpdate: string = '';
   mensajeError: string = '';
+  camposFaltantesVariable: string[] = [];
   abrirModalSuccessSave(mensaje: string) {
     this.mensajeSuccessSave = mensaje;
     this.SuccessSaveModal.nativeElement.showModal();
@@ -512,6 +515,15 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   cerrarModalError() {
     this.ErrorModal.nativeElement.close();
+  }
+
+  abrirModalCamposFaltantes(campos: string[]) {
+    this.camposFaltantesVariable = campos;
+    this.CamposFaltantesModal.nativeElement.showModal();
+  }
+
+  cerrarModalCamposFaltantes() {
+    this.CamposFaltantesModal.nativeElement.close();
   }
 
   private obtenerMensajeError(err: any): string {
@@ -614,8 +626,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
       tematica: '',
       tema1: '',
       subtema1: '',
-      tema2: '-',
-      subtema2: '-',
+      tema2: '',
+      subtema2: '',
       tabulados: false,
       clasificacion: false,
       microdatos: '',
@@ -628,6 +640,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   guardarOActualizarVariable() {
     if (!this.variableForm.valid) {
       this.variableForm.markAllAsTouched();
+      this.abrirModalCamposFaltantes(this.obtenerCamposFaltantesVariable());
       return;
     }
 
@@ -641,9 +654,13 @@ export class ArmonizacionVariablesComponent implements OnInit {
             this.variableExisteEnArmonizacion = true;
             this.modoEdicionVariable = true;
             console.log('Variable actualizada:', resp);
+            this.abrirModalSuccessUpdate(
+              'La variable se actualizó correctamente en armonización.',
+            );
           },
           error: (err) => {
             console.error('Error al actualizar variable:', err);
+            this.abrirModalError(this.obtenerMensajeError(err));
           },
         });
     } else {
@@ -653,9 +670,13 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.modoEdicionVariable = true;
           this.variableForm.patchValue(resp);
           console.log('Variable guardada:', resp);
+          this.abrirModalSuccessSave(
+            'La variable se registró correctamente en armonización.',
+          );
         },
         error: (err) => {
           console.error('Error al guardar variable:', err);
+          this.abrirModalError(this.obtenerMensajeError(err));
         },
       });
     }
@@ -668,17 +689,17 @@ export class ArmonizacionVariablesComponent implements OnInit {
       acronimo: [''],
       idS: [''],
       variableS: [''],
-      variableA: [''],
-      url: [''],
-      pregunta: [''],
+      variableA: ['', Validators.required],
+      url: ['', Validators.required],
+      pregunta: ['', Validators.required],
       definicion: [''],
-      universo: [''],
-      anioReferencia: [null],
+      universo: ['', Validators.required],
+      anioReferencia: [null, Validators.required],
       tematica: ['', Validators.required],
       tema1: ['', Validators.required],
       subtema1: ['', Validators.required],
-      tema2: [''],
-      subtema2: [''],
+      tema2: ['', Validators.required],
+      subtema2: ['', Validators.required],
       tabulados: [false],
       clasificacion: [false],
       microdatos: [''],
@@ -686,8 +707,28 @@ export class ArmonizacionVariablesComponent implements OnInit {
       mdea: [false],
       ods: [false],
       comentarioS: [''],
-      comentarioA: [''],
+      comentarioA: ['', Validators.required],
     });
+  }
+
+  private obtenerCamposFaltantesVariable(): string[] {
+    const etiquetas: Record<string, string> = {
+      variableA: 'Variable armonizada',
+      url: 'URL',
+      pregunta: 'Pregunta',
+      universo: 'Universo',
+      anioReferencia: 'Año de referencia',
+      tematica: 'Temática',
+      tema1: 'Tema 1',
+      subtema1: 'Subtema 1',
+      tema2: 'Tema 2',
+      subtema2: 'Subtema 2',
+      comentarioA: 'Comentario armonización',
+    };
+
+    return Object.entries(etiquetas)
+      .filter(([controlName]) => this.variableForm.get(controlName)?.invalid)
+      .map(([, etiqueta]) => etiqueta);
   }
 
   limpiarEstadoVariableSeleccionada() {

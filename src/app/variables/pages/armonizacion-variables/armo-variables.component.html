@@ -574,3 +574,63 @@
   </section>
   <!-- } -->
 </div>
+
+<dialog #CamposFaltantesModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-warning">Faltan datos por capturar</h3>
+    <p class="py-3 text-sm text-base-content/70">
+      Para guardar la variable completa los siguientes campos:
+    </p>
+
+    <ul class="list-disc space-y-1 pl-5 text-sm">
+      @for (campo of camposFaltantesVariable; track campo) {
+      <li>{{ campo }}</li>
+      }
+    </ul>
+
+    <div class="modal-action">
+      <button class="btn btn-warning" type="button" (click)="cerrarModalCamposFaltantes()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #SuccessSaveModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-success">Registro guardado correctamente</h3>
+    <p class="py-4 text-sm text-base-content/70">{{ mensajeSuccessSave }}</p>
+
+    <div class="modal-action">
+      <button class="btn btn-success text-white" type="button" (click)="cerrarModalSuccessSave()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #SuccessUpdateModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-info">Registro actualizado correctamente</h3>
+    <p class="py-4 text-sm text-base-content/70">{{ mensajeSuccessUpdate }}</p>
+
+    <div class="modal-action">
+      <button class="btn btn-info text-white" type="button" (click)="cerrarModalSuccessUpdate()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #ErrorModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold text-error">No se pudo completar la operación</h3>
+    <p class="py-4 text-sm text-base-content/70">{{ mensajeError }}</p>
+
+    <div class="modal-action">
+      <button class="btn btn-error text-white" type="button" (click)="cerrarModalError()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</dialog>
