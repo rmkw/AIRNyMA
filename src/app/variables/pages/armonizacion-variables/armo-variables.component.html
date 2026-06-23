@@ -416,6 +416,7 @@
             <div class="form-control">
               <label class="label"><span class="label-text text-xs font-medium">Variable armonizada</span></label>
               <input type="text" class="input input-bordered input-sm w-full" formControlName="variableA"
+              [class.select-error]="variableForm.get('variableA')?.invalid && variableForm.get('variableA')?.touched"
                 placeholder="Escriba el nombre armonizado de la variable" />
             </div>
 
@@ -425,18 +426,21 @@
 
             <div class="form-control md:col-span-4">
               <label class="label"><span class="label-text text-xs font-medium">URL</span></label>
-              <input type="text" class="input input-bordered input-sm w-full" formControlName="url" />
+              <input type="text" class="input input-bordered input-sm w-full" formControlName="url"
+              [class.select-error]="variableForm.get('url')?.invalid && variableForm.get('url')?.touched" />
             </div>
 
             <div class="form-control md:col-span-4">
               <label class="label"><span class="label-text text-xs font-medium">Pregunta</span></label>
               <input type="text" class="input input-bordered input-sm w-full" formControlName="pregunta"
+                [class.select-error]="variableForm.get('pregunta')?.invalid && variableForm.get('pregunta')?.touched"
                 placeholder="Escriba la pregunta asociada a la variable"/>
             </div>
 
             <div class="form-control md:col-span-4">
               <label class="label"><span class="label-text text-xs font-medium">Universo</span></label>
               <input type="text" class="input input-bordered input-sm w-full" formControlName="universo"
+                [class.select-error]="variableForm.get('universo')?.invalid && variableForm.get('universo')?.touched"
                 placeholder="Escriba el universo asociado a la variable" />
             </div>
 
@@ -464,7 +468,8 @@
             <div class="form-control md:col-span-2">
               <label class="label"><span class="label-text text-xs font-medium">Año de referencia</span></label>
               <input type="number" class="input input-sm input-bordered w-full" formControlName="anioReferencia"
-                placeholder="Ej. 2024" />
+                placeholder="Ej. 2024"
+                [class.select-error]="variableForm.get('anioReferencia')?.invalid && variableForm.get('anioReferencia')?.touched" />
             </div>
 
             <div class="form-control md:col-span-2">
@@ -475,14 +480,14 @@
                 <option value="" disabled>Seleccione una temática</option>
                 <option *ngFor="let t of arrTematicas" [value]="t.tematica">{{ t.tematica }}</option>
               </select>
-              @if (variableForm.get('tematica')?.invalid && variableForm.get('tematica')?.touched) {
-              <span class="mt-1 text-xs text-error">Debe seleccionar una temática.</span>
-              }
+
             </div>
 
             <div class="form-control md:col-span-2 ">
               <label class="label"><span class="label-text text-xs font-medium">Tema 1</span></label>
-              <select class="select select-sm select-bordered w-full" formControlName="tema1" (change)="onTema1Change($event)">
+              <select class="select select-sm select-bordered w-full" formControlName="tema1"
+                [class.select-error]="variableForm.get('tema1')?.invalid && variableForm.get('tema1')?.touched"
+                (change)="onTema1Change($event)">
                 <option value="" disabled>Seleccione un tema</option>
                 <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">{{ tema }}</option>
               </select>
@@ -490,7 +495,8 @@
 
             <div class="form-control md:col-span-2">
               <label class="label"><span class="label-text text-xs font-medium">Subtema 1</span></label>
-              <select class="select select-sm select-bordered w-full" formControlName="subtema1">
+              <select class="select select-sm select-bordered w-full" formControlName="subtema1"
+                [class.select-error]="variableForm.get('subtema1')?.invalid && variableForm.get('subtema1')?.touched">
                 <option value="" disabled>Seleccione un subtema</option>
                 <option *ngFor="let item of arrSubtemasTema1" [value]="item.subtema">{{ item.subtema }}</option>
               </select>
@@ -498,7 +504,9 @@
 
             <div class="form-control md:col-span-2">
               <label class="label"><span class="label-text text-xs font-medium">Tema 2</span></label>
-              <select class="select select-sm select-bordered w-full" formControlName="tema2" (change)="onTema2Change($event)">
+              <select class="select select-sm select-bordered w-full" formControlName="tema2"
+                [class.select-error]="variableForm.get('tema2')?.invalid && variableForm.get('tema2')?.touched"
+                (change)="onTema2Change($event)">
                 <option value="" disabled>Seleccione un tema</option>
                 <option *ngFor="let tema of arrTemasCatalogo" [value]="tema">{{ tema }}</option>
               </select>
@@ -506,7 +514,8 @@
 
             <div class="form-control md:col-span-2">
               <label class="label"><span class="label-text text-xs font-medium">Subtema 2</span></label>
-              <select class="select select-sm select-bordered w-full" formControlName="subtema2">
+              <select class="select select-sm select-bordered w-full" formControlName="subtema2"
+                [class.select-error]="variableForm.get('subtema2')?.invalid && variableForm.get('subtema2')?.touched">
                 <option value="" disabled>Seleccione un subtema</option>
                 <option *ngFor="let item of arrSubtemasTema2" [value]="item.subtema">{{ item.subtema }}</option>
               </select>
@@ -530,6 +539,7 @@
             <div class="form-control md:col-span-2">
               <label class="label"><span class="label-text text-xs font-medium">Comentario armonización</span></label>
               <textarea class="textarea textarea-bordered min-h-16 w-full leading-relaxed" formControlName="comentarioA"
+                [class.textarea-error]="variableForm.get('comentarioA')?.invalid && variableForm.get('comentarioA')?.touched"
                 placeholder="Escriba un comentario de armonización"></textarea>
             </div>
           </div>
