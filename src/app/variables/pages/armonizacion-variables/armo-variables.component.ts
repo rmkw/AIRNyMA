@@ -591,11 +591,11 @@ export class ArmonizacionVariablesComponent implements OnInit {
           comentarioA: variable.comentarioA,
         });
         if (variable.tema1) {
-          this.cargarSubtemasTema1(variable.tema1);
+          this.cargarSubtemasTema1(variable.tema1, variable.subtema1);
         }
 
         if (variable.tema2) {
-          this.cargarSubtemasTema2(variable.tema2);
+          this.cargarSubtemasTema2(variable.tema2, variable.subtema2);
         }
       },
       error: (err) => {
@@ -881,15 +881,18 @@ export class ArmonizacionVariablesComponent implements OnInit {
       },
     });
   }
-  cargarSubtemasTema1(tema: string) {
+  cargarSubtemasTema1(tema: string, subtemaSeleccionado?: string | null) {
     this.arrSubtemasTema1 = [];
-    this.variableForm.patchValue({ subtema1: '' });
+    if (!subtemaSeleccionado) {
+      this.variableForm.patchValue({ subtema1: '' });
+    }
 
     if (!tema) return;
 
     this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
       next: (resp) => {
         this.arrSubtemasTema1 = resp;
+        this.aplicarSubtemaGuardado('subtema1', this.arrSubtemasTema1, subtemaSeleccionado);
       },
       error: (err) => {
         console.error('Error al cargar subtemas de tema1:', err);
@@ -897,21 +900,39 @@ export class ArmonizacionVariablesComponent implements OnInit {
       },
     });
   }
-  cargarSubtemasTema2(tema: string) {
+  cargarSubtemasTema2(tema: string, subtemaSeleccionado?: string | null) {
     this.arrSubtemasTema2 = [];
-    this.variableForm.patchValue({ subtema2: '' });
+    if (!subtemaSeleccionado) {
+      this.variableForm.patchValue({ subtema2: '' });
+    }
 
     if (!tema) return;
 
     this.temasSubtemasService.obtenerSubtemasPorTema(tema).subscribe({
       next: (resp) => {
         this.arrSubtemasTema2 = resp;
+        this.aplicarSubtemaGuardado('subtema2', this.arrSubtemasTema2, subtemaSeleccionado);
       },
       error: (err) => {
         console.error('Error al cargar subtemas de tema2:', err);
         this.arrSubtemasTema2 = [];
       },
     });
+  }
+  private aplicarSubtemaGuardado(
+    controlName: 'subtema1' | 'subtema2',
+    subtemas: TemaSubtemaDTO[],
+    subtemaSeleccionado?: string | null,
+  ) {
+    const subtemaNormalizado = subtemaSeleccionado?.trim();
+
+    if (!subtemaNormalizado) return;
+
+    const subtemaEnCatalogo =
+      subtemas.find((item) => item.subtema?.trim() === subtemaNormalizado)
+        ?.subtema ?? subtemaSeleccionado;
+
+    this.variableForm.patchValue({ [controlName]: subtemaEnCatalogo });
   }
   onTema1Change(event: Event) {
     const tema = (event.target as HTMLSelectElement).value;
