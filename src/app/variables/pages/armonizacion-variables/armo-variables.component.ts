@@ -13,11 +13,13 @@ import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.se
 import { ClasificacionesVariableComponent, ClasificacionVariableForm } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
 import { DatosAbiertosVariableComponent, DatosAbiertosVariableForm } from '@/variables/components/datos-abiertos-variable/datos-abiertos-variable.component';
 import { MicrodatosVariableComponent, MicrodatosVariableForm } from '@/variables/components/microdatos-variable/microdatos-variable.component';
+import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
 import { TemaSubtemaDTO } from '@/variables/interfaces/armonizacion/tema_subtema/temasubtema.interface';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
 import { TematicaDTO } from '@/variables/interfaces/tematicas_temas/tematicaDTO.interface';
 import { VariableTablaDTO } from '@/variables/interfaces/variableTablaDTO';
+import { ClasificacionesArmoService } from '@/variables/services/armonizacion/clasificaciones-armo.service';
 import { VariablesArmoService } from '@/variables/services/armonizacion/variables-armo.service';
 import { TemasSubtemasService } from '@/variables/services/tema_subtema/TemasSubtemasService.service';
 import { TematicasService } from '@/variables/services/tematicas_temas/tematicas_temas.service';
@@ -45,6 +47,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   _varService = inject(VariableService);
   _fuentesService = inject(FuenteIdentificacionService);
   _authService = inject(authService);
+  private clasificacionesArmoService = inject(ClasificacionesArmoService);
 
   arrDirecciones: Direccion[] = [];
   arrProcesosPBydire: interface_ProcesoP[] = [];
@@ -590,6 +593,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           comentarioS: variable.comentarioS,
           comentarioA: variable.comentarioA,
         });
+        this.cargarClasificacionesVariable(variable.idA);
         if (variable.tema1) {
           this.cargarSubtemasTema1(variable.tema1, variable.subtema1);
         }
@@ -669,6 +673,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.variableExisteEnArmonizacion = true;
           this.modoEdicionVariable = true;
           this.variableForm.patchValue(resp);
+          this.cargarClasificacionesVariable(resp.idA);
           console.log('Variable guardada:', resp);
           this.abrirModalSuccessSave(
             'La variable se registró correctamente en armonización.',
@@ -765,11 +770,33 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   clasificacionActiva: boolean = false;
+  arrClasificaciones: ClasificacionArmo[] = [];
+  guardandoClasificacion = false;
 
   clasificacionForm: ClasificacionVariableForm = {
     clase: '',
     comentarioA: '',
   };
+
+  cambiarEstadoClasificacion(activa: boolean) {
+    if (!activa && this.arrClasificaciones.length > 0) {
+      this.clasificacionActiva = true;
+      this.variableForm.patchValue({ clasificacion: true });
+      this.abrirModalError(
+        'No puedes desactivar clasificaciones mientras existan registros. Primero elimina las clasificaciones registradas.',
+      );
+      return;
+    }
+
+    this.clasificacionActiva = activa;
+
+    if (!activa) {
+      this.clasificacionForm = {
+        clase: '',
+        comentarioA: '',
+      };
+    }
+  }
 
   microdatosActivo: boolean = false;
 
@@ -793,6 +820,9 @@ export class ArmonizacionVariablesComponent implements OnInit {
   };
   limpiarClasificacionLocal() {
     this.clasificacionActiva = false;
+    this.arrClasificaciones = [];
+    this.guardandoClasificacion = false;
+    this.variableForm?.patchValue({ clasificacion: false });
     this.clasificacionForm = {
       clase: '',
       comentarioA: '',
@@ -800,7 +830,139 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   agregarClasificacionLocal(form: ClasificacionVariableForm) {
-    console.log('Clasificación capturada:', form);
+    if (!this.variableSeleccionada?.idA) {
+      this.abrirModalError('Selecciona una variable antes de agregar clasificaciones.');
+      return;
+    }
+
+    if (!this.variableExisteEnArmonizacion) {
+      this.abrirModalError('Primero guarda la variable en armonización para poder agregar clasificaciones.');
+      return;
+    }
+
+    const payload: ClasificacionArmo = {
+      idA: this.variableSeleccionada.idA,
+      clase: form.clase?.trim() || '',
+      comentarioA: form.comentarioA?.trim() || '',
+    };
+
+    if (!payload.clase || !payload.comentarioA) {
+      this.abrirModalError('Captura la clase y el comentario antes de agregar la clasificación.');
+      return;
+    }
+
+    this.guardandoClasificacion = true;
+    this.clasificacionesArmoService.guardarClasificacion(payload).subscribe({
+      next: () => {
+        this.clasificacionForm = {
+          clase: '',
+          comentarioA: '',
+        };
+        this.clasificacionActiva = true;
+        this.persistirBanderaClasificacionVariable(true, () => {
+          this.guardandoClasificacion = false;
+          this.cargarClasificacionesVariable(payload.idA);
+          this.abrirModalSuccessSave('La clasificación se registró correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoClasificacion = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  cargarClasificacionesVariable(idA: string) {
+    this.clasificacionesArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrClasificaciones = resp ?? [];
+        if (this.arrClasificaciones.length > 0) {
+          this.clasificacionActiva = true;
+          this.variableForm.patchValue({ clasificacion: true });
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar clasificaciones:', err);
+        this.arrClasificaciones = [];
+      },
+    });
+  }
+
+  eliminarClasificacionLocal(clasificacion: ClasificacionArmo) {
+    if (!clasificacion.idUnique) {
+      this.abrirModalError('No se encontró el identificador de la clasificación.');
+      return;
+    }
+
+    this.guardandoClasificacion = true;
+    this.clasificacionesArmoService.eliminarClasificacion(clasificacion.idUnique).subscribe({
+      next: () => {
+        if (this.variableSeleccionada?.idA) {
+          this.actualizarClasificacionesDespuesDeEliminar(this.variableSeleccionada.idA);
+          return;
+        }
+        this.guardandoClasificacion = false;
+        this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+      },
+      error: (err) => {
+        this.guardandoClasificacion = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private actualizarClasificacionesDespuesDeEliminar(idA: string) {
+    this.clasificacionesArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrClasificaciones = resp ?? [];
+
+        if (this.arrClasificaciones.length === 0) {
+          this.clasificacionActiva = false;
+          this.persistirBanderaClasificacionVariable(false, () => {
+            this.guardandoClasificacion = false;
+            this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+          });
+          return;
+        }
+
+        this.clasificacionActiva = true;
+        this.persistirBanderaClasificacionVariable(true, () => {
+          this.guardandoClasificacion = false;
+          this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoClasificacion = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private persistirBanderaClasificacionVariable(
+    clasificacion: boolean,
+    onSuccess: () => void,
+  ) {
+    if (!this.variableSeleccionada?.idA) {
+      this.guardandoClasificacion = false;
+      this.abrirModalError('No se encontró la variable seleccionada para actualizar la bandera de clasificación.');
+      return;
+    }
+
+    this.variableForm.patchValue({ clasificacion });
+    const payload = this.variableForm.getRawValue();
+
+    this.variablesArmoService.actualizarVariable(this.variableSeleccionada.idA, payload).subscribe({
+      next: (resp) => {
+        this.variableForm.patchValue(resp);
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        onSuccess();
+      },
+      error: (err) => {
+        this.guardandoClasificacion = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
   }
 
   limpiarDatosAbiertosLocal() {

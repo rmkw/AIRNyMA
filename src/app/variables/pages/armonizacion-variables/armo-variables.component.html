@@ -569,8 +569,11 @@
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2 2xl:grid-cols-3">
-      <app-clasificaciones-variable [(activa)]="clasificacionActiva" [(form)]="clasificacionForm"
-        (agregarClasificacion)="agregarClasificacionLocal($event)">
+      <app-clasificaciones-variable [activa]="clasificacionActiva" [(form)]="clasificacionForm"
+        [clasificaciones]="arrClasificaciones" [guardando]="guardandoClasificacion"
+        (cambiarActiva)="cambiarEstadoClasificacion($event)"
+        (agregarClasificacion)="agregarClasificacionLocal($event)"
+        (eliminarClasificacion)="eliminarClasificacionLocal($event)">
       </app-clasificaciones-variable>
 
       <app-microdatos-variable [(activo)]="microdatosActivo" [(estado)]="microdatosEstado" [(form)]="microdatosForm"

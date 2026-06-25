@@ -29,12 +29,42 @@
 
     <div class="flex justify-end gap-2">
       <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
-      <button type="button" class="btn btn-sm btn-accent" (click)="agregar()">Agregar clasificación</button>
+      <button type="button" class="btn btn-sm btn-accent" [disabled]="guardando" (click)="agregar()">
+        {{ guardando ? 'Guardando...' : 'Agregar clasificación' }}
+      </button>
     </div>
 
-    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
-      Aquí después irá la lista de clasificaciones registradas para la variable.
+    @if (clasificaciones.length > 0) {
+    <div class="overflow-x-auto rounded-xl border border-base-300">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Clase</th>
+            <th>Comentario</th>
+            <th class="w-24 text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (clasificacion of clasificaciones; track clasificacion.idUnique) {
+          <tr>
+            <td class="align-top">{{ clasificacion.clase }}</td>
+            <td class="align-top">{{ clasificacion.comentarioA }}</td>
+            <td class="align-top text-center">
+              <button type="button" class="btn btn-xs btn-error text-white" [disabled]="guardando"
+                (click)="eliminar(clasificacion)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
+    } @else {
+    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      No hay clasificaciones registradas para esta variable.
+    </div>
+    }
     }
   </div>
 </div>
