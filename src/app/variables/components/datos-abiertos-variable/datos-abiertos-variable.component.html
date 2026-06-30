@@ -5,7 +5,7 @@
         <h3 class="card-title text-base">Datos abiertos</h3>
         <p class="text-xs text-base-content/60">Capture uno o varios registros de datos abiertos asociados a la variable.</p>
       </div>
-      <input type="checkbox" class="toggle toggle-success" [checked]="activo"
+      <input type="checkbox" class="toggle toggle-success" [checked]="activo" [disabled]="guardando"
         (change)="toggleDatosAbiertos($event)" />
     </div>
 
@@ -58,13 +58,44 @@
     </div>
 
     <div class="flex justify-end gap-2">
-      <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
-      <button type="button" class="btn btn-sm btn-success text-white" (click)="agregar()">Agregar datos abiertos</button>
+      <button type="button" class="btn btn-sm btn-success text-white" [disabled]="guardando" (click)="agregar()">
+        {{ guardando ? 'Guardando...' : 'Agregar datos abiertos' }}
+      </button>
     </div>
 
-    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
-      Aquí después irá la lista de datos abiertos registrados para la variable.
+    @if (datosAbiertos.length > 0) {
+    <div class="overflow-x-auto rounded-xl border border-base-300">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Descriptor</th>
+            <th>Tabla</th>
+            <th>Campo</th>
+            <th class="w-24 text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (datoAbierto of datosAbiertos; track datoAbierto.idUnique) {
+          <tr>
+            <td class="align-top">{{ datoAbierto.descriptor }}</td>
+            <td class="align-top">{{ datoAbierto.tabla }}</td>
+            <td class="align-top">{{ datoAbierto.campo }}</td>
+            <td class="align-top text-center">
+              <button type="button" class="btn btn-xs btn-error text-white" [disabled]="guardando"
+                (click)="eliminar(datoAbierto)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
+    } @else {
+    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      No hay datos abiertos registrados para esta variable.
+    </div>
+    }
     }
   </div>
 </div>

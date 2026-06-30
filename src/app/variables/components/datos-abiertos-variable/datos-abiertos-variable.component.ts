@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DatoAbiertoArmo } from '@/variables/interfaces/armonizacion/datos-abiertos-armo.interface';
 
 export interface DatosAbiertosVariableForm {
   urlAcceso: string;
@@ -23,18 +24,30 @@ export interface DatosAbiertosVariableForm {
 export class DatosAbiertosVariableComponent {
   @Input() activo = false;
   @Input() form: DatosAbiertosVariableForm = this.crearFormularioVacio();
+  @Input() datosAbiertos: DatoAbiertoArmo[] = [];
+  @Input() guardando = false;
 
   @Output() activoChange = new EventEmitter<boolean>();
   @Output() formChange = new EventEmitter<DatosAbiertosVariableForm>();
   @Output() agregarDatosAbiertos = new EventEmitter<DatosAbiertosVariableForm>();
+  @Output() eliminarDatoAbierto = new EventEmitter<DatoAbiertoArmo>();
 
   toggleDatosAbiertos(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+
+    if (!checked && this.datosAbiertos.length > 0) {
+      input.checked = true;
+      this.activoChange.emit(false);
+      return;
+    }
+
     this.activo = checked;
     this.activoChange.emit(this.activo);
 
     if (!checked) {
-      this.limpiar();
+      this.form = this.crearFormularioVacio();
+      this.formChange.emit(this.form);
     }
   }
 
@@ -46,15 +59,12 @@ export class DatosAbiertosVariableComponent {
     this.formChange.emit(this.form);
   }
 
-  limpiar() {
-    this.activo = false;
-    this.form = this.crearFormularioVacio();
-    this.activoChange.emit(this.activo);
-    this.formChange.emit(this.form);
-  }
-
   agregar() {
     this.agregarDatosAbiertos.emit(this.form);
+  }
+
+  eliminar(datoAbierto: DatoAbiertoArmo) {
+    this.eliminarDatoAbierto.emit(datoAbierto);
   }
 
   private crearFormularioVacio(): DatosAbiertosVariableForm {

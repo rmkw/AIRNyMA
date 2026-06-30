@@ -28,7 +28,6 @@
     </div>
 
     <div class="flex justify-end gap-2">
-      <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
       <button type="button" class="btn btn-sm btn-accent" [disabled]="guardando" (click)="agregar()">
         {{ guardando ? 'Guardando...' : 'Agregar clasificación' }}
       </button>

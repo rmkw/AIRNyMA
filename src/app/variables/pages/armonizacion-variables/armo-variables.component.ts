@@ -14,12 +14,16 @@ import { ClasificacionesVariableComponent, ClasificacionVariableForm } from '@/v
 import { DatosAbiertosVariableComponent, DatosAbiertosVariableForm } from '@/variables/components/datos-abiertos-variable/datos-abiertos-variable.component';
 import { MicrodatosVariableComponent, MicrodatosVariableForm } from '@/variables/components/microdatos-variable/microdatos-variable.component';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
+import { DatoAbiertoArmo } from '@/variables/interfaces/armonizacion/datos-abiertos-armo.interface';
+import { MicrodatoArmo } from '@/variables/interfaces/armonizacion/microdatos-armo.interface';
 import { TemaSubtemaDTO } from '@/variables/interfaces/armonizacion/tema_subtema/temasubtema.interface';
 import { Direccion } from '@/variables/interfaces/direcciones.interface';
 import { FuenteSaveDTO } from '@/variables/interfaces/fuenteArmonizacion.interface';
 import { TematicaDTO } from '@/variables/interfaces/tematicas_temas/tematicaDTO.interface';
 import { VariableTablaDTO } from '@/variables/interfaces/variableTablaDTO';
 import { ClasificacionesArmoService } from '@/variables/services/armonizacion/clasificaciones-armo.service';
+import { DatosAbiertosArmoService } from '@/variables/services/armonizacion/datos-abiertos-armo.service';
+import { MicrodatosArmoService } from '@/variables/services/armonizacion/microdatos-armo.service';
 import { VariablesArmoService } from '@/variables/services/armonizacion/variables-armo.service';
 import { TemasSubtemasService } from '@/variables/services/tema_subtema/TemasSubtemasService.service';
 import { TematicasService } from '@/variables/services/tematicas_temas/tematicas_temas.service';
@@ -48,6 +52,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
   _fuentesService = inject(FuenteIdentificacionService);
   _authService = inject(authService);
   private clasificacionesArmoService = inject(ClasificacionesArmoService);
+  private microdatosArmoService = inject(MicrodatosArmoService);
+  private datosAbiertosArmoService = inject(DatosAbiertosArmoService);
 
   arrDirecciones: Direccion[] = [];
   arrProcesosPBydire: interface_ProcesoP[] = [];
@@ -55,6 +61,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   fuentesSeleccionadas: string[] = [];
   arrVariablesSeleccionadas: VariableTablaDTO[] = [];
   arrVariablesSeleccionadasFiltradas: VariableTablaDTO[] = [];
+  variablesArmonizadasIds = new Set<string>();
 
   direccionName: string | number | undefined = undefined;
 
@@ -213,6 +220,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
         next: (data) => {
           this.arrVariablesSeleccionadas = data;
           this.arrVariablesSeleccionadasFiltradas = data;
+          this.cargarEstatusVariablesArmonizadas(data);
           this.filtroIdS = '';
           this.loadingVariables = false;
           console.log(data);
@@ -221,6 +229,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           console.error('Error al cargar variables:', err);
           this.arrVariablesSeleccionadas = [];
           this.arrVariablesSeleccionadasFiltradas = [];
+          this.variablesArmonizadasIds.clear();
           this.loadingVariables = false;
         },
       });
@@ -230,8 +239,38 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.fuentesSeleccionadas = [];
     this.arrVariablesSeleccionadas = [];
     this.arrVariablesSeleccionadasFiltradas = [];
+    this.variablesArmonizadasIds.clear();
     this.filtroIdS = '';
     console.log('Selección limpiada');
+  }
+
+  cargarEstatusVariablesArmonizadas(variables: VariableTablaDTO[]) {
+    this.variablesArmonizadasIds.clear();
+
+    const fuentes = Array.from(
+      new Set(
+        variables
+          .map((variable) => variable.idFuente)
+          .filter((idFuente): idFuente is string => !!idFuente),
+      ),
+    );
+
+    fuentes.forEach((idFuente) => {
+      this.variablesArmoService.obtenerPorIdFuente(idFuente).subscribe({
+        next: (variablesArmo) => {
+          variablesArmo.forEach((variable) => {
+            this.variablesArmonizadasIds.add(variable.idA);
+          });
+        },
+        error: (err) => {
+          console.error('Error al cargar estatus de variables:', err);
+        },
+      });
+    });
+  }
+
+  variableEstaArmonizada(idA: string): boolean {
+    return this.variablesArmonizadasIds.has(idA);
   }
 
   filtrarVariablesPorIdS() {
@@ -493,6 +532,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
   mensajeSuccessUpdate: string = '';
   mensajeError: string = '';
   camposFaltantesVariable: string[] = [];
+  toastVisible = false;
+  toastMensaje = '';
+  toastTipo: 'success' | 'info' | 'error' = 'success';
+  private toastTimer?: ReturnType<typeof setTimeout>;
   abrirModalSuccessSave(mensaje: string) {
     this.mensajeSuccessSave = mensaje;
     this.SuccessSaveModal.nativeElement.showModal();
@@ -527,6 +570,23 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   cerrarModalCamposFaltantes() {
     this.CamposFaltantesModal.nativeElement.close();
+  }
+
+  mostrarToast(
+    mensaje: string,
+    tipo: 'success' | 'info' | 'error' = 'success',
+  ) {
+    this.toastMensaje = mensaje;
+    this.toastTipo = tipo;
+    this.toastVisible = true;
+
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer);
+    }
+
+    this.toastTimer = setTimeout(() => {
+      this.toastVisible = false;
+    }, 2800);
   }
 
   private obtenerMensajeError(err: any): string {
@@ -593,14 +653,11 @@ export class ArmonizacionVariablesComponent implements OnInit {
           comentarioS: variable.comentarioS,
           comentarioA: variable.comentarioA,
         });
+        this.aplicarTemasGuardados();
         this.cargarClasificacionesVariable(variable.idA);
-        if (variable.tema1) {
-          this.cargarSubtemasTema1(variable.tema1, variable.subtema1);
-        }
-
-        if (variable.tema2) {
-          this.cargarSubtemasTema2(variable.tema2, variable.subtema2);
-        }
+        this.cargarMicrodatosVariable(variable.idA, variable.microdatos ?? 'No');
+        this.cargarDatosAbiertosVariable(variable.idA);
+        this.cargarSubtemasGuardados();
       },
       error: (err) => {
         console.error('Error al cargar variable de armonización:', err);
@@ -634,7 +691,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       subtema2: '',
       tabulados: false,
       clasificacion: false,
-      microdatos: '',
+      microdatos: 'No',
       datosabiertos: false,
       mdea: variableSeleccionada.mdea ?? false,
       ods: variableSeleccionada.ods ?? false,
@@ -657,6 +714,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           next: (resp) => {
             this.variableExisteEnArmonizacion = true;
             this.modoEdicionVariable = true;
+            this.variablesArmonizadasIds.add(resp.idA);
             console.log('Variable actualizada:', resp);
             this.abrirModalSuccessUpdate(
               'La variable se actualizó correctamente en armonización.',
@@ -673,7 +731,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.variableExisteEnArmonizacion = true;
           this.modoEdicionVariable = true;
           this.variableForm.patchValue(resp);
+          this.variablesArmonizadasIds.add(resp.idA);
           this.cargarClasificacionesVariable(resp.idA);
+          this.cargarMicrodatosVariable(resp.idA, resp.microdatos ?? 'No');
+          this.cargarDatosAbiertosVariable(resp.idA);
           console.log('Variable guardada:', resp);
           this.abrirModalSuccessSave(
             'La variable se registró correctamente en armonización.',
@@ -767,6 +828,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       comentarioA: '',
     });
     this.limpiarClasificacionLocal();
+    this.limpiarMicrodatosLocal();
   }
 
   clasificacionActiva: boolean = false;
@@ -799,6 +861,11 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   microdatosActivo: boolean = false;
+  arrMicrodatos: MicrodatoArmo[] = [];
+  guardandoMicrodatos = false;
+  readonly microdatosEstadoSi = 'Sí';
+  readonly microdatosEstadoNo = 'No';
+  readonly microdatosEstadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
 
   microdatosForm: MicrodatosVariableForm = {
     urlAcceso: '',
@@ -809,6 +876,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
     comentarioA: '',
   };
   datosAbiertosActivo: boolean = false;
+  arrDatosAbiertos: DatoAbiertoArmo[] = [];
+  guardandoDatosAbiertos = false;
 
   datosAbiertosForm: DatosAbiertosVariableForm = {
     urlAcceso: '',
@@ -862,7 +931,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
         this.persistirBanderaClasificacionVariable(true, () => {
           this.guardandoClasificacion = false;
           this.cargarClasificacionesVariable(payload.idA);
-          this.abrirModalSuccessSave('La clasificación se registró correctamente.');
+          this.mostrarToast('Clasificación agregada correctamente.');
         });
       },
       error: (err) => {
@@ -890,7 +959,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   eliminarClasificacionLocal(clasificacion: ClasificacionArmo) {
     if (!clasificacion.idUnique) {
-      this.abrirModalError('No se encontró el identificador de la clasificación.');
+      this.mostrarToast('No se encontró el identificador de la clasificación.', 'error');
       return;
     }
 
@@ -902,11 +971,11 @@ export class ArmonizacionVariablesComponent implements OnInit {
           return;
         }
         this.guardandoClasificacion = false;
-        this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+        this.mostrarToast('Clasificación eliminada correctamente.');
       },
       error: (err) => {
         this.guardandoClasificacion = false;
-        this.abrirModalError(this.obtenerMensajeError(err));
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
       },
     });
   }
@@ -920,7 +989,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.clasificacionActiva = false;
           this.persistirBanderaClasificacionVariable(false, () => {
             this.guardandoClasificacion = false;
-            this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+            this.mostrarToast('Clasificación eliminada correctamente.');
           });
           return;
         }
@@ -928,12 +997,12 @@ export class ArmonizacionVariablesComponent implements OnInit {
         this.clasificacionActiva = true;
         this.persistirBanderaClasificacionVariable(true, () => {
           this.guardandoClasificacion = false;
-          this.abrirModalSuccessUpdate('La clasificación se eliminó correctamente.');
+          this.mostrarToast('Clasificación eliminada correctamente.');
         });
       },
       error: (err) => {
         this.guardandoClasificacion = false;
-        this.abrirModalError(this.obtenerMensajeError(err));
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
       },
     });
   }
@@ -967,7 +1036,214 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   limpiarDatosAbiertosLocal() {
     this.datosAbiertosActivo = false;
-    this.datosAbiertosForm = {
+    this.arrDatosAbiertos = [];
+    this.guardandoDatosAbiertos = false;
+    this.variableForm?.patchValue({ datosabiertos: false });
+    this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
+  }
+  microdatosEstado: string = '';
+
+  cambiarEstadoMicrodatos(activo: boolean) {
+    if (!activo && this.arrMicrodatos.length > 0) {
+      this.microdatosActivo = true;
+      this.abrirModalError(
+        'No puedes desactivar microdatos mientras existan registros. Primero elimina los microdatos registrados.',
+      );
+      return;
+    }
+
+    this.microdatosActivo = activo;
+
+    if (!activo) {
+      this.microdatosEstado = '';
+      this.variableForm.patchValue({ microdatos: this.microdatosEstadoNo });
+      this.microdatosForm = this.crearMicrodatosFormVacio();
+      return;
+    }
+
+    if (!this.microdatosEstado) {
+      this.microdatosEstado = this.microdatosEstadoSi;
+    }
+  }
+
+  limpiarMicrodatosLocal() {
+    this.microdatosActivo = false;
+    this.microdatosEstado = '';
+    this.arrMicrodatos = [];
+    this.guardandoMicrodatos = false;
+    this.variableForm?.patchValue({ microdatos: this.microdatosEstadoNo });
+    this.microdatosForm = this.crearMicrodatosFormVacio();
+  }
+
+  cambiarEstadoDatosAbiertos(activo: boolean) {
+    if (!activo && this.arrDatosAbiertos.length > 0) {
+      this.datosAbiertosActivo = true;
+      this.variableForm.patchValue({ datosabiertos: true });
+      this.abrirModalError(
+        'No puedes desactivar datos abiertos mientras existan registros. Primero elimina los datos abiertos registrados.',
+      );
+      return;
+    }
+
+    this.datosAbiertosActivo = activo;
+
+    if (!activo) {
+      this.variableForm.patchValue({ datosabiertos: false });
+      this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
+    }
+  }
+
+  agregarDatosAbiertosLocal(form: DatosAbiertosVariableForm) {
+    if (!this.variableSeleccionada?.idA) {
+      this.abrirModalError('Selecciona una variable antes de agregar datos abiertos.');
+      return;
+    }
+
+    if (!this.variableExisteEnArmonizacion) {
+      this.abrirModalError('Primero guarda la variable en armonización para poder agregar datos abiertos.');
+      return;
+    }
+
+    const payload: DatoAbiertoArmo = {
+      idA: this.variableSeleccionada.idA,
+      urlAcceso: form.urlAcceso?.trim() || '',
+      urlDescarga: form.urlDescarga?.trim() || '',
+      descriptor: form.descriptor?.trim() || '',
+      tabla: form.tabla?.trim() || '',
+      campo: form.campo?.trim() || '',
+      comentarioA: form.comentarioA?.trim() || '',
+    };
+
+    if (
+      !payload.urlAcceso ||
+      !payload.urlDescarga ||
+      !payload.descriptor ||
+      !payload.tabla ||
+      !payload.campo ||
+      !payload.comentarioA
+    ) {
+      this.abrirModalError('Captura todos los campos de datos abiertos antes de agregar el registro.');
+      return;
+    }
+
+    this.guardandoDatosAbiertos = true;
+    this.datosAbiertosArmoService.guardarDatoAbierto(payload).subscribe({
+      next: () => {
+        this.datosAbiertosActivo = true;
+        this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
+        this.persistirBanderaDatosAbiertosVariable(true, () => {
+          this.guardandoDatosAbiertos = false;
+          this.cargarDatosAbiertosVariable(payload.idA);
+          this.mostrarToast('Dato abierto agregado correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoDatosAbiertos = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  cargarDatosAbiertosVariable(idA: string) {
+    this.datosAbiertosArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrDatosAbiertos = resp ?? [];
+
+        if (this.arrDatosAbiertos.length > 0) {
+          this.datosAbiertosActivo = true;
+          this.variableForm.patchValue({ datosabiertos: true });
+          return;
+        }
+
+        this.datosAbiertosActivo = false;
+        this.variableForm.patchValue({ datosabiertos: false });
+      },
+      error: (err) => {
+        console.error('Error al cargar datos abiertos:', err);
+        this.arrDatosAbiertos = [];
+      },
+    });
+  }
+
+  eliminarDatoAbiertoLocal(datoAbierto: DatoAbiertoArmo) {
+    if (!datoAbierto.idUnique) {
+      this.mostrarToast('No se encontró el identificador del dato abierto.', 'error');
+      return;
+    }
+
+    this.guardandoDatosAbiertos = true;
+    this.datosAbiertosArmoService.eliminarDatoAbierto(datoAbierto.idUnique).subscribe({
+      next: () => {
+        if (this.variableSeleccionada?.idA) {
+          this.actualizarDatosAbiertosDespuesDeEliminar(this.variableSeleccionada.idA);
+          return;
+        }
+        this.guardandoDatosAbiertos = false;
+        this.mostrarToast('Dato abierto eliminado correctamente.');
+      },
+      error: (err) => {
+        this.guardandoDatosAbiertos = false;
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
+      },
+    });
+  }
+
+  private actualizarDatosAbiertosDespuesDeEliminar(idA: string) {
+    this.datosAbiertosArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrDatosAbiertos = resp ?? [];
+
+        if (this.arrDatosAbiertos.length === 0) {
+          this.datosAbiertosActivo = false;
+          this.persistirBanderaDatosAbiertosVariable(false, () => {
+            this.guardandoDatosAbiertos = false;
+            this.mostrarToast('Dato abierto eliminado correctamente.');
+          });
+          return;
+        }
+
+        this.datosAbiertosActivo = true;
+        this.persistirBanderaDatosAbiertosVariable(true, () => {
+          this.guardandoDatosAbiertos = false;
+          this.mostrarToast('Dato abierto eliminado correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoDatosAbiertos = false;
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
+      },
+    });
+  }
+
+  private persistirBanderaDatosAbiertosVariable(
+    datosabiertos: boolean,
+    onSuccess: () => void,
+  ) {
+    if (!this.variableSeleccionada?.idA) {
+      this.guardandoDatosAbiertos = false;
+      this.abrirModalError('No se encontró la variable seleccionada para actualizar la bandera de datos abiertos.');
+      return;
+    }
+
+    this.variableForm.patchValue({ datosabiertos });
+    const payload = this.variableForm.getRawValue();
+
+    this.variablesArmoService.actualizarVariable(this.variableSeleccionada.idA, payload).subscribe({
+      next: (resp) => {
+        this.variableForm.patchValue(resp);
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        onSuccess();
+      },
+      error: (err) => {
+        this.guardandoDatosAbiertos = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private crearDatosAbiertosFormVacio(): DatosAbiertosVariableForm {
+    return {
       urlAcceso: '',
       urlDescarga: '',
       descriptor: '',
@@ -976,11 +1252,185 @@ export class ArmonizacionVariablesComponent implements OnInit {
       comentarioA: '',
     };
   }
-  microdatosEstado: string = '';
-  limpiarMicrodatosLocal() {
-    this.microdatosActivo = false;
-    this.microdatosEstado = '';
-    this.microdatosForm = {
+
+  agregarMicrodatosLocal(payload: {
+    estado: string;
+    form: MicrodatosVariableForm;
+  }) {
+    if (!this.variableSeleccionada?.idA) {
+      this.abrirModalError('Selecciona una variable antes de agregar microdatos.');
+      return;
+    }
+
+    if (!this.variableExisteEnArmonizacion) {
+      this.abrirModalError('Primero guarda la variable en armonización para poder agregar microdatos.');
+      return;
+    }
+
+    const microdato: MicrodatoArmo = {
+      idA: this.variableSeleccionada.idA,
+      urlAcceso: payload.form.urlAcceso?.trim() || '',
+      descriptor: payload.form.descriptor?.trim() || '',
+      urlDescriptor: payload.form.urlDescriptor?.trim() || '',
+      tabla: payload.form.tabla?.trim() || '',
+      campo: payload.form.campo?.trim() || '',
+      comentarioA: payload.form.comentarioA?.trim() || '',
+    };
+
+    if (
+      !microdato.urlAcceso ||
+      !microdato.descriptor ||
+      !microdato.urlDescriptor ||
+      !microdato.tabla ||
+      !microdato.campo ||
+      !microdato.comentarioA
+    ) {
+      this.abrirModalError('Captura todos los campos de microdatos antes de agregar el registro.');
+      return;
+    }
+
+    const estadoMicrodatos = this.obtenerEstadoMicrodatosParaGuardar(payload.estado);
+
+    this.guardandoMicrodatos = true;
+    this.microdatosArmoService.guardarMicrodato(microdato).subscribe({
+      next: () => {
+        this.microdatosActivo = true;
+        this.microdatosEstado = estadoMicrodatos;
+        this.microdatosForm = this.crearMicrodatosFormVacio();
+        this.persistirEstadoMicrodatosVariable(estadoMicrodatos, () => {
+          this.guardandoMicrodatos = false;
+          this.cargarMicrodatosVariable(microdato.idA, estadoMicrodatos);
+          this.mostrarToast('Microdato agregado correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoMicrodatos = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  cargarMicrodatosVariable(idA: string, estadoVariable: string = this.microdatosEstadoNo) {
+    this.microdatosArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrMicrodatos = resp ?? [];
+
+        if (this.arrMicrodatos.length > 0) {
+          this.microdatosActivo = true;
+          this.microdatosEstado = this.normalizarEstadoMicrodatos(estadoVariable);
+          this.variableForm.patchValue({ microdatos: this.microdatosEstado });
+          return;
+        }
+
+        this.microdatosActivo = false;
+        this.microdatosEstado = '';
+        this.variableForm.patchValue({ microdatos: this.microdatosEstadoNo });
+      },
+      error: (err) => {
+        console.error('Error al cargar microdatos:', err);
+        this.arrMicrodatos = [];
+      },
+    });
+  }
+
+  eliminarMicrodatoLocal(microdato: MicrodatoArmo) {
+    if (!microdato.idUnique) {
+      this.mostrarToast('No se encontró el identificador del microdato.', 'error');
+      return;
+    }
+
+    this.guardandoMicrodatos = true;
+    this.microdatosArmoService.eliminarMicrodato(microdato.idUnique).subscribe({
+      next: () => {
+        if (this.variableSeleccionada?.idA) {
+          this.actualizarMicrodatosDespuesDeEliminar(this.variableSeleccionada.idA);
+          return;
+        }
+        this.guardandoMicrodatos = false;
+        this.mostrarToast('Microdato eliminado correctamente.');
+      },
+      error: (err) => {
+        this.guardandoMicrodatos = false;
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
+      },
+    });
+  }
+
+  private actualizarMicrodatosDespuesDeEliminar(idA: string) {
+    this.microdatosArmoService.obtenerPorIdA(idA).subscribe({
+      next: (resp) => {
+        this.arrMicrodatos = resp ?? [];
+
+        if (this.arrMicrodatos.length === 0) {
+          this.microdatosActivo = false;
+          this.microdatosEstado = '';
+          this.persistirEstadoMicrodatosVariable(this.microdatosEstadoNo, () => {
+            this.guardandoMicrodatos = false;
+            this.mostrarToast('Microdato eliminado correctamente.');
+          });
+          return;
+        }
+
+        const estadoActual = this.normalizarEstadoMicrodatos(this.variableForm.get('microdatos')?.value);
+        this.microdatosActivo = true;
+        this.microdatosEstado = estadoActual;
+        this.persistirEstadoMicrodatosVariable(estadoActual, () => {
+          this.guardandoMicrodatos = false;
+          this.mostrarToast('Microdato eliminado correctamente.');
+        });
+      },
+      error: (err) => {
+        this.guardandoMicrodatos = false;
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
+      },
+    });
+  }
+
+  private persistirEstadoMicrodatosVariable(
+    microdatos: string,
+    onSuccess: () => void,
+  ) {
+    if (!this.variableSeleccionada?.idA) {
+      this.guardandoMicrodatos = false;
+      this.abrirModalError('No se encontró la variable seleccionada para actualizar el estado de microdatos.');
+      return;
+    }
+
+    this.variableForm.patchValue({ microdatos });
+    const payload = this.variableForm.getRawValue();
+
+    this.variablesArmoService.actualizarVariable(this.variableSeleccionada.idA, payload).subscribe({
+      next: (resp) => {
+        this.variableForm.patchValue(resp);
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        onSuccess();
+      },
+      error: (err) => {
+        this.guardandoMicrodatos = false;
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private obtenerEstadoMicrodatosParaGuardar(estado: string): string {
+    return estado === this.microdatosEstadoLaboratorio
+      ? this.microdatosEstadoLaboratorio
+      : this.microdatosEstadoSi;
+  }
+
+  private normalizarEstadoMicrodatos(estado: string | null | undefined): string {
+    if (estado === this.microdatosEstadoLaboratorio) {
+      return this.microdatosEstadoLaboratorio;
+    }
+
+    return estado === this.microdatosEstadoSi || estado === 'Si'
+      ? this.microdatosEstadoSi
+      : this.microdatosEstadoNo;
+  }
+
+  private crearMicrodatosFormVacio(): MicrodatosVariableForm {
+    return {
       urlAcceso: '',
       descriptor: '',
       urlDescriptor: '',
@@ -988,17 +1438,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
       campo: '',
       comentarioA: '',
     };
-  }
-
-  agregarDatosAbiertosLocal(form: DatosAbiertosVariableForm) {
-    console.log('Datos abiertos capturados:', form);
-  }
-
-  agregarMicrodatosLocal(payload: {
-    estado: string;
-    form: MicrodatosVariableForm;
-  }) {
-    console.log('Microdatos capturados:', payload);
   }
 
   arrTematicas: TematicaDTO[] = [];
@@ -1036,6 +1475,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.temasSubtemasService.obtenerTemas().subscribe({
       next: (resp) => {
         this.arrTemasCatalogo = resp;
+        this.aplicarTemasGuardados();
+        this.cargarSubtemasGuardados();
       },
       error: (err) => {
         console.error('Error al cargar temas:', err);
@@ -1043,6 +1484,41 @@ export class ArmonizacionVariablesComponent implements OnInit {
       },
     });
   }
+
+  private aplicarTemasGuardados() {
+    this.aplicarTemaGuardado('tema1');
+    this.aplicarTemaGuardado('tema2');
+  }
+
+  private aplicarTemaGuardado(controlName: 'tema1' | 'tema2') {
+    const temaSeleccionado = this.variableForm.get(controlName)?.value;
+    const temaNormalizado = this.normalizarTextoCatalogo(temaSeleccionado);
+
+    if (!temaNormalizado || this.arrTemasCatalogo.length === 0) return;
+
+    const temaEnCatalogo =
+      this.arrTemasCatalogo.find(
+        (tema) => this.normalizarTextoCatalogo(tema) === temaNormalizado,
+      ) ?? temaSeleccionado;
+
+    this.variableForm.patchValue({ [controlName]: temaEnCatalogo });
+  }
+
+  private cargarSubtemasGuardados() {
+    const tema1 = this.variableForm.get('tema1')?.value;
+    const subtema1 = this.variableForm.get('subtema1')?.value;
+    const tema2 = this.variableForm.get('tema2')?.value;
+    const subtema2 = this.variableForm.get('subtema2')?.value;
+
+    if (tema1) {
+      this.cargarSubtemasTema1(tema1, subtema1);
+    }
+
+    if (tema2) {
+      this.cargarSubtemasTema2(tema2, subtema2);
+    }
+  }
+
   cargarSubtemasTema1(tema: string, subtemaSeleccionado?: string | null) {
     this.arrSubtemasTema1 = [];
     if (!subtemaSeleccionado) {
@@ -1086,15 +1562,21 @@ export class ArmonizacionVariablesComponent implements OnInit {
     subtemas: TemaSubtemaDTO[],
     subtemaSeleccionado?: string | null,
   ) {
-    const subtemaNormalizado = subtemaSeleccionado?.trim();
+    const subtemaNormalizado = this.normalizarTextoCatalogo(subtemaSeleccionado);
 
     if (!subtemaNormalizado) return;
 
     const subtemaEnCatalogo =
-      subtemas.find((item) => item.subtema?.trim() === subtemaNormalizado)
+      subtemas.find(
+        (item) => this.normalizarTextoCatalogo(item.subtema) === subtemaNormalizado,
+      )
         ?.subtema ?? subtemaSeleccionado;
 
     this.variableForm.patchValue({ [controlName]: subtemaEnCatalogo });
+  }
+
+  private normalizarTextoCatalogo(valor?: string | null): string {
+    return (valor ?? '').trim().toLowerCase();
   }
   onTema1Change(event: Event) {
     const tema = (event.target as HTMLSelectElement).value;

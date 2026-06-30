@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VariablesArmo } from '@/variables/interfaces/armonizacion/variables-armo.interface';
 import { environment } from 'src/environments/environment';
@@ -20,6 +20,15 @@ export class VariablesArmoService {
 
   obtenerPorIdA(idA: string): Observable<VariablesArmo> {
     return this.http.get<VariablesArmo>(`${this.baseUrl}/${idA}`, {
+      withCredentials: true
+    });
+  }
+
+  obtenerPorIdFuente(idFuente: string): Observable<VariablesArmo[]> {
+    const params = new HttpParams().set('idFuente', idFuente);
+
+    return this.http.get<VariablesArmo[]>(`${this.baseUrl}/por-fuente`, {
+      params,
       withCredentials: true
     });
   }

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MicrodatoArmo } from '@/variables/interfaces/armonizacion/microdatos-armo.interface';
 
 export interface MicrodatosVariableForm {
   urlAcceso: string;
@@ -21,9 +22,14 @@ export interface MicrodatosVariableForm {
   },
 })
 export class MicrodatosVariableComponent {
+  readonly estadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
+  readonly estadoSi = 'Sí';
+
   @Input() activo = false;
   @Input() estado = '';
   @Input() form: MicrodatosVariableForm = this.crearFormularioVacio();
+  @Input() microdatos: MicrodatoArmo[] = [];
+  @Input() guardando = false;
 
   @Output() activoChange = new EventEmitter<boolean>();
   @Output() estadoChange = new EventEmitter<string>();
@@ -32,20 +38,37 @@ export class MicrodatosVariableComponent {
     estado: string;
     form: MicrodatosVariableForm;
   }>();
+  @Output() eliminarMicrodato = new EventEmitter<MicrodatoArmo>();
 
   toggleMicrodatos(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+
+    if (!checked && this.microdatos.length > 0) {
+      input.checked = true;
+      this.activoChange.emit(false);
+      return;
+    }
+
     this.activo = checked;
     this.activoChange.emit(this.activo);
 
     if (!checked) {
-      this.limpiar();
+      this.estado = '';
+      this.form = this.crearFormularioVacio();
+      this.estadoChange.emit(this.estado);
+      this.formChange.emit(this.form);
     }
   }
 
   seleccionarEstado(estado: string) {
     this.estado = estado;
     this.estadoChange.emit(this.estado);
+  }
+
+  cambiarEstadoLaboratorio(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.seleccionarEstado(checked ? this.estadoLaboratorio : this.estadoSi);
   }
 
   actualizarCampo(campo: keyof MicrodatosVariableForm, valor: string) {
@@ -56,20 +79,15 @@ export class MicrodatosVariableComponent {
     this.formChange.emit(this.form);
   }
 
-  limpiar() {
-    this.activo = false;
-    this.estado = '';
-    this.form = this.crearFormularioVacio();
-    this.activoChange.emit(this.activo);
-    this.estadoChange.emit(this.estado);
-    this.formChange.emit(this.form);
-  }
-
   agregar() {
     this.agregarMicrodatos.emit({
       estado: this.estado,
       form: this.form,
     });
+  }
+
+  eliminar(microdato: MicrodatoArmo) {
+    this.eliminarMicrodato.emit(microdato);
   }
 
   private crearFormularioVacio(): MicrodatosVariableForm {

@@ -28,9 +28,9 @@
   </div>
 
   <!-- 3columnas -->
-  <div class="grid gap-4 md:grid-cols-9">
+  <div class="grid gap-4 md:grid-cols-12">
 
-    <div class="col-span-6 md:col-span-3">
+    <div class="col-span-12 md:col-span-6 lg:col-span-4">
 
       <div class="card border border-base-300 border-t-blue-900 border-t-4 bg-base-100 shadow-sm mb-4">
         <div class="card-body gap-5 p-5">
@@ -120,12 +120,12 @@
           </div>
           } @else {
           <div class="overflow-x-auto rounded-box border border-base-300 max-h-72">
-            <table class="table table-pin-rows table-zebra">
+            <table class="table table-pin-rows table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>
                   <th>Fuente</th>
-                  <th>URL</th>
-                  <th>Edición</th>
+                  <th class="text-center">URL</th>
+                  <th class="text-center">Edición</th>
                   <th class="text-center">Seleccionar</th>
                 </tr>
               </thead>
@@ -134,16 +134,16 @@
                 @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
                 <tr>
                   <td class="text-sm">{{ fuente.fuente }}</td>
-                  <td class="text-sm">
+                  <td class="text-sm text-center">
                     @if (fuente.url) {
                     <a [href]="fuente.url" target="_blank" class="link link-primary break-all">Ver URL</a>
                     } @else {
                     <span class="text-base-content/50">Sin URL</span>
                     }
                   </td>
-                  <td class="text-sm">{{ fuente.edicion || 'Sin edición' }}</td>
+                  <td class="text-sm text-center">{{ fuente.edicion || 'Sin edición' }}</td>
                   <td class="text-center">
-                    <input type="checkbox" class="checkbox checkbox-sm" [value]="fuente.idFuente"
+                    <input type="checkbox" class="text-center checkbox checkbox-sm" [value]="fuente.idFuente"
                       [checked]="fuentesSeleccionadas.includes(fuente.idFuente)"
                       (change)="toggleFuenteSelection($event, fuente.idFuente)" />
                   </td>
@@ -151,7 +151,7 @@
                 }
                 } @else {
                 <tr>
-                  <td colspan="4" class="py-10 text-center text-sm text-base-content/60">
+                  <td colspan="4" class="py-10 text-center text-sm text-base-content/60 h-37">
                     No hay fuentes para mostrar.
                   </td>
                 </tr>
@@ -166,7 +166,7 @@
 
     </div>
 
-    <div class="col-span-6 md:col-span-3">
+    <div class="col-span-12 md:col-span-6 lg:col-span-4">
 
       <div class="card border border-base-300 border-t-cyan-600 border-t-4 bg-base-100 shadow-sm mb-4">
 
@@ -220,24 +220,37 @@
               </div>
             </div>
           } @else {
-            <div class="overflow-x-auto rounded-box border border-base-300 max-h-85">
-              <table class="table table-pin-rows table-zebra">
+            <div class="overflow-x-auto rounded-box border border-base-300 max-h-74">
+              <table class="table table-pin-rows table-zebra table-sm [&_td]:py-2 [&_th]:py-2">
                 <thead>
                   <tr>
-                    <th class="w-[110px]">ID</th>
-                    <th>Nombre</th>
-                    <th class="w-[110px] text-center">Acción</th>
+                    <th class="text-sm">ID</th>
+                    <th class="text-sm">Nombre</th>
+                    <th class="text-sm text-center">Estatus</th>
+                    <th class="text-sm text-center">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
                   @if (arrVariablesSeleccionadasFiltradas.length > 0) {
                   @for (v of arrVariablesSeleccionadasFiltradas; track v.idA) {
                   <tr [ngClass]="{ 'bg-primary/10': variableSeleccionada?.idA === v.idA }">
-                    <td class="whitespace-nowrap text-xs align-top">{{ v.idA }}</td>
-                    <td class="text-sm leading-5 align-top break-words">
-                      <span class="line-clamp-3">{{ v.nombre }}</span>
+                    <td class="text-xs ">{{ v.idA }}</td>
+                    <td class="text-sm leading-5  break-words max-w-44">
+                      <div class="tooltip tooltip-top w-full" [attr.data-tip]="v.nombre">
+                        <span class="block truncate">
+                          {{ v.nombre }}
+                        </span>
+                      </div>
                     </td>
-                    <td class="align-top text-center">
+                    <td class="text-center ">
+                      <div class="inline-grid *:[grid-area:1/1]">
+                        <div class="status animate-ping"
+                          [ngClass]="variableEstaArmonizada(v.idA) ? 'status-success' : 'status-error'"></div>
+                        <div class="status"
+                          [ngClass]="variableEstaArmonizada(v.idA) ? 'status-success' : 'status-error'"></div>
+                      </div>
+                    </td>
+                    <td class=" text-center">
                       <button class="btn btn-xs" [class.btn-primary]="variableSeleccionada?.idA !== v.idA"
                         [class.btn-success]="variableSeleccionada?.idA === v.idA" (click)="seleccionarVariable(v)">
                         Seleccionar
@@ -247,13 +260,29 @@
                   }
                   } @else {
                   <tr>
-                    <td colspan="3" class="py-8 text-center text-sm text-base-content/60 h-38">
+                    <td colspan="4"class="py-8 text-center text-sm text-base-content/60 h-38">
                       No hay variables con ese filtro.
                     </td>
                   </tr>
                   }
                 </tbody>
               </table>
+            </div>
+            <div class="mt-2 flex flex-wrap items-center gap-4 text-xs text-base-content/70">
+              <div class="flex items-center gap-2">
+                <div class="inline-grid *:[grid-area:1/1]">
+                  <div class="status status-success animate-ping"></div>
+                  <div class="status status-success"></div>
+                </div>
+                <span>Variable Armonizada</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="inline-grid *:[grid-area:1/1]">
+                  <div class="status status-error animate-ping"></div>
+                  <div class="status status-error"></div>
+                </div>
+                <span>Variable No Armonizada</span>
+              </div>
             </div>
 
           }
@@ -267,7 +296,7 @@
     </div>
 
 
-    <div class="col-span-6 md:col-span-3">
+    <div class="col-span-12 md:col-span-12 lg:col-span-4">
       <div class="card border border-base-300 border-t-cyan-500 border-t-4 bg-base-100 shadow-sm">
 
         <div class="card-body gap-5 p-4">
@@ -292,7 +321,7 @@
 
               <div class="form-control md:col-span-2">
                 <label class="label"><span class="label-text text-xs font-medium">Acrónimo</span></label>
-                <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.acronimo" />
+                <input type="text" class="input input-bordered input-sm w-full readonly" [(ngModel)]="fuenteForm.acronimo" />
               </div>
 
               <div class="form-control md:col-span-2">
@@ -343,7 +372,7 @@
             </button>
           </div>
           } @else {
-          <div class="rounded-xl border border-dashed border-base-300 py-28 text-center h-68 m-2 text-sm text-base-content/60">
+          <div class="rounded-xl border border-dashed border-base-300 py-28 text-center h-76 m-2 text-sm text-base-content/60">
             Selecciona una variable de la lista para cargar aquí su fuente asociada.
           </div>
           }
@@ -359,7 +388,7 @@
 
 
   <!-- lo de la variable -->
-  <!-- @if (puedeMostrarBloqueVariableSeleccion && variableSeleccionada) { -->
+  @if (puedeMostrarBloqueVariableSeleccion && variableSeleccionada) {
   <div class="card border border-base-300 bg-base-100 shadow-sm">
     <div class="h-1 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c]"></div>
     <div class="card-body gap-6 p-5 lg:p-6">
@@ -447,7 +476,7 @@
             <div class="form-control md:col-span-6">
               <label class="label"><span class="label-text text-xs font-medium">Definición</span></label>
               <textarea class="textarea textarea-bordered min-h-16 w-full bg-base-200 leading-relaxed"
-                formControlName="definicion" readonly></textarea>
+                formControlName="definicion" ></textarea>
             </div>
 
             <div class="form-control md:col-span-6">
@@ -576,17 +605,37 @@
         (eliminarClasificacion)="eliminarClasificacionLocal($event)">
       </app-clasificaciones-variable>
 
-      <app-microdatos-variable [(activo)]="microdatosActivo" [(estado)]="microdatosEstado" [(form)]="microdatosForm"
-        (agregarMicrodatos)="agregarMicrodatosLocal($event)">
+      <app-microdatos-variable [activo]="microdatosActivo" [(estado)]="microdatosEstado" [(form)]="microdatosForm"
+        [microdatos]="arrMicrodatos" [guardando]="guardandoMicrodatos"
+        (activoChange)="cambiarEstadoMicrodatos($event)" (agregarMicrodatos)="agregarMicrodatosLocal($event)"
+        (eliminarMicrodato)="eliminarMicrodatoLocal($event)">
       </app-microdatos-variable>
 
-      <app-datos-abiertos-variable [(activo)]="datosAbiertosActivo" [(form)]="datosAbiertosForm"
-        (agregarDatosAbiertos)="agregarDatosAbiertosLocal($event)">
+      <app-datos-abiertos-variable [activo]="datosAbiertosActivo" [(form)]="datosAbiertosForm"
+        [datosAbiertos]="arrDatosAbiertos" [guardando]="guardandoDatosAbiertos"
+        (activoChange)="cambiarEstadoDatosAbiertos($event)" (agregarDatosAbiertos)="agregarDatosAbiertosLocal($event)"
+        (eliminarDatoAbierto)="eliminarDatoAbiertoLocal($event)">
       </app-datos-abiertos-variable>
     </div>
   </section>
-  <!-- } -->
+   }
 </div>
+
+@if (toastVisible) {
+<div class="toast toast-end toast-bottom z-50">
+  <div class="alert shadow-lg" [ngClass]="{
+    'alert-success': toastTipo === 'success',
+    'alert-info': toastTipo === 'info',
+    'alert-error': toastTipo === 'error'
+  }">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+      stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="text-sm font-medium">{{ toastMensaje }}</span>
+  </div>
+</div>
+}
 
 <dialog #CamposFaltantesModal class="modal">
   <div class="modal-box">

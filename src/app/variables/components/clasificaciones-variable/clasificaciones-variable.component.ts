@@ -30,7 +30,13 @@ export class ClasificacionesVariableComponent {
   @Output() eliminarClasificacion = new EventEmitter<ClasificacionArmo>();
 
   toggleClasificacion(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
+    const input = event.target as HTMLInputElement;
+    const checked = input.checked;
+
+    if (!checked && this.clasificaciones.length > 0) {
+      input.checked = true;
+    }
+
     this.cambiarActiva.emit(checked);
   }
 
@@ -39,11 +45,6 @@ export class ClasificacionesVariableComponent {
       ...this.form,
       [campo]: valor,
     };
-    this.formChange.emit(this.form);
-  }
-
-  limpiar() {
-    this.form = this.crearFormularioVacio();
     this.formChange.emit(this.form);
   }
 

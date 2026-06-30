@@ -5,7 +5,8 @@
         <h3 class="card-title text-base">Microdatos</h3>
         <p class="text-xs text-base-content/60">Capture uno o varios registros de microdatos asociados a la variable.</p>
       </div>
-      <input type="checkbox" class="toggle toggle-info" [checked]="activo" (change)="toggleMicrodatos($event)" />
+      <input type="checkbox" class="toggle toggle-info" [checked]="activo" [disabled]="guardando"
+        (change)="toggleMicrodatos($event)" />
     </div>
 
     @if (activo) {
@@ -19,9 +20,8 @@
 
               <label class="flex items-start gap-2 text-sm">
                 <input type="checkbox" class="checkbox checkbox-sm mt-0.5"
-                  [checked]="estado === 'Sí. (Disponible a través del laboratorio de microdatos).'"
-                  (change)="seleccionarEstado('Sí. (Disponible a través del laboratorio de microdatos).')" />
-                <span>Sí. (Disponible a través del laboratorio de microdatos).</span>
+                  [checked]="estado === estadoLaboratorio" (change)="cambiarEstadoLaboratorio($event)" />
+                <span>Sí (disponibles a través del Laboratorio de Microdatos)</span>
               </label>
             </div>
           </div>
@@ -74,13 +74,43 @@
     </div>
 
     <div class="flex justify-end gap-2">
-      <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar</button>
-      <button type="button" class="btn btn-sm btn-info" (click)="agregar()">Agregar microdatos</button>
+      <button type="button" class="btn btn-sm btn-info" [disabled]="guardando" (click)="agregar()">
+        {{ guardando ? 'Guardando...' : 'Agregar microdatos' }}
+      </button>
     </div>
 
-    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
-      Aquí después irá la lista de microdatos registrados para la variable.
+    @if (microdatos.length > 0) {
+    <div class="overflow-x-auto rounded-xl border border-base-300">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Descriptor</th>
+            <th>Tabla</th>
+            <th>Campo</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (microdato of microdatos; track microdato.idUnique) {
+          <tr>
+            <td>{{ microdato.descriptor }}</td>
+            <td>{{ microdato.tabla }}</td>
+            <td>{{ microdato.campo }}</td>
+            <td>
+              <button type="button" class="btn btn-error btn-xs" [disabled]="guardando" (click)="eliminar(microdato)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
+    } @else {
+    <div class="rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      Aquí aparecerán los microdatos registrados para la variable.
+    </div>
+    }
     }
   </div>
 </div>
