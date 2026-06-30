@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between gap-4">
       <div>
         <h3 class="card-title text-base">Clasificaciones</h3>
-        <p class="text-xs text-base-content/60">Captura una o varias clasificaciones asociadas a la variable.</p>
+        <p class="text-xs text-base-content/60">Registra al menos 2 clasificaciones asociadas a la variable.</p>
       </div>
       <input type="checkbox" class="toggle toggle-accent" [checked]="activa"
         (change)="toggleClasificacion($event)" />
@@ -31,6 +31,16 @@
       <button type="button" class="btn btn-sm btn-accent" [disabled]="guardando" (click)="agregar()">
         {{ guardando ? 'Guardando...' : 'Agregar clase' }}
       </button>
+    </div>
+
+    <div class="rounded-xl border p-3 text-sm"
+      [ngClass]="cumpleMinimoClasificaciones ? 'border-success bg-success/10' : 'border-warning bg-warning/10'">
+      @if (cumpleMinimoClasificaciones) {
+      Mínimo completado: {{ clasificaciones.length }} clasificaciones registradas.
+      } @else {
+      {{ clasificaciones.length }} de {{ minimoClasificaciones }} clasificaciones registradas.
+      {{ clasificacionesFaltantes === 1 ? 'Falta 1.' : 'Faltan ' + clasificacionesFaltantes + '.' }}
+      }
     </div>
 
     @if (clasificaciones.length > 0) {

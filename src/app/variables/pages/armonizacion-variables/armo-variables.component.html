@@ -123,7 +123,7 @@
             <table class="table table-pin-rows table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>
-                  <th>Fuente</th>
+                  <th class="text-center">Fuente</th>
                   <th class="text-center">URL</th>
                   <th class="text-center">Edición</th>
                   <th class="text-center">Seleccionar</th>
@@ -133,10 +133,10 @@
                 @if (arrFuentesByProceso.length > 0) {
                 @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
                 <tr>
-                  <td class="text-sm">{{ fuente.fuente }}</td>
+                  <td class="text-sm text-center">{{ fuente.fuente }}</td>
                   <td class="text-sm text-center">
                     @if (fuente.url) {
-                    <a [href]="fuente.url" target="_blank" class="link link-primary break-all">Ver URL</a>
+                    <a [href]="fuente.url" target="_blank" class="link link-neutral break-all">Ver URL</a>
                     } @else {
                     <span class="text-base-content/50">Sin URL</span>
                     }
@@ -312,17 +312,6 @@
           @if (fuenteForm) {
           <div class="">
             <div class="grid gap-2 md:grid-cols-6">
-
-              <div class="form-control md:col-span-6">
-                <label class="label"><span class="label-text text-xs font-medium">ID fuente</span></label>
-                <input type="text" class="input input-bordered input-sm w-full bg-base-200" [(ngModel)]="fuenteForm.idFuente"
-                  readonly />
-              </div>
-
-              <div class="form-control md:col-span-2">
-                <label class="label"><span class="label-text text-xs font-medium">Acrónimo</span></label>
-                <input type="text" class="input input-bordered input-sm w-full readonly" [(ngModel)]="fuenteForm.acronimo" />
-              </div>
 
               <div class="form-control md:col-span-2">
                 <label class="label"><span class="label-text text-xs font-medium">Fuente</span></label>

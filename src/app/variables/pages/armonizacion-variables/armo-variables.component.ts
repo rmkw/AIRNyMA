@@ -10,7 +10,7 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
-import { ClasificacionesVariableComponent, ClasificacionVariableForm } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
+import { ClasificacionesVariableComponent, ClasificacionVariableForm, MINIMO_CLASIFICACIONES } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
 import { DatosAbiertosVariableComponent, DatosAbiertosVariableForm } from '@/variables/components/datos-abiertos-variable/datos-abiertos-variable.component';
 import { MicrodatosVariableComponent, MicrodatosVariableForm } from '@/variables/components/microdatos-variable/microdatos-variable.component';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
@@ -834,6 +834,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   clasificacionActiva: boolean = false;
   arrClasificaciones: ClasificacionArmo[] = [];
   guardandoClasificacion = false;
+  private readonly minimoClasificaciones = MINIMO_CLASIFICACIONES;
 
   clasificacionForm: ClasificacionVariableForm = {
     clase: '',
@@ -843,7 +844,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
   cambiarEstadoClasificacion(activa: boolean) {
     if (!activa && this.arrClasificaciones.length > 0) {
       this.clasificacionActiva = true;
-      this.variableForm.patchValue({ clasificacion: true });
       this.abrirModalError(
         'No puedes desactivar clasificaciones mientras existan registros. Primero elimina las clasificaciones registradas.',
       );
@@ -920,6 +920,17 @@ export class ArmonizacionVariablesComponent implements OnInit {
       return;
     }
 
+    const claseDuplicada = this.arrClasificaciones.some(
+      (clasificacion) => clasificacion.clase.trim() === payload.clase,
+    );
+
+    if (claseDuplicada) {
+      this.abrirModalError(
+        `La clase "${payload.clase}" ya está registrada para esta variable.`,
+      );
+      return;
+    }
+
     this.guardandoClasificacion = true;
     this.clasificacionesArmoService.guardarClasificacion(payload).subscribe({
       next: () => {
@@ -928,9 +939,14 @@ export class ArmonizacionVariablesComponent implements OnInit {
           comentarioA: '',
         };
         this.clasificacionActiva = true;
-        this.persistirBanderaClasificacionVariable(true, () => {
+        this.cargarClasificacionesVariable(payload.idA, () => {
           this.guardandoClasificacion = false;
-          this.cargarClasificacionesVariable(payload.idA);
+          if (this.arrClasificaciones.length < this.minimoClasificaciones) {
+            this.mostrarToast(
+              'Clasificación agregada correctamente. Falta 1 clasificación para activar la bandera.',
+            );
+            return;
+          }
           this.mostrarToast('Clasificación agregada correctamente.');
         });
       },
@@ -941,18 +957,18 @@ export class ArmonizacionVariablesComponent implements OnInit {
     });
   }
 
-  cargarClasificacionesVariable(idA: string) {
+  cargarClasificacionesVariable(idA: string, onSuccess: () => void = () => {}) {
     this.clasificacionesArmoService.obtenerPorIdA(idA).subscribe({
       next: (resp) => {
         this.arrClasificaciones = resp ?? [];
-        if (this.arrClasificaciones.length > 0) {
-          this.clasificacionActiva = true;
-          this.variableForm.patchValue({ clasificacion: true });
-        }
+        this.clasificacionActiva = this.arrClasificaciones.length > 0;
+        this.sincronizarBanderaClasificacion(onSuccess);
       },
       error: (err) => {
         console.error('Error al cargar clasificaciones:', err);
         this.arrClasificaciones = [];
+        this.guardandoClasificacion = false;
+        this.mostrarToast(this.obtenerMensajeError(err), 'error');
       },
     });
   }
@@ -981,30 +997,25 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   private actualizarClasificacionesDespuesDeEliminar(idA: string) {
-    this.clasificacionesArmoService.obtenerPorIdA(idA).subscribe({
-      next: (resp) => {
-        this.arrClasificaciones = resp ?? [];
-
-        if (this.arrClasificaciones.length === 0) {
-          this.clasificacionActiva = false;
-          this.persistirBanderaClasificacionVariable(false, () => {
-            this.guardandoClasificacion = false;
-            this.mostrarToast('Clasificación eliminada correctamente.');
-          });
-          return;
-        }
-
-        this.clasificacionActiva = true;
-        this.persistirBanderaClasificacionVariable(true, () => {
-          this.guardandoClasificacion = false;
-          this.mostrarToast('Clasificación eliminada correctamente.');
-        });
-      },
-      error: (err) => {
-        this.guardandoClasificacion = false;
-        this.mostrarToast(this.obtenerMensajeError(err), 'error');
-      },
+    this.cargarClasificacionesVariable(idA, () => {
+      this.guardandoClasificacion = false;
+      this.mostrarToast('Clasificación eliminada correctamente.');
     });
+  }
+
+  private sincronizarBanderaClasificacion(onSuccess: () => void) {
+    const clasificacion =
+      this.arrClasificaciones.length >= this.minimoClasificaciones;
+    const banderaActual = this.variableForm.get('clasificacion')?.value === true;
+
+    this.variableForm.patchValue({ clasificacion });
+
+    if (banderaActual === clasificacion) {
+      onSuccess();
+      return;
+    }
+
+    this.persistirBanderaClasificacionVariable(clasificacion, onSuccess);
   }
 
   private persistirBanderaClasificacionVariable(

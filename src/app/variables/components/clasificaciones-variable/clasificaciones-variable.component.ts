@@ -8,6 +8,8 @@ export interface ClasificacionVariableForm {
   comentarioA: string;
 }
 
+export const MINIMO_CLASIFICACIONES = 2;
+
 @Component({
   selector: 'app-clasificaciones-variable',
   standalone: true,
@@ -18,6 +20,8 @@ export interface ClasificacionVariableForm {
   },
 })
 export class ClasificacionesVariableComponent {
+  readonly minimoClasificaciones = MINIMO_CLASIFICACIONES;
+
   @Input() activa = false;
   @Input() form: ClasificacionVariableForm = this.crearFormularioVacio();
   @Input() clasificaciones: ClasificacionArmo[] = [];
@@ -28,6 +32,14 @@ export class ClasificacionesVariableComponent {
   @Output() cambiarActiva = new EventEmitter<boolean>();
   @Output() agregarClasificacion = new EventEmitter<ClasificacionVariableForm>();
   @Output() eliminarClasificacion = new EventEmitter<ClasificacionArmo>();
+
+  get clasificacionesFaltantes(): number {
+    return Math.max(this.minimoClasificaciones - this.clasificaciones.length, 0);
+  }
+
+  get cumpleMinimoClasificaciones(): boolean {
+    return this.clasificaciones.length >= this.minimoClasificaciones;
+  }
 
   toggleClasificacion(event: Event) {
     const input = event.target as HTMLInputElement;
