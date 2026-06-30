@@ -87,7 +87,7 @@
             <th>Descriptor</th>
             <th>Tabla</th>
             <th>Campo</th>
-            <th>Acción</th>
+            <th class="w-24 text-center">Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -96,7 +96,7 @@
             <td>{{ microdato.descriptor }}</td>
             <td>{{ microdato.tabla }}</td>
             <td>{{ microdato.campo }}</td>
-            <td>
+            <td class="align-top text-center">
               <button type="button" class="btn btn-error btn-xs" [disabled]="guardando" (click)="eliminar(microdato)">
                 Eliminar
               </button>

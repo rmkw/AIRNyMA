@@ -313,12 +313,12 @@
           <div class="">
             <div class="grid gap-2 md:grid-cols-6">
 
-              <div class="form-control md:col-span-2">
+              <div class="form-control md:col-span-3">
                 <label class="label"><span class="label-text text-xs font-medium">Fuente</span></label>
                 <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.fuente" />
               </div>
 
-              <div class="form-control md:col-span-2">
+              <div class="form-control md:col-span-3">
                 <label class="label"><span class="label-text text-xs font-medium">Edición</span></label>
                 <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.edicion" />
               </div>
@@ -328,15 +328,15 @@
                 <input type="text" class="input input-bordered input-sm w-full" [(ngModel)]="fuenteForm.url" />
               </div>
 
-              <div class="form-control md:col-span-3">
+              <div class="form-control md:col-span-6">
                 <label class="label"><span class="label-text text-xs font-medium">Comentario selección</span></label>
-                <textarea class="textarea textarea-bordered min-h-28 w-full leading-relaxed"
+                <textarea class="textarea textarea-bordered min-h-16 w-full leading-relaxed"
                   [(ngModel)]="fuenteForm.comentarioS"></textarea>
               </div>
 
-              <div class="form-control md:col-span-3">
+              <div class="form-control md:col-span-6">
                 <label class="label"><span class="label-text text-xs font-medium">Comentario armonización</span></label>
-                <textarea class="textarea textarea-bordered min-h-28 w-full leading-relaxed"
+                <textarea class="textarea textarea-bordered min-h-16 w-full leading-relaxed"
                   [(ngModel)]="fuenteForm.comentarioA"></textarea>
               </div>
             </div>
@@ -346,7 +346,7 @@
           @if (cargandoEstadoFuente) {
           <div class="text-xs text-base-content/60">Verificando fuente en armonización...</div>
           } @else {
-            <div class="pt-2">
+            <div class="pt-4">
                 <div class="rounded-xl border px-4 py-3 text-sm"
                   [ngClass]="fuenteExisteEnArmonizacion ? 'border-success bg-success/10' : 'border-warning bg-warning/10'">
                   {{ fuenteExisteEnArmonizacion ? 'La fuente ya existe en armonización.' : 'La fuente aún no existe en armonización.' }}
@@ -355,7 +355,7 @@
 
           }
 
-          <div class="flex justify-end pt-3">
+          <div class="flex justify-end pt-4">
             <button class="btn btn-sm btn-primary" type="button" [disabled]="!puedeGuardarFuente()" (click)="guardarFuenteTemporal()">
               {{ fuenteExisteEnArmonizacion ? 'Actualizar fuente' : 'Guardar fuente' }}
             </button>
@@ -408,37 +408,25 @@
                 readonly />
             </div>
 
-            <div class="form-control md:col-span-6">
-              <label class="label"><span class="label-text text-xs font-medium">ID fuente</span></label>
-              <input type="text" class="input input-bordered input-sm w-full bg-base-200" formControlName="idFuente"
-                readonly />
+            <div class="form-control md:col-span-4">
+              <label class="label"><span class="label-text text-xs font-medium">Variable en selección</span></label>
+              <input type="text" class="input input-bordered input-sm w-full bg-base-200" formControlName="variableS" readonly />
             </div>
 
-            <div class="form-control md:col-span-2">
-              <label class="label"><span class="label-text text-xs font-medium">Acrónimo</span></label>
-              <input type="text" class="input input-bordered input-sm w-full bg-base-200" formControlName="acronimo"
-                readonly />
+            <div class="form-control md:col-span-4">
+              <label class="label"><span class="label-text text-xs font-medium">Variable armonizada</span></label>
+              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableA"
+                [class.select-error]="variableForm.get('variableA')?.invalid && variableForm.get('variableA')?.touched"
+                placeholder="Escriba el nombre armonizado de la variable" />
             </div>
+
+            
           </div>
 
 
         <div class="pt-2">
 
-          <div class="grid gap-4 md:grid-cols-2">
-
-            <div class="form-control">
-              <label class="label"><span class="label-text text-xs font-medium">Variable en selección</span></label>
-              <input type="text" class="input input-bordered input-sm w-full bg-base-200" formControlName="variableS" readonly />
-            </div>
-
-            <div class="form-control">
-              <label class="label"><span class="label-text text-xs font-medium">Variable armonizada</span></label>
-              <input type="text" class="input input-bordered input-sm w-full" formControlName="variableA"
-              [class.select-error]="variableForm.get('variableA')?.invalid && variableForm.get('variableA')?.touched"
-                placeholder="Escriba el nombre armonizado de la variable" />
-            </div>
-
-          </div>
+          
 
           <div class="grid gap-2 md:grid-cols-12 pt-2">
 
@@ -464,7 +452,7 @@
 
             <div class="form-control md:col-span-6">
               <label class="label"><span class="label-text text-xs font-medium">Definición</span></label>
-              <textarea class="textarea textarea-bordered min-h-16 w-full bg-base-200 leading-relaxed"
+              <textarea class="textarea textarea-bordered min-h-16 w-full  leading-relaxed"
                 formControlName="definicion" ></textarea>
             </div>
 
