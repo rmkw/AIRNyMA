@@ -28,12 +28,8 @@
     <app-captura-desagregacion [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null">
     </app-captura-desagregacion>
 
-    <div class="card min-h-64 border border-dashed border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body items-center justify-center text-center">
-        <h2 class="card-title text-base">Tercera sección</h2>
-        <p class="text-sm text-base-content/60">Contenido pendiente para la siguiente etapa.</p>
-      </div>
-    </div>
+    <app-captura-desglose [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null">
+    </app-captura-desglose>
   </div>
 
   <div class="grid gap-4 xl:grid-cols-2">
