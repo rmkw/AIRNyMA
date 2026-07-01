@@ -27,11 +27,11 @@
         <label class="label" for="coberturaDesagregacion">
           <span class="label-text text-xs font-medium">Cobertura de desagregación</span>
         </label>
-        <textarea id="coberturaDesagregacion"
-          class="textarea textarea-sm textarea-bordered min-h-24 w-full"
+        <input id="coberturaDesagregacion"
+          class="input input-sm input-bordered w-full"
           [(ngModel)]="desagregacion.coberturaDesagregacion"
           placeholder="Captura la cobertura de desagregación"
-          [disabled]="!desagregacion.idTabulado || guardando"></textarea>
+          [disabled]="!desagregacion.idTabulado || guardando"/>
       </div>
 
       <div class="form-control">
