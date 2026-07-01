@@ -130,7 +130,6 @@ export class TabuladosPageComponent implements OnDestroy {
       next: (tabulado) => {
         this.tabuladoSeleccionado = tabulado;
         this.seleccionandoId = '';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
       error: (error: HttpErrorResponse) => {
         this.seleccionandoId = '';
