@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
 
@@ -22,6 +29,9 @@ export const MINIMO_CLASIFICACIONES = 2;
 export class ClasificacionesVariableComponent {
   readonly minimoClasificaciones = MINIMO_CLASIFICACIONES;
 
+  @ViewChild('detalleClasificacionModal')
+  detalleClasificacionModal?: ElementRef<HTMLDialogElement>;
+
   @Input() activa = false;
   @Input() form: ClasificacionVariableForm = this.crearFormularioVacio();
   @Input() clasificaciones: ClasificacionArmo[] = [];
@@ -32,6 +42,8 @@ export class ClasificacionesVariableComponent {
   @Output() cambiarActiva = new EventEmitter<boolean>();
   @Output() agregarClasificacion = new EventEmitter<ClasificacionVariableForm>();
   @Output() eliminarClasificacion = new EventEmitter<ClasificacionArmo>();
+
+  clasificacionSeleccionada: ClasificacionArmo | null = null;
 
   get clasificacionesFaltantes(): number {
     return Math.max(this.minimoClasificaciones - this.clasificaciones.length, 0);
@@ -62,6 +74,19 @@ export class ClasificacionesVariableComponent {
 
   agregar() {
     this.agregarClasificacion.emit(this.form);
+  }
+
+  verDetalle(clasificacion: ClasificacionArmo) {
+    this.clasificacionSeleccionada = clasificacion;
+    this.detalleClasificacionModal?.nativeElement.showModal();
+  }
+
+  cerrarDetalle() {
+    this.detalleClasificacionModal?.nativeElement.close();
+  }
+
+  limpiarDetalle() {
+    this.clasificacionSeleccionada = null;
   }
 
   eliminar(clasificacion: ClasificacionArmo) {

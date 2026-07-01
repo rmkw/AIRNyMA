@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MicrodatoArmo } from '@/variables/interfaces/armonizacion/microdatos-armo.interface';
 
@@ -25,6 +32,9 @@ export class MicrodatosVariableComponent {
   readonly estadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
   readonly estadoSi = 'Sí';
 
+  @ViewChild('detalleMicrodatoModal')
+  detalleMicrodatoModal?: ElementRef<HTMLDialogElement>;
+
   @Input() activo = false;
   @Input() estado = '';
   @Input() form: MicrodatosVariableForm = this.crearFormularioVacio();
@@ -39,6 +49,8 @@ export class MicrodatosVariableComponent {
     form: MicrodatosVariableForm;
   }>();
   @Output() eliminarMicrodato = new EventEmitter<MicrodatoArmo>();
+
+  microdatoSeleccionado: MicrodatoArmo | null = null;
 
   toggleMicrodatos(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -84,6 +96,19 @@ export class MicrodatosVariableComponent {
       estado: this.estado,
       form: this.form,
     });
+  }
+
+  verDetalle(microdato: MicrodatoArmo) {
+    this.microdatoSeleccionado = microdato;
+    this.detalleMicrodatoModal?.nativeElement.showModal();
+  }
+
+  cerrarDetalle() {
+    this.detalleMicrodatoModal?.nativeElement.close();
+  }
+
+  limpiarDetalle() {
+    this.microdatoSeleccionado = null;
   }
 
   eliminar(microdato: MicrodatoArmo) {

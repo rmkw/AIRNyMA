@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatoAbiertoArmo } from '@/variables/interfaces/armonizacion/datos-abiertos-armo.interface';
 
@@ -22,6 +29,9 @@ export interface DatosAbiertosVariableForm {
   },
 })
 export class DatosAbiertosVariableComponent {
+  @ViewChild('detalleDatoAbiertoModal')
+  detalleDatoAbiertoModal?: ElementRef<HTMLDialogElement>;
+
   @Input() activo = false;
   @Input() form: DatosAbiertosVariableForm = this.crearFormularioVacio();
   @Input() datosAbiertos: DatoAbiertoArmo[] = [];
@@ -31,6 +41,8 @@ export class DatosAbiertosVariableComponent {
   @Output() formChange = new EventEmitter<DatosAbiertosVariableForm>();
   @Output() agregarDatosAbiertos = new EventEmitter<DatosAbiertosVariableForm>();
   @Output() eliminarDatoAbierto = new EventEmitter<DatoAbiertoArmo>();
+
+  datoAbiertoSeleccionado: DatoAbiertoArmo | null = null;
 
   toggleDatosAbiertos(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -61,6 +73,19 @@ export class DatosAbiertosVariableComponent {
 
   agregar() {
     this.agregarDatosAbiertos.emit(this.form);
+  }
+
+  verDetalle(datoAbierto: DatoAbiertoArmo) {
+    this.datoAbiertoSeleccionado = datoAbierto;
+    this.detalleDatoAbiertoModal?.nativeElement.showModal();
+  }
+
+  cerrarDetalle() {
+    this.detalleDatoAbiertoModal?.nativeElement.close();
+  }
+
+  limpiarDetalle() {
+    this.datoAbiertoSeleccionado = null;
   }
 
   eliminar(datoAbierto: DatoAbiertoArmo) {

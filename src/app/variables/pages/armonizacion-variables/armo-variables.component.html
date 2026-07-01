@@ -227,7 +227,7 @@
                     <th class="text-sm">ID</th>
                     <th class="text-sm">Nombre</th>
                     <th class="text-sm text-center">Estatus</th>
-                    <th class="text-sm text-center">Acción</th>
+                    <th class="w-24 text-center">Acción</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -250,7 +250,7 @@
                           [ngClass]="variableEstaArmonizada(v.idA) ? 'status-success' : 'status-error'"></div>
                       </div>
                     </td>
-                    <td class=" text-center">
+                    <td class="align-top text-center">
                       <button class="btn btn-xs" [class.btn-primary]="variableSeleccionada?.idA !== v.idA"
                         [class.btn-success]="variableSeleccionada?.idA === v.idA" (click)="seleccionarVariable(v)">
                         Seleccionar
