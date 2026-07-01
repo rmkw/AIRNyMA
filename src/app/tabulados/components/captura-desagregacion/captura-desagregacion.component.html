@@ -1,4 +1,4 @@
-<div class="card h-full border border-base-300 border-t-4 border-t-secondary bg-base-100 shadow-sm">
+<div class="card h-full border border-base-300 border-t-4 border-t-cyan-600 bg-base-100 shadow-sm">
   <div class="card-body gap-5 p-5">
     <div>
       <h2 class="card-title text-base">Desagregaciones</h2>
@@ -29,7 +29,8 @@
         </label>
         <input id="coberturaDesagregacion"
           class="input input-sm input-bordered w-full"
-          [(ngModel)]="desagregacion.coberturaDesagregacion"
+          [ngModel]="desagregacion.coberturaDesagregacion"
+          (ngModelChange)="actualizarCobertura($event)"
           placeholder="Captura la cobertura de desagregación"
           [disabled]="!desagregacion.idTabulado || guardando"/>
       </div>

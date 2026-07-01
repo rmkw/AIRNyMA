@@ -221,7 +221,7 @@ export class TabuladosPageComponent implements OnDestroy {
     if (this.mensajeTimeout) clearTimeout(this.mensajeTimeout);
     this.mensajeTimeout = setTimeout(() => {
       this.mensaje = '';
-    }, 4000);
+    }, 2000);
   }
 
   private obtenerMensajeError(error: HttpErrorResponse): string {

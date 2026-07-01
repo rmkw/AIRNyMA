@@ -1,4 +1,4 @@
-<div class="card h-full border border-base-300 border-t-4 border-t-accent bg-base-100 shadow-sm">
+<div class="card h-full border border-base-300 border-t-4 border-t-cyan-500 bg-base-100 shadow-sm">
   <div class="card-body gap-5 p-5">
     <div>
       <h2 class="card-title text-base">Desgloses</h2>
@@ -30,7 +30,8 @@
         </label>
         <input id="desglose" type="text"
           class="input input-sm input-bordered w-full"
-          [(ngModel)]="desglose.desglose"
+          [ngModel]="desglose.desglose"
+          (ngModelChange)="actualizarDesglose($event)"
           placeholder="Captura el desglose"
           [disabled]="!desglose.idTabulado || guardando" />
       </div>

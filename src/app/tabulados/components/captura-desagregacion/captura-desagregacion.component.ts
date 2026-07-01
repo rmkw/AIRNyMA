@@ -1,6 +1,6 @@
 import { Desagregacion } from '@/tabulados/interfaces/desagregacion.interface';
 import { DesagregacionesService } from '@/tabulados/services/desagregaciones.service';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,8 +9,9 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   templateUrl: './captura-desagregacion.component.html',
 })
-export class CapturaDesagregacionComponent {
+export class CapturaDesagregacionComponent implements OnDestroy {
   private desagregacionesService = inject(DesagregacionesService);
+  private mensajeTimeout?: ReturnType<typeof setTimeout>;
 
   desagregacion: Desagregacion = {
     idTabulado: '',
@@ -23,6 +24,12 @@ export class CapturaDesagregacionComponent {
   eliminandoId: number | null = null;
   mensaje = '';
   error = '';
+
+  ngOnDestroy(): void {
+    if (this.mensajeTimeout) {
+      clearTimeout(this.mensajeTimeout);
+    }
+  }
 
   @Input()
   set idTabulado(value: string | null) {
@@ -53,6 +60,11 @@ export class CapturaDesagregacionComponent {
     );
   }
 
+  actualizarCobertura(valor: string): void {
+    this.desagregacion.coberturaDesagregacion =
+      this.primeraLetraMayuscula(valor);
+  }
+
   guardar(): void {
     if (!this.formularioValido || this.guardando) {
       return;
@@ -64,8 +76,9 @@ export class CapturaDesagregacionComponent {
     this.desagregacionesService
       .guardar({
         ...this.desagregacion,
-        coberturaDesagregacion:
+        coberturaDesagregacion: this.primeraLetraMayuscula(
           this.desagregacion.coberturaDesagregacion.trim(),
+        ),
         comentarioA: this.desagregacion.comentarioA.trim(),
       })
       .subscribe({
@@ -73,7 +86,7 @@ export class CapturaDesagregacionComponent {
           this.guardando = false;
           this.desagregacion.coberturaDesagregacion = '';
           this.desagregacion.comentarioA = '';
-          this.mensaje = 'Desagregación guardada correctamente.';
+          this.mostrarMensaje('Desagregación guardada correctamente.');
           this.cargarDesagregaciones();
         },
         error: (error) => {
@@ -95,7 +108,7 @@ export class CapturaDesagregacionComponent {
     this.desagregacionesService.eliminar(desagregacion.idUnique).subscribe({
       next: () => {
         this.eliminandoId = null;
-        this.mensaje = 'Desagregación eliminada correctamente.';
+        this.mostrarMensaje('Desagregación eliminada correctamente.');
         this.cargarDesagregaciones();
       },
       error: (error) => {
@@ -130,5 +143,21 @@ export class CapturaDesagregacionComponent {
         }
       },
     });
+  }
+
+  private mostrarMensaje(mensaje: string): void {
+    this.mensaje = mensaje;
+    if (this.mensajeTimeout) {
+      clearTimeout(this.mensajeTimeout);
+    }
+    this.mensajeTimeout = setTimeout(() => {
+      this.mensaje = '';
+    }, 2000);
+  }
+
+  private primeraLetraMayuscula(valor: string): string {
+    return valor
+      ? valor.charAt(0).toUpperCase() + valor.slice(1)
+      : valor;
   }
 }

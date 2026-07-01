@@ -1,6 +1,6 @@
 import { Desglose } from '@/tabulados/interfaces/desglose.interface';
 import { DesglosesService } from '@/tabulados/services/desgloses.service';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,8 +9,9 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   templateUrl: './captura-desglose.component.html',
 })
-export class CapturaDesgloseComponent {
+export class CapturaDesgloseComponent implements OnDestroy {
   private desglosesService = inject(DesglosesService);
+  private mensajeTimeout?: ReturnType<typeof setTimeout>;
 
   desglose: Desglose = {
     idTabulado: '',
@@ -23,6 +24,12 @@ export class CapturaDesgloseComponent {
   eliminandoId: number | null = null;
   mensaje = '';
   error = '';
+
+  ngOnDestroy(): void {
+    if (this.mensajeTimeout) {
+      clearTimeout(this.mensajeTimeout);
+    }
+  }
 
   @Input()
   set idTabulado(value: string | null) {
@@ -53,6 +60,10 @@ export class CapturaDesgloseComponent {
     );
   }
 
+  actualizarDesglose(valor: string): void {
+    this.desglose.desglose = this.primeraLetraMayuscula(valor);
+  }
+
   guardar(): void {
     if (!this.formularioValido || this.guardando) {
       return;
@@ -64,7 +75,9 @@ export class CapturaDesgloseComponent {
     this.desglosesService
       .guardar({
         ...this.desglose,
-        desglose: this.desglose.desglose.trim(),
+        desglose: this.primeraLetraMayuscula(
+          this.desglose.desglose.trim(),
+        ),
         comentarioA: this.desglose.comentarioA.trim(),
       })
       .subscribe({
@@ -72,7 +85,7 @@ export class CapturaDesgloseComponent {
           this.guardando = false;
           this.desglose.desglose = '';
           this.desglose.comentarioA = '';
-          this.mensaje = 'Desglose guardado correctamente.';
+          this.mostrarMensaje('Desglose guardado correctamente.');
           this.cargarDesgloses();
         },
         error: (error) => {
@@ -93,7 +106,7 @@ export class CapturaDesgloseComponent {
     this.desglosesService.eliminar(desglose.idUnique).subscribe({
       next: () => {
         this.eliminandoId = null;
-        this.mensaje = 'Desglose eliminado correctamente.';
+        this.mostrarMensaje('Desglose eliminado correctamente.');
         this.cargarDesgloses();
       },
       error: (error) => {
@@ -127,5 +140,21 @@ export class CapturaDesgloseComponent {
         }
       },
     });
+  }
+
+  private mostrarMensaje(mensaje: string): void {
+    this.mensaje = mensaje;
+    if (this.mensajeTimeout) {
+      clearTimeout(this.mensajeTimeout);
+    }
+    this.mensajeTimeout = setTimeout(() => {
+      this.mensaje = '';
+    }, 2000);
+  }
+
+  private primeraLetraMayuscula(valor: string): string {
+    return valor
+      ? valor.charAt(0).toUpperCase() + valor.slice(1)
+      : valor;
   }
 }
