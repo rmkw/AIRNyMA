@@ -1,3 +1,4 @@
+import { CapturaDesagregacionComponent } from '@/tabulados/components/captura-desagregacion/captura-desagregacion.component';
 import { CapturaTabuladoComponent } from '@/tabulados/components/captura-tabulado/captura-tabulado.component';
 import { Tabulado } from '@/tabulados/interfaces/tabulado.interface';
 import { TabuladosService } from '@/tabulados/services/tabulados.service';
@@ -16,7 +17,12 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-tabulados-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, CapturaTabuladoComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CapturaTabuladoComponent,
+    CapturaDesagregacionComponent,
+  ],
   templateUrl: './tabulados-page.component.html',
 })
 export class TabuladosPageComponent implements OnDestroy {
