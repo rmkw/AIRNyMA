@@ -38,28 +38,27 @@
         </div>
       </div>
 
-      <div class="form-control">
-        <label class="label" for="idTabulado">
-          <span class="label-text text-xs font-medium">ID del tabulado</span>
-        </label>
-        <label class="input input-sm input-bordered flex w-full items-center gap-0" for="serialTabulado">
-          <span class="font-medium text-base-content">{{ prefijoTabulado }}</span>
-          <input id="serialTabulado" type="text" class="min-w-0 grow" inputmode="numeric" pattern="[0-9]*"
-            [disabled]="!prefijoTabulado" [ngModel]="serialTabulado"
-            (ngModelChange)="actualizarSerial($event)" name="serialTabulado" placeholder="001" />
-          @if (serialTabulado && edicionTabulado.length === 4) {
-          <span class="font-medium text-base-content">-{{ edicionTabulado }}-T</span>
-          }
-        </label>
-      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="form-control">
+          <label class="label" for="idTabulado">
+            <span class="label-text text-xs font-medium">ID del tabulado</span>
+          </label>
+          <label class="input input-sm input-bordered flex w-full items-center gap-0" for="serialTabulado">
+            <span class="font-medium text-base-content">{{ prefijoTabulado }}</span>
+            <input id="serialTabulado" type="text" class="min-w-0 grow" inputmode="numeric" pattern="[0-9]*"
+              [disabled]="!prefijoTabulado" [ngModel]="serialTabulado"
+              (ngModelChange)="actualizarSerial($event)" name="serialTabulado" placeholder="001" />
+          </label>
+        </div>
 
-      <div class="form-control">
-        <label class="label" for="edicionTabulado">
-          <span class="label-text text-xs font-medium">Edición</span>
-        </label>
-        <input id="edicionTabulado" type="text" class="input input-sm input-bordered w-full"
-          inputmode="numeric" pattern="[0-9]*" maxlength="4" [ngModel]="edicionTabulado"
-          (ngModelChange)="actualizarEdicion($event)" name="edicionTabulado" placeholder="Ej. 2026" />
+        <div class="form-control">
+          <label class="label" for="edicionTabulado">
+            <span class="label-text text-xs font-medium">Edición</span>
+          </label>
+          <input id="edicionTabulado" type="text" class="input input-sm input-bordered w-full"
+            inputmode="numeric" pattern="[0-9]*" maxlength="4" [ngModel]="edicionTabulado"
+            (ngModelChange)="actualizarEdicion($event)" name="edicionTabulado" placeholder="Ej. 2026" />
+        </div>
       </div>
 
       <div class="form-control">
@@ -70,22 +69,29 @@
           [(ngModel)]="tabulado.tabulado" name="nombreTabulado" placeholder="Nombre del tabulado" />
       </div>
 
-      <div class="form-control">
-        <label class="label" for="tipoTabulado">
-          <span class="label-text text-xs font-medium">Tipo</span>
-        </label>
-        <select id="tipoTabulado" class="select select-sm select-bordered w-full"
-          [(ngModel)]="tabulado.tipo" name="tipoTabulado" disabled>
-          <option value="">Catálogo pendiente</option>
-        </select>
-      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="form-control">
+          <label class="label" for="tipoTabulado">
+            <span class="label-text text-xs font-medium">Tipo</span>
+          </label>
+          <select id="tipoTabulado" class="select select-sm select-bordered w-full"
+            [(ngModel)]="tabulado.tipo" name="tipoTabulado">
+            <option value="" disabled>Selecciona una opción</option>
+            <option value=".pdf">.pdf</option>
+            <option value=".xls">.xls</option>
+            <option value=".xlsx">.xlsx</option>
+            <option value="Tabulado interactivo">Tabulado interactivo</option>
+            <option value="Vista web">Vista web</option>
+          </select>
+        </div>
 
-      <div class="form-control">
-        <label class="label" for="hojaTabulado">
-          <span class="label-text text-xs font-medium">Hoja</span>
-        </label>
-        <input id="hojaTabulado" type="text" class="input input-sm input-bordered w-full"
-          [(ngModel)]="tabulado.hoja" name="hojaTabulado" placeholder="Nombre de la hoja" />
+        <div class="form-control">
+          <label class="label" for="hojaTabulado">
+            <span class="label-text text-xs font-medium">Hoja</span>
+          </label>
+          <input id="hojaTabulado" type="text" class="input input-sm input-bordered w-full"
+            [(ngModel)]="tabulado.hoja" name="hojaTabulado" placeholder="Nombre de la hoja" />
+        </div>
       </div>
 
       <div class="form-control">
@@ -112,10 +118,6 @@
           [(ngModel)]="tabulado.comentarioA" name="comentarioTabulado"
           placeholder="Escribe un comentario"></textarea>
       </div>
-    </div>
-
-    <div class="rounded-xl border border-dashed border-base-300 bg-base-200/50 p-3 text-xs text-base-content/60">
-      La persistencia se habilitará cuando se defina la integración con el API.
     </div>
 
     <div class="card-actions justify-end">
