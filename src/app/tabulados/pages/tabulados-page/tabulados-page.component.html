@@ -1,4 +1,12 @@
 <div class="w-full space-y-4 px-1">
+  @if (mensaje) {
+  <div class="toast toast-top toast-end z-50">
+    <div class="alert" [class.alert-error]="mensajeEsError" [class.alert-success]="!mensajeEsError">
+      <span>{{ mensaje }}</span>
+    </div>
+  </div>
+  }
+
   <div
     class="overflow-hidden rounded-box border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
     <div class="flex flex-col gap-4 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
@@ -13,7 +21,9 @@
   </div>
 
   <div class="grid gap-4 xl:grid-cols-3">
-    <app-captura-tabulado></app-captura-tabulado>
+    <app-captura-tabulado [tabuladoSeleccionado]="tabuladoSeleccionado" [guardando]="guardando"
+      (guardarTabulado)="guardarTabulado($event)" (cancelarEdicion)="cancelarEdicion()">
+    </app-captura-tabulado>
 
     <div class="card min-h-64 border border-dashed border-base-300 bg-base-100 shadow-sm">
       <div class="card-body items-center justify-center text-center">
@@ -31,10 +41,76 @@
   </div>
 
   <div class="grid gap-4 xl:grid-cols-2">
-    <div class="card min-h-64 border border-dashed border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body items-center justify-center text-center">
-        <h2 class="card-title text-base">Listado de tabulados</h2>
-        <p class="text-sm text-base-content/60">Contenido pendiente para la siguiente etapa.</p>
+    <div class="card min-h-64 border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body gap-4 p-4">
+        <div>
+          <h2 class="card-title text-base">Listado de tabulados</h2>
+          <p class="text-xs text-base-content/60">Filtra por ID y selecciona un registro para actualizarlo.</p>
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="filtroIdTabulado">
+            <span class="label-text text-xs font-medium">Buscar por ID del tabulado</span>
+          </label>
+          <input id="filtroIdTabulado" type="text" class="input input-sm input-bordered w-full uppercase"
+            [ngModel]="filtroIdTabulado" (ngModelChange)="actualizarFiltro($event)"
+            name="filtroIdTabulado" placeholder="Ej. ATUS-001-2000-T" autocomplete="off" />
+        </div>
+
+        @if (filtroIdTabulado.length < 2) {
+        <div class="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-base-300 p-4">
+          <span class="text-center text-sm text-base-content/60">
+            Escribe al menos 2 caracteres del ID para consultar tabulados.
+          </span>
+        </div>
+        } @else if (cargando) {
+        <div class="flex min-h-40 items-center justify-center">
+          <span class="loading loading-spinner loading-md"></span>
+        </div>
+        } @else if (errorListado) {
+        <div class="alert alert-error">
+          <span>{{ errorListado }}</span>
+          <button type="button" class="btn btn-sm"
+            (click)="buscarTabulados(filtroIdTabulado, true)">Reintentar</button>
+        </div>
+        } @else if (tabulados.length === 0) {
+        <div class="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-base-300">
+          <span class="text-sm text-base-content/60">No hay coincidencias para el filtro indicado.</span>
+        </div>
+        } @else {
+        <div class="overflow-x-auto rounded-xl border border-base-300">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tabulado</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tabulado of tabulados; track tabulado.idTabulado) {
+              <tr [ngClass]="{ 'bg-primary/10': tabuladoSeleccionado?.idTabulado === tabulado.idTabulado }">
+                <td class="whitespace-nowrap text-xs">{{ tabulado.idTabulado }}</td>
+                <td class="min-w-48">{{ tabulado.tabulado }}</td>
+                <td>
+                  <div class="flex justify-center gap-2">
+                    <button type="button" class="btn btn-xs btn-primary"
+                      [disabled]="seleccionandoId === tabulado.idTabulado || eliminando"
+                      (click)="seleccionarTabulado(tabulado.idTabulado)">
+                      {{ seleccionandoId === tabulado.idTabulado ? 'Cargando...' : 'Seleccionar' }}
+                    </button>
+                    <button type="button" class="btn btn-xs btn-error"
+                      [disabled]="eliminando" (click)="solicitarEliminar(tabulado)">
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
       </div>
     </div>
 
@@ -46,3 +122,22 @@
     </div>
   </div>
 </div>
+
+<dialog #eliminarTabuladoModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Eliminar tabulado</h3>
+    <p class="py-4">
+      ¿Deseas eliminar el tabulado
+      <strong>{{ tabuladoPorEliminar?.idTabulado }}</strong>?
+      Esta acción no se puede deshacer.
+    </p>
+    <div class="modal-action">
+      <button type="button" class="btn" [disabled]="eliminando" (click)="cancelarEliminar()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-error" [disabled]="eliminando" (click)="confirmarEliminar()">
+        {{ eliminando ? 'Eliminando...' : 'Eliminar' }}
+      </button>
+    </div>
+  </div>
+</dialog>

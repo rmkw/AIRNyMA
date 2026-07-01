@@ -1,9 +1,13 @@
 <div class="card h-full border border-base-300 border-t-4 border-t-primary bg-base-100 shadow-sm">
   <div class="card-body gap-5 p-5">
     <div>
-      <h2 class="card-title text-base">Datos del tabulado</h2>
+      <h2 class="card-title text-base">
+        {{ modoEdicion ? 'Actualizar tabulado' : 'Datos del tabulado' }}
+      </h2>
       <p class="text-xs text-base-content/60">
-        Captura la información general del tabulado.
+        {{ modoEdicion
+          ? 'Modifica los datos del tabulado seleccionado.'
+          : 'Captura la información general del tabulado.' }}
       </p>
     </div>
 
@@ -15,6 +19,7 @@
           </label>
           <select id="direccionTabulado" class="select select-sm select-bordered w-full"
             [(ngModel)]="direccionSeleccionada" name="direccionTabulado"
+            [disabled]="modoEdicion"
             (ngModelChange)="selectedDireccion($event)">
             <option value="" disabled>Selecciona una opción</option>
             @for (direccion of arrDirecciones; track direccion.idUnidad) {
@@ -29,7 +34,8 @@
           </label>
           <select id="procesoTabulado" class="select select-sm select-bordered w-full"
             [(ngModel)]="procesoSeleccionado" name="procesoTabulado"
-            [disabled]="!procesosHabilitados" (ngModelChange)="seleccionarProceso($event)">
+            [disabled]="modoEdicion || !procesosHabilitados"
+            (ngModelChange)="seleccionarProceso($event)">
             <option value="" disabled>Selecciona una opción</option>
             @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
             <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
@@ -46,7 +52,7 @@
           <label class="input input-sm input-bordered flex w-full items-center gap-0" for="serialTabulado">
             <span class="font-medium text-base-content">{{ prefijoTabulado }}</span>
             <input id="serialTabulado" type="text" class="min-w-0 grow" inputmode="numeric" pattern="[0-9]*"
-              [disabled]="!prefijoTabulado" [ngModel]="serialTabulado"
+              [disabled]="modoEdicion || !prefijoTabulado" [ngModel]="serialTabulado"
               (ngModelChange)="actualizarSerial($event)" name="serialTabulado" placeholder="001" />
           </label>
         </div>
@@ -57,6 +63,7 @@
           </label>
           <input id="edicionTabulado" type="text" class="input input-sm input-bordered w-full"
             inputmode="numeric" pattern="[0-9]*" maxlength="4" [ngModel]="edicionTabulado"
+            [disabled]="modoEdicion"
             (ngModelChange)="actualizarEdicion($event)" name="edicionTabulado" placeholder="Ej. 2026" />
         </div>
       </div>
@@ -78,10 +85,9 @@
             [(ngModel)]="tabulado.tipo" name="tipoTabulado">
             <option value="" disabled>Selecciona una opción</option>
             <option value=".pdf">.pdf</option>
-            <option value=".xls">.xls</option>
-            <option value=".xlsx">.xlsx</option>
-            <option value="Tabulado interactivo">Tabulado interactivo</option>
-            <option value="Vista web">Vista web</option>
+            <option value=".xls o .xlsx">.xls o .xlsx</option>
+            <option value="tabulados interactivos">tabulados interactivos</option>
+            <option value="vista web">vista web</option>
           </select>
         </div>
 
@@ -121,8 +127,18 @@
     </div>
 
     <div class="card-actions justify-end">
-      <button type="button" class="btn btn-sm btn-primary" disabled>
-        Guardar tabulado
+      @if (modoEdicion) {
+      <button type="button" class="btn btn-sm btn-outline" [disabled]="guardando" (click)="cancelar()">
+        Cancelar edición
+      </button>
+      }
+      <button type="button" class="btn btn-sm btn-primary"
+        [disabled]="!formularioValido || guardando" (click)="guardar()">
+        {{ guardando
+          ? 'Guardando...'
+          : modoEdicion
+            ? 'Actualizar tabulado'
+            : 'Guardar tabulado' }}
       </button>
     </div>
   </div>
