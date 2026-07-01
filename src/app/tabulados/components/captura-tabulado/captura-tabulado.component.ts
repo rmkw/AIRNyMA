@@ -23,6 +23,7 @@ export class CapturaTabuladoComponent implements OnInit {
   procesosHabilitados = false;
   prefijoTabulado = '';
   serialTabulado = '';
+  edicionTabulado = '';
 
   tabulado: Tabulado = {
     idTabulado: '',
@@ -58,11 +59,17 @@ export class CapturaTabuladoComponent implements OnInit {
   seleccionarProceso(acronimo: string) {
     this.prefijoTabulado = `${acronimo}-`;
     this.serialTabulado = '';
+    this.edicionTabulado = '';
     this.sincronizarIdTabulado();
   }
 
   actualizarSerial(valor: string) {
     this.serialTabulado = valor.replace(/\D/g, '');
+    this.sincronizarIdTabulado();
+  }
+
+  actualizarEdicion(valor: string) {
+    this.edicionTabulado = valor.replace(/\D/g, '').slice(0, 4);
     this.sincronizarIdTabulado();
   }
 
@@ -81,11 +88,16 @@ export class CapturaTabuladoComponent implements OnInit {
   private limpiarIdTabulado() {
     this.prefijoTabulado = '';
     this.serialTabulado = '';
+    this.edicionTabulado = '';
     this.tabulado.idTabulado = '';
   }
 
   private sincronizarIdTabulado() {
+    const idBase = `${this.prefijoTabulado}${this.serialTabulado}`;
+
     this.tabulado.idTabulado =
-      `${this.prefijoTabulado}${this.serialTabulado}`;
+      this.serialTabulado && this.edicionTabulado.length === 4
+        ? `${idBase}-${this.edicionTabulado}-T`
+        : idBase;
   }
 }

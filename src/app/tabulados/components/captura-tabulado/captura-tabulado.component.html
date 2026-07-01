@@ -47,7 +47,19 @@
           <input id="serialTabulado" type="text" class="min-w-0 grow" inputmode="numeric" pattern="[0-9]*"
             [disabled]="!prefijoTabulado" [ngModel]="serialTabulado"
             (ngModelChange)="actualizarSerial($event)" name="serialTabulado" placeholder="001" />
+          @if (serialTabulado && edicionTabulado.length === 4) {
+          <span class="font-medium text-base-content">-{{ edicionTabulado }}-T</span>
+          }
         </label>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="edicionTabulado">
+          <span class="label-text text-xs font-medium">Edición</span>
+        </label>
+        <input id="edicionTabulado" type="text" class="input input-sm input-bordered w-full"
+          inputmode="numeric" pattern="[0-9]*" maxlength="4" [ngModel]="edicionTabulado"
+          (ngModelChange)="actualizarEdicion($event)" name="edicionTabulado" placeholder="Ej. 2026" />
       </div>
 
       <div class="form-control">
