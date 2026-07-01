@@ -12,6 +12,7 @@ import { PrioridadVariableComponent } from "@/variables/pages/prioridad-variable
 import { ArmonizacionVariablesComponent } from "@/variables/pages/armonizacion-variables/armo-variables.component";
 import { FuentesComponent } from "@/fuenteIdentificacion/pages/fuentes/fuentes.component";
 import { SeleccionVariablesComponent } from "@/variables/pages/seleccion-variables/seleccion-variables.component";
+import { TabuladosPageComponent } from "@/tabulados/pages/tabulados-page/tabulados-page.component";
 
 
 
@@ -62,6 +63,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'armo',
         component: ArmonizacionVariablesComponent,
+      },
+      {
+        path: 'tabulados',
+        component: TabuladosPageComponent,
       },
       {
         path: '**',
