@@ -106,12 +106,8 @@
       </div>
     </div>
 
-    <div class="card min-h-64 border border-dashed border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body items-center justify-center text-center">
-        <h2 class="card-title text-base">Listado de variables</h2>
-        <p class="text-sm text-base-content/60">Contenido pendiente para la siguiente etapa.</p>
-      </div>
-    </div>
+    <app-variables-tabulados [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null">
+    </app-variables-tabulados>
   </div>
 </div>
 

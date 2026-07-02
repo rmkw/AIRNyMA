@@ -1,6 +1,7 @@
 import { CapturaDesagregacionComponent } from '@/tabulados/components/captura-desagregacion/captura-desagregacion.component';
 import { CapturaDesgloseComponent } from '@/tabulados/components/captura-desglose/captura-desglose.component';
 import { CapturaTabuladoComponent } from '@/tabulados/components/captura-tabulado/captura-tabulado.component';
+import { VariablesTabuladosComponent } from '@/tabulados/components/variables-tabulados/variables-tabulados.component';
 import { Tabulado } from '@/tabulados/interfaces/tabulado.interface';
 import { TabuladosService } from '@/tabulados/services/tabulados.service';
 import { CommonModule } from '@angular/common';
@@ -24,6 +25,7 @@ import { Subscription } from 'rxjs';
     CapturaTabuladoComponent,
     CapturaDesagregacionComponent,
     CapturaDesgloseComponent,
+    VariablesTabuladosComponent,
   ],
   templateUrl: './tabulados-page.component.html',
 })
