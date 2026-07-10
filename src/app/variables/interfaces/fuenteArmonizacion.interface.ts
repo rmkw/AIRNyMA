@@ -1,6 +1,7 @@
 export interface FuenteArmonizacionDTO {
   idFuente?: string;
   idFuenteSeleccion?: string;
+  reutilizada?: boolean;
   acronimo: string;
   fuente: string;
   url?: string | null;

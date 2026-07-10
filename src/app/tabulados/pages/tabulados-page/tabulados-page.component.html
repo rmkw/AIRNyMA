@@ -22,7 +22,8 @@
 
   <div class="grid gap-4 xl:grid-cols-3">
     <app-captura-tabulado [tabuladoSeleccionado]="tabuladoSeleccionado" [guardando]="guardando"
-      (guardarTabulado)="guardarTabulado($event)" (cancelarEdicion)="cancelarEdicion()">
+      (guardarTabulado)="guardarTabulado($event)" (cancelarEdicion)="cancelarEdicion()"
+      (procesoCambiado)="cambiarProceso($event)">
     </app-captura-tabulado>
 
     <app-captura-desagregacion [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null">
@@ -42,17 +43,18 @@
 
         <div class="form-control">
           <label class="label" for="filtroIdTabulado">
-            <span class="label-text text-xs font-medium">Buscar por ID del tabulado</span>
+            <span class="label-text text-xs font-medium">Buscar por ID o nombre del tabulado</span>
           </label>
-          <input id="filtroIdTabulado" type="text" class="input input-sm input-bordered w-full uppercase"
+          <input id="filtroIdTabulado" type="text" class="input input-sm input-bordered w-full"
             [ngModel]="filtroIdTabulado" (ngModelChange)="actualizarFiltro($event)"
-            name="filtroIdTabulado" placeholder="Ej. ATUS-001-2000-T" autocomplete="off" />
+            name="filtroIdTabulado" placeholder="ID o nombre del tabulado" autocomplete="off"
+            [disabled]="!procesoSeleccionado" />
         </div>
 
-        @if (filtroIdTabulado.length < 2) {
+        @if (!procesoSeleccionado) {
         <div class="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-base-300 p-4">
           <span class="text-center text-sm text-base-content/60">
-            Escribe al menos 2 caracteres del ID para consultar tabulados.
+            Selecciona una unidad y un proceso de producción para consultar tabulados.
           </span>
         </div>
         } @else if (cargando) {
@@ -63,16 +65,20 @@
         <div class="alert alert-error">
           <span>{{ errorListado }}</span>
           <button type="button" class="btn btn-sm"
-            (click)="buscarTabulados(filtroIdTabulado, true)">Reintentar</button>
+            (click)="cargarTabuladosProceso()">Reintentar</button>
         </div>
         } @else if (tabulados.length === 0) {
         <div class="flex min-h-40 items-center justify-center rounded-xl border border-dashed border-base-300">
-          <span class="text-sm text-base-content/60">No hay coincidencias para el filtro indicado.</span>
+          <span class="text-sm text-base-content/60">
+            {{ filtroIdTabulado
+              ? 'No hay coincidencias para el filtro indicado.'
+              : 'No hay tabulados registrados para este proceso.' }}
+          </span>
         </div>
         } @else {
-        <div class="overflow-x-auto rounded-xl border border-base-300">
+        <div class="max-h-[32rem] overflow-auto rounded-xl border border-base-300">
           <table class="table table-sm">
-            <thead>
+            <thead class="sticky top-0 z-10 bg-base-100">
               <tr>
                 <th>ID</th>
                 <th>Tabulado</th>
@@ -106,7 +112,8 @@
       </div>
     </div>
 
-    <app-variables-tabulados [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null">
+    <app-variables-tabulados [idTabulado]="tabuladoSeleccionado?.idTabulado ?? null"
+      [acronimo]="procesoSeleccionado || null">
     </app-variables-tabulados>
   </div>
 </div>

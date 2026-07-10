@@ -14,7 +14,6 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tabulados-page',
@@ -32,8 +31,6 @@ import { Subscription } from 'rxjs';
 export class TabuladosPageComponent implements OnDestroy {
   private tabuladosService = inject(TabuladosService);
   private mensajeTimeout?: ReturnType<typeof setTimeout>;
-  private busquedaSubscription?: Subscription;
-  private ultimoPrefijoConsultado = '';
 
   @ViewChild(CapturaTabuladoComponent)
   capturaTabulado?: CapturaTabuladoComponent;
@@ -53,55 +50,58 @@ export class TabuladosPageComponent implements OnDestroy {
   mensaje = '';
   mensajeEsError = false;
   filtroIdTabulado = '';
+  procesoSeleccionado = '';
 
   ngOnDestroy(): void {
-    this.busquedaSubscription?.unsubscribe();
     if (this.mensajeTimeout) clearTimeout(this.mensajeTimeout);
   }
 
   actualizarFiltro(valor: string) {
-    this.filtroIdTabulado = valor.toUpperCase();
+    this.filtroIdTabulado = valor;
+    this.errorListado = '';
+    this.filtrarResultadosLocales();
+  }
+
+  cambiarProceso(acronimo: string | null) {
+    this.procesoSeleccionado = acronimo ?? '';
+    this.tabuladoSeleccionado = null;
+    this.tabuladoPorEliminar = null;
+    this.filtroIdTabulado = '';
+    this.tabuladosBase = [];
+    this.tabulados = [];
     this.errorListado = '';
 
-    if (this.filtroIdTabulado.length < 2) {
-      this.busquedaSubscription?.unsubscribe();
+    if (!acronimo) {
       this.cargando = false;
-      this.tabuladosBase = [];
-      this.tabulados = [];
-      this.ultimoPrefijoConsultado = '';
       return;
     }
 
-    this.filtrarResultadosLocales();
-
-    if (this.esHitoDeBusqueda(this.filtroIdTabulado)) {
-      this.buscarTabulados(this.filtroIdTabulado);
-    }
+    this.cargarTabuladosProceso();
   }
 
-  buscarTabulados(prefijo: string, forzar = false) {
-    const prefijoNormalizado = prefijo.trim().toUpperCase();
-    if (prefijoNormalizado.length < 2) return;
-    if (!forzar && prefijoNormalizado === this.ultimoPrefijoConsultado) return;
-
-    this.busquedaSubscription?.unsubscribe();
+  cargarTabuladosProceso() {
+    if (!this.procesoSeleccionado) return;
+    const proceso = this.procesoSeleccionado;
     this.cargando = true;
     this.errorListado = '';
-    this.ultimoPrefijoConsultado = prefijoNormalizado;
 
-    this.busquedaSubscription = this.tabuladosService
-      .buscarPorPrefijo(prefijoNormalizado)
+    this.tabuladosService
+      .obtenerPorProceso(proceso)
       .subscribe({
       next: (tabulados) => {
-        this.tabuladosBase = tabulados;
-        this.filtrarResultadosLocales();
-        this.cargando = false;
+        if (proceso === this.procesoSeleccionado) {
+          this.tabuladosBase = tabulados;
+          this.filtrarResultadosLocales();
+          this.cargando = false;
+        }
       },
       error: (error: HttpErrorResponse) => {
-        this.tabuladosBase = [];
-        this.tabulados = [];
-        this.cargando = false;
-        this.errorListado = this.obtenerMensajeError(error);
+        if (proceso === this.procesoSeleccionado) {
+          this.tabuladosBase = [];
+          this.tabulados = [];
+          this.cargando = false;
+          this.errorListado = this.obtenerMensajeError(error);
+        }
       },
     });
   }
@@ -122,7 +122,7 @@ export class TabuladosPageComponent implements OnDestroy {
       next: () => {
         this.guardando = false;
         this.tabuladoSeleccionado = null;
-        this.capturaTabulado?.limpiarFormulario();
+        this.capturaTabulado?.limpiarDatosTabulado();
         this.mostrarMensaje(mensajeExito);
         this.refrescarBusquedaActual();
       },
@@ -176,7 +176,7 @@ export class TabuladosPageComponent implements OnDestroy {
 
         if (this.tabuladoSeleccionado?.idTabulado === idTabulado) {
           this.tabuladoSeleccionado = null;
-          this.capturaTabulado?.limpiarFormulario();
+          this.capturaTabulado?.limpiarDatosTabulado();
         }
 
         this.mostrarMensaje('Tabulado eliminado correctamente.');
@@ -190,30 +190,21 @@ export class TabuladosPageComponent implements OnDestroy {
   }
 
   private refrescarBusquedaActual() {
-    if (this.filtroIdTabulado.length < 2) {
+    if (!this.procesoSeleccionado) {
       this.tabuladosBase = [];
       this.tabulados = [];
       return;
     }
-
-    this.buscarTabulados(this.filtroIdTabulado, true);
+    this.cargarTabuladosProceso();
   }
 
   private filtrarResultadosLocales() {
-    this.tabulados = this.tabuladosBase.filter((tabulado) =>
-      tabulado.idTabulado.startsWith(this.filtroIdTabulado),
+    const filtro = this.filtroIdTabulado.trim().toLocaleLowerCase();
+    this.tabulados = this.tabuladosBase.filter(
+      (tabulado) =>
+        tabulado.idTabulado.toLocaleLowerCase().includes(filtro) ||
+        tabulado.tabulado.toLocaleLowerCase().includes(filtro),
     );
-  }
-
-  private esHitoDeBusqueda(filtro: string): boolean {
-    if (filtro.length === 2) return true;
-
-    const cantidadGuiones = (filtro.match(/-/g) ?? []).length;
-    const esPrimerOSegundoGuion =
-      filtro.endsWith('-') && cantidadGuiones <= 2;
-    const esIdCompleto = /^.+-\d+-\d{4}-T$/.test(filtro);
-
-    return esPrimerOSegundoGuion || esIdCompleto;
   }
 
   private mostrarMensaje(mensaje: string, esError = false) {

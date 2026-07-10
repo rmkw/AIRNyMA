@@ -324,6 +324,97 @@ export class CapturaMdeaVariableComponent implements OnInit, OnChanges {
     this.contribucion = '';
     this.comentarioS = '-';
   }
+
+  precargarRelacionMdea(relacion: any) {
+    this.idComponente = relacion?.componente ? String(relacion.componente) : '';
+    this.idSubcomponente = '-';
+    this.idTema = '-';
+    this.idEstadistico1 = '-';
+    this.idEstadistico2 = '-';
+    this.contribucion = relacion?.contribucion ?? '';
+    this.comentarioS = relacion?.comentarioS ?? '-';
+
+    this.subcomponentes = [];
+    this.temas = [];
+    this.estadisticas1 = [];
+    this.estadisticas2 = [];
+
+    if (!this.idComponente) return;
+
+    this._mdeaService.getSubcomponentes(this.idComponente).subscribe({
+      next: (subcomponentes) => {
+        this.subcomponentes = subcomponentes ?? [];
+        this.idSubcomponente = relacion?.subcomponente
+          ? String(relacion.subcomponente)
+          : '-';
+
+        if (this.idSubcomponente === '-') return;
+
+        this._mdeaService
+          .getTopicos(this.idComponente, this.idSubcomponente)
+          .subscribe({
+            next: (temas) => {
+              this.temas = temas ?? [];
+              this.idTema = relacion?.tema ? String(relacion.tema) : '-';
+
+              if (this.idTema === '-') return;
+
+              this._mdeaService
+                .getVariables(
+                  this.idComponente,
+                  this.idSubcomponente,
+                  this.idTema,
+                )
+                .subscribe({
+                  next: (estadisticas1) => {
+                    this.estadisticas1 = estadisticas1 ?? [];
+                    this.idEstadistico1 = relacion?.estadistica1
+                      ? String(relacion.estadistica1)
+                      : '-';
+
+                    if (this.idEstadistico1 === '-') return;
+
+                    this._mdeaService
+                      .getEstadisticos(
+                        this.idComponente,
+                        this.idSubcomponente,
+                        this.idTema,
+                        this.idEstadistico1,
+                      )
+                      .subscribe({
+                        next: (estadisticas2) => {
+                          this.estadisticas2 = estadisticas2 ?? [];
+                          this.idEstadistico2 = relacion?.estadistica2
+                            ? String(relacion.estadistica2)
+                            : '-';
+                        },
+                        error: (err) => {
+                          console.error(
+                            'Error al precargar estadística 2 MDEA:',
+                            err,
+                          );
+                        },
+                      });
+                  },
+                  error: (err) => {
+                    console.error(
+                      'Error al precargar estadística 1 MDEA:',
+                      err,
+                    );
+                  },
+                });
+            },
+            error: (err) => {
+              console.error('Error al precargar temas MDEA:', err);
+            },
+          });
+      },
+      error: (err) => {
+        console.error('Error al precargar subcomponentes MDEA:', err);
+      },
+    });
+  }
+
   @ViewChild('modalSinDatosMdea')
   modalSinDatosMdea!: ElementRef<HTMLDialogElement>;
 

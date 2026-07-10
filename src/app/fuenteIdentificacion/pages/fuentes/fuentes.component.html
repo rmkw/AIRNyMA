@@ -115,7 +115,17 @@
               <label class="label" for="accesoLink">
                 <span class="label-text text-xs font-medium">URL de acceso a la fuente</span>
               </label>
-              <input id="accesoLink" type="text" class="input input-bordered w-full" [(ngModel)]="url" />
+              <div class="flex gap-2">
+                <input id="accesoLink" type="text" class="input input-bordered w-full" [(ngModel)]="url" />
+                <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center"
+                  type="button" (click)="pegarUrlDesdePortapapeles()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12h6m-6 3h6m-6 3h3.75M9.75 3.75h4.5c.414 0 .75.336.75.75v.75h1.5A2.25 2.25 0 0 1 18.75 7.5v12A2.25 2.25 0 0 1 16.5 21.75h-9A2.25 2.25 0 0 1 5.25 19.5v-12A2.25 2.25 0 0 1 7.5 5.25H9V4.5c0-.414.336-.75.75-.75Z" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 

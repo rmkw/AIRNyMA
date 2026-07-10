@@ -20,6 +20,13 @@ export class TabuladosService {
     });
   }
 
+  obtenerPorProceso(acronimo: string): Observable<Tabulado[]> {
+    return this.http.get<Tabulado[]>(
+      `${this.baseUrl}/proceso/${encodeURIComponent(acronimo)}`,
+      { withCredentials: true },
+    );
+  }
+
   obtenerPorId(idTabulado: string): Observable<Tabulado> {
     return this.http.get<Tabulado>(
       `${this.baseUrl}/${encodeURIComponent(idTabulado)}`,

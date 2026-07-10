@@ -21,6 +21,13 @@ export class VariablesTabuladosService {
     });
   }
 
+  obtenerVariablesPorProceso(acronimo: string): Observable<VariableResumen[]> {
+    return this.http.get<VariableResumen[]>(
+      `${this.variablesUrl}/proceso/${encodeURIComponent(acronimo)}`,
+      { withCredentials: true },
+    );
+  }
+
   obtenerPorTabulado(idTabulado: string): Observable<VariableTabulado[]> {
     return this.http.get<VariableTabulado[]>(
       `${this.relacionesUrl}/tabulado/${encodeURIComponent(idTabulado)}`,

@@ -98,8 +98,9 @@
 
 
                 <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center"
-                  (click)="consultarPorIdS()" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                  (click)="consultarPorIdS()" [disabled]="loadingBusquedaIdS" type="button">
+                  <span *ngIf="loadingBusquedaIdS" class="loading loading-spinner loading-sm"></span>
+                  <svg *ngIf="!loadingBusquedaIdS" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                     class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round"
                       d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.5 5.5a7.5 7.5 0 0 0 11.15 11.15Z" />
@@ -115,15 +116,29 @@
               <label class="label" for="nombreVar">
                 <span class="label-text text-xs font-medium">Nombre de la variable</span>
               </label>
-              <input id="nombreVar" type="text" class="input input-bordered w-full" [(ngModel)]="nombre"
-                [disabled]="formularioVariableBloqueado" placeholder="Nombre de la variable tal como aparece en la fuente" />
+              <div class="flex gap-2">
+                <input id="nombreVar" type="text" class="input input-bordered w-full" [(ngModel)]="nombre"
+                  [disabled]="formularioVariableBloqueado" placeholder="Nombre de la variable tal como aparece en la fuente" />
+                <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center" type="button" (click)="pegarDesdePortapapeles('nombre')"
+                  [disabled]="formularioVariableBloqueado">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12h6m-6 3h6m-6 3h3.75M9.75 3.75h4.5c.414 0 .75.336.75.75v.75h1.5A2.25 2.25 0 0 1 18.75 7.5v12A2.25 2.25 0 0 1 16.5 21.75h-9A2.25 2.25 0 0 1 5.25 19.5v-12A2.25 2.25 0 0 1 7.5 5.25H9V4.5c0-.414.336-.75.75-.75Z" />
+                  </svg>
+                </button>
+              </div>
 
             </div>
           </div>
 
           <div class="form-control">
-            <label class="label" for="definicionVar">
+            <label class="label flex items-center justify-between" for="definicionVar">
               <span class="label-text text-xs font-medium">Definición</span>
+              <button class="label-text-alt link link-neutral text-xs" type="button"
+                (click)="pegarDesdePortapapeles('definicion')" [disabled]="formularioVariableBloqueado">
+                Pegar contenido
+              </button>
             </label>
             <textarea id="definicionVar" class="textarea textarea-bordered min-h-16 w-full" [(ngModel)]="definicion"
               [disabled]="formularioVariableBloqueado" placeholder="Definición de la variable">
@@ -135,8 +150,18 @@
             <label class="label" for="urlVar">
               <span class="label-text text-xs font-medium">URL de acceso</span>
             </label>
-            <input id="urlVar" type="text" class="input input-bordered w-full" [(ngModel)]="url"
-              [disabled]="formularioVariableBloqueado" placeholder="https://..." />
+            <div class="flex gap-2">
+              <input id="urlVar" type="text" class="input input-bordered w-full" [(ngModel)]="url"
+                [disabled]="formularioVariableBloqueado" placeholder="https://..." />
+              <button class="btn bg-[#e5e6e7] h-[42px] min-h-[42px] px-3 flex items-center justify-center" type="button" (click)="pegarDesdePortapapeles('url')"
+                [disabled]="formularioVariableBloqueado">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12h6m-6 3h6m-6 3h3.75M9.75 3.75h4.5c.414 0 .75.336.75.75v.75h1.5A2.25 2.25 0 0 1 18.75 7.5v12A2.25 2.25 0 0 1 16.5 21.75h-9A2.25 2.25 0 0 1 5.25 19.5v-12A2.25 2.25 0 0 1 7.5 5.25H9V4.5c0-.414.336-.75.75-.75Z" />
+                </svg>
+              </button>
+            </div>
 
           </div>
 
@@ -155,14 +180,6 @@
             <button class="btn btn-primary btn-sm px-6" (click)="guardarVariable()" [disabled]="formularioVariableBloqueado">
               {{ variableEditando ? 'Actualizar variable' : 'Registrar variable' }}
             </button>
-
-            <button class="btn btn-outline btn-sm px-6" (click)="resetFormularioVariable()"
-              [disabled]="formularioVariableBloqueado">
-              Limpiar
-            </button>
-
-
-
           </div>
         </div>
       </div>
@@ -331,7 +348,7 @@
 
 
     <div class="space-y-2 xl:col-span-12">
-      <app-captura-mdea-variable *ngIf="mostrarBloqueMdea" [idA]="idAVariableActual" [idS]="idSVariableActual">
+      <app-captura-mdea-variable #capturaMdeaVariable *ngIf="mostrarBloqueMdea" [idA]="idAVariableActual" [idS]="idSVariableActual">
       </app-captura-mdea-variable>
     </div>
 
@@ -349,6 +366,170 @@
         (pertinenciaGuardada)="finalizarCapturaVariable()">
       </app-captura-pertinencia-variable>
     </div>
+  </div>
+</div>
+
+
+<dialog #modalValidacionVariable class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Falta información para registrar</h3>
+
+    <p class="py-3 text-sm text-base-content/70">
+      Completa los siguientes datos antes de registrar la variable:
+    </p>
+
+    <ul class="list-disc space-y-1 pl-5 text-sm">
+      <li *ngFor="let faltante of faltantesRegistroVariable">{{ faltante }}</li>
+    </ul>
+
+    <div class="modal-action">
+      <button class="btn btn-primary" type="button" (click)="cerrarModalValidacionVariable()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+
+<div class="drawer drawer-end">
+  <input id="drawer-busqueda-id-s" type="checkbox" class="drawer-toggle" [checked]="drawerBusquedaAbierto"
+    (change)="drawerBusquedaAbierto = $any($event.target).checked" />
+  <div class="drawer-content"></div>
+  <div class="drawer-side z-50">
+    <label for="drawer-busqueda-id-s" aria-label="close sidebar" class="drawer-overlay"
+      (click)="cerrarDrawerBusqueda()"></label>
+
+    <aside class="min-h-full w-full max-w-[34rem] overflow-y-auto bg-base-200 p-4 text-base-content">
+      <div class="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-bold">Variables encontradas</h2>
+          <p class="text-sm text-base-content/60">Variable consultada: {{ idSConsultado || '-' }}</p>
+        </div>
+        <label for="drawer-busqueda-id-s" class="btn btn-ghost btn-sm" (click)="cerrarDrawerBusqueda()">Cerrar</label>
+      </div>
+
+      <div *ngIf="loadingBusquedaIdS" class="flex min-h-40 items-center justify-center">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+
+      <div *ngIf="!loadingBusquedaIdS && errorBusquedaIdS" class="alert alert-error text-sm">
+        {{ errorBusquedaIdS }}
+      </div>
+
+      <div *ngIf="!loadingBusquedaIdS && !errorBusquedaIdS && variablesEncontradasPorIdS.length === 0"
+        class="alert alert-info text-sm">
+        No se encontraron variables registradas con ese ID_S.
+      </div>
+
+      <div *ngIf="!loadingBusquedaIdS && !errorBusquedaIdS && variablesEncontradasPorIdS.length > 0"
+        class="space-y-3">
+        <article *ngFor="let item of variablesEncontradasPorIdS"
+          class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+          <div class="mb-3 flex flex-col gap-2 border-b border-base-300 pb-3">
+            <h3 class="text-base font-semibold">{{ item.nombre || 'Sin nombre' }}</h3>
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div>
+              <p class="font-semibold">Definición</p>
+              <p class="break-words text-base-content/80">{{ item.definicion || 'No especificado' }}</p>
+            </div>
+
+            <div>
+              <p class="font-semibold">URL</p>
+              <a *ngIf="item.url; else sinUrlDrawer" [href]="item.url" target="_blank" rel="noopener noreferrer"
+                class="link link-neutral break-all">
+                {{ item.url }}
+              </a>
+              <ng-template #sinUrlDrawer>
+                <p class="text-base-content/60">No disponible</p>
+              </ng-template>
+            </div>
+
+            <div>
+              <p class="font-semibold">Comentario</p>
+              <p class="break-words text-base-content/80">{{ item.comentarioS || 'No disponible' }}</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <span class="badge" [ngClass]="item.mdea ? 'badge-success' : 'badge-ghost'">
+                MDEA: {{ item.mdea ? 'Sí' : 'No' }}
+              </span>
+              <span class="badge" [ngClass]="item.ods ? 'badge-success' : 'badge-ghost'">
+                ODS: {{ item.ods ? 'Sí' : 'No' }}
+              </span>
+            </div>
+
+            <button class="btn btn-primary btn-sm w-full" type="button" (click)="pegarDatosVariableEncontrada(item)"
+              [disabled]="formularioVariableBloqueado">
+              Pegar datos
+            </button>
+
+            <section class="border-t border-base-300 pt-3" *ngIf="item.mdeas?.length">
+              <h4 class="mb-2 font-semibold">MDEA</h4>
+              <div *ngFor="let mdea of item.mdeas" class="mb-2 rounded-box bg-base-200 p-3">
+                <div class="mb-2 flex justify-end">
+                  <button class="btn btn-primary btn-xs" type="button" (click)="pegarRelacionMdeaEncontrada(mdea)"
+                    [disabled]="!idAVariableActual || !mostrarBloqueMdea">
+                    Pegar MDEA
+                  </button>
+                </div>
+                <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+                  <dt class="font-medium">Componente:</dt>
+                  <dd>{{ textoConIdYNombre(mdea.componente, mdea.componenteNombre) }}</dd>
+                  <dt class="font-medium">Subcomponente:</dt>
+                  <dd>{{ textoConIdYNombre(mdea.subcomponente, mdea.subcomponenteNombre) }}</dd>
+                  <dt class="font-medium">Tema:</dt>
+                  <dd>{{ textoConIdYNombre(mdea.tema, mdea.temaNombre) }}</dd>
+                  <dt class="font-medium">Estadística 1:</dt>
+                  <dd>{{ textoConIdYNombre(mdea.estadistica1, mdea.estadistica1Nombre) }}</dd>
+                  <dt class="font-medium">Estadística 2:</dt>
+                  <dd>{{ textoConIdYNombre(mdea.estadistica2, mdea.estadistica2Nombre) }}</dd>
+                  <dt class="font-medium">Contribución:</dt>
+                  <dd>{{ mdea.contribucion || '-' }}</dd>
+                  <dt class="font-medium">Comentario:</dt>
+                  <dd>{{ mdea.comentarioS || '-' }}</dd>
+                </dl>
+              </div>
+            </section>
+
+            <section class="border-t border-base-300 pt-3" *ngIf="item.odsList?.length">
+              <h4 class="mb-2 font-semibold">ODS</h4>
+              <div *ngFor="let ods of item.odsList" class="mb-2 rounded-box bg-base-200 p-3">
+                <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+                  <dt class="font-medium">Objetivo:</dt>
+                  <dd>{{ textoConIdYNombre(ods.objetivo, ods.objetivoNombre) }}</dd>
+                  <dt class="font-medium">Meta:</dt>
+                  <dd>{{ textoConIdYNombre(ods.meta, ods.metaNombre) }}</dd>
+                  <dt class="font-medium">Indicador:</dt>
+                  <dd>{{ textoConIdYNombre(ods.indicador, ods.indicadorNombre) }}</dd>
+                  <dt class="font-medium">Contribución:</dt>
+                  <dd>{{ ods.contribucion || '-' }}</dd>
+                  <dt class="font-medium">Comentario:</dt>
+                  <dd>{{ ods.comentarioS || '-' }}</dd>
+                </dl>
+              </div>
+            </section>
+
+            <section class="border-t border-base-300 pt-3" *ngIf="item.pertinencia">
+              <h4 class="mb-2 font-semibold">Pertinencia</h4>
+              <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+                <dt class="font-medium">Tema:</dt>
+                <dd>{{ item.pertinencia.pertinencia || '-' }}</dd>
+                <dt class="font-medium">Contribución:</dt>
+                <dd>{{ item.pertinencia.contribucion || '-' }}</dd>
+                <dt class="font-medium">Viabilidad:</dt>
+                <dd>{{ item.pertinencia.viabilidad || '-' }}</dd>
+                <dt class="font-medium">Propuesta:</dt>
+                <dd>{{ item.pertinencia.propuesta || '-' }}</dd>
+                <dt class="font-medium">Comentario:</dt>
+                <dd>{{ item.pertinencia.comentarioS || '-' }}</dd>
+              </dl>
+            </section>
+          </div>
+        </article>
+      </div>
+    </aside>
   </div>
 </div>
 

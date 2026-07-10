@@ -29,6 +29,7 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
   @Input() guardando = false;
   @Output() guardarTabulado = new EventEmitter<Tabulado>();
   @Output() cancelarEdicion = new EventEmitter<void>();
+  @Output() procesoCambiado = new EventEmitter<string | null>();
 
   arrDirecciones: Direccion[] = [];
   arrProcesosPBydire: interface_ProcesoP[] = [];
@@ -80,6 +81,7 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
     this.arrProcesosPBydire = [];
     this.procesosHabilitados = true;
     this.limpiarIdTabulado();
+    this.procesoCambiado.emit(null);
 
     this.procesosService.getPorDireccionGeneral(direccion).subscribe({
       next: (procesos) => {
@@ -97,6 +99,7 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
     this.serialTabulado = '';
     this.edicionTabulado = '';
     this.sincronizarIdTabulado();
+    this.procesoCambiado.emit(acronimo);
   }
 
   actualizarSerial(valor: string) {
@@ -115,7 +118,7 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
   }
 
   cancelar() {
-    this.limpiarFormulario();
+    this.limpiarDatosTabulado();
     this.cancelarEdicion.emit();
   }
 
@@ -128,6 +131,17 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
     this.serialTabulado = '';
     this.edicionTabulado = '';
     this.tabulado = this.crearTabuladoVacio();
+    this.procesoCambiado.emit(null);
+  }
+
+  limpiarDatosTabulado() {
+    this.serialTabulado = '';
+    this.edicionTabulado = '';
+    this.prefijoTabulado = this.procesoSeleccionado
+      ? `${this.procesoSeleccionado}-`
+      : '';
+    this.tabulado = this.crearTabuladoVacio();
+    this.sincronizarIdTabulado();
   }
 
   private cargarDirecciones() {

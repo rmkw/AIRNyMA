@@ -12,7 +12,6 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-variables-tabulados',
@@ -22,24 +21,42 @@ import { Subscription } from 'rxjs';
 })
 export class VariablesTabuladosComponent implements OnDestroy {
   private service = inject(VariablesTabuladosService);
-  private busquedaSubscription?: Subscription;
-  private ultimoTerminoConsultado = '';
   private mensajeTimeout?: ReturnType<typeof setTimeout>;
 
   @ViewChild('relacionModal')
   relacionModal?: ElementRef<HTMLDialogElement>;
 
   private _idTabulado: string | null = null;
+  private _acronimo: string | null = null;
+
+  @Input()
+  set acronimo(value: string | null) {
+    if (value === this._acronimo) return;
+    this._acronimo = value;
+    this.cerrarRelacion();
+    this.limpiarBusqueda();
+    this.variablesRelacionadas = [];
+    this.error = '';
+    this.mensaje = '';
+    if (value) this.cargarVariablesProceso();
+  }
+
+  get acronimo(): string | null {
+    return this._acronimo;
+  }
 
   @Input()
   set idTabulado(value: string | null) {
     if (value === this._idTabulado) return;
     this._idTabulado = value;
-    this.limpiarBusqueda();
     this.variablesRelacionadas = [];
     this.error = '';
     this.mensaje = '';
-    if (value) this.cargarRelaciones();
+    if (value) {
+      this.cargarRelaciones();
+    } else {
+      this.filtrarResultadosLocales();
+    }
   }
 
   get idTabulado(): string | null {
@@ -60,36 +77,13 @@ export class VariablesTabuladosComponent implements OnDestroy {
   mensaje = '';
 
   ngOnDestroy(): void {
-    this.busquedaSubscription?.unsubscribe();
     if (this.mensajeTimeout) clearTimeout(this.mensajeTimeout);
   }
 
   actualizarFiltro(valor: string): void {
     this.filtroIdA = valor;
     this.error = '';
-    const termino = valor.trim();
-
-    if (termino.length < 2) {
-      this.busquedaSubscription?.unsubscribe();
-      this.buscando = false;
-      this.variablesBase = [];
-      this.variablesDisponibles = [];
-      this.ultimoTerminoConsultado = '';
-      return;
-    }
-
     this.filtrarResultadosLocales();
-    const esPrimeraConsulta = !this.ultimoTerminoConsultado;
-    const cambioDeBusqueda = !termino
-      .toLocaleLowerCase()
-      .startsWith(this.ultimoTerminoConsultado.toLocaleLowerCase());
-    if (
-      esPrimeraConsulta ||
-      cambioDeBusqueda ||
-      this.esHitoDeBusqueda(termino)
-    ) {
-      this.buscarVariables(termino);
-    }
   }
 
   nombreVariable(variable: VariableResumen | VariableTabulado): string {
@@ -104,7 +98,9 @@ export class VariablesTabuladosComponent implements OnDestroy {
   }
 
   cerrarRelacion(): void {
-    this.relacionModal?.nativeElement.close();
+    if (this.relacionModal?.nativeElement.open) {
+      this.relacionModal.nativeElement.close();
+    }
     this.variablePorRelacionar = null;
     this.comentarioA = '';
   }
@@ -161,38 +157,29 @@ export class VariablesTabuladosComponent implements OnDestroy {
     });
   }
 
-  buscarVariables(termino: string, forzar = false): void {
-    const normalizado = termino.trim();
-    if (!this.idTabulado || normalizado.length < 2) return;
-    if (!forzar && normalizado === this.ultimoTerminoConsultado) return;
-
-    this.busquedaSubscription?.unsubscribe();
+  private cargarVariablesProceso(): void {
+    const acronimo = this.acronimo;
+    if (!acronimo) return;
     this.buscando = true;
-    this.ultimoTerminoConsultado = normalizado;
-    this.busquedaSubscription = this.service
-      .buscarVariables(normalizado)
-      .subscribe({
-        next: (variables) => {
+    this.service.obtenerVariablesPorProceso(acronimo).subscribe({
+      next: (variables) => {
+        if (acronimo === this.acronimo) {
           this.variablesBase = variables;
           this.filtrarResultadosLocales();
           this.buscando = false;
-        },
-        error: (error) => {
+        }
+      },
+      error: (error) => {
+        if (acronimo === this.acronimo) {
           this.variablesBase = [];
           this.variablesDisponibles = [];
           this.buscando = false;
           this.error =
-            error.error || 'No fue posible consultar las variables.';
-        },
-      });
-  }
-
-  private esHitoDeBusqueda(termino: string): boolean {
-    if (termino.length === 2) return true;
-    const guiones = (termino.match(/-/g) ?? []).length;
-    const terminaEnGuion = termino.endsWith('-') && guiones <= 2;
-    const idCompleto = /^[^-]+-\d+-\d{4}$/.test(termino);
-    return terminaEnGuion || idCompleto;
+            error.error ||
+            'No fue posible consultar las variables del proceso.';
+        }
+      },
+    });
   }
 
   private filtrarResultadosLocales(): void {
@@ -233,11 +220,9 @@ export class VariablesTabuladosComponent implements OnDestroy {
   }
 
   private limpiarBusqueda(): void {
-    this.busquedaSubscription?.unsubscribe();
     this.filtroIdA = '';
     this.variablesBase = [];
     this.variablesDisponibles = [];
-    this.ultimoTerminoConsultado = '';
     this.buscando = false;
   }
 

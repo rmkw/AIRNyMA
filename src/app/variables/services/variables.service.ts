@@ -36,8 +36,11 @@ export class VariableService {
     });
   }
 
-  getByVariable(idVariable: string): Observable<any> {
-    return this.http.get<any>(`${baseUrl}/variables/por-id/${idVariable}`);
+  getByVariable(idVariable: string): Observable<VariableDTO[]> {
+    return this.http.get<VariableDTO[]>(
+      `${baseUrl}/variables/por-id/${encodeURIComponent(idVariable)}`,
+      { withCredentials: true },
+    );
   }
 
   getVariableByIdA(idA: string): Observable<VariableDTO> {

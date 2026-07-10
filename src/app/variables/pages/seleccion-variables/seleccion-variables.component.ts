@@ -6,11 +6,15 @@ import { ppEcoService } from "@/procesoProduccion/services/proceso-produccion.se
 import { CapturaMdeaVariableComponent } from "@/variables/components/captura-mdea-variable/captura-mdea-variable.component";
 import { CapturaPertinenciaVariableComponent } from "@/variables/components/captura-pertinencia-variable/captura-pertinencia-variable.component";
 import { Direccion } from "@/variables/interfaces/direcciones.interface";
+import { MdeaDTO, VariableDTO } from "@/variables/interfaces/variablesCapDTO.interface";
+import { CapturaMdeaVarService } from "@/variables/services/captura-mdea-vars.service";
+import { relacionODS_Service } from "@/variables/services/captura-ods-vars.service";
 import { VariableService } from "@/variables/services/variables.service";
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, inject, OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { CapturaOdsVariableComponent } from '@/variables/components/captura-ods-variable/captura-ods-variable.component';
+import { catchError, forkJoin, map, of } from "rxjs";
 
 @Component({
   selector: 'app-seleccion-variables',
@@ -28,6 +32,8 @@ export class SeleccionVariablesComponent implements OnInit {
   _procesoService = inject(ppEcoService);
   _fuentesService = inject(FuenteIdentificacionService);
   _varService = inject(VariableService);
+  _mdeaRelacionService = inject(CapturaMdeaVarService);
+  _odsRelacionService = inject(relacionODS_Service);
 
   arrDirecciones: Direccion[] = [];
   arrProcesosByDir: interface_ProcesoP[] = [];
@@ -43,6 +49,11 @@ export class SeleccionVariablesComponent implements OnInit {
 
   variables: any[] = [];
   loadingVariables = false;
+  variablesEncontradasPorIdS: VariableDTO[] = [];
+  loadingBusquedaIdS = false;
+  errorBusquedaIdS = '';
+  drawerBusquedaAbierto = false;
+  idSConsultado = '';
 
   // contexto actual
   idFuenteActual = '';
@@ -54,14 +65,18 @@ export class SeleccionVariablesComponent implements OnInit {
   nombre = '';
   definicion = '';
   url = '';
-  comentarioS = '-';
+  comentarioS = '';
 
   // modo edición
   variableEditando: any = null;
   variableAEliminarId = '';
+  faltantesRegistroVariable: string[] = [];
 
   @ViewChild('procesoProduccionTag')
   procesoProduccionTag!: ElementRef<HTMLSelectElement>;
+
+  @ViewChild('capturaMdeaVariable')
+  capturaMdeaVariable?: CapturaMdeaVariableComponent;
 
   ngOnInit(): void {
     this.getDirecciones();
@@ -347,27 +362,36 @@ export class SeleccionVariablesComponent implements OnInit {
     );
   }
 
+  obtenerFaltantesRegistroVariable(userId: number | null): string[] {
+    const faltantes: string[] = [];
+
+    if (!this.direccionSeleccionada) faltantes.push('Unidad Administrativa');
+    if (!this.procesoSeleccionadoValue && !this.acronimoActual) {
+      faltantes.push('Proceso de Producción');
+    }
+    if (!this.fuenteSeleccionadaValue && !this.idFuenteActual) {
+      faltantes.push('Fuente de identificación de la variable');
+    }
+    if (!this.idS?.trim()) faltantes.push('Identificador único');
+    if (!this.nombre?.trim()) faltantes.push('Nombre de la variable');
+    if (!this.definicion?.trim()) faltantes.push('Definición');
+    if (!this.url?.trim()) faltantes.push('URL de acceso');
+    if (!this.comentarioS?.trim()) faltantes.push('Comentario');
+    if (!userId) faltantes.push('Usuario logueado');
+
+    return faltantes;
+  }
+
   guardarVariable() {
     const userId = this.obtenerUsuarioId();
+    const faltantes = this.obtenerFaltantesRegistroVariable(userId);
 
-    if (
-      !this.idFuenteActual ||
-      !this.acronimoActual ||
-      !this.edicionFuenteActual
-    ) {
-      console.error('No hay contexto suficiente de la fuente');
+    if (faltantes.length > 0) {
+      this.abrirModalValidacionVariable(faltantes);
       return;
     }
 
-    if (!this.formularioVariableValido()) {
-      console.error('Faltan campos obligatorios de la variable');
-      return;
-    }
-
-    if (!userId) {
-      console.error('No se pudo obtener el id del usuario logueado');
-      return;
-    }
+    const usuarioValidado = userId as number;
 
     const payload = {
       idA: this.variableEditando?.idA ?? this.idAGenerado,
@@ -377,11 +401,14 @@ export class SeleccionVariablesComponent implements OnInit {
       nombre: this.nombre.trim(),
       definicion: this.definicion.trim(),
       url: this.url.trim(),
-      comentarioS: this.comentarioS?.trim() || '-',
+      comentarioS: this.comentarioS.trim(),
       mdea: false,
       ods: false,
-      responsableRegister: this.variableEditando?.responsableRegister ?? userId,
-      responsableActualizacion: this.variableEditando ? userId : undefined,
+      responsableRegister:
+        this.variableEditando?.responsableRegister ?? usuarioValidado,
+      responsableActualizacion: this.variableEditando
+        ? usuarioValidado
+        : undefined,
       prioridad: 1,
       revisada: false,
       fechaRevision: undefined,
@@ -449,7 +476,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.nombre = item.nombre ?? '';
     this.definicion = item.definicion ?? '';
     this.url = item.url ?? '';
-    this.comentarioS = item.comentarioS ?? '-';
+    this.comentarioS = item.comentarioS ?? '';
 
     this.idAVariableActual = item.idA ?? '';
     this.idSVariableActual = item.idS ?? '';
@@ -483,8 +510,9 @@ export class SeleccionVariablesComponent implements OnInit {
   eliminarVariable(idA: string) {
     this._varService.deleteVariableFull(idA).subscribe({
       next: () => {
-        if (this.variableEditando?.idA === idA) {
-          this.resetFormularioVariable();
+        if (this.variableEditando?.idA === idA || this.idAVariableActual === idA) {
+          this.resetFormularioVariable(true);
+          this.resetContextoVariableActual();
         }
         this.cargarVariablesPorFuente(this.idFuenteActual);
       },
@@ -494,27 +522,119 @@ export class SeleccionVariablesComponent implements OnInit {
     });
   }
 
-  resetFormularioVariable() {
-    this.idS = '';
+  resetFormularioVariable(conservarPrefijo = false) {
+    this.idS = conservarPrefijo && this.acronimoActual ? `${this.acronimoActual}-` : '';
     this.nombre = '';
     this.definicion = '';
     this.url = '';
-    this.comentarioS = '-';
+    this.comentarioS = '';
     this.variableEditando = null;
     this.bloquearIdS = false;
     this.formularioVariableBloqueado = false;
   }
 
   consultarPorIdS() {
-    if (!this.idS?.trim()) {
+    const idSBusqueda = this.idS?.trim();
+
+    if (!idSBusqueda) {
       console.warn('No hay ID_S para consultar');
       return;
     }
 
-    console.log('Consultando variables similares con ID_S:', this.idS);
+    this.drawerBusquedaAbierto = true;
+    this.loadingBusquedaIdS = true;
+    this.errorBusquedaIdS = '';
+    this.variablesEncontradasPorIdS = [];
+    this.idSConsultado = idSBusqueda;
 
-    // aquí luego conectamos backend:
-    // this._varService.getByIdS(this.idS).subscribe(...)
+    this._varService.getByVariable(idSBusqueda).subscribe({
+      next: (data) => {
+        this.cargarTraduccionesMdea(data ?? []);
+      },
+      error: (err) => {
+        console.error('Error al consultar variables por ID_S:', err);
+        this.errorBusquedaIdS =
+          'No se pudo consultar la información de la variable.';
+        this.loadingBusquedaIdS = false;
+      },
+    });
+  }
+
+  cargarTraduccionesMdea(variables: VariableDTO[]) {
+    if (variables.length === 0) {
+      this.variablesEncontradasPorIdS = [];
+      this.loadingBusquedaIdS = false;
+      return;
+    }
+
+    const consultas = variables.map((variable) =>
+      forkJoin({
+        mdeasTraducidas: this._mdeaRelacionService
+          .getRelacionesTablaPorVariable(variable.idA)
+          .pipe(catchError(() => of([]))),
+        odsTraducidas: this._odsRelacionService
+          .getRelacionesTablaPorVariable_ods(variable.idA)
+          .pipe(catchError(() => of([]))),
+      }).pipe(
+        map(({ mdeasTraducidas, odsTraducidas }) => ({
+          ...variable,
+          mdeas: mdeasTraducidas?.length ? mdeasTraducidas : variable.mdeas,
+          odsList: odsTraducidas?.length ? odsTraducidas : variable.odsList,
+        })),
+        catchError((err) => {
+          console.error('Error al traducir relaciones de la variable:', err);
+          return of(variable);
+        }),
+      ),
+    );
+
+    forkJoin(consultas).subscribe({
+      next: (variablesTraducidas) => {
+        this.variablesEncontradasPorIdS = variablesTraducidas;
+        this.loadingBusquedaIdS = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar traducciones MDEA:', err);
+        this.variablesEncontradasPorIdS = variables;
+        this.loadingBusquedaIdS = false;
+      },
+    });
+  }
+
+  cerrarDrawerBusqueda() {
+    this.drawerBusquedaAbierto = false;
+  }
+
+  pegarDatosVariableEncontrada(variable: VariableDTO) {
+    this.nombre = variable.nombre ?? '';
+    this.definicion = variable.definicion ?? '';
+    this.url = variable.url ?? '';
+    this.comentarioS = variable.comentarioS?.trim() || '';
+    this.cerrarDrawerBusqueda();
+  }
+
+  async pegarDesdePortapapeles(campo: 'nombre' | 'definicion' | 'url') {
+    if (this.formularioVariableBloqueado) return;
+
+    try {
+      const texto = await navigator.clipboard.readText();
+
+      if (campo === 'nombre') this.nombre = texto;
+      if (campo === 'definicion') this.definicion = texto;
+      if (campo === 'url') this.url = texto;
+    } catch (error) {
+      console.error('No se pudo leer el portapapeles:', error);
+    }
+  }
+
+  textoConIdYNombre(id: string | number | null | undefined, nombre?: string | null): string {
+    if (id === null || id === undefined || id === '') return nombre || '-';
+    return nombre ? `${id} - ${nombre}` : `${id}`;
+  }
+
+  pegarRelacionMdeaEncontrada(mdea: MdeaDTO) {
+    this.capturaMdeaVariable?.precargarRelacionMdea(mdea);
+    this.cerrarDrawerBusqueda();
   }
 
   pageSize = 10;
@@ -633,6 +753,18 @@ export class SeleccionVariablesComponent implements OnInit {
   cerrarModalVariableDuplicada() {
     this.modalVariableDuplicada?.nativeElement.close();
   }
+  @ViewChild('modalValidacionVariable')
+  modalValidacionVariable!: ElementRef<HTMLDialogElement>;
+
+  abrirModalValidacionVariable(faltantes: string[]) {
+    this.faltantesRegistroVariable = faltantes;
+    this.modalValidacionVariable?.nativeElement.showModal();
+  }
+
+  cerrarModalValidacionVariable() {
+    this.modalValidacionVariable?.nativeElement.close();
+  }
+
   @ViewChild('modalVariableCapturada')
   modalVariableCapturada!: ElementRef<HTMLDialogElement>;
 

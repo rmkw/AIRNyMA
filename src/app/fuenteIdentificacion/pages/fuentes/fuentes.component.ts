@@ -61,6 +61,14 @@ export class FuentesComponent implements OnInit {
     this.getDirecciones();
   }
 
+  async pegarUrlDesdePortapapeles() {
+    try {
+      this.url = await navigator.clipboard.readText();
+    } catch (error) {
+      console.error('No se pudo leer el portapapeles:', error);
+    }
+  }
+
   getDirecciones() {
     this._serviceDirecciones.getDirecciones().subscribe({
       next: (data) => {
