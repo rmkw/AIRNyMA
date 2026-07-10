@@ -18,4 +18,5 @@ export interface FuenteSaveDTO {
   comentarioS: string | null;
   comentarioA: string | null;
   idFuenteSeleccion: string;
+  idFuenteSeleccionOrigen?: string;
 }

@@ -65,6 +65,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
   arrVariablesSeleccionadas: VariableTablaDTO[] = [];
   arrVariablesSeleccionadasFiltradas: VariableTablaDTO[] = [];
   variablesArmonizadasIds = new Set<string>();
+  private estatusVariablesRequestId = 0;
+  private seleccionVariableRequestId = 0;
 
   direccionName: string | number | undefined = undefined;
 
@@ -248,22 +250,14 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   cargarEstatusVariablesArmonizadas(variables: VariableTablaDTO[]) {
+    const requestId = ++this.estatusVariablesRequestId;
     this.variablesArmonizadasIds.clear();
 
-    const fuentes = Array.from(
-      new Set(
-        variables
-          .map((variable) => variable.idFuente)
-          .filter((idFuente): idFuente is string => !!idFuente),
-      ),
-    );
-
-    fuentes.forEach((idFuente) => {
-      this.variablesArmoService.obtenerPorIdFuente(idFuente).subscribe({
-        next: (variablesArmo) => {
-          variablesArmo.forEach((variable) => {
-            this.variablesArmonizadasIds.add(variable.idA);
-          });
+    variables.forEach((variable) => {
+      this.variablesArmoService.existePorIdA(variable.idA).subscribe({
+        next: (existe) => {
+          if (requestId !== this.estatusVariablesRequestId) return;
+          if (existe) this.variablesArmonizadasIds.add(variable.idA);
         },
         error: (err) => {
           console.error('Error al cargar estatus de variables:', err);
@@ -302,6 +296,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   variableSeleccionada: VariableTablaDTO | null = null;
+  private idFuenteCanonicaCargada: string | null = null;
 
   fuenteForm: {
     idFuente?: string;
@@ -315,8 +310,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
   } | null = null;
 
   seleccionarVariable(variable: VariableTablaDTO) {
+    const requestId = ++this.seleccionVariableRequestId;
     this.variableSeleccionada = variable;
     this.fuenteExisteEnArmonizacion = false;
+    this.idFuenteCanonicaCargada = null;
     this.limpiarEstadoVariableSeleccionada();
     this.limpiarClasificacionLocal();
     this.limpiarMicrodatosLocal();
@@ -351,9 +348,32 @@ export class ArmonizacionVariablesComponent implements OnInit {
     console.log('Variable seleccionada:', this.variableSeleccionada);
     console.log('Fuente cargada en formulario:', this.fuenteForm);
 
-    this.verificarSiFuenteExisteEnArmonizacionPorIdFuenteSeleccion(
-      variable.idFuente,
-    );
+    this.variablesArmoService.existePorIdA(variable.idA).subscribe({
+      next: (existe) => {
+        if (requestId !== this.seleccionVariableRequestId) return;
+
+        this.variableExisteEnArmonizacion = existe;
+        this.modoEdicionVariable = existe;
+
+        if (existe) {
+          this.fuenteExisteEnArmonizacion = true;
+          this.cargandoEstadoFuente = true;
+          this.cargarVariableArmonizacion(variable.idA);
+          return;
+        }
+
+        this.fuenteExisteEnArmonizacion = false;
+        this.cargandoEstadoFuente = false;
+        this.prepararVariableNueva();
+      },
+      error: (err) => {
+        if (requestId !== this.seleccionVariableRequestId) return;
+        console.error('Error al verificar variable en armonización:', err);
+        this.fuenteExisteEnArmonizacion = false;
+        this.cargandoEstadoFuente = false;
+        this.prepararVariableNueva();
+      },
+    });
   }
 
   verificarSiFuenteExisteEnArmonizacionPorIdFuenteSeleccion(
@@ -365,19 +385,51 @@ export class ArmonizacionVariablesComponent implements OnInit {
       next: (fuenteArm) => {
         if (!this.fuenteForm) return;
 
-        this.fuenteExisteEnArmonizacion = true;
-        this.cargandoEstadoFuente = false;
-
-        this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion);
-
-        if (this.variableSeleccionada?.idA) {
-          this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+        const idA = this.variableSeleccionada?.idA;
+        if (!idA) {
+          this.fuenteExisteEnArmonizacion = true;
+          this.cargandoEstadoFuente = false;
+          this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion, true);
+          return;
         }
+
+        if (this.variableExisteEnArmonizacion) {
+          this.cargandoEstadoFuente = false;
+          return;
+        }
+
+        this.variablesArmoService.existePorIdA(idA).subscribe({
+          next: (existe) => {
+            this.variableExisteEnArmonizacion = existe;
+            this.modoEdicionVariable = existe;
+            this.cargandoEstadoFuente = false;
+
+            if (existe) {
+              this.cargarVariableArmonizacion(idA);
+              return;
+            }
+
+            this.fuenteExisteEnArmonizacion = true;
+            this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion, true);
+            this.prepararVariableNueva();
+          },
+          error: (err) => {
+            console.error('Error al verificar variable en armonización:', err);
+            this.fuenteExisteEnArmonizacion = true;
+            this.cargandoEstadoFuente = false;
+            this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion, true);
+            this.prepararVariableNueva();
+          },
+        });
       },
       error: (err) => {
         console.error('Error al verificar fuente en armonización:', err);
         this.fuenteExisteEnArmonizacion = false;
         this.cargandoEstadoFuente = false;
+
+        if (this.variableSeleccionada?.idA) {
+          this.verificarSiVariableExiste(this.variableSeleccionada.idA);
+        }
 
         if (err.status && err.status !== 404) {
           this.abrirModalError(this.obtenerMensajeError(err));
@@ -393,7 +445,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
         next: (fuenteArm) => {
           if (!this.fuenteForm) return;
 
-          this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion);
+          this.aplicarFuenteArmonizacion(fuenteArm, idFuenteSeleccion, true);
           if (this.variableSeleccionada?.idA) {
             this.verificarSiVariableExiste(this.variableSeleccionada.idA);
           }
@@ -406,46 +458,70 @@ export class ArmonizacionVariablesComponent implements OnInit {
   }
 
   guardarFuenteTemporal() {
+    this.guardarFuenteSegunEstado();
+  }
+
+  guardarFuenteSegunEstado() {
     if (!this.fuenteForm) {
       console.warn('No hay fuente cargada para guardar');
       return;
     }
 
-    const payload: FuenteSaveDTO = {
-      idFuenteSeleccion:
-        this.fuenteForm.idFuenteSeleccion ||
-        this.variableSeleccionada?.idFuente ||
-        '',
-      acronimo: this.fuenteForm.acronimo?.trim() || '',
-      fuente: this.fuenteForm.fuente?.trim() || '',
-      url: this.fuenteForm.url?.trim() || null,
-      edicion: this.fuenteForm.edicion?.trim() || null,
-      comentarioS: this.fuenteForm.comentarioS?.trim() || null,
-      comentarioA: this.fuenteForm.comentarioA?.trim() || null,
-    };
+    const payload = this.crearPayloadFuente();
 
-    if (!this.fuenteExisteEnArmonizacion) {
-      this._varService.createFuenteArmonizacion(payload).subscribe({
-        next: (resp) => {
-          console.log('Fuente guardada en armonización:', resp);
-          this.abrirModalSuccessSave(
-            this.obtenerMensajeFuenteGuardada(resp, payload),
-          );
-          this.fuenteExisteEnArmonizacion = true;
-          this.aplicarFuenteArmonizacion(resp, payload.idFuenteSeleccion);
-          this.verificarVariableSeleccionadaConFuenteCanonica();
-        },
-        error: (err) => {
-          console.error('Error al guardar fuente en armonización:', err);
-          this.reutilizarFuenteCanonicaExistente(payload, err);
-        },
-      });
-
+    if (!this.variableExisteEnArmonizacion) {
+      payload.idFuenteSeleccion = this.obtenerIdFuenteSeleccionPorVariable();
+      this.crearFuenteArmonizacion(payload);
       return;
     }
 
-    // Esto solo funcionará cuando ya tengas PUT en backend
+    this.actualizarFuenteArmonizacion(payload);
+  }
 
+  crearOtraFuenteParaVariable() {
+    if (!this.fuenteForm) {
+      console.warn('No hay fuente cargada para guardar');
+      return;
+    }
+
+    const payload = this.crearPayloadFuente();
+    payload.idFuenteSeleccion = this.obtenerIdFuenteSeleccionPorVariable(true);
+
+    this.crearFuenteArmonizacion(payload, true);
+  }
+
+  private crearFuenteArmonizacion(
+    payload: FuenteSaveDTO,
+    actualizarVariableExistente = false,
+  ) {
+    this._varService.createFuenteArmonizacion(payload).subscribe({
+      next: (resp) => {
+        console.log('Fuente guardada en armonización:', resp);
+        this.fuenteExisteEnArmonizacion = true;
+        this.aplicarFuenteArmonizacion(resp, payload.idFuenteSeleccion);
+
+        if (actualizarVariableExistente) {
+          this.moverVariableActualAFuente(resp);
+          return;
+        }
+
+        this.verificarVariableSeleccionadaConFuenteCanonica();
+        this.abrirModalSuccessSave(
+          this.obtenerMensajeFuenteGuardada(resp, payload),
+        );
+      },
+      error: (err) => {
+        console.error('Error al guardar fuente en armonización:', err);
+        this.reutilizarFuenteCanonicaExistente(
+          payload,
+          err,
+          actualizarVariableExistente,
+        );
+      },
+    });
+  }
+
+  private actualizarFuenteArmonizacion(payload: FuenteSaveDTO) {
     this._varService.updateFuenteArmonizacion(payload).subscribe({
       next: (resp) => {
         console.log('Fuente actualizada en armonización:', resp);
@@ -461,6 +537,128 @@ export class ArmonizacionVariablesComponent implements OnInit {
         this.reutilizarFuenteCanonicaExistente(payload, err);
       },
     });
+  }
+
+  private crearPayloadFuente(): FuenteSaveDTO {
+    return {
+      idFuenteSeleccion: this.obtenerIdFuenteSeleccionParaGuardar(),
+      idFuenteSeleccionOrigen: this.variableSeleccionada?.idFuente || undefined,
+      acronimo: this.fuenteForm?.acronimo?.trim() || '',
+      fuente: this.fuenteForm?.fuente?.trim() || '',
+      url: this.fuenteForm?.url?.trim() || null,
+      edicion: this.fuenteForm?.edicion?.trim() || null,
+      comentarioS: this.fuenteForm?.comentarioS?.trim() || null,
+      comentarioA: this.fuenteForm?.comentarioA?.trim() || null,
+    };
+  }
+
+  private moverVariableActualAFuente(fuente: FuenteArmonizacionDTO) {
+    const idFuente = fuente.idFuente ?? this.fuenteForm?.idFuente;
+
+    if (!this.variableSeleccionada?.idA || !idFuente) {
+      this.abrirModalError('No se pudo asociar la variable a la fuente seleccionada.');
+      return;
+    }
+
+    const payload = {
+      ...this.variableForm.getRawValue(),
+      idFuente,
+    };
+
+    this.variablesArmoService
+      .actualizarVariable(this.variableSeleccionada.idA, payload)
+      .subscribe({
+        next: (resp) => {
+          this.variableForm.patchValue(resp);
+          this.variableExisteEnArmonizacion = true;
+          this.modoEdicionVariable = true;
+          this.variablesArmonizadasIds.add(resp.idA);
+          this.abrirModalSuccessSave(
+            'La fuente se guardó y la variable quedó asociada a esa fuente.',
+          );
+        },
+        error: (err) => {
+          this.abrirModalError(this.obtenerMensajeError(err));
+        },
+      });
+  }
+
+  eliminarVariableArmonizada() {
+    if (!this.variableSeleccionada?.idA || !this.variableExisteEnArmonizacion) {
+      return;
+    }
+
+    const confirmar = confirm(
+      `Se eliminará solo la variable ${this.variableSeleccionada.idA} de armonización. No se tocará selección. ¿Deseas continuar?`,
+    );
+
+    if (!confirmar) return;
+
+    this.variablesArmoService.eliminarVariable(this.variableSeleccionada.idA).subscribe({
+      next: () => {
+        const idA = this.variableSeleccionada?.idA;
+        if (idA) this.variablesArmonizadasIds.delete(idA);
+        this.variableExisteEnArmonizacion = false;
+        this.modoEdicionVariable = false;
+        this.fuenteExisteEnArmonizacion = false;
+        this.prepararVariableNueva();
+        this.abrirModalSuccessUpdate('La variable se eliminó de armonización.');
+      },
+      error: (err) => {
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  eliminarFuenteYVariables() {
+    const idFuente = this.fuenteForm?.idFuente || this.variableForm.get('idFuente')?.value;
+
+    if (!idFuente || !this.fuenteExisteEnArmonizacion) {
+      return;
+    }
+
+    this._varService.countVariablesFuenteArmonizacion(idFuente).subscribe({
+      next: (resp) => {
+        const total = resp?.total ?? 0;
+        const confirmar = confirm(
+          `Se eliminará esta fuente de armonización y ${total} variable(s) asociada(s). No se tocarán las tablas de selección. ¿Deseas continuar?`,
+        );
+
+        if (!confirmar) return;
+
+        this._varService.deleteFuenteArmonizacionById(idFuente).subscribe({
+          next: () => {
+            this.actualizarListaDespuesDeEliminarFuente(idFuente);
+            this.fuenteForm = null;
+            this.fuenteExisteEnArmonizacion = false;
+            this.variableExisteEnArmonizacion = false;
+            this.modoEdicionVariable = false;
+            this.limpiarEstadoVariableSeleccionada();
+            this.abrirModalSuccessUpdate(
+              `La fuente y ${total} variable(s) asociada(s) se eliminaron de armonización.`,
+            );
+          },
+          error: (err) => {
+            this.abrirModalError(this.obtenerMensajeError(err));
+          },
+        });
+      },
+      error: (err) => {
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private actualizarListaDespuesDeEliminarFuente(idFuente: string) {
+    this.arrVariablesSeleccionadas.forEach((variable) => {
+      if (this.variableForm.get('idFuente')?.value === idFuente) {
+        this.variablesArmonizadasIds.delete(variable.idA);
+      }
+    });
+
+    if (this.arrVariablesSeleccionadas.length > 0) {
+      this.cargarEstatusVariablesArmonizadas(this.arrVariablesSeleccionadas);
+    }
   }
 
   fuenteExisteEnArmonizacion = false;
@@ -484,6 +682,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   private aplicarFuenteArmonizacion(
     fuente: FuenteArmonizacionDTO,
     idFuenteSeleccionFallback?: string,
+    recordarComoFuenteCargada = false,
   ) {
     if (!this.fuenteForm) return;
 
@@ -506,6 +705,10 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
     if (idFuenteCanonica) {
       this.variableForm.patchValue({ idFuente: idFuenteCanonica });
+    }
+
+    if (recordarComoFuenteCargada) {
+      this.idFuenteCanonicaCargada = idFuenteCanonica || null;
     }
   }
 
@@ -532,6 +735,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   private reutilizarFuenteCanonicaExistente(
     payload: FuenteSaveDTO,
     errorOriginal: any,
+    actualizarVariableExistente = false,
   ) {
     const idFuenteCanonica = this.generarIdFuenteCanonica(payload);
 
@@ -545,6 +749,12 @@ export class ArmonizacionVariablesComponent implements OnInit {
           },
           payload.idFuenteSeleccion,
         );
+
+        if (actualizarVariableExistente) {
+          this.moverVariableActualAFuente(fuenteExistente);
+          return;
+        }
+
         this.verificarVariableSeleccionadaConFuenteCanonica();
         this.abrirModalSuccessSave(
           'La fuente ya existía en armonización; se usará para esta variable.',
@@ -558,6 +768,28 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   private generarIdFuenteCanonica(payload: FuenteSaveDTO): string {
     return `${payload.acronimo}-${payload.fuente}-${payload.edicion ?? ''}-${payload.url ?? ''}`;
+  }
+
+  private obtenerIdFuenteSeleccionParaGuardar(): string {
+    return (
+      this.fuenteForm?.idFuenteSeleccion ||
+      this.variableSeleccionada?.idFuente ||
+      ''
+    );
+  }
+
+  private obtenerIdFuenteSeleccionPorVariable(forzarNuevo = false): string {
+    const idFuenteSeleccionBase =
+      this.variableSeleccionada?.idFuente ||
+      this.fuenteForm?.idFuenteSeleccion ||
+      '';
+
+    if (!this.variableSeleccionada?.idA) {
+      return idFuenteSeleccionBase;
+    }
+
+    const idPorVariable = `${idFuenteSeleccionBase}::${this.variableSeleccionada.idA}`;
+    return forzarNuevo ? `${idPorVariable}::${Date.now()}` : idPorVariable;
   }
 
   @ViewChild('SuccessSaveModal')
@@ -693,6 +925,9 @@ export class ArmonizacionVariablesComponent implements OnInit {
           comentarioS: variable.comentarioS,
           comentarioA: variable.comentarioA,
         });
+        if (variable.idFuente) {
+          this.cargarFuenteCanonicaVariable(variable.idFuente);
+        }
         this.aplicarTemasGuardados();
         this.cargarClasificacionesVariable(variable.idA);
         this.cargarMicrodatosVariable(variable.idA, variable.microdatos ?? 'No');
@@ -814,6 +1049,21 @@ export class ArmonizacionVariablesComponent implements OnInit {
       ods: [false],
       comentarioS: [''],
       comentarioA: ['', Validators.required],
+    });
+  }
+
+  private cargarFuenteCanonicaVariable(idFuente: string) {
+    this._varService.getFuenteArmonizacionById(idFuente).subscribe({
+      next: (fuente) => {
+        if (!this.fuenteForm) return;
+        this.aplicarFuenteArmonizacion(fuente, fuente.idFuenteSeleccion, true);
+        this.fuenteExisteEnArmonizacion = true;
+        this.cargandoEstadoFuente = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar fuente canonica de la variable:', err);
+        this.cargandoEstadoFuente = false;
+      },
     });
   }
 

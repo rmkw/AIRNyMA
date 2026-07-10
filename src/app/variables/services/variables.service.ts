@@ -127,8 +127,9 @@ export class VariableService {
     idFuente: string,
   ): Observable<FuenteArmonizacionDTO> {
     return this.http.get<FuenteArmonizacionDTO>(
-      `${baseUrl}/armo/fuentes/${encodeURIComponent(idFuente)}`,
+      `${baseUrl}/armo/fuentes/by-id`,
       {
+        params: { idFuente },
         withCredentials: true,
       },
     );
@@ -157,6 +158,26 @@ export class VariableService {
       `${baseUrl}/armo/fuentes`,
       payload,
       {
+        withCredentials: true,
+      },
+    );
+  }
+
+  countVariablesFuenteArmonizacion(idFuente: string): Observable<{ total: number }> {
+    return this.http.get<{ total: number }>(
+      `${baseUrl}/armo/fuentes/count-variables`,
+      {
+        params: { idFuente },
+        withCredentials: true,
+      },
+    );
+  }
+
+  deleteFuenteArmonizacionById(idFuente: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(
+      `${baseUrl}/armo/fuentes/by-id`,
+      {
+        params: { idFuente },
         withCredentials: true,
       },
     );

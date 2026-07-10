@@ -27,6 +27,11 @@ END $$;
 ALTER TABLE armonizacion.variables
   DROP CONSTRAINT IF EXISTS fk_variables_fuentes;
 
+UPDATE armonizacion.variables AS variable
+SET id_fuente = fuente.id_fuente
+FROM armonizacion.fuentes AS fuente
+WHERE variable.id_fuente = fuente.id_fuente_seleccion;
+
 ALTER TABLE armonizacion.variables
   ADD CONSTRAINT fk_variables_fuentes
   FOREIGN KEY (id_fuente)

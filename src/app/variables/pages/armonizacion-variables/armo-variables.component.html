@@ -303,7 +303,7 @@
           <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 class="card-title text-base">Fuente asociada</h2>
-              <p class="text-xs text-base-content/60">Al seleccionar una variable se mostrará aquí la fuente para guardarla o actualizarla.</p>
+              <p class="text-xs text-base-content/60">Al seleccionar una variable se mostrará aquí la fuente de selección o la fuente real de armonización.</p>
             </div>
           </div>
         </div>
@@ -349,16 +349,41 @@
             <div class="pt-4">
                 <div class="rounded-xl border px-4 py-3 text-sm"
                   [ngClass]="fuenteExisteEnArmonizacion ? 'border-success bg-success/10' : 'border-warning bg-warning/10'">
-                  {{ fuenteExisteEnArmonizacion ? 'La fuente ya existe en armonización.' : 'La fuente aún no existe en armonización.' }}
+                  @if (variableExisteEnArmonizacion) {
+                    Esta variable ya está armonizada; se muestra la fuente real usada en armonización.
+                  } @else {
+                    Esta variable aún no está armonizada; se muestra su fuente original de selección para corregirla y guardarla.
+                  }
                 </div>
             </div>
 
           }
 
-          <div class="flex justify-end pt-4">
-            <button class="btn btn-sm btn-primary" type="button" [disabled]="!puedeGuardarFuente()" (click)="guardarFuenteTemporal()">
-              {{ fuenteExisteEnArmonizacion ? 'Actualizar fuente' : 'Guardar fuente' }}
+          <div class="grid gap-2 pt-4 sm:grid-cols-2">
+            @if (!variableExisteEnArmonizacion) {
+            <button class="btn btn-sm btn-primary sm:col-span-2" type="button" [disabled]="!puedeGuardarFuente()"
+              (click)="guardarFuenteTemporal()">
+              Guardar fuente para esta variable
             </button>
+            } @else {
+            <button class="btn btn-sm btn-primary" type="button" [disabled]="!puedeGuardarFuente()"
+              (click)="crearOtraFuenteParaVariable()">
+              Crear otra fuente para esta variable
+            </button>
+
+            <button class="btn btn-sm btn-outline" type="button" [disabled]="!puedeGuardarFuente()"
+              (click)="guardarFuenteTemporal()">
+              Actualizar fuente compartida
+            </button>
+
+            <button class="btn btn-sm btn-warning" type="button" (click)="eliminarVariableArmonizada()">
+              Eliminar armonización de variable
+            </button>
+
+            <button class="btn btn-sm btn-error text-white" type="button" (click)="eliminarFuenteYVariables()">
+              Eliminar fuente y variables
+            </button>
+            }
           </div>
           } @else {
           <div class="rounded-xl border border-dashed border-base-300 py-28 text-center h-76 m-2 text-sm text-base-content/60">
