@@ -350,9 +350,9 @@
                 <div class="rounded-xl border px-4 py-3 text-sm"
                   [ngClass]="fuenteExisteEnArmonizacion ? 'border-success bg-success/10' : 'border-warning bg-warning/10'">
                   @if (variableExisteEnArmonizacion) {
-                    Esta variable ya está armonizada; se muestra la fuente real usada en armonización.
+                    Se muestra la fuente real usada por esta variable en armonización.
                   } @else {
-                    Esta variable aún no está armonizada; se muestra su fuente original de selección para corregirla y guardarla.
+                    Se muestra la fuente original de selección. Corrígela y guárdala para poder armonizar la variable.
                   }
                 </div>
             </div>
@@ -363,25 +363,25 @@
             @if (!variableExisteEnArmonizacion) {
             <button class="btn btn-sm btn-primary sm:col-span-2" type="button" [disabled]="!puedeGuardarFuente()"
               (click)="guardarFuenteTemporal()">
-              Guardar fuente para esta variable
+              Guardar fuente y continuar
             </button>
             } @else {
             <button class="btn btn-sm btn-primary" type="button" [disabled]="!puedeGuardarFuente()"
               (click)="crearOtraFuenteParaVariable()">
-              Crear otra fuente para esta variable
+              Crear fuente y mover variable
             </button>
 
             <button class="btn btn-sm btn-outline" type="button" [disabled]="!puedeGuardarFuente()"
               (click)="guardarFuenteTemporal()">
-              Actualizar fuente compartida
+              Actualizar fuente actual
             </button>
 
             <button class="btn btn-sm btn-warning" type="button" (click)="eliminarVariableArmonizada()">
-              Eliminar armonización de variable
+              Borrar variable armonizada
             </button>
 
             <button class="btn btn-sm btn-error text-white" type="button" (click)="eliminarFuenteYVariables()">
-              Eliminar fuente y variables
+              Eliminar esta fuente y sus variables
             </button>
             }
           </div>

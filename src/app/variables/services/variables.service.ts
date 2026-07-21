@@ -195,6 +195,18 @@ export class VariableService {
     );
   }
 
+  getFuentesArmonizacionByAcronimo(
+    acronimo: string,
+  ): Observable<FuenteArmonizacionDTO[]> {
+    return this.http.get<FuenteArmonizacionDTO[]>(
+      `${baseUrl}/armo/fuentes/by-acronimo`,
+      {
+        params: { acronimo },
+        withCredentials: true,
+      },
+    );
+  }
+
   getVarsByFuente(idFuente: string) {
     return this.http.get<any[]>(`${baseUrl}/variables/por-fuente`, {
       params: { idFuente },

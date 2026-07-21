@@ -1,0 +1,462 @@
+<div class="w-full space-y-4 px-1">
+  <div
+    class="overflow-hidden rounded-box border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="px-6 py-6">
+      <div class="badge border-white/20 bg-white/10 text-white">Validación</div>
+      <h1 class="mt-2 text-2xl font-bold tracking-tight">Validación de variables</h1>
+      <p class="mt-2 text-sm text-white/85">
+        Selecciona un proceso para consultar sus fuentes de armonización.
+      </p>
+    </div>
+  </div>
+
+  @if (error) {
+  <div class="alert alert-error">
+    <span>{{ error }}</span>
+  </div>
+  }
+
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="space-y-4 xl:col-span-5">
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-5 p-5">
+          <div>
+            <h2 class="card-title text-base">Filtros de consulta</h2>
+            <p class="text-xs text-base-content/60">
+              Selecciona una unidad productora y después un proceso de producción.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="form-control">
+              <label class="label" for="direccionValidacion">
+                <span class="label-text text-xs font-medium">Unidad productora de información</span>
+              </label>
+              <select id="direccionValidacion" class="select select-bordered w-full" (change)="seleccionarDireccion($event)">
+                <option value="">Selecciona una opción</option>
+                @for (direccion of direcciones; track direccion.idUnidad) {
+                <option [value]="direccion.nameUnidad">{{ direccion.nameUnidad }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label" for="procesoValidacion">
+                <span class="label-text text-xs font-medium">Proceso de producción</span>
+              </label>
+              <select id="procesoValidacion" class="select select-bordered w-full" [value]="procesoSeleccionado"
+                [disabled]="!direccionSeleccionada || cargandoProcesos" (change)="seleccionarProceso($event)">
+                <option value="">{{ cargandoProcesos ? 'Cargando procesos...' : 'Selecciona una opción' }}</option>
+                @for (proceso of procesos; track proceso.acronimo) {
+                <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @if (procesoSeleccionado) {
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-4 p-5">
+          <div>
+            <h2 class="card-title text-base">Fuentes de armonización</h2>
+            <p class="text-xs text-base-content/60">Selecciona una fuente para consultar sus variables.</p>
+          </div>
+
+          @if (cargandoFuentes) {
+          <div class="flex min-h-32 items-center justify-center">
+            <span class="loading loading-spinner loading-md"></span>
+          </div>
+          } @else if (fuentes.length === 0) {
+          <div class="flex min-h-32 items-center justify-center rounded-xl border border-dashed border-base-300 p-4">
+            <span class="text-center text-sm text-base-content/60">
+              No hay fuentes de armonización registradas para este proceso.
+            </span>
+          </div>
+          } @else {
+          <div class="max-h-80 overflow-auto rounded-box border border-base-300">
+            <table class="table table-sm">
+              <thead class="sticky top-0 bg-base-100">
+                <tr>
+                  <th>Fuente</th>
+                  <th>Edición</th>
+                  <th>URL</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (fuente of fuentes; track fuente.idFuente) {
+                <tr [class.bg-base-300]="fuenteSeleccionada?.idFuente === fuente.idFuente">
+                  <td>{{ fuente.fuente }}</td>
+                  <td>{{ fuente.edicion || 'Sin edición' }}</td>
+                  <td class="max-w-32 truncate"><a [href]="fuente.url" target="_blank" rel="noopener" class="link link-neutral">{{ fuente.url || '-' }}</a></td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-xs btn-primary " (click)="seleccionarFuente(fuente)">
+                      Seleccionar
+                    </button>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+      </div>
+
+      @if (fuenteSeleccionada) {
+      <div class="card border border-base-300 bg-base-100 shadow-sm">
+        <div class="card-body gap-4 p-5">
+          <div>
+            <h2 class="card-title text-base">Variables de armonización</h2>
+          </div>
+
+          @if (cargandoVariables) {
+          <div class="flex min-h-32 items-center justify-center">
+            <span class="loading loading-spinner loading-md"></span>
+          </div>
+          } @else if (errorVariables) {
+          <div class="alert alert-error">
+            <span>{{ errorVariables }}</span>
+          </div>
+          } @else if (variables.length === 0) {
+          <div class="flex min-h-32 items-center justify-center rounded-xl border border-dashed border-base-300 p-4">
+            <span class="text-center text-sm text-base-content/60">
+              No hay variables armonizadas para esta fuente.
+            </span>
+          </div>
+          } @else {
+          <div class="max-h-96 overflow-auto rounded-box border border-base-300">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>ID_A</th>
+                  <th>Variable armonizada</th>
+                  <th>URL</th>
+                  <th class="text-center">Estatus</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (variable of variables; track variable.idA) {
+                <tr [class.bg-base-300]="variableSeleccionada?.idA === variable.idA">
+                  <td class="font-mono text-xs">{{ variable.idA }}</td>
+                  <td>{{ variable.variableA || '-' }}</td>
+                  <td class="max-w-32 truncate"><a [href]="variable.url" target="_blank" rel="noopener" class="link link-neutral">{{ variable.url || '-' }}</a></td>
+                  <td class="text-center">
+                    <div class="inline-grid *:[grid-area:1/1]">
+                      <div class="status animate-ping" [class.status-success]="variable.validada"
+                        [class.status-error]="!variable.validada"></div>
+                      <div class="status" [class.status-success]="variable.validada"
+                        [class.status-error]="!variable.validada"></div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-xs btn-primary" (click)="seleccionarVariable(variable)">
+                      Seleccionar
+                    </button>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center gap-4 text-xs text-base-content/70">
+            <div class="flex items-center gap-2">
+              <div class="inline-grid *:[grid-area:1/1]">
+                <div class="status status-success animate-ping"></div>
+                <div class="status status-success"></div>
+              </div>
+              <span>Variable revisada</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="inline-grid *:[grid-area:1/1]">
+                <div class="status status-error animate-ping"></div>
+                <div class="status status-error"></div>
+              </div>
+              <span>Variable pendiente</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+      }
+    </div>
+
+    @if (cargandoDetalle || errorDetalle || detalleVariable) {
+    <div class="card border border-dashed border-base-300 bg-base-100 shadow-sm xl:col-span-7">
+      <div class="card-body min-h-64">
+        @if (cargandoDetalle) {
+        <div class="flex flex-1 items-center justify-center">
+          <span class="loading loading-spinner loading-md"></span>
+        </div>
+        } @else if (errorDetalle) {
+        <div class="alert alert-error"><span>{{ errorDetalle }}</span></div>
+        } @else if (detalleVariable) {
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+            <div class="badge badge-primary">Variable: {{ detalleVariable.variable.idA }}</div>
+            
+            </div>
+            <div class="flex items-center gap-2">
+              @if (!detalleVariable.variable.validada) {
+              <button type="button" class="btn btn-primary btn-sm"
+                [disabled]="validando || cargandoTicketsVariable || !!errorTicketsVariable || ticketsSinCompletar > 0"
+                (click)="cambiarValidacion(true)">
+                {{ validando ? 'Guardando...' : 'Marcar como revisada' }}
+              </button>
+              } @else {
+              <span class="badge badge-success badge-lg">Revisada</span>
+              <button type="button" class="btn btn-outline btn-error btn-sm" [disabled]="validando"
+                (click)="cambiarValidacion(false)">
+                {{ validando ? 'Guardando...' : 'Desrevisar' }}
+              </button>
+              }
+              <button type="button" class="btn btn-outline btn-warning btn-sm" (click)="abrirModalTicket()">
+                Levantar ticket@if (ticketsSinCompletar > 0) { ({{ ticketsSinCompletar }}) }
+              </button>
+            </div>
+          </div>
+
+          @if (cargandoTicketsVariable) {
+          <div class="text-sm text-base-content/60">Verificando tickets de la variable...</div>
+          } @else if (errorTicketsVariable) {
+          <div class="alert alert-warning"><span>{{ errorTicketsVariable }}</span></div>
+          } @else if (ticketsSinCompletar > 0) {
+          <div class="alert alert-warning"><span>La variable tiene {{ ticketsSinCompletar }} ticket(s) sin completar. Deben completarse antes de validarla.</span></div>
+          }
+
+          @if (errorValidacion) {
+          <div class="alert alert-error"><span>{{ errorValidacion }}</span></div>
+          }
+
+          <div class="space-y-3 text-sm">
+            <div class="grid gap-3 md:grid-cols-2">
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Selección</div><div>{{ detalleVariable.variable.variableS || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Armonización</div><div>{{ detalleVariable.variable.variableA || '-' }}</div></div>
+            </div>
+            <div class="grid gap-3 md:grid-cols-3">
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Pregunta</div><div>{{ detalleVariable.variable.pregunta || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Universo</div><div>{{ detalleVariable.variable.universo || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Año de referencia</div><div>{{ detalleVariable.variable.anioReferencia || '-' }}</div></div>
+            </div>
+            <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Definición</div><p class="mt-1 text-base-content/70">{{ detalleVariable.variable.definicion || 'Sin definición registrada.' }}</p></div>
+            <div class="grid gap-3 md:grid-cols-5">
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Temática</div><div>{{ detalleVariable.variable.tematica || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tema 1</div><div>{{ detalleVariable.variable.tema1 || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Subtema 1</div><div>{{ detalleVariable.variable.subtema1 || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tema 2</div><div>{{ detalleVariable.variable.tema2 || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Subtema 2</div><div>{{ detalleVariable.variable.subtema2 || '-' }}</div></div>
+            </div>
+            <div class="grid gap-3 md:grid-cols-2">
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario de selección</div><div>{{ detalleVariable.variable.comentarioS || '-' }}</div></div>
+              <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario de armonización</div><div>{{ detalleVariable.variable.comentarioA || '-' }}</div></div>
+            </div>
+          </div>
+
+          <div class="grid gap-3 xl:grid-cols-3">
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Clasificaciones ({{ detalleVariable.clasificaciones.length }})</summary>
+              <div class="collapse-content text-sm">
+                @for (clasificacion of detalleVariable.clasificaciones; track clasificacion.idUnique) {
+                <div class="mr-2 mb-2 inline-flex rounded-box bg-base-200 px-3 py-2" [title]="clasificacion.comentarioA || ''">
+                  {{ clasificacion.clase }}
+                </div>
+                } @empty { <span class="text-base-content/60">Sin clasificaciones registradas.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Microdatos ({{ detalleVariable.microdatos.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (microdato of detalleVariable.microdatos; track microdato.idUnique) {
+                <div class="grid gap-3 md:grid-cols-2">
+                  <a [href]="microdato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
+                  <a [href]="microdato.urlDescriptor" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL del descriptor</a>
+                </div>
+                <div class="grid gap-3 md:grid-cols-3">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ microdato.descriptor || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ microdato.tabla || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ microdato.campo || '-' }}</div></div>
+                </div>
+                <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ microdato.comentarioA || '-' }}</div></div>
+                } @empty { <span class="text-base-content/60">Sin microdatos registrados.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Datos abiertos ({{ detalleVariable.datosAbiertos.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (dato of detalleVariable.datosAbiertos; track dato.idUnique) {
+                <div class="grid gap-3 md:grid-cols-2">
+                  <a [href]="dato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
+                  <a [href]="dato.urlDescarga" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de descarga</a>
+                </div>
+                <div class="grid gap-3 md:grid-cols-3">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ dato.descriptor || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ dato.tabla || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ dato.campo || '-' }}</div></div>
+                </div>
+                <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ dato.comentarioA || '-' }}</div></div>
+                } @empty { <span class="text-base-content/60">Sin datos abiertos registrados.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Tabulados ({{ detalleVariable.tabulados.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (tabulado of detalleVariable.tabulados; track tabulado.idUnique) {
+                <div class="grid gap-3 md:grid-cols-2">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">ID de tabulado</div><div>{{ tabulado.idTabulado }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabulado</div><div>{{ tabulado.tabulado?.tabulado || '-' }}</div></div>
+                </div>
+                <div class="grid gap-3 md:grid-cols-2">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tipo</div><div>{{ tabulado.tabulado?.tipo || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Hoja</div><div>{{ tabulado.tabulado?.hoja || '-' }}</div></div>
+                </div>
+                <div class="grid gap-3 md:grid-cols-2">
+                  <a [href]="tabulado.tabulado?.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
+                  <a [href]="tabulado.tabulado?.urlDescarga" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de descarga</a>
+                </div>
+                <div class="grid gap-3 md:grid-cols-2">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario del tabulado</div><div>{{ tabulado.tabulado?.comentarioA || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario de la relación</div><div>{{ tabulado.comentarioRelacion || '-' }}</div></div>
+                </div>
+                <div class="grid gap-3 md:grid-cols-2">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Desgloses</div><div class="mt-1 flex flex-wrap gap-1">@for (desglose of tabulado.desgloses; track desglose.idUnique) { <span class="badge badge-outline">{{ desglose.desglose }}</span> } @empty { <span>-</span> }</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Desagregaciones</div><div class="mt-1 flex flex-wrap gap-1">@for (desagregacion of tabulado.desagregaciones; track desagregacion.idUnique) { <span class="badge badge-outline">{{ desagregacion.coberturaDesagregacion }}</span> } @empty { <span>-</span> }</div></div>
+                </div>
+                } @empty { <span class="text-base-content/60">Sin tabulados relacionados.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">MDEA ({{ detalleVariable.mdeas.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (mdea of mdeasTraducidos; track mdea.idUnique) {
+                <div class="rounded-box bg-base-200 p-3 space-y-1">
+                  <div><span class="font-medium">Componente:</span> {{ mdea.componente || '-' }} - {{ mdea.componenteNombre || '-' }}</div>
+                  <div><span class="font-medium">Subcomponente:</span> {{ mdea.subcomponente || '-' }} - {{ mdea.subcomponenteNombre || '-' }}</div>
+                  <div><span class="font-medium">Tema:</span> {{ mdea.tema || '-' }} - {{ mdea.temaNombre || '-' }}</div>
+                  <div><span class="font-medium">Estadístico 1:</span> {{ mdea.estadistica1 || '-' }} - {{ mdea.estadistica1Nombre || '-' }}</div>
+                  <div><span class="font-medium">Estadístico 2:</span> {{ mdea.estadistica2 || '-' }} - {{ mdea.estadistica2Nombre || '-' }}</div>
+                  <div><span class="font-medium">Contribución:</span> {{ mdea.contribucion || '-' }}</div>
+                  <div><span class="font-medium">Comentario:</span> {{ mdea.comentarioS || '-' }}</div>
+                </div>
+                } @empty { <span class="text-base-content/60">Sin relaciones MDEA.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">ODS ({{ detalleVariable.odsList.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (ods of odsTraducidos; track ods.idUnique) {
+                <div class="rounded-box bg-base-200 p-3 space-y-1">
+                  <div><span class="font-medium">Objetivo:</span> {{ ods.objetivo || '-' }} - {{ ods.objetivoNombre || '-' }}</div>
+                  <div><span class="font-medium">Meta:</span> {{ ods.meta || '-' }} - {{ ods.metaNombre || '-' }}</div>
+                  <div><span class="font-medium">Indicador:</span> {{ ods.indicador || '-' }} - {{ ods.indicadorNombre || '-' }}</div>
+                  <div><span class="font-medium">Contribución:</span> {{ ods.contribucion || '-' }}</div>
+                  <div><span class="font-medium">Comentario:</span> {{ ods.comentarioS || '-' }}</div>
+                </div>
+                } @empty { <span class="text-base-content/60">Sin relaciones ODS.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Pertinencia</summary>
+              <div class="collapse-content text-sm">
+                @if (detalleVariable.pertinencia; as pertinencia) {
+                <div class="grid gap-3 md:grid-cols-3">
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Pertinencia</div><div>{{ pertinencia.pertinencia || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Contribución</div><div>{{ pertinencia.contribucion || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Viabilidad</div><div>{{ pertinencia.viabilidad || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3 md:col-span-3"><div class="font-medium">Propuesta</div><div>{{ pertinencia.propuesta || '-' }}</div></div>
+                  <div class="rounded-box bg-base-200 p-3 md:col-span-3"><div class="font-medium">Comentario</div><div>{{ pertinencia.comentarioS || '-' }}</div></div>
+                </div>
+                } @else { <span class="text-base-content/60">Sin pertinencia registrada.</span> }
+              </div>
+            </details>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<dialog #ticketModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Levantar ticket</h3>
+    <p class="mt-1 text-sm text-base-content/60">
+      Variable: {{ variableSeleccionada?.idA }}
+    </p>
+
+    @if (errorTicket) {
+    <div class="alert alert-error mt-4"><span>{{ errorTicket }}</span></div>
+    }
+    @if (errorUsuariosTicket) {
+    <div class="alert alert-error mt-4"><span>{{ errorUsuariosTicket }}</span></div>
+    }
+
+    <div class="mt-4 space-y-4">
+      <div class="form-control">
+        <label class="label" for="propiedadTicket"><span class="label-text">Propiedad</span></label>
+        <select id="propiedadTicket" class="select select-bordered w-full" [value]="propiedadTicket"
+          (change)="propiedadTicket = $any($event.target).value">
+          <option value="">Selecciona una propiedad</option>
+          <option value="variable_s">Nombre variable selección</option>
+          <option value="variable_a">Nombre variable armonización</option>
+          <option value="url">URL variable</option>
+          <option value="pregunta">Pregunta</option>
+          <option value="definicion">Definición</option>
+          <option value="universo">Universo</option>
+          <option value="anio_referencia">Año de referencia</option>
+          <option value="tematica">Temática</option>
+          <option value="tema1">Tema 1</option>
+          <option value="subtema1">Subtema 1</option>
+          <option value="tema2">Tema 2</option>
+          <option value="subtema2">Subtema 2</option>
+          <option value="comentario_s">Comentario selección</option>
+          <option value="comentario_a">Comentario armonización</option>
+          <option value="clasificaciones">Apartado de clasificaciones</option>
+          <option value="microdatos">Apartado de microdatos</option>
+          <option value="datos_abiertos">Apartado de datos abiertos</option>
+          <option value="tabulados">Apartado de tabulados</option>
+          <option value="mdea">Apartado de MDEA</option>
+          <option value="ods">Apartado de ODS</option>
+          <option value="pertinencia">Apartado de pertinencia</option>
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="usuarioAsignadoTicket"><span class="label-text">Asignar a</span></label>
+        <select id="usuarioAsignadoTicket" class="select select-bordered w-full" [value]="usuarioAsignadoTicket || ''"
+          (change)="seleccionarUsuarioAsignado($event)">
+          <option value="">Selecciona un usuario</option>
+          @for (usuario of usuariosTicket; track usuario.id) {
+          <option [value]="usuario.id">{{ usuario.aka || usuario.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label" for="incidenciaTicket"><span class="label-text">Incidencia</span></label>
+        <textarea id="incidenciaTicket" class="textarea textarea-bordered min-h-28 w-full"
+          placeholder="Describe el error encontrado" [value]="incidenciaTicket"
+          (input)="incidenciaTicket = $any($event.target).value"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button type="button" class="btn btn-outline" [disabled]="guardandoTicket" (click)="cerrarModalTicket()">Cancelar</button>
+      <button type="button" class="btn btn-warning" [disabled]="guardandoTicket" (click)="guardarTicket()">
+        {{ guardandoTicket ? 'Guardando...' : 'Registrar ticket' }}
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button [disabled]="guardandoTicket">Cerrar</button></form>
+</dialog>

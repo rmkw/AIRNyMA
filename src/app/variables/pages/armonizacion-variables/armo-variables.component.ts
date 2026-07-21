@@ -475,7 +475,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       return;
     }
 
-    this.actualizarFuenteArmonizacion(payload);
+    this.confirmarActualizacionFuente(payload);
   }
 
   crearOtraFuenteParaVariable() {
@@ -524,9 +524,16 @@ export class ArmonizacionVariablesComponent implements OnInit {
   private actualizarFuenteArmonizacion(payload: FuenteSaveDTO) {
     this._varService.updateFuenteArmonizacion(payload).subscribe({
       next: (resp) => {
+        if (this.fuenteFueReutilizada(resp, payload)) {
+          this.abrirModalError(
+            'Ya existe una fuente con esos datos. Usa "Usar estos datos como otra fuente" para mover esta variable ahí.',
+          );
+          return;
+        }
+
         console.log('Fuente actualizada en armonización:', resp);
         this.abrirModalSuccessUpdate(
-          'La fuente se actualizó correctamente en armonización.',
+          'La fuente actual se actualizó. El cambio aplica a todas sus variables asociadas.',
         );
         this.fuenteExisteEnArmonizacion = true;
         this.aplicarFuenteArmonizacion(resp, payload.idFuenteSeleccion);
@@ -534,7 +541,35 @@ export class ArmonizacionVariablesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al guardar fuente en armonización:', err);
-        this.reutilizarFuenteCanonicaExistente(payload, err);
+        this.abrirModalError(this.obtenerMensajeError(err));
+      },
+    });
+  }
+
+  private confirmarActualizacionFuente(payload: FuenteSaveDTO) {
+    const idFuenteActual =
+      this.idFuenteCanonicaCargada ||
+      this.fuenteForm?.idFuente ||
+      this.variableForm.get('idFuente')?.value;
+
+    if (!idFuenteActual) {
+      this.abrirModalError('No se encontró la fuente actual para actualizar.');
+      return;
+    }
+
+    this._varService.countVariablesFuenteArmonizacion(idFuenteActual).subscribe({
+      next: (resp) => {
+        const total = resp?.total ?? 0;
+        const confirmar = confirm(
+          `Esta fuente es usada por ${total} variable(s). Si la actualizas, cambiará para todas. ¿Continuar?`,
+        );
+
+        if (!confirmar) return;
+
+        this.actualizarFuenteArmonizacion(payload);
+      },
+      error: (err) => {
+        this.abrirModalError(this.obtenerMensajeError(err));
       },
     });
   }
@@ -574,7 +609,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.modoEdicionVariable = true;
           this.variablesArmonizadasIds.add(resp.idA);
           this.abrirModalSuccessSave(
-            'La fuente se guardó y la variable quedó asociada a esa fuente.',
+            'La fuente ya existía o fue creada; esta variable quedó asociada a esa fuente.',
           );
         },
         error: (err) => {
@@ -722,14 +757,22 @@ export class ArmonizacionVariablesComponent implements OnInit {
     fuente: FuenteArmonizacionDTO,
     payload: FuenteSaveDTO,
   ): string {
-    const fuenteReutilizada =
-      fuente.reutilizada === true ||
-      (!!fuente.idFuenteSeleccion &&
-        fuente.idFuenteSeleccion !== payload.idFuenteSeleccion);
+    const fuenteReutilizada = this.fuenteFueReutilizada(fuente, payload);
 
     return fuenteReutilizada
-      ? 'La fuente ya existía en armonización; se usará para esta variable.'
-      : 'La fuente se guardó correctamente en armonización.';
+      ? 'La fuente ya existía; esta variable se asociará a esa fuente.'
+      : 'La fuente se guardó correctamente. Ya puedes armonizar la variable.';
+  }
+
+  private fuenteFueReutilizada(
+    fuente: FuenteArmonizacionDTO,
+    payload: FuenteSaveDTO,
+  ): boolean {
+    return (
+      fuente.reutilizada === true ||
+      (!!fuente.idFuenteSeleccion &&
+        fuente.idFuenteSeleccion !== payload.idFuenteSeleccion)
+    );
   }
 
   private reutilizarFuenteCanonicaExistente(
@@ -757,7 +800,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
         this.verificarVariableSeleccionadaConFuenteCanonica();
         this.abrirModalSuccessSave(
-          'La fuente ya existía en armonización; se usará para esta variable.',
+          'La fuente ya existía; esta variable se asociará a esa fuente.',
         );
       },
       error: () => {

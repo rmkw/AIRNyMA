@@ -13,6 +13,8 @@ import { ArmonizacionVariablesComponent } from "@/variables/pages/armonizacion-v
 import { FuentesComponent } from "@/fuenteIdentificacion/pages/fuentes/fuentes.component";
 import { SeleccionVariablesComponent } from "@/variables/pages/seleccion-variables/seleccion-variables.component";
 import { TabuladosPageComponent } from "@/tabulados/pages/tabulados-page/tabulados-page.component";
+import { ValidacionPageComponent } from "@/validacion/pages/validacion-page/validacion-page.component";
+import { TicketsPageComponent } from "@/tickets/pages/tickets-page/tickets-page.component";
 
 
 
@@ -67,6 +69,14 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'tabulados',
         component: TabuladosPageComponent,
+      },
+      {
+        path: 'validacion',
+        component: ValidacionPageComponent,
+      },
+      {
+        path: 'tickets',
+        component: TicketsPageComponent,
       },
       {
         path: '**',

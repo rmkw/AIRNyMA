@@ -86,6 +86,20 @@
         <span class="is-drawer-close:hidden">Importación masiva</span>
       </a>
     </li>
+
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
+      <a routerLink="/validacion" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Validación">
+        <span>🔎</span>
+        <span class="is-drawer-close:hidden">Validación</span>
+      </a>
+    </li>
+
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
+      <a routerLink="/tickets" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tickets">
+        <span>🎫</span>
+        <span class="is-drawer-close:hidden">Tickets</span>
+      </a>
+    </li>
   </ul>
 
   <div class="mt-auto w-full border-t border-base-300 p-2">

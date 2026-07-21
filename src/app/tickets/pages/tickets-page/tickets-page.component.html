@@ -1,0 +1,115 @@
+<div class="w-full space-y-4 px-1">
+  <div class="overflow-hidden rounded-box border border-base-300 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] text-white shadow-sm">
+    <div class="px-6 py-6">
+      <div class="badge border-white/20 bg-white/10 text-white">Tickets</div>
+      <h1 class="mt-2 text-2xl font-bold tracking-tight">Atención de tickets</h1>
+      <p class="mt-2 text-sm text-white/85">Consulta, asigna y actualiza las incidencias reportadas en validación.</p>
+    </div>
+  </div>
+
+  @if (error) {
+  <div class="alert alert-error"><span>{{ error }}</span></div>
+  }
+
+  <div class="grid gap-4 xl:grid-cols-12">
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-5">
+      <div class="card-body gap-4 p-5">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 class="card-title text-base">Tickets registrados</h2>
+            <p class="text-xs text-base-content/60">Selecciona un ticket para atenderlo.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <select class="select select-bordered select-sm" [value]="filtroEstatus"
+              (change)="filtroEstatus = $any($event.target).value; cargarTickets()">
+              <option value="">Todos los estatus</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="completado">Completado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+            <button type="button" class="btn btn-sm" [class.btn-primary]="soloMisTickets"
+              [class.btn-outline]="!soloMisTickets" (click)="alternarMisTickets()">
+              Mis tickets
+            </button>
+          </div>
+        </div>
+
+        @if (cargando) {
+        <div class="flex min-h-48 items-center justify-center"><span class="loading loading-spinner loading-md"></span></div>
+        } @else if (tickets.length === 0) {
+        <div class="flex min-h-48 items-center justify-center rounded-box border border-dashed border-base-300 p-4 text-center text-sm text-base-content/60">
+          No hay tickets para el filtro seleccionado.
+        </div>
+        } @else {
+        <div class="max-h-[34rem] overflow-auto rounded-box border border-base-300">
+          <table class="table table-sm">
+            <thead class="sticky top-0 bg-base-100">
+              <tr>
+                <th>Ticket</th>
+                <th>Variable</th>
+                <th>Propiedad</th>
+                <th>Estatus</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ticket of tickets; track ticket.idTicket) {
+              <tr class="cursor-pointer" [class.bg-primary]="ticketSeleccionado?.idTicket === ticket.idTicket"
+                (click)="seleccionarTicket(ticket)">
+                <td>#{{ ticket.idTicket }}</td>
+                <td class="font-mono text-xs">{{ ticket.idA }}</td>
+                <td>{{ ticket.propiedad || 'General' }}</td>
+                <td><span class="badge badge-outline">{{ ticket.estatus }}</span></td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+      </div>
+    </div>
+
+    @if (ticketSeleccionado) {
+    <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-7">
+      <div class="card-body gap-4 p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div class="badge badge-primary">Ticket #{{ ticketSeleccionado.idTicket }}</div>
+            <p class="mt-2 font-mono text-xs text-base-content/60">Variable: {{ ticketSeleccionado.idA }}</p>
+          </div>
+          <span class="badge badge-outline badge-lg">{{ ticketSeleccionado.estatus }}</span>
+        </div>
+
+        <div class="grid gap-3 text-sm md:grid-cols-2">
+          <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Propiedad reportada</div><div>{{ ticketSeleccionado.propiedad || 'General' }}</div></div>
+          <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Reportado por</div><div>{{ nombreUsuario(ticketSeleccionado.idUsuarioReporta) }}</div></div>
+          <div class="rounded-box bg-base-200 p-3 md:col-span-2"><div class="font-medium">Incidencia</div><div>{{ ticketSeleccionado.incidencia }}</div></div>
+        </div>
+
+        @if (errorUsuarios) {
+        <div class="alert alert-warning"><span>{{ errorUsuarios }}</span></div>
+        }
+
+        <div class="grid gap-4">
+          <div class="form-control">
+            <label class="label" for="estatusTicket"><span class="label-text">Estatus</span></label>
+            <select id="estatusTicket" class="select select-bordered w-full" [value]="ticketSeleccionado.estatus"
+              (change)="cambiarEstatus($event)">
+              <option value="pendiente">Pendiente</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="completado">Completado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="button" class="btn btn-primary" [disabled]="guardando" (click)="guardarCambios()">
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

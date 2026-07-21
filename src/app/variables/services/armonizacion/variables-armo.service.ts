@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { VariablesArmo } from '@/variables/interfaces/armonizacion/variables-armo.interface';
+import { MdeaTraducido, OdsTraducido, VariableDetalleArmo, VariablesArmo } from '@/variables/interfaces/armonizacion/variables-armo.interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,6 +30,32 @@ export class VariablesArmoService {
     return this.http.get<VariablesArmo[]>(`${this.baseUrl}/por-fuente`, {
       params,
       withCredentials: true
+    });
+  }
+
+  obtenerDetallePorIdA(idA: string): Observable<VariableDetalleArmo> {
+    return this.http.get<VariableDetalleArmo>(`${this.baseUrl}/${idA}/detalle`, {
+      withCredentials: true
+    });
+  }
+
+  actualizarValidacion(idA: string, validada: boolean): Observable<VariablesArmo> {
+    return this.http.put<VariablesArmo>(`${this.baseUrl}/${idA}/validacion`, {
+      validada,
+    }, {
+      withCredentials: true,
+    });
+  }
+
+  obtenerMdeaTraducido(idA: string): Observable<MdeaTraducido[]> {
+    return this.http.get<MdeaTraducido[]>(`${environment.baseUrl}/mdea/tabla/${idA}`, {
+      withCredentials: true,
+    });
+  }
+
+  obtenerOdsTraducido(idA: string): Observable<OdsTraducido[]> {
+    return this.http.get<OdsTraducido[]>(`${environment.baseUrl}/ods/tabla/${idA}`, {
+      withCredentials: true,
     });
   }
 

@@ -23,4 +23,128 @@ export interface VariablesArmo {
   ods?: boolean;
   comentarioS?: string;
   comentarioA?: string;
+  validada?: boolean;
+}
+
+export interface ClasificacionArmoDetalle {
+  idUnique: number;
+  idA: string;
+  clase: string;
+  comentarioA: string;
+}
+
+export interface MicrodatoArmoDetalle {
+  idUnique: number;
+  idA: string;
+  urlAcceso: string;
+  descriptor: string;
+  urlDescriptor: string;
+  tabla: string;
+  campo: string;
+  comentarioA: string;
+}
+
+export interface DatoAbiertoArmoDetalle {
+  idUnique: number;
+  idA: string;
+  urlAcceso: string;
+  urlDescarga: string;
+  descriptor: string;
+  tabla: string;
+  campo: string;
+  comentarioA: string;
+}
+
+export interface VariableTabuladoArmoDetalle {
+  idUnique: number;
+  idA: string;
+  idTabulado: string;
+  comentarioRelacion: string;
+  tabulado: TabuladoArmoDetalle | null;
+  desgloses: DesgloseArmoDetalle[];
+  desagregaciones: DesagregacionArmoDetalle[];
+}
+
+export interface TabuladoArmoDetalle {
+  idTabulado: string;
+  tabulado: string;
+  tipo: string;
+  hoja: string;
+  urlAcceso: string;
+  urlDescarga: string;
+  comentarioA: string;
+}
+
+export interface DesgloseArmoDetalle {
+  idUnique: number;
+  idTabulado: string;
+  desglose: string;
+  comentarioA: string;
+}
+
+export interface DesagregacionArmoDetalle {
+  idUnique: number;
+  idTabulado: string;
+  coberturaDesagregacion: string;
+  comentarioA: string;
+}
+
+export interface MdeaDetalle {
+  idUnique: number;
+  idA: string;
+  idS: string;
+  componente: string;
+  subcomponente: string;
+  tema: string;
+  estadistica1: string;
+  estadistica2: string;
+  contribucion: string;
+  comentarioS: string;
+}
+
+export interface OdsDetalle {
+  idUnique: number;
+  idA: string;
+  idS: string;
+  objetivo: string;
+  meta: string;
+  indicador: string;
+  contribucion: string;
+  comentarioS: string;
+}
+
+export interface PertinenciaDetalle {
+  idUnique: number;
+  idA: string;
+  idS: string;
+  pertinencia: string;
+  contribucion: string;
+  viabilidad: string;
+  propuesta: string;
+  comentarioS: string;
+}
+
+export interface MdeaTraducido extends MdeaDetalle {
+  componenteNombre?: string;
+  subcomponenteNombre?: string;
+  temaNombre?: string;
+  estadistica1Nombre?: string;
+  estadistica2Nombre?: string;
+}
+
+export interface OdsTraducido extends OdsDetalle {
+  objetivoNombre?: string;
+  metaNombre?: string;
+  indicadorNombre?: string;
+}
+
+export interface VariableDetalleArmo {
+  variable: VariablesArmo;
+  clasificaciones: ClasificacionArmoDetalle[];
+  microdatos: MicrodatoArmoDetalle[];
+  datosAbiertos: DatoAbiertoArmoDetalle[];
+  tabulados: VariableTabuladoArmoDetalle[];
+  mdeas: MdeaDetalle[];
+  odsList: OdsDetalle[];
+  pertinencia: PertinenciaDetalle | null;
 }
