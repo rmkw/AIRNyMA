@@ -40,6 +40,7 @@ export class MicrodatosVariableComponent {
   @Input() form: MicrodatosVariableForm = this.crearFormularioVacio();
   @Input() microdatos: MicrodatoArmo[] = [];
   @Input() guardando = false;
+  @Input() editando = false;
 
   @Output() activoChange = new EventEmitter<boolean>();
   @Output() estadoChange = new EventEmitter<string>();
@@ -49,6 +50,7 @@ export class MicrodatosVariableComponent {
     form: MicrodatosVariableForm;
   }>();
   @Output() eliminarMicrodato = new EventEmitter<MicrodatoArmo>();
+  @Output() editarMicrodato = new EventEmitter<MicrodatoArmo>();
 
   microdatoSeleccionado: MicrodatoArmo | null = null;
 
@@ -98,9 +100,8 @@ export class MicrodatosVariableComponent {
     });
   }
 
-  verDetalle(microdato: MicrodatoArmo) {
-    this.microdatoSeleccionado = microdato;
-    this.detalleMicrodatoModal?.nativeElement.showModal();
+  editar(microdato: MicrodatoArmo) {
+    this.editarMicrodato.emit(microdato);
   }
 
   cerrarDetalle() {

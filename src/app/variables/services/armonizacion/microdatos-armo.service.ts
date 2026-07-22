@@ -23,6 +23,12 @@ export class MicrodatosArmoService {
     });
   }
 
+  actualizarMicrodato(idUnique: number, microdato: MicrodatoArmo): Observable<MicrodatoArmo> {
+    return this.http.put<MicrodatoArmo>(`${this.baseUrl}/${idUnique}`, microdato, {
+      withCredentials: true,
+    });
+  }
+
   eliminarMicrodato(idUnique: number): Observable<string> {
     return this.http.delete(`${this.baseUrl}/${idUnique}`, {
       responseType: 'text',

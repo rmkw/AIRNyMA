@@ -608,15 +608,15 @@
       </app-clasificaciones-variable>
 
       <app-microdatos-variable [activo]="microdatosActivo" [(estado)]="microdatosEstado" [(form)]="microdatosForm"
-        [microdatos]="arrMicrodatos" [guardando]="guardandoMicrodatos"
+        [microdatos]="arrMicrodatos" [guardando]="guardandoMicrodatos" [editando]="!!microdatoEditandoId"
         (activoChange)="cambiarEstadoMicrodatos($event)" (agregarMicrodatos)="agregarMicrodatosLocal($event)"
-        (eliminarMicrodato)="eliminarMicrodatoLocal($event)">
+        (eliminarMicrodato)="eliminarMicrodatoLocal($event)" (editarMicrodato)="editarMicrodatoLocal($event)">
       </app-microdatos-variable>
 
       <app-datos-abiertos-variable [activo]="datosAbiertosActivo" [(form)]="datosAbiertosForm"
-        [datosAbiertos]="arrDatosAbiertos" [guardando]="guardandoDatosAbiertos"
+        [datosAbiertos]="arrDatosAbiertos" [guardando]="guardandoDatosAbiertos" [editando]="!!datoAbiertoEditandoId"
         (activoChange)="cambiarEstadoDatosAbiertos($event)" (agregarDatosAbiertos)="agregarDatosAbiertosLocal($event)"
-        (eliminarDatoAbierto)="eliminarDatoAbiertoLocal($event)">
+        (eliminarDatoAbierto)="eliminarDatoAbiertoLocal($event)" (editarDatoAbierto)="editarDatoAbiertoLocal($event)">
       </app-datos-abiertos-variable>
     </div>
   </section>

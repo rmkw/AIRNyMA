@@ -261,6 +261,7 @@ export class ValidacionPageComponent implements OnInit {
       next: () => {
         this.guardandoTicket = false;
         this.cargarTicketsVariable(ticket.idA);
+        this.ticketsService.actualizarPendientes();
         this.cerrarModalTicket();
       },
       error: () => {

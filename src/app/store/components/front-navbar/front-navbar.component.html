@@ -98,6 +98,9 @@
       <a routerLink="/tickets" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tickets">
         <span>🎫</span>
         <span class="is-drawer-close:hidden">Tickets</span>
+        @if (ticketsPendientes() > 0) {
+        <span class="badge badge-error badge-xs ml-auto">{{ ticketsPendientes() }}</span>
+        }
       </a>
     </li>
   </ul>

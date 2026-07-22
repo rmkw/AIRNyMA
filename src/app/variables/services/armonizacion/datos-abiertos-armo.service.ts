@@ -23,6 +23,12 @@ export class DatosAbiertosArmoService {
     });
   }
 
+  actualizarDatoAbierto(idUnique: number, datoAbierto: DatoAbiertoArmo): Observable<DatoAbiertoArmo> {
+    return this.http.put<DatoAbiertoArmo>(`${this.baseUrl}/${idUnique}`, datoAbierto, {
+      withCredentials: true,
+    });
+  }
+
   eliminarDatoAbierto(idUnique: number): Observable<string> {
     return this.http.delete(`${this.baseUrl}/${idUnique}`, {
       responseType: 'text',

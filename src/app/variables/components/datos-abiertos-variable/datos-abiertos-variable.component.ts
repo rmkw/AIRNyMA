@@ -36,11 +36,13 @@ export class DatosAbiertosVariableComponent {
   @Input() form: DatosAbiertosVariableForm = this.crearFormularioVacio();
   @Input() datosAbiertos: DatoAbiertoArmo[] = [];
   @Input() guardando = false;
+  @Input() editando = false;
 
   @Output() activoChange = new EventEmitter<boolean>();
   @Output() formChange = new EventEmitter<DatosAbiertosVariableForm>();
   @Output() agregarDatosAbiertos = new EventEmitter<DatosAbiertosVariableForm>();
   @Output() eliminarDatoAbierto = new EventEmitter<DatoAbiertoArmo>();
+  @Output() editarDatoAbierto = new EventEmitter<DatoAbiertoArmo>();
 
   datoAbiertoSeleccionado: DatoAbiertoArmo | null = null;
 
@@ -75,9 +77,8 @@ export class DatosAbiertosVariableComponent {
     this.agregarDatosAbiertos.emit(this.form);
   }
 
-  verDetalle(datoAbierto: DatoAbiertoArmo) {
-    this.datoAbiertoSeleccionado = datoAbierto;
-    this.detalleDatoAbiertoModal?.nativeElement.showModal();
+  editar(datoAbierto: DatoAbiertoArmo) {
+    this.editarDatoAbierto.emit(datoAbierto);
   }
 
   cerrarDetalle() {

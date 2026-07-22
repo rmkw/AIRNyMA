@@ -21,6 +21,7 @@ export class TicketsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarTickets();
+    this.ticketsService.actualizarPendientes();
     this.ticketsService.obtenerUsuarios().subscribe({
       next: (usuarios) => (this.usuarios = usuarios),
       error: () => (this.errorUsuarios = 'No fue posible cargar los usuarios.'),
@@ -92,6 +93,7 @@ export class TicketsPageComponent implements OnInit {
         );
         this.ticketSeleccionado = ticketActualizado;
         this.guardando = false;
+        this.ticketsService.actualizarPendientes();
       },
       error: () => {
         this.guardando = false;
@@ -104,6 +106,24 @@ export class TicketsPageComponent implements OnInit {
     if (!idUsuario) return '-';
     const usuario = this.usuarios.find((item) => item.id === idUsuario);
     return usuario ? usuario.aka || usuario.nombre : `Usuario ${idUsuario}`;
+  }
+
+  etiquetaEstatus(estatus?: TicketVariable['estatus']): string {
+    return {
+      pendiente: 'Pendiente',
+      en_proceso: 'En proceso',
+      completado: 'Completado',
+      cancelado: 'Cancelado',
+    }[estatus ?? 'pendiente'];
+  }
+
+  claseEstatus(estatus?: TicketVariable['estatus']): string {
+    return {
+      pendiente: 'badge-warning',
+      en_proceso: 'badge-info',
+      completado: 'badge-success',
+      cancelado: 'badge-error',
+    }[estatus ?? 'pendiente'];
   }
 
   private idUsuarioSesion(): number | null {

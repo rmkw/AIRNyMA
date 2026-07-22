@@ -272,17 +272,20 @@
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
               <summary class="collapse-title text-sm font-medium">Microdatos ({{ detalleVariable.microdatos.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
-                @for (microdato of detalleVariable.microdatos; track microdato.idUnique) {
-                <div class="grid gap-3 md:grid-cols-2">
-                  <a [href]="microdato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
-                  <a [href]="microdato.urlDescriptor" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL del descriptor</a>
-                </div>
-                <div class="grid gap-3 md:grid-cols-3">
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ microdato.descriptor || '-' }}</div></div>
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ microdato.tabla || '-' }}</div></div>
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ microdato.campo || '-' }}</div></div>
-                </div>
-                <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ microdato.comentarioA || '-' }}</div></div>
+                @for (microdato of detalleVariable.microdatos; track microdato.idUnique; let index = $index) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                  <div class="font-medium">Microdato {{ index + 1 }}</div>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <a [href]="microdato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
+                    <a [href]="microdato.urlDescriptor" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL del descriptor</a>
+                  </div>
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ microdato.descriptor || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ microdato.tabla || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ microdato.campo || '-' }}</div></div>
+                  </div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ microdato.comentarioA || '-' }}</div></div>
+                </section>
                 } @empty { <span class="text-base-content/60">Sin microdatos registrados.</span> }
               </div>
             </details>
@@ -290,17 +293,20 @@
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
               <summary class="collapse-title text-sm font-medium">Datos abiertos ({{ detalleVariable.datosAbiertos.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
-                @for (dato of detalleVariable.datosAbiertos; track dato.idUnique) {
-                <div class="grid gap-3 md:grid-cols-2">
-                  <a [href]="dato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
-                  <a [href]="dato.urlDescarga" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de descarga</a>
-                </div>
-                <div class="grid gap-3 md:grid-cols-3">
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ dato.descriptor || '-' }}</div></div>
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ dato.tabla || '-' }}</div></div>
-                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ dato.campo || '-' }}</div></div>
-                </div>
-                <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ dato.comentarioA || '-' }}</div></div>
+                @for (dato of detalleVariable.datosAbiertos; track dato.idUnique; let index = $index) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                  <div class="font-medium">Dato abierto {{ index + 1 }}</div>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <a [href]="dato.urlAcceso" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de acceso</a>
+                    <a [href]="dato.urlDescarga" target="_blank" rel="noopener" class="rounded-box bg-base-200 p-3 link link-neutral">URL de descarga</a>
+                  </div>
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Descriptor</div><div>{{ dato.descriptor || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ dato.tabla || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ dato.campo || '-' }}</div></div>
+                  </div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ dato.comentarioA || '-' }}</div></div>
+                </section>
                 } @empty { <span class="text-base-content/60">Sin datos abiertos registrados.</span> }
               </div>
             </details>
@@ -308,7 +314,9 @@
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
               <summary class="collapse-title text-sm font-medium">Tabulados ({{ detalleVariable.tabulados.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
-                @for (tabulado of detalleVariable.tabulados; track tabulado.idUnique) {
+                @for (tabulado of detalleVariable.tabulados; track tabulado.idUnique; let index = $index) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                <div class="font-medium">Tabulado {{ index + 1 }}</div>
                 <div class="grid gap-3 md:grid-cols-2">
                   <div class="rounded-box bg-base-200 p-3"><div class="font-medium">ID de tabulado</div><div>{{ tabulado.idTabulado }}</div></div>
                   <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabulado</div><div>{{ tabulado.tabulado?.tabulado || '-' }}</div></div>
@@ -329,6 +337,7 @@
                   <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Desgloses</div><div class="mt-1 flex flex-wrap gap-1">@for (desglose of tabulado.desgloses; track desglose.idUnique) { <span class="badge badge-outline">{{ desglose.desglose }}</span> } @empty { <span>-</span> }</div></div>
                   <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Desagregaciones</div><div class="mt-1 flex flex-wrap gap-1">@for (desagregacion of tabulado.desagregaciones; track desagregacion.idUnique) { <span class="badge badge-outline">{{ desagregacion.coberturaDesagregacion }}</span> } @empty { <span>-</span> }</div></div>
                 </div>
+                </section>
                 } @empty { <span class="text-base-content/60">Sin tabulados relacionados.</span> }
               </div>
             </details>
@@ -336,16 +345,19 @@
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
               <summary class="collapse-title text-sm font-medium">MDEA ({{ detalleVariable.mdeas.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
-                @for (mdea of mdeasTraducidos; track mdea.idUnique) {
-                <div class="rounded-box bg-base-200 p-3 space-y-1">
-                  <div><span class="font-medium">Componente:</span> {{ mdea.componente || '-' }} - {{ mdea.componenteNombre || '-' }}</div>
-                  <div><span class="font-medium">Subcomponente:</span> {{ mdea.subcomponente || '-' }} - {{ mdea.subcomponenteNombre || '-' }}</div>
-                  <div><span class="font-medium">Tema:</span> {{ mdea.tema || '-' }} - {{ mdea.temaNombre || '-' }}</div>
-                  <div><span class="font-medium">Estadístico 1:</span> {{ mdea.estadistica1 || '-' }} - {{ mdea.estadistica1Nombre || '-' }}</div>
-                  <div><span class="font-medium">Estadístico 2:</span> {{ mdea.estadistica2 || '-' }} - {{ mdea.estadistica2Nombre || '-' }}</div>
-                  <div><span class="font-medium">Contribución:</span> {{ mdea.contribucion || '-' }}</div>
-                  <div><span class="font-medium">Comentario:</span> {{ mdea.comentarioS || '-' }}</div>
-                </div>
+                @for (mdea of mdeasTraducidos; track mdea.idUnique; let index = $index) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                  <div class="font-medium">MDEA {{ index + 1 }}</div>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Componente</div><div>{{ mdea.componente || '-' }} - {{ mdea.componenteNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Subcomponente</div><div>{{ mdea.subcomponente || '-' }} - {{ mdea.subcomponenteNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tema</div><div>{{ mdea.tema || '-' }} - {{ mdea.temaNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Estadístico 1</div><div>{{ mdea.estadistica1 || '-' }} - {{ mdea.estadistica1Nombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Estadístico 2</div><div>{{ mdea.estadistica2 || '-' }} - {{ mdea.estadistica2Nombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Contribución</div><div>{{ mdea.contribucion || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3 md:col-span-2"><div class="font-medium">Comentario</div><div>{{ mdea.comentarioS || '-' }}</div></div>
+                  </div>
+                </section>
                 } @empty { <span class="text-base-content/60">Sin relaciones MDEA.</span> }
               </div>
             </details>
@@ -353,14 +365,17 @@
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
               <summary class="collapse-title text-sm font-medium">ODS ({{ detalleVariable.odsList.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
-                @for (ods of odsTraducidos; track ods.idUnique) {
-                <div class="rounded-box bg-base-200 p-3 space-y-1">
-                  <div><span class="font-medium">Objetivo:</span> {{ ods.objetivo || '-' }} - {{ ods.objetivoNombre || '-' }}</div>
-                  <div><span class="font-medium">Meta:</span> {{ ods.meta || '-' }} - {{ ods.metaNombre || '-' }}</div>
-                  <div><span class="font-medium">Indicador:</span> {{ ods.indicador || '-' }} - {{ ods.indicadorNombre || '-' }}</div>
-                  <div><span class="font-medium">Contribución:</span> {{ ods.contribucion || '-' }}</div>
-                  <div><span class="font-medium">Comentario:</span> {{ ods.comentarioS || '-' }}</div>
-                </div>
+                @for (ods of odsTraducidos; track ods.idUnique; let index = $index) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                  <div class="font-medium">ODS {{ index + 1 }}</div>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Objetivo</div><div>{{ ods.objetivo || '-' }} - {{ ods.objetivoNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Meta</div><div>{{ ods.meta || '-' }} - {{ ods.metaNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Indicador</div><div>{{ ods.indicador || '-' }} - {{ ods.indicadorNombre || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Contribución</div><div>{{ ods.contribucion || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3 md:col-span-2"><div class="font-medium">Comentario</div><div>{{ ods.comentarioS || '-' }}</div></div>
+                  </div>
+                </section>
                 } @empty { <span class="text-base-content/60">Sin relaciones ODS.</span> }
               </div>
             </details>
@@ -404,24 +419,11 @@
 
     <div class="mt-4 space-y-4">
       <div class="form-control">
-        <label class="label" for="propiedadTicket"><span class="label-text">Propiedad</span></label>
+        <label class="label" for="propiedadTicket"><span class="label-text">Apartado</span></label>
         <select id="propiedadTicket" class="select select-bordered w-full" [value]="propiedadTicket"
           (change)="propiedadTicket = $any($event.target).value">
-          <option value="">Selecciona una propiedad</option>
-          <option value="variable_s">Nombre variable selección</option>
-          <option value="variable_a">Nombre variable armonización</option>
-          <option value="url">URL variable</option>
-          <option value="pregunta">Pregunta</option>
-          <option value="definicion">Definición</option>
-          <option value="universo">Universo</option>
-          <option value="anio_referencia">Año de referencia</option>
-          <option value="tematica">Temática</option>
-          <option value="tema1">Tema 1</option>
-          <option value="subtema1">Subtema 1</option>
-          <option value="tema2">Tema 2</option>
-          <option value="subtema2">Subtema 2</option>
-          <option value="comentario_s">Comentario selección</option>
-          <option value="comentario_a">Comentario armonización</option>
+          <option value="">Selecciona un apartado</option>
+          <option value="variable">Apartado de la variable</option>
           <option value="clasificaciones">Apartado de clasificaciones</option>
           <option value="microdatos">Apartado de microdatos</option>
           <option value="datos_abiertos">Apartado de datos abiertos</option>

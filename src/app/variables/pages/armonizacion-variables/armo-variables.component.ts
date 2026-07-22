@@ -1,7 +1,7 @@
 /**
  * @author Luis Gerardo Castañeda López
  * @organization INEGI
- * @project SIIRNMA
+ * @project SIIERNMA
  * @since 2026-04-07
  * @description Lógica principal de variables
  */
@@ -1196,6 +1196,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   microdatosActivo: boolean = false;
   arrMicrodatos: MicrodatoArmo[] = [];
   guardandoMicrodatos = false;
+  microdatoEditandoId: number | null = null;
   readonly microdatosEstadoSi = 'Sí';
   readonly microdatosEstadoNo = 'No';
   readonly microdatosEstadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
@@ -1211,6 +1212,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
   datosAbiertosActivo: boolean = false;
   arrDatosAbiertos: DatoAbiertoArmo[] = [];
   guardandoDatosAbiertos = false;
+  datoAbiertoEditandoId: number | null = null;
 
   datosAbiertosForm: DatosAbiertosVariableForm = {
     urlAcceso: '',
@@ -1384,6 +1386,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.guardandoDatosAbiertos = false;
     this.variableForm?.patchValue({ datosabiertos: false });
     this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
+    this.datoAbiertoEditandoId = null;
   }
   microdatosEstado: string = '';
 
@@ -1417,6 +1420,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.guardandoMicrodatos = false;
     this.variableForm?.patchValue({ microdatos: this.microdatosEstadoNo });
     this.microdatosForm = this.crearMicrodatosFormVacio();
+    this.microdatoEditandoId = null;
   }
 
   cambiarEstadoDatosAbiertos(activo: boolean) {
@@ -1471,7 +1475,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     }
 
     const datoAbiertoDuplicado = this.arrDatosAbiertos.some((registrado) =>
-      this.sonDatosAbiertosIguales(registrado, payload),
+      registrado.idUnique !== this.datoAbiertoEditandoId && this.sonDatosAbiertosIguales(registrado, payload),
     );
 
     if (datoAbiertoDuplicado) {
@@ -1481,15 +1485,20 @@ export class ArmonizacionVariablesComponent implements OnInit {
       return;
     }
 
+    const editandoId = this.datoAbiertoEditandoId;
     this.guardandoDatosAbiertos = true;
-    this.datosAbiertosArmoService.guardarDatoAbierto(payload).subscribe({
+    const guardar = editandoId
+      ? this.datosAbiertosArmoService.actualizarDatoAbierto(editandoId, payload)
+      : this.datosAbiertosArmoService.guardarDatoAbierto(payload);
+    guardar.subscribe({
       next: () => {
         this.datosAbiertosActivo = true;
         this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
+        this.datoAbiertoEditandoId = null;
         this.persistirBanderaDatosAbiertosVariable(true, () => {
           this.guardandoDatosAbiertos = false;
           this.cargarDatosAbiertosVariable(payload.idA);
-          this.mostrarToast('Dato abierto agregado correctamente.');
+          this.mostrarToast(editandoId ? 'Dato abierto actualizado correctamente.' : 'Dato abierto agregado correctamente.');
         });
       },
       error: (err) => {
@@ -1536,6 +1545,20 @@ export class ArmonizacionVariablesComponent implements OnInit {
         this.arrDatosAbiertos = [];
       },
     });
+  }
+
+  editarDatoAbiertoLocal(datoAbierto: DatoAbiertoArmo) {
+    if (!datoAbierto.idUnique) return;
+    this.datoAbiertoEditandoId = datoAbierto.idUnique;
+    this.datosAbiertosActivo = true;
+    this.datosAbiertosForm = {
+      urlAcceso: datoAbierto.urlAcceso,
+      urlDescarga: datoAbierto.urlDescarga,
+      descriptor: datoAbierto.descriptor,
+      tabla: datoAbierto.tabla,
+      campo: datoAbierto.campo,
+      comentarioA: datoAbierto.comentarioA,
+    };
   }
 
   eliminarDatoAbiertoLocal(datoAbierto: DatoAbiertoArmo) {
@@ -1663,7 +1686,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     }
 
     const microdatoDuplicado = this.arrMicrodatos.some((registrado) =>
-      this.sonMicrodatosIguales(registrado, microdato),
+      registrado.idUnique !== this.microdatoEditandoId && this.sonMicrodatosIguales(registrado, microdato),
     );
 
     if (microdatoDuplicado) {
@@ -1675,16 +1698,21 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
     const estadoMicrodatos = this.obtenerEstadoMicrodatosParaGuardar(payload.estado);
 
+    const editandoId = this.microdatoEditandoId;
     this.guardandoMicrodatos = true;
-    this.microdatosArmoService.guardarMicrodato(microdato).subscribe({
+    const guardar = editandoId
+      ? this.microdatosArmoService.actualizarMicrodato(editandoId, microdato)
+      : this.microdatosArmoService.guardarMicrodato(microdato);
+    guardar.subscribe({
       next: () => {
         this.microdatosActivo = true;
         this.microdatosEstado = estadoMicrodatos;
         this.microdatosForm = this.crearMicrodatosFormVacio();
+        this.microdatoEditandoId = null;
         this.persistirEstadoMicrodatosVariable(estadoMicrodatos, () => {
           this.guardandoMicrodatos = false;
           this.cargarMicrodatosVariable(microdato.idA, estadoMicrodatos);
-          this.mostrarToast('Microdato agregado correctamente.');
+          this.mostrarToast(editandoId ? 'Microdato actualizado correctamente.' : 'Microdato agregado correctamente.');
         });
       },
       error: (err) => {
@@ -1733,6 +1761,20 @@ export class ArmonizacionVariablesComponent implements OnInit {
         this.arrMicrodatos = [];
       },
     });
+  }
+
+  editarMicrodatoLocal(microdato: MicrodatoArmo) {
+    if (!microdato.idUnique) return;
+    this.microdatoEditandoId = microdato.idUnique;
+    this.microdatosActivo = true;
+    this.microdatosForm = {
+      urlAcceso: microdato.urlAcceso,
+      descriptor: microdato.descriptor,
+      urlDescriptor: microdato.urlDescriptor,
+      tabla: microdato.tabla,
+      campo: microdato.campo,
+      comentarioA: microdato.comentarioA,
+    };
   }
 
   eliminarMicrodatoLocal(microdato: MicrodatoArmo) {

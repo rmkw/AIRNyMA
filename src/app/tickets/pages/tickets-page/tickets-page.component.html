@@ -14,12 +14,12 @@
   <div class="grid gap-4 xl:grid-cols-12">
     <div class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-5">
       <div class="card-body gap-4 p-5">
-        <div class="flex flex-wrap items-end justify-between gap-3">
+        <div class="flex items-end justify-between gap-3">
           <div>
             <h2 class="card-title text-base">Tickets registrados</h2>
             <p class="text-xs text-base-content/60">Selecciona un ticket para atenderlo.</p>
           </div>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex shrink-0 items-center gap-2">
             <select class="select select-bordered select-sm" [value]="filtroEstatus"
               (change)="filtroEstatus = $any($event.target).value; cargarTickets()">
               <option value="">Todos los estatus</option>
@@ -48,7 +48,7 @@
               <tr>
                 <th>Ticket</th>
                 <th>Variable</th>
-                <th>Propiedad</th>
+                <th>Apartado</th>
                 <th>Estatus</th>
               </tr>
             </thead>
@@ -59,7 +59,7 @@
                 <td>#{{ ticket.idTicket }}</td>
                 <td class="font-mono text-xs">{{ ticket.idA }}</td>
                 <td>{{ ticket.propiedad || 'General' }}</td>
-                <td><span class="badge badge-outline">{{ ticket.estatus }}</span></td>
+                <td><span [class]="'badge ' + claseEstatus(ticket.estatus)">{{ etiquetaEstatus(ticket.estatus) }}</span></td>
               </tr>
               }
             </tbody>
@@ -77,11 +77,11 @@
             <div class="badge badge-primary">Ticket #{{ ticketSeleccionado.idTicket }}</div>
             <p class="mt-2 font-mono text-xs text-base-content/60">Variable: {{ ticketSeleccionado.idA }}</p>
           </div>
-          <span class="badge badge-outline badge-lg">{{ ticketSeleccionado.estatus }}</span>
+          <span [class]="'badge badge-lg ' + claseEstatus(ticketSeleccionado.estatus)">{{ etiquetaEstatus(ticketSeleccionado.estatus) }}</span>
         </div>
 
         <div class="grid gap-3 text-sm md:grid-cols-2">
-          <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Propiedad reportada</div><div>{{ ticketSeleccionado.propiedad || 'General' }}</div></div>
+          <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Apartado reportado</div><div>{{ ticketSeleccionado.propiedad || 'General' }}</div></div>
           <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Reportado por</div><div>{{ nombreUsuario(ticketSeleccionado.idUsuarioReporta) }}</div></div>
           <div class="rounded-box bg-base-200 p-3 md:col-span-2"><div class="font-medium">Incidencia</div><div>{{ ticketSeleccionado.incidencia }}</div></div>
         </div>
@@ -90,8 +90,8 @@
         <div class="alert alert-warning"><span>{{ errorUsuarios }}</span></div>
         }
 
-        <div class="grid gap-4">
-          <div class="form-control">
+        <div class="flex items-end gap-3">
+          <div class="form-control min-w-0 flex-1">
             <label class="label" for="estatusTicket"><span class="label-text">Estatus</span></label>
             <select id="estatusTicket" class="select select-bordered w-full" [value]="ticketSeleccionado.estatus"
               (change)="cambiarEstatus($event)">
@@ -101,10 +101,7 @@
               <option value="cancelado">Cancelado</option>
             </select>
           </div>
-        </div>
-
-        <div class="flex justify-end">
-          <button type="button" class="btn btn-primary" [disabled]="guardando" (click)="guardarCambios()">
+          <button type="button" class="btn btn-primary shrink-0" [disabled]="guardando" (click)="guardarCambios()">
             {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
