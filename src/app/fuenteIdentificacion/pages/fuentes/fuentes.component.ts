@@ -300,6 +300,12 @@ export class FuentesComponent implements OnInit {
     });
   }
 
+  limitarAnio(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.edicion = input.value.replace(/\D/g, '').slice(0, 4);
+    input.value = this.edicion;
+  }
+
   limpiarFormularioFuente() {
     this.fuente = '';
     this.edicion = '';
@@ -383,7 +389,7 @@ export class FuentesComponent implements OnInit {
   formularioFuenteValido(): boolean {
     return !!(
       this.fuente?.trim() &&
-      this.edicion?.toString().trim() &&
+      /^\d{4}$/.test(this.edicion?.toString().trim()) &&
       this.url?.trim() &&
       this.comentarioS?.trim()
     );
@@ -393,7 +399,9 @@ export class FuentesComponent implements OnInit {
     const faltantes: string[] = [];
 
     if (!this.fuente?.trim()) faltantes.push('Fuente de identificación');
-    if (!this.edicion?.toString().trim()) faltantes.push('Año del evento');
+    if (!/^\d{4}$/.test(this.edicion?.toString().trim())) {
+      faltantes.push('Año de la edición (4 dígitos)');
+    }
     if (!this.url?.trim()) faltantes.push('Liga de acceso');
     if (!this.comentarioS?.trim()) faltantes.push('Comentario');
 

@@ -3,14 +3,19 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MicrodatoArmo } from '@/variables/interfaces/armonizacion/microdatos-armo.interface';
+import { MicrodatosArmoService } from '@/variables/services/armonizacion/microdatos-armo.service';
 
 export interface MicrodatosVariableForm {
+  laboratorio: boolean;
   urlAcceso: string;
   descriptor: string;
   urlDescriptor: string;
@@ -28,31 +33,38 @@ export interface MicrodatosVariableForm {
     class: 'block',
   },
 })
-export class MicrodatosVariableComponent {
-  readonly estadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
-  readonly estadoSi = 'Sí';
+export class MicrodatosVariableComponent implements OnChanges {
+  private microdatosService = inject(MicrodatosArmoService);
 
   @ViewChild('detalleMicrodatoModal')
   detalleMicrodatoModal?: ElementRef<HTMLDialogElement>;
+  @ViewChild('exitoMicrodatoModal')
+  exitoMicrodatoModal?: ElementRef<HTMLDialogElement>;
 
   @Input() activo = false;
-  @Input() estado = '';
   @Input() form: MicrodatosVariableForm = this.crearFormularioVacio();
   @Input() microdatos: MicrodatoArmo[] = [];
   @Input() guardando = false;
   @Input() editando = false;
+  @Input() ticketIdA = '';
 
   @Output() activoChange = new EventEmitter<boolean>();
-  @Output() estadoChange = new EventEmitter<string>();
   @Output() formChange = new EventEmitter<MicrodatosVariableForm>();
   @Output() agregarMicrodatos = new EventEmitter<{
-    estado: string;
     form: MicrodatosVariableForm;
   }>();
   @Output() eliminarMicrodato = new EventEmitter<MicrodatoArmo>();
   @Output() editarMicrodato = new EventEmitter<MicrodatoArmo>();
 
   microdatoSeleccionado: MicrodatoArmo | null = null;
+  cargandoMicrodatos = false;
+  errorMicrodatos = '';
+  private ticketMicrodatoEditandoId: number | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const idA = changes['ticketIdA']?.currentValue?.trim();
+    if (idA) this.cargarMicrodatosTicket(idA);
+  }
 
   toggleMicrodatos(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -68,24 +80,12 @@ export class MicrodatosVariableComponent {
     this.activoChange.emit(this.activo);
 
     if (!checked) {
-      this.estado = '';
       this.form = this.crearFormularioVacio();
-      this.estadoChange.emit(this.estado);
       this.formChange.emit(this.form);
     }
   }
 
-  seleccionarEstado(estado: string) {
-    this.estado = estado;
-    this.estadoChange.emit(this.estado);
-  }
-
-  cambiarEstadoLaboratorio(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.seleccionarEstado(checked ? this.estadoLaboratorio : this.estadoSi);
-  }
-
-  actualizarCampo(campo: keyof MicrodatosVariableForm, valor: string) {
+  actualizarCampo(campo: keyof MicrodatosVariableForm, valor: string | boolean) {
     this.form = {
       ...this.form,
       [campo]: valor,
@@ -94,13 +94,43 @@ export class MicrodatosVariableComponent {
   }
 
   agregar() {
+    if (this.ticketIdA) {
+      this.guardarMicrodatoTicket();
+      return;
+    }
     this.agregarMicrodatos.emit({
-      estado: this.estado,
       form: this.form,
     });
   }
 
+  cancelarEdicionTicket() {
+    this.ticketMicrodatoEditandoId = null;
+    this.editando = false;
+    this.form = this.crearFormularioVacio();
+    this.formChange.emit(this.form);
+  }
+
+  cerrarExitoMicrodato() {
+    this.exitoMicrodatoModal?.nativeElement.close();
+  }
+
   editar(microdato: MicrodatoArmo) {
+    if (this.ticketIdA) {
+      this.ticketMicrodatoEditandoId = microdato.idUnique ?? null;
+      this.editando = true;
+      this.activo = true;
+      this.form = {
+        laboratorio: microdato.laboratorio,
+        urlAcceso: microdato.urlAcceso,
+        descriptor: microdato.descriptor,
+        urlDescriptor: microdato.urlDescriptor,
+        tabla: microdato.tabla,
+        campo: microdato.campo,
+        comentarioA: microdato.comentarioA,
+      };
+      this.formChange.emit(this.form);
+      return;
+    }
     this.editarMicrodato.emit(microdato);
   }
 
@@ -113,11 +143,85 @@ export class MicrodatosVariableComponent {
   }
 
   eliminar(microdato: MicrodatoArmo) {
+    if (this.ticketIdA) {
+      this.eliminarMicrodatoTicket(microdato);
+      return;
+    }
     this.eliminarMicrodato.emit(microdato);
+  }
+
+  private cargarMicrodatosTicket(idA: string) {
+    this.cargandoMicrodatos = true;
+    this.errorMicrodatos = '';
+    this.microdatosService.obtenerPorIdA(idA).subscribe({
+      next: (microdatos) => {
+        this.microdatos = microdatos ?? [];
+        this.activo = true;
+        this.cargandoMicrodatos = false;
+      },
+      error: () => {
+        this.microdatos = [];
+        this.cargandoMicrodatos = false;
+        this.errorMicrodatos = 'No fue posible consultar los microdatos de esta variable.';
+      },
+    });
+  }
+
+  private guardarMicrodatoTicket() {
+    const form = this.form;
+    if (!form.urlAcceso.trim() || !form.descriptor.trim() || !form.urlDescriptor.trim() ||
+      !form.tabla.trim() || !form.campo.trim() || !form.comentarioA.trim()) return;
+
+    const payload: MicrodatoArmo = {
+      idA: this.ticketIdA,
+      laboratorio: form.laboratorio,
+      urlAcceso: form.urlAcceso.trim(),
+      descriptor: form.descriptor.trim(),
+      urlDescriptor: form.urlDescriptor.trim(),
+      tabla: form.tabla.trim(),
+      campo: form.campo.trim(),
+      comentarioA: form.comentarioA.trim(),
+    };
+    this.guardando = true;
+    const idMicrodato = this.ticketMicrodatoEditandoId;
+    const actualizando = idMicrodato !== null;
+    const request = actualizando
+      ? this.microdatosService.actualizarMicrodato(idMicrodato, payload)
+      : this.microdatosService.guardarMicrodato(payload);
+    request.subscribe({
+      next: () => {
+        this.ticketMicrodatoEditandoId = null;
+        this.editando = false;
+        this.form = this.crearFormularioVacio();
+        this.formChange.emit(this.form);
+        this.guardando = false;
+        this.cargarMicrodatosTicket(this.ticketIdA);
+        this.mensajeExitoMicrodato = actualizando
+          ? 'El microdato se actualizó correctamente.'
+          : 'El microdato se registró correctamente.';
+        this.exitoMicrodatoModal?.nativeElement.showModal();
+      },
+      error: () => (this.guardando = false),
+    });
+  }
+
+  mensajeExitoMicrodato = '';
+
+  private eliminarMicrodatoTicket(microdato: MicrodatoArmo) {
+    if (!microdato.idUnique) return;
+    this.guardando = true;
+    this.microdatosService.eliminarMicrodato(microdato.idUnique).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.cargarMicrodatosTicket(this.ticketIdA);
+      },
+      error: () => (this.guardando = false),
+    });
   }
 
   private crearFormularioVacio(): MicrodatosVariableForm {
     return {
+      laboratorio: false,
       urlAcceso: '',
       descriptor: '',
       urlDescriptor: '',

@@ -115,9 +115,11 @@
 
   </div>
 
+  <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card-body gap-4 p-4">
   <div class="grid gap-4 xl:grid-cols-1">
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-4">
+    <div>
+      <div class="space-y-2">
         <h2 class="card-title text-base">Objetivo</h2>
         <textarea class="textarea textarea-bordered min-h-24 w-full" readonly>{{ procesoSeleccionado()?.objetivo || 'El objetivo aparecerá aquí...' }}</textarea>
       </div>
@@ -127,17 +129,17 @@
 
   </div>
 
-  <div class="grid gap-4 xl:grid-cols-2">
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-4">
+  <div class="grid gap-4 xl:grid-cols-1">
+    <div>
+      <div class="space-y-2">
         <h2 class="card-title text-base">Población objeto de estudio</h2>
         <textarea class="textarea textarea-bordered min-h-24 w-full"
           readonly>{{ procesoSeleccionado()?.pobjeto || 'La población objeto de estudio aparecerá aquí...' }}</textarea>
       </div>
     </div>
 
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
-      <div class="card-body p-4">
+    <div>
+      <div class="space-y-2">
         <h2 class="card-title text-base">Unidad de observación</h2>
         <textarea class="textarea textarea-bordered min-h-24 w-full"
           readonly>{{ procesoSeleccionado()?.uobservacion || 'La unidad de observación aparecerá aquí...' }}</textarea>
@@ -145,12 +147,12 @@
     </div>
   </div>
 
-  <div class="grid gap-4 xl:grid-cols-2">
+  <div class="grid gap-4 xl:grid-cols-1">
 
 
     <div *ngIf="esSeleccionPura()">
-      <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body p-3">
+      <div>
+        <div class="space-y-2">
           <div class="flex items-center justify-between">
             <h2 class="card-title text-base">Comentario</h2>
             <div class="badge badge-outline badge-sm">Editable</div>
@@ -170,8 +172,8 @@
     </div>
 
     <div *ngIf="esArmonizacion()">
-      <div class="card border border-base-300 bg-base-100 shadow-sm">
-        <div class="card-body p-4">
+      <div>
+        <div class="space-y-2">
           <div class="flex items-center justify-between">
             <h2 class="card-title text-base">Comentario</h2>
             <div class="badge badge-outline badge-sm">Editable</div>
@@ -194,7 +196,8 @@
 
 
   </div>
-
+    </div>
+  </div>
 
 </div>
 

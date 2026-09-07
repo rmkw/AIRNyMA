@@ -174,7 +174,7 @@ export class ValidacionPageComponent implements OnInit {
     if (validada && (this.cargandoTicketsVariable || this.errorTicketsVariable || this.ticketsSinCompletar > 0)) {
       this.errorValidacion = this.errorTicketsVariable
         ? 'No es posible revisar la variable sin verificar sus tickets.'
-        : 'No es posible revisar la variable mientras tenga tickets sin completar.';
+        : 'No es posible revisar la variable mientras tenga tickets activos.';
       return;
     }
 
@@ -205,7 +205,7 @@ export class ValidacionPageComponent implements OnInit {
   }
 
   abrirModalTicket() {
-    if (!this.variableSeleccionada) return;
+    if (!this.variableSeleccionada || this.variableSeleccionada.validada) return;
 
     this.propiedadTicket = '';
     this.incidenciaTicket = '';
@@ -277,7 +277,9 @@ export class ValidacionPageComponent implements OnInit {
   }
 
   get ticketsSinCompletar(): number {
-    return this.ticketsVariable.filter((ticket) => ticket.estatus !== 'completado').length;
+    return this.ticketsVariable.filter(
+      (ticket) => ticket.estatus === 'pendiente' || ticket.estatus === 'en_proceso',
+    ).length;
   }
 
   private cargarTicketsVariable(idA: string) {

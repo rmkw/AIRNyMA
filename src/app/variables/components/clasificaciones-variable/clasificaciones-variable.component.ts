@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
+import { ClasificacionesArmoService } from '@/variables/services/armonizacion/clasificaciones-armo.service';
 
 export interface ClasificacionVariableForm {
   clase: string;
@@ -19,13 +20,17 @@ export const MINIMO_CLASIFICACIONES = 2;
     class: 'block',
   },
 })
-export class ClasificacionesVariableComponent {
+export class ClasificacionesVariableComponent implements OnChanges {
   readonly minimoClasificaciones = MINIMO_CLASIFICACIONES;
+  private clasificacionesService = inject(ClasificacionesArmoService);
 
   @Input() activa = false;
   @Input() form: ClasificacionVariableForm = this.crearFormularioVacio();
   @Input() clasificaciones: ClasificacionArmo[] = [];
   @Input() guardando = false;
+  @Input() ticketIdA = '';
+  cargandoClasificaciones = false;
+  errorClasificaciones = '';
 
   @Output() activaChange = new EventEmitter<boolean>();
   @Output() formChange = new EventEmitter<ClasificacionVariableForm>();
@@ -39,6 +44,11 @@ export class ClasificacionesVariableComponent {
 
   get cumpleMinimoClasificaciones(): boolean {
     return this.clasificaciones.length >= this.minimoClasificaciones;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const idA = changes['ticketIdA']?.currentValue?.trim();
+    if (idA) this.cargarClasificacionesTicket(idA);
   }
 
   toggleClasificacion(event: Event) {
@@ -61,11 +71,67 @@ export class ClasificacionesVariableComponent {
   }
 
   agregar() {
+    if (this.ticketIdA) {
+      this.agregarDesdeTicket();
+      return;
+    }
     this.agregarClasificacion.emit(this.form);
   }
 
   eliminar(clasificacion: ClasificacionArmo) {
+    if (this.ticketIdA) {
+      this.eliminarDesdeTicket(clasificacion);
+      return;
+    }
     this.eliminarClasificacion.emit(clasificacion);
+  }
+
+  private cargarClasificacionesTicket(idA: string) {
+    this.cargandoClasificaciones = true;
+    this.errorClasificaciones = '';
+    this.clasificacionesService.obtenerPorIdA(idA).subscribe({
+      next: (clasificaciones) => {
+        this.clasificaciones = clasificaciones ?? [];
+        this.activa = true;
+        this.cargandoClasificaciones = false;
+      },
+      error: () => {
+        this.clasificaciones = [];
+        this.cargandoClasificaciones = false;
+        this.errorClasificaciones = 'No fue posible consultar las clasificaciones de esta variable.';
+      },
+    });
+  }
+
+  private agregarDesdeTicket() {
+    const clase = this.form.clase.trim();
+    const comentarioA = this.form.comentarioA.trim();
+    if (!clase || !comentarioA) return;
+
+    this.guardando = true;
+    this.clasificacionesService
+      .guardarClasificacion({ idA: this.ticketIdA, clase, comentarioA })
+      .subscribe({
+        next: () => {
+          this.form = this.crearFormularioVacio();
+          this.formChange.emit(this.form);
+          this.guardando = false;
+          this.cargarClasificacionesTicket(this.ticketIdA);
+        },
+        error: () => (this.guardando = false),
+      });
+  }
+
+  private eliminarDesdeTicket(clasificacion: ClasificacionArmo) {
+    if (!clasificacion.idUnique) return;
+    this.guardando = true;
+    this.clasificacionesService.eliminarClasificacion(clasificacion.idUnique).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.cargarClasificacionesTicket(this.ticketIdA);
+      },
+      error: () => (this.guardando = false),
+    });
   }
 
   private crearFormularioVacio(): ClasificacionVariableForm {

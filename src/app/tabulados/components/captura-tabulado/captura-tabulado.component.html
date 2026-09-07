@@ -61,8 +61,8 @@
           <label class="label" for="edicionTabulado">
             <span class="label-text text-xs font-medium">Edición</span>
           </label>
-          <input id="edicionTabulado" type="text" class="input input-sm input-bordered w-full"
-            inputmode="numeric" pattern="[0-9]*" maxlength="4" [ngModel]="edicionTabulado"
+          <input id="edicionTabulado" type="number" class="input input-sm input-bordered w-full"
+            inputmode="numeric" min="0" step="1" maxlength="4" [ngModel]="edicionTabulado"
             [disabled]="modoEdicion"
             (ngModelChange)="actualizarEdicion($event)" name="edicionTabulado" placeholder="Ej. 2026" />
         </div>

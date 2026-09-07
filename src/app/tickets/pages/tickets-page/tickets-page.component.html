@@ -105,8 +105,85 @@
             {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
+
+        @if (ticketSeleccionado.propiedad === 'variable') {
+        <div class="border-t border-base-300 pt-4">
+          <app-armonizacion-variables [ticketVariableIdA]="ticketSeleccionado.idA"></app-armonizacion-variables>
+        </div>
+        }
+
+        @if (ticketSeleccionado.propiedad === 'clasificaciones') {
+        <div class="border-t border-base-300 pt-4">
+          <app-clasificaciones-variable [ticketIdA]="ticketSeleccionado.idA"></app-clasificaciones-variable>
+        </div>
+        }
+
+        @if (ticketSeleccionado.propiedad === 'microdatos') {
+        <div class="border-t border-base-300 pt-4">
+          <app-microdatos-variable [ticketIdA]="ticketSeleccionado.idA"></app-microdatos-variable>
+        </div>
+        }
+
+        @if (ticketSeleccionado.propiedad === 'datos_abiertos') {
+        <div class="border-t border-base-300 pt-4">
+          <app-datos-abiertos-variable [ticketIdA]="ticketSeleccionado.idA"></app-datos-abiertos-variable>
+        </div>
+        }
       </div>
     </div>
     }
   </div>
+
+  @if (ticketSeleccionado?.propiedad === 'tabulados') {
+  <div class="border-t border-base-300 pt-4">
+    <app-tabulados-page [ticketVariableIdA]="ticketSeleccionado!.idA"></app-tabulados-page>
+  </div>
+  }
+
+  @if (ticketSeleccionado?.propiedad === 'mdea') {
+  <div class="border-t border-base-300 pt-4">
+    @if (cargandoMdeaTicket) {
+    <div class="flex min-h-40 items-center justify-center">
+      <span class="loading loading-spinner loading-md"></span>
+    </div>
+    } @else if (errorMdeaTicket) {
+    <div class="alert alert-error"><span>{{ errorMdeaTicket }}</span></div>
+    } @else if (idSMdeaTicket) {
+    <app-captura-mdea-variable [idA]="ticketSeleccionado!.idA" [idS]="idSMdeaTicket">
+    </app-captura-mdea-variable>
+    }
+  </div>
+  }
+
+
+  @if (ticketSeleccionado?.propiedad === 'ods') {
+  <div class="border-t border-base-300 pt-4">
+    @if (cargandoOdsTicket) {
+    <div class="flex min-h-40 items-center justify-center">
+      <span class="loading loading-spinner loading-md"></span>
+    </div>
+    } @else if (errorOdsTicket) {
+    <div class="alert alert-error"><span>{{ errorOdsTicket }}</span></div>
+    } @else if (idSOdsTicket) {
+    <app-captura-ods-variable [idA]="ticketSeleccionado!.idA" [idS]="idSOdsTicket">
+    </app-captura-ods-variable>
+    }
+  </div>
+  }
+
+
+  @if (ticketSeleccionado?.propiedad === 'pertinencia') {
+  <div class="border-t border-base-300 pt-4">
+    @if (cargandoPertinenciaTicket) {
+    <div class="flex min-h-40 items-center justify-center">
+      <span class="loading loading-spinner loading-md"></span>
+    </div>
+    } @else if (errorPertinenciaTicket) {
+    <div class="alert alert-error"><span>{{ errorPertinenciaTicket }}</span></div>
+    } @else if (idSPertinenciaTicket) {
+    <app-captura-pertinencia-variable [idA]="ticketSeleccionado!.idA" [idS]="idSPertinenciaTicket">
+    </app-captura-pertinencia-variable>
+    }
+  </div>
+  }
 </div>

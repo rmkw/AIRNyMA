@@ -107,6 +107,43 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
       },
     });
   }
+
+  precargarRelacionOds(ods: any) {
+    this.idObjetivo = String(ods?.objetivo ?? '');
+    this.idMeta = '-';
+    this.idIndicador = '-';
+    this.metas = [];
+    this.indicadores = [];
+    this.contribucion = ods?.contribucion ?? '';
+    this.comentarioS = ods?.comentarioS ?? '';
+
+    if (!this.idObjetivo) return;
+
+    this._odsService.getMetas(this.idObjetivo).subscribe({
+      next: (metas) => {
+        this.metas = metas ?? [];
+        this.idMeta = String(ods?.meta ?? '-');
+
+        if (this.idMeta === '-') return;
+
+        this._odsService.getIndicadores(this.idObjetivo, this.idMeta).subscribe({
+          next: (indicadores) => {
+            this.indicadores = indicadores ?? [];
+            this.idIndicador = String(ods?.indicador ?? '-');
+          },
+          error: (err: any) => {
+            console.error('Error al cargar indicadores ODS:', err);
+            this.indicadores = [];
+          },
+        });
+      },
+      error: (err: any) => {
+        console.error('Error al cargar metas ODS:', err);
+        this.metas = [];
+      },
+    });
+  }
+
   guardarOds() {
     this.camposFaltantes = this.obtenerCamposFaltantes();
 
@@ -196,7 +233,7 @@ export class CapturaOdsVariableComponent implements OnInit, OnChanges {
     this.indicadores = [];
 
     this.contribucion = '';
-    this.comentarioS = '';
+    this.comentarioS = '-';
   }
 
   @ViewChild('modalSinDatosOds')

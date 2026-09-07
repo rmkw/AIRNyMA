@@ -43,7 +43,14 @@
       }
     </div>
 
-    @if (clasificaciones.length > 0) {
+    @if (cargandoClasificaciones) {
+    <div class="flex items-center justify-center rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      <span class="loading loading-spinner loading-sm"></span>
+      <span class="ml-2">Consultando clasificaciones...</span>
+    </div>
+    } @else if (errorClasificaciones) {
+    <div class="alert alert-error text-sm"><span>{{ errorClasificaciones }}</span></div>
+    } @else if (clasificaciones.length > 0) {
     <div class="overflow-x-auto rounded-xl border border-base-300">
       <table class="table table-sm">
         <thead>

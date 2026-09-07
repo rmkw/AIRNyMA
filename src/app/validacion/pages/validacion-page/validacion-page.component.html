@@ -215,7 +215,10 @@
                 {{ validando ? 'Guardando...' : 'Desrevisar' }}
               </button>
               }
-              <button type="button" class="btn btn-outline btn-warning btn-sm" (click)="abrirModalTicket()">
+              <button type="button" class="btn btn-outline btn-warning btn-sm"
+                [disabled]="detalleVariable.variable.validada"
+                [attr.title]="detalleVariable.variable.validada ? 'Desrevisa la variable para levantar un ticket.' : null"
+                (click)="abrirModalTicket()">
                 Levantar ticket@if (ticketsSinCompletar > 0) { ({{ ticketsSinCompletar }}) }
               </button>
             </div>
@@ -226,7 +229,7 @@
           } @else if (errorTicketsVariable) {
           <div class="alert alert-warning"><span>{{ errorTicketsVariable }}</span></div>
           } @else if (ticketsSinCompletar > 0) {
-          <div class="alert alert-warning"><span>La variable tiene {{ ticketsSinCompletar }} ticket(s) sin completar. Deben completarse antes de validarla.</span></div>
+          <div class="alert alert-warning"><span>La variable tiene {{ ticketsSinCompletar }} ticket(s) activo(s). Deben completarse o cancelarse antes de validarla.</span></div>
           }
 
           @if (errorValidacion) {
@@ -284,6 +287,7 @@
                     <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Tabla</div><div>{{ microdato.tabla || '-' }}</div></div>
                     <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Campo</div><div>{{ microdato.campo || '-' }}</div></div>
                   </div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Laboratorio de Microdatos</div><div>{{ microdato.laboratorio ? 'Sí' : 'No' }}</div></div>
                   <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentario</div><div>{{ microdato.comentarioA || '-' }}</div></div>
                 </section>
                 } @empty { <span class="text-base-content/60">Sin microdatos registrados.</span> }
@@ -343,7 +347,7 @@
             </details>
 
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
-              <summary class="collapse-title text-sm font-medium">MDEA ({{ detalleVariable.mdeas.length }})</summary>
+              <summary class="collapse-title text-sm font-medium">MDEA ({{ mdeasTraducidos.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
                 @for (mdea of mdeasTraducidos; track mdea.idUnique; let index = $index) {
                 <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
@@ -363,7 +367,7 @@
             </details>
 
             <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
-              <summary class="collapse-title text-sm font-medium">ODS ({{ detalleVariable.odsList.length }})</summary>
+              <summary class="collapse-title text-sm font-medium">ODS ({{ odsTraducidos.length }})</summary>
               <div class="collapse-content space-y-2 text-sm">
                 @for (ods of odsTraducidos; track ods.idUnique; let index = $index) {
                 <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">

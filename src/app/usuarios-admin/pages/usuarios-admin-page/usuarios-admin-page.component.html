@@ -1,0 +1,161 @@
+<div class="w-full space-y-4">
+  <header class="rounded-box bg-gradient-to-r from-slate-900 to-slate-700 p-5 text-white shadow-sm">
+    <div class="badge border-white/20 bg-white/10 text-white">Administración interna</div>
+    <h1 class="mt-2 text-2xl font-bold">Gestión de usuarios</h1>
+    <p class="text-sm text-white/80">Administra cuentas, roles y restablece contraseñas.</p>
+  </header>
+
+  <div *ngIf="comprobando" class="flex min-h-52 items-center justify-center">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+
+  <section *ngIf="!comprobando && !desbloqueado" class="mx-auto max-w-md">
+    <div class="card border border-base-300 bg-base-100 shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title">Acceso restringido</h2>
+        <p class="text-sm text-base-content/70">Ingresa la clave administrativa para mostrar el módulo.</p>
+        <label class="form-control mt-3" for="claveAdministrativa">
+          <span class="label-text mb-1 font-medium">Clave administrativa</span>
+          <input id="claveAdministrativa" type="password" class="input input-bordered w-full"
+            [(ngModel)]="claveAcceso" (keyup.enter)="desbloquear()" autocomplete="current-password" />
+        </label>
+        <div *ngIf="error" class="alert alert-error mt-3 text-sm">{{ error }}</div>
+        <div class="card-actions mt-3 justify-end">
+          <button class="btn btn-primary" type="button" [disabled]="!claveAcceso.trim() || procesando"
+            (click)="desbloquear()">
+            <span *ngIf="procesando" class="loading loading-spinner loading-sm"></span>
+            Desbloquear
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!comprobando && desbloqueado">
+    <div class="flex justify-end">
+      <button class="btn btn-outline btn-sm" type="button" (click)="bloquear()">Bloquear módulo</button>
+    </div>
+
+    <div *ngIf="mensaje || error" class="alert" [ngClass]="error ? 'alert-error' : 'alert-success'">
+      <span>{{ error || mensaje }}</span>
+      <button class="btn btn-ghost btn-xs" type="button" (click)="cerrarMensaje()">Cerrar</button>
+    </div>
+
+    <div class="grid gap-4 xl:grid-cols-12">
+      <section class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-4">
+        <div class="card-body gap-4">
+          <div>
+            <h2 class="card-title text-base">{{ usuarioEditando ? 'Editar usuario' : 'Registrar usuario' }}</h2>
+            <p class="text-xs text-base-content/60">Las contraseñas se almacenan cifradas y nunca se muestran.</p>
+          </div>
+
+          <label class="block w-full" for="nombreUsuarioAdmin">
+            <span class="mb-1 block text-sm font-medium">Nombre de usuario</span>
+            <input id="nombreUsuarioAdmin" class="input input-bordered w-full" [(ngModel)]="nombre" />
+          </label>
+          <label class="block w-full" for="akaUsuarioAdmin">
+            <span class="mb-1 block text-sm font-medium">Alias</span>
+            <input id="akaUsuarioAdmin" class="input input-bordered w-full" [(ngModel)]="aka" />
+          </label>
+          <label *ngIf="!usuarioEditando" class="block w-full" for="contrasenaUsuarioAdmin">
+            <span class="mb-1 block text-sm font-medium">Contraseña inicial</span>
+            <input id="contrasenaUsuarioAdmin" type="password" class="input input-bordered w-full"
+              [(ngModel)]="contrasena" autocomplete="new-password" />
+          </label>
+
+          <fieldset>
+            <legend class="mb-2 text-sm font-medium">Roles</legend>
+            <div class="flex flex-wrap gap-3">
+              <label *ngFor="let rol of rolesDisponibles" class="flex cursor-pointer items-center gap-2 text-sm">
+                <input type="checkbox" class="checkbox checkbox-sm" [checked]="rolesSeleccionados.has(rol)"
+                  (change)="alternarRol(rol, $any($event.target).checked)" />
+                {{ rol }}
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="flex justify-end gap-2">
+            <button *ngIf="usuarioEditando" class="btn btn-ghost btn-sm" type="button"
+              (click)="limpiarFormulario()">Cancelar</button>
+            <button class="btn btn-primary btn-sm" type="button" [disabled]="procesando"
+              (click)="guardarUsuario()">
+              {{ usuarioEditando ? 'Actualizar usuario' : 'Registrar usuario' }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card border border-base-300 bg-base-100 shadow-sm xl:col-span-8">
+        <div class="card-body p-4">
+          <div class="mb-2 flex items-center justify-between">
+            <div>
+              <h2 class="card-title text-base">Usuarios registrados</h2>
+              <p class="text-xs text-base-content/60">{{ usuarios.length }} usuario(s)</p>
+            </div>
+            <span *ngIf="procesando" class="loading loading-spinner loading-sm"></span>
+          </div>
+          <div class="overflow-x-auto rounded-box border border-base-300">
+            <table class="table table-zebra table-sm">
+              <thead><tr><th>ID</th><th>Usuario</th><th>Alias</th><th>Roles</th><th>Acciones</th></tr></thead>
+              <tbody>
+                <tr *ngIf="!procesando && usuarios.length === 0">
+                  <td colspan="5" class="py-8 text-center text-base-content/60">No hay usuarios registrados.</td>
+                </tr>
+                <tr *ngFor="let usuario of usuarios">
+                  <td>{{ usuario.id }}</td>
+                  <td>{{ usuario.nombre }}</td>
+                  <td>{{ usuario.aka }}</td>
+                  <td><div class="flex flex-wrap gap-1"><span *ngFor="let rol of usuario.roles"
+                    class="badge badge-outline badge-sm">{{ rol }}</span></div></td>
+                  <td><div class="flex flex-wrap gap-1">
+                    <button class="btn btn-primary btn-xs" type="button" (click)="editar(usuario)">Editar</button>
+                    <button class="btn btn-warning btn-xs" type="button"
+                      (click)="abrirCambioContrasena(usuario)">Contraseña</button>
+                    <button class="btn btn-error btn-xs" type="button" (click)="abrirEliminar(usuario)">Eliminar</button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+</div>
+
+<dialog #modalContrasena class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Restablecer contraseña</h3>
+    <p class="py-3 text-sm">Usuario: <strong>{{ usuarioContrasena?.nombre }}</strong></p>
+    <label class="block w-full" for="nuevaContrasenaAdmin">
+      <span class="mb-1 block text-sm font-medium">Nueva contraseña</span>
+      <input id="nuevaContrasenaAdmin" type="password" class="input input-bordered w-full"
+        [(ngModel)]="nuevaContrasena" autocomplete="new-password" />
+    </label>
+    <label class="mt-3 block w-full" for="confirmarContrasenaAdmin">
+      <span class="mb-1 block text-sm font-medium">Confirmar contraseña</span>
+      <input id="confirmarContrasenaAdmin" type="password" class="input input-bordered w-full"
+        [(ngModel)]="confirmarContrasena" autocomplete="new-password" />
+    </label>
+    <p *ngIf="confirmarContrasena && nuevaContrasena !== confirmarContrasena"
+      class="mt-2 text-sm text-error">Las contraseñas no coinciden.</p>
+    <div class="modal-action">
+      <button class="btn" type="button" [disabled]="procesando" (click)="cerrarCambioContrasena()">Cancelar</button>
+      <button class="btn btn-warning" type="button"
+        [disabled]="!nuevaContrasena || nuevaContrasena !== confirmarContrasena || procesando"
+        (click)="confirmarCambioContrasena()">Actualizar contraseña</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalEliminar class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Eliminar usuario</h3>
+    <p class="py-4">¿Deseas eliminar a <strong>{{ usuarioEliminar?.nombre }}</strong>?</p>
+    <div class="modal-action">
+      <button class="btn" type="button" [disabled]="procesando" (click)="cerrarEliminar()">Cancelar</button>
+      <button class="btn btn-error" type="button" [disabled]="procesando"
+        (click)="confirmarEliminar()">Eliminar</button>
+    </div>
+  </div>
+</dialog>

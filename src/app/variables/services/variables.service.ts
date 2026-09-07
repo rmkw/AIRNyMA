@@ -108,6 +108,24 @@ export class VariableService {
     });
   }
 
+  moverVariablesDeFuente(payload: {
+    idFuenteOrigen: string;
+    idFuenteDestino: string;
+    idsVariables: string[];
+  }): Observable<{
+    totalMovidas: number;
+    idFuenteDestino: string;
+    message: string;
+  }> {
+    return this.http.put<{
+      totalMovidas: number;
+      idFuenteDestino: string;
+      message: string;
+    }>(`${baseUrl}/variables/mover-fuente`, payload, {
+      withCredentials: true,
+    });
+  }
+
   getVariablesTablaByFuentes(idFuentes: string[]): Observable<any[]> {
     let params = new HttpParams();
 

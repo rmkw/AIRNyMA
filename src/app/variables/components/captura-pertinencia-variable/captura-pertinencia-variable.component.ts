@@ -72,6 +72,14 @@ export class CapturaPertinenciaVariableComponent implements OnChanges {
     );
   }
 
+  precargarPertinencia(pertinencia: PertinenciaDTO) {
+    this.temaCobertura = pertinencia?.pertinencia ?? '';
+    this.nivelContribucion = pertinencia?.contribucion ?? '';
+    this.viabilidad = pertinencia?.viabilidad ?? '';
+    this.propuesta = pertinencia?.propuesta ?? '';
+    this.comentarioS = pertinencia?.comentarioS ?? '';
+  }
+
   guardarPertinencia() {
     if (!this.idA || !this.idS) {
       this.abrirModalErrorPertinencia(

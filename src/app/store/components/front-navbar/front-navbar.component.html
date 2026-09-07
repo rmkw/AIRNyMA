@@ -108,7 +108,8 @@
   <div class="mt-auto w-full border-t border-base-300 p-2">
     @if (userName()) {
     <button
-      class="btn btn-ghost btn-sm w-full justify-start text-base-content/70 hover:bg-base-300 hover:text-base-content"
+      class="btn btn-ghost btn-sm w-full justify-start text-base-content/70 hover:bg-base-300 hover:text-base-content is-drawer-close:tooltip is-drawer-close:tooltip-right"
+      data-tip="Cerrar sesión"
       (click)="_authService.logout()">
       <span>↩️</span>
       <span class="is-drawer-close:hidden">Cerrar sesión</span>

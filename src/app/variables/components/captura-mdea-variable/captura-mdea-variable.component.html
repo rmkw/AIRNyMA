@@ -160,11 +160,11 @@
             <tbody>
               @for (rel of relacionesMdea; track rel.idUnique) {
               <tr>
-                <td class="max-w-36 truncate text-sm"  [title]="rel.componenteNombre">{{ rel.componente }} - {{ rel.componenteNombre }}</td>
-                <td class="max-w-36 truncate text-sm" [title]="rel.subcomponenteNombre">{{ rel.subcomponente }} - {{ rel.subcomponenteNombre }}</td>
-                <td class="max-w-36 truncate text-sm" [title]="rel.temaNombre">{{ rel.tema }} - {{ rel.temaNombre }}</td>
-                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica1Nombre">{{ rel.estadistica1 }} - {{ rel.estadistica1Nombre }}</td>
-                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica2Nombre">{{ rel.estadistica2 }} - {{ rel.estadistica2Nombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.componenteNombre">{{ rel.componente === '-' ? '-' : rel.componente + ' - ' + rel.componenteNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.subcomponenteNombre">{{ rel.subcomponente === '-' ? '-' : rel.subcomponente + ' - ' + rel.subcomponenteNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.temaNombre">{{ rel.tema === '-' ? '-' : rel.tema + ' - ' + rel.temaNombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica1Nombre">{{ rel.estadistica1 === '-' ? '-' : rel.estadistica1 + ' - ' + rel.estadistica1Nombre }}</td>
+                <td class="max-w-36 truncate text-sm" [title]="rel.estadistica2Nombre">{{ rel.estadistica2 === '-' ? '-' : rel.estadistica2 + ' - ' + rel.estadistica2Nombre }}</td>
 
                 <td class="max-w-36 truncate text-sm" [title]="rel.contribucion">{{ rel.contribucion }}</td>
 

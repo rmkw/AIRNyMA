@@ -32,7 +32,7 @@ import { TemasSubtemasService } from '@/variables/services/tema_subtema/TemasSub
 import { TematicasService } from '@/variables/services/tematicas_temas/tematicas_temas.service';
 import { VariableService } from '@/variables/services/variables.service';
 import { CommonModule } from '@angular/common';
-import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, Input, OnChanges, OnInit, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -48,7 +48,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
     MicrodatosVariableComponent,
   ],
 })
-export class ArmonizacionVariablesComponent implements OnInit {
+export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
   _serviceDirecciones = inject(DireccionesService);
   _pp_Service = inject(ppEcoService);
   _varService = inject(VariableService);
@@ -86,10 +86,52 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
   variableForm!: FormGroup;
 
+  @Input() ticketVariableIdA = '';
+  @Input() ticketClasificacionesIdA = '';
+
   ngOnInit(): void {
     this.getDirecciones();
     this.inicializarFormularioVariable();
     this.cargarTemasCatalogo();
+    const idA = this.ticketVariableIdA || this.ticketClasificacionesIdA;
+    if (idA) this.cargarVariableDesdeTicket(idA);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const idA =
+      changes['ticketVariableIdA']?.currentValue?.trim() ||
+      changes['ticketClasificacionesIdA']?.currentValue?.trim();
+    if (idA && this.variableForm) this.cargarVariableDesdeTicket(idA);
+  }
+
+  private cargarVariableDesdeTicket(idA: string) {
+    this.variablesArmoService.obtenerPorIdA(idA).subscribe({
+      next: (variable) => {
+        this.variableSeleccionada = {
+          idA: variable.idA,
+          idS: variable.idS ?? '',
+          idFuente: variable.idFuente,
+          acronimo: variable.acronimo,
+          nombre: variable.variableS ?? '',
+          definicion: variable.definicion ?? '',
+          url: variable.url ?? '',
+          comentarioS: variable.comentarioS ?? '',
+          mdea: variable.mdea ?? false,
+          ods: variable.ods ?? false,
+          responsableRegister: 0,
+          revisada: false,
+        };
+        this.variableExisteEnArmonizacion = true;
+        this.modoEdicionVariable = true;
+        this.fuenteExisteEnArmonizacion = true;
+        this.cargarTematicasPorProceso(variable.acronimo);
+        this.cargarVariableArmonizacion(idA);
+      },
+      error: (err) => {
+        console.error('Error al cargar variable del ticket:', err);
+        this.abrirModalError('No fue posible cargar la variable reportada.');
+      },
+    });
   }
 
   getDirecciones() {
@@ -973,7 +1015,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
         }
         this.aplicarTemasGuardados();
         this.cargarClasificacionesVariable(variable.idA);
-        this.cargarMicrodatosVariable(variable.idA, variable.microdatos ?? 'No');
+        this.cargarMicrodatosVariable(variable.idA);
         this.cargarDatosAbiertosVariable(variable.idA);
         this.cargarSubtemasGuardados();
       },
@@ -1009,7 +1051,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       subtema2: '',
       tabulados: false,
       clasificacion: false,
-      microdatos: 'No',
+      microdatos: false,
       datosabiertos: false,
       mdea: variableSeleccionada.mdea ?? false,
       ods: variableSeleccionada.ods ?? false,
@@ -1051,7 +1093,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
           this.variableForm.patchValue(resp);
           this.variablesArmonizadasIds.add(resp.idA);
           this.cargarClasificacionesVariable(resp.idA);
-          this.cargarMicrodatosVariable(resp.idA, resp.microdatos ?? 'No');
+          this.cargarMicrodatosVariable(resp.idA);
           this.cargarDatosAbiertosVariable(resp.idA);
           console.log('Variable guardada:', resp);
           this.abrirModalSuccessSave(
@@ -1086,7 +1128,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       subtema2: ['', Validators.required],
       tabulados: [false],
       clasificacion: [false],
-      microdatos: [''],
+      microdatos: [false],
       datosabiertos: [false],
       mdea: [false],
       ods: [false],
@@ -1153,7 +1195,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
       subtema2: '',
       tabulados: false,
       clasificacion: false,
-      microdatos: 'No',
+      microdatos: false,
       datosabiertos: false,
       mdea: false,
       ods: false,
@@ -1197,11 +1239,8 @@ export class ArmonizacionVariablesComponent implements OnInit {
   arrMicrodatos: MicrodatoArmo[] = [];
   guardandoMicrodatos = false;
   microdatoEditandoId: number | null = null;
-  readonly microdatosEstadoSi = 'Sí';
-  readonly microdatosEstadoNo = 'No';
-  readonly microdatosEstadoLaboratorio = 'Sí (disponibles a través del Laboratorio de Microdatos)';
-
   microdatosForm: MicrodatosVariableForm = {
+    laboratorio: false,
     urlAcceso: '',
     descriptor: '',
     urlDescriptor: '',
@@ -1388,8 +1427,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.datosAbiertosForm = this.crearDatosAbiertosFormVacio();
     this.datoAbiertoEditandoId = null;
   }
-  microdatosEstado: string = '';
-
   cambiarEstadoMicrodatos(activo: boolean) {
     if (!activo && this.arrMicrodatos.length > 0) {
       this.microdatosActivo = true;
@@ -1402,23 +1439,18 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.microdatosActivo = activo;
 
     if (!activo) {
-      this.microdatosEstado = '';
-      this.variableForm.patchValue({ microdatos: this.microdatosEstadoNo });
+      this.variableForm.patchValue({ microdatos: false });
       this.microdatosForm = this.crearMicrodatosFormVacio();
       return;
     }
 
-    if (!this.microdatosEstado) {
-      this.microdatosEstado = this.microdatosEstadoSi;
-    }
   }
 
   limpiarMicrodatosLocal() {
     this.microdatosActivo = false;
-    this.microdatosEstado = '';
     this.arrMicrodatos = [];
     this.guardandoMicrodatos = false;
-    this.variableForm?.patchValue({ microdatos: this.microdatosEstadoNo });
+    this.variableForm?.patchValue({ microdatos: false });
     this.microdatosForm = this.crearMicrodatosFormVacio();
     this.microdatoEditandoId = null;
   }
@@ -1649,10 +1681,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     };
   }
 
-  agregarMicrodatosLocal(payload: {
-    estado: string;
-    form: MicrodatosVariableForm;
-  }) {
+  agregarMicrodatosLocal(payload: { form: MicrodatosVariableForm }) {
     if (!this.variableSeleccionada?.idA) {
       this.abrirModalError('Selecciona una variable antes de agregar microdatos.');
       return;
@@ -1665,6 +1694,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
     const microdato: MicrodatoArmo = {
       idA: this.variableSeleccionada.idA,
+      laboratorio: payload.form.laboratorio,
       urlAcceso: payload.form.urlAcceso?.trim() || '',
       descriptor: payload.form.descriptor?.trim() || '',
       urlDescriptor: payload.form.urlDescriptor?.trim() || '',
@@ -1696,8 +1726,6 @@ export class ArmonizacionVariablesComponent implements OnInit {
       return;
     }
 
-    const estadoMicrodatos = this.obtenerEstadoMicrodatosParaGuardar(payload.estado);
-
     const editandoId = this.microdatoEditandoId;
     this.guardandoMicrodatos = true;
     const guardar = editandoId
@@ -1706,14 +1734,12 @@ export class ArmonizacionVariablesComponent implements OnInit {
     guardar.subscribe({
       next: () => {
         this.microdatosActivo = true;
-        this.microdatosEstado = estadoMicrodatos;
+        this.variableForm.patchValue({ microdatos: true });
         this.microdatosForm = this.crearMicrodatosFormVacio();
         this.microdatoEditandoId = null;
-        this.persistirEstadoMicrodatosVariable(estadoMicrodatos, () => {
-          this.guardandoMicrodatos = false;
-          this.cargarMicrodatosVariable(microdato.idA, estadoMicrodatos);
-          this.mostrarToast(editandoId ? 'Microdato actualizado correctamente.' : 'Microdato agregado correctamente.');
-        });
+        this.guardandoMicrodatos = false;
+        this.cargarMicrodatosVariable(microdato.idA);
+        this.mostrarToast(editandoId ? 'Microdato actualizado correctamente.' : 'Microdato agregado correctamente.');
       },
       error: (err) => {
         this.guardandoMicrodatos = false;
@@ -1736,25 +1762,24 @@ export class ArmonizacionVariablesComponent implements OnInit {
       normalizar(registrado.tabla) === normalizar(capturado.tabla) &&
       normalizar(registrado.campo) === normalizar(capturado.campo) &&
       normalizar(registrado.comentarioA) ===
-        normalizar(capturado.comentarioA)
+        normalizar(capturado.comentarioA) &&
+      registrado.laboratorio === capturado.laboratorio
     );
   }
 
-  cargarMicrodatosVariable(idA: string, estadoVariable: string = this.microdatosEstadoNo) {
+  cargarMicrodatosVariable(idA: string) {
     this.microdatosArmoService.obtenerPorIdA(idA).subscribe({
       next: (resp) => {
         this.arrMicrodatos = resp ?? [];
 
         if (this.arrMicrodatos.length > 0) {
           this.microdatosActivo = true;
-          this.microdatosEstado = this.normalizarEstadoMicrodatos(estadoVariable);
-          this.variableForm.patchValue({ microdatos: this.microdatosEstado });
+          this.variableForm.patchValue({ microdatos: true });
           return;
         }
 
         this.microdatosActivo = false;
-        this.microdatosEstado = '';
-        this.variableForm.patchValue({ microdatos: this.microdatosEstadoNo });
+        this.variableForm.patchValue({ microdatos: false });
       },
       error: (err) => {
         console.error('Error al cargar microdatos:', err);
@@ -1768,6 +1793,7 @@ export class ArmonizacionVariablesComponent implements OnInit {
     this.microdatoEditandoId = microdato.idUnique;
     this.microdatosActivo = true;
     this.microdatosForm = {
+      laboratorio: microdato.laboratorio,
       urlAcceso: microdato.urlAcceso,
       descriptor: microdato.descriptor,
       urlDescriptor: microdato.urlDescriptor,
@@ -1807,21 +1833,16 @@ export class ArmonizacionVariablesComponent implements OnInit {
 
         if (this.arrMicrodatos.length === 0) {
           this.microdatosActivo = false;
-          this.microdatosEstado = '';
-          this.persistirEstadoMicrodatosVariable(this.microdatosEstadoNo, () => {
-            this.guardandoMicrodatos = false;
-            this.mostrarToast('Microdato eliminado correctamente.');
-          });
+          this.variableForm.patchValue({ microdatos: false });
+          this.guardandoMicrodatos = false;
+          this.mostrarToast('Microdato eliminado correctamente.');
           return;
         }
 
-        const estadoActual = this.normalizarEstadoMicrodatos(this.variableForm.get('microdatos')?.value);
         this.microdatosActivo = true;
-        this.microdatosEstado = estadoActual;
-        this.persistirEstadoMicrodatosVariable(estadoActual, () => {
-          this.guardandoMicrodatos = false;
-          this.mostrarToast('Microdato eliminado correctamente.');
-        });
+        this.variableForm.patchValue({ microdatos: true });
+        this.guardandoMicrodatos = false;
+        this.mostrarToast('Microdato eliminado correctamente.');
       },
       error: (err) => {
         this.guardandoMicrodatos = false;
@@ -1830,51 +1851,9 @@ export class ArmonizacionVariablesComponent implements OnInit {
     });
   }
 
-  private persistirEstadoMicrodatosVariable(
-    microdatos: string,
-    onSuccess: () => void,
-  ) {
-    if (!this.variableSeleccionada?.idA) {
-      this.guardandoMicrodatos = false;
-      this.abrirModalError('No se encontró la variable seleccionada para actualizar el estado de microdatos.');
-      return;
-    }
-
-    this.variableForm.patchValue({ microdatos });
-    const payload = this.variableForm.getRawValue();
-
-    this.variablesArmoService.actualizarVariable(this.variableSeleccionada.idA, payload).subscribe({
-      next: (resp) => {
-        this.variableForm.patchValue(resp);
-        this.variableExisteEnArmonizacion = true;
-        this.modoEdicionVariable = true;
-        onSuccess();
-      },
-      error: (err) => {
-        this.guardandoMicrodatos = false;
-        this.abrirModalError(this.obtenerMensajeError(err));
-      },
-    });
-  }
-
-  private obtenerEstadoMicrodatosParaGuardar(estado: string): string {
-    return estado === this.microdatosEstadoLaboratorio
-      ? this.microdatosEstadoLaboratorio
-      : this.microdatosEstadoSi;
-  }
-
-  private normalizarEstadoMicrodatos(estado: string | null | undefined): string {
-    if (estado === this.microdatosEstadoLaboratorio) {
-      return this.microdatosEstadoLaboratorio;
-    }
-
-    return estado === this.microdatosEstadoSi || estado === 'Si'
-      ? this.microdatosEstadoSi
-      : this.microdatosEstadoNo;
-  }
-
   private crearMicrodatosFormVacio(): MicrodatosVariableForm {
     return {
+      laboratorio: false,
       urlAcceso: '',
       descriptor: '',
       urlDescriptor: '',

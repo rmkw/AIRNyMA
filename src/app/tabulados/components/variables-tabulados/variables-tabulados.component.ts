@@ -23,8 +23,8 @@ export class VariablesTabuladosComponent implements OnDestroy {
   private service = inject(VariablesTabuladosService);
   private mensajeTimeout?: ReturnType<typeof setTimeout>;
 
-  @ViewChild('relacionModal')
-  relacionModal?: ElementRef<HTMLDialogElement>;
+  @ViewChild('comentarioModal')
+  comentarioModal?: ElementRef<HTMLDialogElement>;
 
   private _idTabulado: string | null = null;
   private _acronimo: string | null = null;
@@ -67,7 +67,7 @@ export class VariablesTabuladosComponent implements OnDestroy {
   variablesDisponibles: VariableResumen[] = [];
   variablesBase: VariableResumen[] = [];
   variablesRelacionadas: VariableTabulado[] = [];
-  variablePorRelacionar: VariableResumen | null = null;
+  relacionEditando: VariableTabulado | null = null;
   comentarioA = '';
   buscando = false;
   cargandoRelaciones = false;
@@ -90,43 +90,28 @@ export class VariablesTabuladosComponent implements OnDestroy {
     return variable.variableA || variable.variableS || 'Sin nombre';
   }
 
-  abrirRelacion(variable: VariableResumen): void {
-    if (!this.idTabulado) return;
-    this.variablePorRelacionar = variable;
-    this.comentarioA = '';
-    this.relacionModal?.nativeElement.showModal();
-  }
-
   cerrarRelacion(): void {
-    if (this.relacionModal?.nativeElement.open) {
-      this.relacionModal.nativeElement.close();
+    if (this.comentarioModal?.nativeElement.open) {
+      this.comentarioModal.nativeElement.close();
     }
-    this.variablePorRelacionar = null;
+    this.relacionEditando = null;
     this.comentarioA = '';
   }
 
-  guardarRelacion(): void {
-    if (
-      !this.idTabulado ||
-      !this.variablePorRelacionar ||
-      !this.comentarioA.trim() ||
-      this.guardando
-    ) {
-      return;
-    }
+  guardarRelacion(variable: VariableResumen): void {
+    if (!this.idTabulado || this.guardando) return;
 
     this.guardando = true;
     this.error = '';
     this.service
       .guardar({
-        idA: this.variablePorRelacionar.idA,
+        idA: variable.idA,
         idTabulado: this.idTabulado,
-        comentarioA: this.comentarioA.trim(),
+        comentarioA: '-',
       })
       .subscribe({
         next: () => {
           this.guardando = false;
-          this.cerrarRelacion();
           this.mostrarMensaje('Variable relacionada correctamente.');
           this.cargarRelaciones();
           this.filtrarResultadosLocales();
@@ -135,6 +120,35 @@ export class VariablesTabuladosComponent implements OnDestroy {
           this.guardando = false;
           this.error =
             error.error || 'No fue posible relacionar la variable.';
+        },
+      });
+  }
+
+  abrirEdicionComentario(relacion: VariableTabulado): void {
+    this.relacionEditando = relacion;
+    this.comentarioA = relacion.comentarioA || '-';
+    this.comentarioModal?.nativeElement.showModal();
+  }
+
+  actualizarComentario(): void {
+    const relacion = this.relacionEditando;
+    const comentarioA = this.comentarioA.trim();
+    if (relacion?.idUnique == null || !comentarioA || this.guardando) return;
+
+    this.guardando = true;
+    this.error = '';
+    this.service
+      .actualizar(relacion.idUnique, { ...relacion, comentarioA })
+      .subscribe({
+        next: () => {
+          this.guardando = false;
+          this.cerrarRelacion();
+          this.mostrarMensaje('Comentario actualizado correctamente.');
+          this.cargarRelaciones();
+        },
+        error: (error) => {
+          this.guardando = false;
+          this.error = error.error || 'No fue posible actualizar el comentario.';
         },
       });
   }

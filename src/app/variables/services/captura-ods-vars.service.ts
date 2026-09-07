@@ -12,7 +12,9 @@ export class relacionODS_Service {
   private http = inject(HttpClient);
 
   registrarRelacion_ods(relacion: RelacionODS): Observable<any> {
-    return this.http.post<any>(`${baseUrl}/ods`, relacion);
+    return this.http.post<any>(`${baseUrl}/ods`, relacion, {
+      withCredentials: true,
+    });
   }
   getRelacionesPorVariable_ods(
     idVariableUnique: string,
@@ -29,8 +31,9 @@ export class relacionODS_Service {
   getRelacionesTablaPorVariable_ods(
     idVariableUnique: string,
   ): Observable<any[]> {
-    return this.http.get<any[]>(`${baseUrl}/ods/tabla/${idVariableUnique}`, {
-      withCredentials: true,
-    });
+    return this.http.get<any[]>(
+      `${baseUrl}/ods/tabla-seleccion/${idVariableUnique}`,
+      { withCredentials: true },
+    );
   }
 }

@@ -28,6 +28,6 @@ export class CapturaMdeaVarService {
   }
 
   getRelacionesTablaPorVariable(idA: string) {
-    return this.http.get<any[]>(`${baseUrl}/mdea/tabla/${idA}`);
+    return this.http.get<any[]>(`${baseUrl}/mdea/tabla-seleccion/${idA}`);
   }
 }

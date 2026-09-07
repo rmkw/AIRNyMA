@@ -7,4 +7,5 @@ export interface MicrodatoArmo {
   tabla: string;
   campo: string;
   comentarioA: string;
+  laboratorio: boolean;
 }

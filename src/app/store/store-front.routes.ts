@@ -15,6 +15,7 @@ import { SeleccionVariablesComponent } from "@/variables/pages/seleccion-variabl
 import { TabuladosPageComponent } from "@/tabulados/pages/tabulados-page/tabulados-page.component";
 import { ValidacionPageComponent } from "@/validacion/pages/validacion-page/validacion-page.component";
 import { TicketsPageComponent } from "@/tickets/pages/tickets-page/tickets-page.component";
+import { UsuariosAdminPageComponent } from "@/usuarios-admin/pages/usuarios-admin-page/usuarios-admin-page.component";
 
 
 
@@ -77,6 +78,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'tickets',
         component: TicketsPageComponent,
+      },
+      {
+        path: 'hidenuser',
+        component: UsuariosAdminPageComponent,
       },
       {
         path: '**',

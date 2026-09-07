@@ -72,11 +72,26 @@ export class SeleccionVariablesComponent implements OnInit {
   variableAEliminarId = '';
   faltantesRegistroVariable: string[] = [];
 
+  modoSeleccionVariables = false;
+  variablesSeleccionadas = new Set<string>();
+  fuentesDestino: FiEcoResponce[] = [];
+  fuenteDestinoSeleccionada = '';
+  cargandoFuentesDestino = false;
+  moviendoVariables = false;
+  errorMovimientoVariables = '';
+  resultadoMovimientoVariables = '';
+
   @ViewChild('procesoProduccionTag')
   procesoProduccionTag!: ElementRef<HTMLSelectElement>;
 
   @ViewChild('capturaMdeaVariable')
   capturaMdeaVariable?: CapturaMdeaVariableComponent;
+
+  @ViewChild('capturaOdsVariable')
+  capturaOdsVariable?: CapturaOdsVariableComponent;
+
+  @ViewChild('capturaPertinenciaVariable')
+  capturaPertinenciaVariable?: CapturaPertinenciaVariableComponent;
 
   ngOnInit(): void {
     this.getDirecciones();
@@ -130,21 +145,25 @@ export class SeleccionVariablesComponent implements OnInit {
                   this.arrFuentesByProceso = fuentes ?? [];
                   this._fuentes_isSelectEnabled =
                     this.arrFuentesByProceso.length > 0;
-                  this.fuenteSeleccionadaValue = fuenteGuardada.idFuente;
-
                   const fuenteActual = this.arrFuentesByProceso.find(
-                    (f) => f.idFuente === fuenteGuardada.idFuente,
+                    (f) =>
+                      f.idFuenteSeleccion === fuenteGuardada.idFuente ||
+                      f.idFuente === fuenteGuardada.idFuente,
                   );
 
                   if (fuenteActual) {
                     this.setContextoFuente(fuenteActual);
+                    this.fuenteSeleccionadaValue =
+                      fuenteActual.idFuenteSeleccion;
                   }
 
                   this.idS = this.acronimoActual
                     ? `${this.acronimoActual}-`
                     : '';
 
-                  this.cargarVariablesPorFuente(fuenteGuardada.idFuente);
+                  this.cargarVariablesPorFuente(
+                    fuenteActual?.idFuenteSeleccion ?? fuenteGuardada.idFuente,
+                  );
                 },
                 error: (err) => {
                   console.error('Error al precargar fuentes:', err);
@@ -270,9 +289,10 @@ export class SeleccionVariablesComponent implements OnInit {
     this.totalItems = 0;
     this.totalPages = 0;
     this.pageRange = [];
+    this.cancelarSeleccionVariables();
 
     const fuenteActual = this.arrFuentesByProceso.find(
-      (f) => f.idFuente === idFuente,
+      (f) => f.idFuenteSeleccion === idFuente,
     );
 
     if (fuenteActual) {
@@ -290,7 +310,7 @@ export class SeleccionVariablesComponent implements OnInit {
   }
 
   setContextoFuente(fuente: FiEcoResponce) {
-    this.idFuenteActual = fuente.idFuente;
+    this.idFuenteActual = fuente.idFuenteSeleccion;
     this.acronimoActual = fuente.acronimo;
     this.edicionFuenteActual = fuente.edicion?.toString() ?? '';
   }
@@ -308,7 +328,10 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this._varService.getVarsByFuente(idFuente).subscribe({
       next: (data) => {
-        this.variables = data ?? [];
+        this.variables = [...(data ?? [])].sort((a, b) => {
+          const diferenciaSerial = this.obtenerSerialVariable(a) - this.obtenerSerialVariable(b);
+          return diferenciaSerial || String(a.idA ?? '').localeCompare(String(b.idA ?? ''));
+        });
         this.currentPage = 0;
         this.updatePagination();
         this.loadingVariables = false;
@@ -560,6 +583,110 @@ export class SeleccionVariablesComponent implements OnInit {
     });
   }
 
+  private obtenerSerialVariable(variable: any): number {
+    const coincidencia = String(variable?.idS ?? '').match(/-(\d+)$/);
+    return coincidencia ? Number(coincidencia[1]) : Number.MAX_SAFE_INTEGER;
+  }
+
+  activarSeleccionVariables() {
+    this.modoSeleccionVariables = true;
+    this.variablesSeleccionadas.clear();
+  }
+
+  cancelarSeleccionVariables() {
+    this.modoSeleccionVariables = false;
+    this.variablesSeleccionadas.clear();
+  }
+
+  alternarVariableSeleccionada(idA: string, seleccionada: boolean) {
+    if (seleccionada) {
+      this.variablesSeleccionadas.add(idA);
+    } else {
+      this.variablesSeleccionadas.delete(idA);
+    }
+  }
+
+  get paginaActualSeleccionada(): boolean {
+    return this.paginatedVariables.length > 0 &&
+      this.paginatedVariables.every((item) => this.variablesSeleccionadas.has(item.idA));
+  }
+
+  get paginaActualParcialmenteSeleccionada(): boolean {
+    const seleccionadas = this.paginatedVariables.filter((item) =>
+      this.variablesSeleccionadas.has(item.idA),
+    ).length;
+    return seleccionadas > 0 && seleccionadas < this.paginatedVariables.length;
+  }
+
+  alternarPaginaActual(seleccionada: boolean) {
+    for (const item of this.paginatedVariables) {
+      this.alternarVariableSeleccionada(item.idA, seleccionada);
+    }
+  }
+
+  abrirModalMoverVariables() {
+    if (this.variablesSeleccionadas.size === 0 || !this.acronimoActual) return;
+
+    this.fuenteDestinoSeleccionada = '';
+    this.fuentesDestino = [];
+    this.errorMovimientoVariables = '';
+    this.cargandoFuentesDestino = true;
+    this.modalMoverVariables?.nativeElement.showModal();
+
+    this._fuentesService.getByAcronimo(this.acronimoActual).subscribe({
+      next: (fuentes) => {
+        this.fuentesDestino = (fuentes ?? []).filter(
+          (fuente) => fuente.idFuenteSeleccion !== this.idFuenteActual,
+        );
+        this.cargandoFuentesDestino = false;
+      },
+      error: () => {
+        this.errorMovimientoVariables = 'No fue posible consultar las fuentes destino.';
+        this.cargandoFuentesDestino = false;
+      },
+    });
+  }
+
+  cerrarModalMoverVariables() {
+    if (this.moviendoVariables) return;
+    this.modalMoverVariables?.nativeElement.close();
+  }
+
+  confirmarMovimientoVariables() {
+    if (!this.fuenteDestinoSeleccionada || this.variablesSeleccionadas.size === 0) return;
+
+    this.moviendoVariables = true;
+    this.errorMovimientoVariables = '';
+
+    this._varService.moverVariablesDeFuente({
+      idFuenteOrigen: this.idFuenteActual,
+      idFuenteDestino: this.fuenteDestinoSeleccionada,
+      idsVariables: Array.from(this.variablesSeleccionadas),
+    }).subscribe({
+      next: (respuesta) => {
+        this.moviendoVariables = false;
+        this.modalMoverVariables?.nativeElement.close();
+        this.resultadoMovimientoVariables = respuesta.message;
+        this.cancelarSeleccionVariables();
+        this.cargarVariablesPorFuente(this.idFuenteActual);
+        this.modalResultadoMovimiento?.nativeElement.showModal();
+      },
+      error: (err) => {
+        this.moviendoVariables = false;
+        const mensajeBackend =
+          typeof err?.error === 'object' ? err.error?.message : '';
+        this.errorMovimientoVariables = mensajeBackend ||
+          (err?.status
+            ? `No fue posible mover las variables. El servidor respondió con el código ${err.status}.`
+            : 'No fue posible mover las variables.');
+      },
+    });
+  }
+
+  cerrarModalResultadoMovimiento() {
+    this.modalResultadoMovimiento?.nativeElement.close();
+  }
+
   cargarTraduccionesMdea(variables: VariableDTO[]) {
     if (variables.length === 0) {
       this.variablesEncontradasPorIdS = [];
@@ -590,12 +717,14 @@ export class SeleccionVariablesComponent implements OnInit {
 
     forkJoin(consultas).subscribe({
       next: (variablesTraducidas) => {
-        this.variablesEncontradasPorIdS = variablesTraducidas;
+        this.variablesEncontradasPorIdS = this.excluirVariableActual(
+          variablesTraducidas,
+        );
         this.loadingBusquedaIdS = false;
       },
       error: (err) => {
         console.error('Error al cargar traducciones MDEA:', err);
-        this.variablesEncontradasPorIdS = variables;
+        this.variablesEncontradasPorIdS = this.excluirVariableActual(variables);
         this.loadingBusquedaIdS = false;
       },
     });
@@ -635,6 +764,32 @@ export class SeleccionVariablesComponent implements OnInit {
   pegarRelacionMdeaEncontrada(mdea: MdeaDTO) {
     this.capturaMdeaVariable?.precargarRelacionMdea(mdea);
     this.cerrarDrawerBusqueda();
+  }
+
+  pegarPrimerMdeaEncontrado(variable: VariableDTO) {
+    const mdea = variable.mdeas?.[0];
+    if (mdea) this.pegarRelacionMdeaEncontrada(mdea);
+  }
+
+  pegarRelacionOdsEncontrada(ods: any) {
+    this.capturaOdsVariable?.precargarRelacionOds(ods);
+    this.cerrarDrawerBusqueda();
+  }
+
+  pegarPrimerOdsEncontrado(variable: VariableDTO) {
+    const ods = variable.odsList?.[0];
+    if (ods) this.pegarRelacionOdsEncontrada(ods);
+  }
+
+  pegarPertinenciaEncontrada(pertinencia: any) {
+    this.capturaPertinenciaVariable?.precargarPertinencia(pertinencia);
+    this.cerrarDrawerBusqueda();
+  }
+
+  private excluirVariableActual(variables: VariableDTO[]): VariableDTO[] {
+    if (!this.idAVariableActual) return variables;
+
+    return variables.filter((variable) => variable.idA !== this.idAVariableActual);
   }
 
   pageSize = 10;
@@ -770,6 +925,12 @@ export class SeleccionVariablesComponent implements OnInit {
 
   @ViewChild('modalConfirmarEliminacion')
   modalConfirmarEliminacion!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('modalMoverVariables')
+  modalMoverVariables!: ElementRef<HTMLDialogElement>;
+
+  @ViewChild('modalResultadoMovimiento')
+  modalResultadoMovimiento!: ElementRef<HTMLDialogElement>;
 
   abrirModalVariableCapturada() {
     this.modalVariableCapturada?.nativeElement.showModal();

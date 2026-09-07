@@ -35,10 +35,28 @@ export class VariablesTabuladosService {
     );
   }
 
+  obtenerPorVariable(idA: string): Observable<VariableTabulado[]> {
+    return this.http.get<VariableTabulado[]>(
+      `${this.relacionesUrl}/variable/${encodeURIComponent(idA)}`,
+      { withCredentials: true },
+    );
+  }
+
   guardar(relacion: VariableTabulado): Observable<VariableTabulado> {
     return this.http.post<VariableTabulado>(this.relacionesUrl, relacion, {
       withCredentials: true,
     });
+  }
+
+  actualizar(
+    idUnique: number,
+    relacion: VariableTabulado,
+  ): Observable<VariableTabulado> {
+    return this.http.put<VariableTabulado>(
+      `${this.relacionesUrl}/${idUnique}`,
+      relacion,
+      { withCredentials: true },
+    );
   }
 
   eliminar(idUnique: number): Observable<string> {

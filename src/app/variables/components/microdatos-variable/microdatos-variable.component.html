@@ -14,17 +14,13 @@
       <div class="grid gap-3 md:grid-cols-6">
 
         <div class="form-control md:col-span-6">
-          <label class="label"><span class="label-text text-xs font-medium">Estado de microdatos</span></label>
-          <div class="">
-            <div class="flex flex-col gap-3">
-
-              <label class="flex items-start gap-2 text-sm">
-                <input type="checkbox" class="checkbox checkbox-sm mt-0.5"
-                  [checked]="estado === estadoLaboratorio" (change)="cambiarEstadoLaboratorio($event)" />
-                <span>Sí (disponibles a través del Laboratorio de Microdatos)</span>
-              </label>
-            </div>
-          </div>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" class="checkbox checkbox-sm checkbox-info"
+              [ngModel]="form.laboratorio"
+              (ngModelChange)="actualizarCampo('laboratorio', $event)"
+              name="microdatosLaboratorio" />
+            <span>Disponible a través del Laboratorio de Microdatos</span>
+          </label>
         </div>
 
         <div class="form-control md:col-span-6">
@@ -74,12 +70,25 @@
     </div>
 
     <div class="flex justify-end gap-2">
+      @if (editando && ticketIdA) {
+      <button type="button" class="btn btn-sm btn-outline" [disabled]="guardando"
+        (click)="cancelarEdicionTicket()">
+        Cancelar edición
+      </button>
+      }
       <button type="button" class="btn btn-sm btn-info" [disabled]="guardando" (click)="agregar()">
         {{ guardando ? 'Guardando...' : editando ? 'Actualizar microdato' : 'Agregar microdatos' }}
       </button>
     </div>
 
-    @if (microdatos.length > 0) {
+    @if (cargandoMicrodatos) {
+    <div class="flex items-center justify-center rounded-xl border border-dashed border-base-300 p-4 text-sm text-base-content/60">
+      <span class="loading loading-spinner loading-sm"></span>
+      <span class="ml-2">Consultando microdatos...</span>
+    </div>
+    } @else if (errorMicrodatos) {
+    <div class="alert alert-error text-sm"><span>{{ errorMicrodatos }}</span></div>
+    } @else if (microdatos.length > 0) {
     <div class="overflow-x-auto rounded-xl border border-base-300">
       <table class="table table-sm">
         <thead>
@@ -87,6 +96,7 @@
             <th>Descriptor</th>
             <th>Tabla</th>
             <th>Campo</th>
+            <th class="text-center">Laboratorio</th>
             <th class="w-24 text-center">Acción</th>
           </tr>
         </thead>
@@ -96,6 +106,7 @@
             <td>{{ microdato.descriptor }}</td>
             <td>{{ microdato.tabla }}</td>
             <td>{{ microdato.campo }}</td>
+            <td class="text-center">{{ microdato.laboratorio ? 'Sí' : 'No' }}</td>
             <td class="align-top">
               <div class="flex justify-center gap-2">
               <button type="button" class="btn btn-xs btn-info btn-square" [disabled]="guardando"
@@ -172,6 +183,16 @@
 
     <div class="modal-action">
       <button type="button" class="btn" (click)="cerrarDetalle()">Cerrar</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #exitoMicrodatoModal class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Microdatos</h3>
+    <p class="mt-3">{{ mensajeExitoMicrodato }}</p>
+    <div class="modal-action">
+      <button type="button" class="btn btn-info" (click)="cerrarExitoMicrodato()">Aceptar</button>
     </div>
   </div>
 </dialog>

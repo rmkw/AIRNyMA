@@ -82,15 +82,15 @@
   </section>
 
   <section class="space-y-2">
-    <div>
+    <!-- <div>
       <h2 class="text-xl font-semibold">Mi actividad</h2>
       <p class="text-xs text-base-content/60">
         Información relacionada con el usuario actual.
       </p>
-    </div>
+    </div> -->
 
     <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-      <div *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
+      <!-- <div *ngIf="puedeVerSeleccion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">
           <div class="flex items-center justify-between">
             <h3 class="card-title text-base">Mis variables capturadas</h3>
@@ -101,7 +101,7 @@
             Total de variables registradas por el usuario actual.
           </p>
         </div>
-      </div>
+      </div> -->
 
       <div *ngIf="puedeVerArmonizacion() || puedeVerAdmin() || puedeVerRoot()" class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4">

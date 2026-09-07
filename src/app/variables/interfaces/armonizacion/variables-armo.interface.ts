@@ -17,7 +17,7 @@ export interface VariablesArmo {
   subtema2?: string;
   tabulados?: boolean;
   clasificacion?: boolean;
-  microdatos?: string;
+  microdatos?: boolean;
   datosabiertos?: boolean;
   mdea?: boolean;
   ods?: boolean;
@@ -42,6 +42,7 @@ export interface MicrodatoArmoDetalle {
   tabla: string;
   campo: string;
   comentarioA: string;
+  laboratorio: boolean;
 }
 
 export interface DatoAbiertoArmoDetalle {

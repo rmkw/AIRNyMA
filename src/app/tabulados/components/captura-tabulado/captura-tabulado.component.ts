@@ -107,8 +107,8 @@ export class CapturaTabuladoComponent implements OnInit, OnChanges {
     this.sincronizarIdTabulado();
   }
 
-  actualizarEdicion(valor: string) {
-    this.edicionTabulado = valor.replace(/\D/g, '').slice(0, 4);
+  actualizarEdicion(valor: string | number) {
+    this.edicionTabulado = String(valor ?? '').replace(/\D/g, '').slice(0, 4);
     this.sincronizarIdTabulado();
   }
 

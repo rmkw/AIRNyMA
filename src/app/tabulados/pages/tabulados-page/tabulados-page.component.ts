@@ -4,12 +4,16 @@ import { CapturaTabuladoComponent } from '@/tabulados/components/captura-tabulad
 import { VariablesTabuladosComponent } from '@/tabulados/components/variables-tabulados/variables-tabulados.component';
 import { Tabulado } from '@/tabulados/interfaces/tabulado.interface';
 import { TabuladosService } from '@/tabulados/services/tabulados.service';
+import { VariablesTabuladosService } from '@/tabulados/services/variables-tabulados.service';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   ElementRef,
+  Input,
+  OnChanges,
   OnDestroy,
+  SimpleChanges,
   ViewChild,
   inject,
 } from '@angular/core';
@@ -28,8 +32,9 @@ import { FormsModule } from '@angular/forms';
   ],
   templateUrl: './tabulados-page.component.html',
 })
-export class TabuladosPageComponent implements OnDestroy {
+export class TabuladosPageComponent implements OnChanges, OnDestroy {
   private tabuladosService = inject(TabuladosService);
+  private variablesTabuladosService = inject(VariablesTabuladosService);
   private mensajeTimeout?: ReturnType<typeof setTimeout>;
 
   @ViewChild(CapturaTabuladoComponent)
@@ -37,6 +42,8 @@ export class TabuladosPageComponent implements OnDestroy {
 
   @ViewChild('eliminarTabuladoModal')
   eliminarTabuladoModal?: ElementRef<HTMLDialogElement>;
+
+  @Input() ticketVariableIdA = '';
 
   tabulados: Tabulado[] = [];
   tabuladosBase: Tabulado[] = [];
@@ -51,6 +58,12 @@ export class TabuladosPageComponent implements OnDestroy {
   mensajeEsError = false;
   filtroIdTabulado = '';
   procesoSeleccionado = '';
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ticketVariableIdA'] && this.ticketVariableIdA) {
+      this.cargarTabuladosVariable(this.ticketVariableIdA);
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.mensajeTimeout) clearTimeout(this.mensajeTimeout);
@@ -104,6 +117,66 @@ export class TabuladosPageComponent implements OnDestroy {
         }
       },
     });
+  }
+
+  private cargarTabuladosVariable(idA: string) {
+    this.cargando = true;
+    this.errorListado = '';
+    this.tabuladoSeleccionado = null;
+    this.tabuladosBase = [];
+    this.tabulados = [];
+
+    this.variablesTabuladosService.obtenerPorVariable(idA).subscribe({
+      next: (relaciones) => {
+        const ids = [...new Set(relaciones.map((relacion) => relacion.idTabulado))];
+        this.procesoSeleccionado = this.obtenerAcronimoTabulado(ids[0] ?? '');
+
+        if (ids.length === 0) {
+          this.cargando = false;
+          this.errorListado = 'La variable no tiene tabulados relacionados.';
+          return;
+        }
+
+        let pendientes = ids.length;
+        const tabulados: Tabulado[] = [];
+
+        ids.forEach((idTabulado) => {
+          this.tabuladosService.obtenerPorId(idTabulado).subscribe({
+            next: (tabulado) => {
+              tabulados.push(tabulado);
+              pendientes--;
+              if (pendientes === 0) this.finalizarCargaTicket(tabulados);
+            },
+            error: () => {
+              pendientes--;
+              if (pendientes === 0) this.finalizarCargaTicket(tabulados);
+            },
+          });
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.cargando = false;
+        this.errorListado = this.obtenerMensajeError(error);
+      },
+    });
+  }
+
+  private finalizarCargaTicket(tabulados: Tabulado[]) {
+    this.tabuladosBase = tabulados.sort((a, b) =>
+      a.idTabulado.localeCompare(b.idTabulado),
+    );
+    this.filtrarResultadosLocales();
+    this.cargando = false;
+
+    if (this.tabuladosBase.length === 1) {
+      this.seleccionarTabulado(this.tabuladosBase[0].idTabulado);
+    } else if (this.tabuladosBase.length === 0) {
+      this.errorListado = 'No fue posible cargar los tabulados relacionados.';
+    }
+  }
+
+  private obtenerAcronimoTabulado(idTabulado: string): string {
+    return idTabulado.match(/^(.+)-\d+-\d{4}-T$/)?.[1] ?? '';
   }
 
   guardarTabulado(tabulado: Tabulado) {

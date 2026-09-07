@@ -1,5 +1,6 @@
 <div class="w-full space-y-2 px-1">
 
+  @if (!ticketVariableIdA && !ticketClasificacionesIdA) {
   <!--  banner titulo -->
 
   <div
@@ -401,8 +402,10 @@
   </div>
 
 
+  }
+
   <!-- lo de la variable -->
-  @if (puedeMostrarBloqueVariableSeleccion && variableSeleccionada) {
+  @if ((puedeMostrarBloqueVariableSeleccion || ticketClasificacionesIdA) && variableSeleccionada && !ticketClasificacionesIdA) {
   <div class="card border border-base-300 bg-base-100 shadow-sm">
     <div class="h-1 bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c]"></div>
     <div class="card-body gap-6 p-5 lg:p-6">
@@ -586,6 +589,18 @@
     </div>
   </div>
 
+  @if (ticketClasificacionesIdA && variableSeleccionada) {
+  <section class="mt-4">
+    <app-clasificaciones-variable [activa]="clasificacionActiva" [(form)]="clasificacionForm"
+      [clasificaciones]="arrClasificaciones" [guardando]="guardandoClasificacion"
+      (cambiarActiva)="cambiarEstadoClasificacion($event)"
+      (agregarClasificacion)="agregarClasificacionLocal($event)"
+      (eliminarClasificacion)="eliminarClasificacionLocal($event)">
+    </app-clasificaciones-variable>
+  </section>
+  }
+
+  @if (!ticketVariableIdA && !ticketClasificacionesIdA) {
   <section class="card rounded-box border border-accent/30 bg-accent/5 p-4 shadow-sm mt-4">
 
 
@@ -607,7 +622,7 @@
         (eliminarClasificacion)="eliminarClasificacionLocal($event)">
       </app-clasificaciones-variable>
 
-      <app-microdatos-variable [activo]="microdatosActivo" [(estado)]="microdatosEstado" [(form)]="microdatosForm"
+      <app-microdatos-variable [activo]="microdatosActivo" [(form)]="microdatosForm"
         [microdatos]="arrMicrodatos" [guardando]="guardandoMicrodatos" [editando]="!!microdatoEditandoId"
         (activoChange)="cambiarEstadoMicrodatos($event)" (agregarMicrodatos)="agregarMicrodatosLocal($event)"
         (eliminarMicrodato)="eliminarMicrodatoLocal($event)" (editarMicrodato)="editarMicrodatoLocal($event)">
@@ -620,6 +635,7 @@
       </app-datos-abiertos-variable>
     </div>
   </section>
+  }
    }
 </div>
 

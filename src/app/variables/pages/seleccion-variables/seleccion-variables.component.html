@@ -64,8 +64,8 @@
                 [disabled]="!_fuentes_isSelectEnabled" (change)="seleccionarFuente($event)">
                 <option value="" disabled>Selecciona una fuente</option>
 
-                @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
-                <option [value]="fuente.idFuente">
+                @for (fuente of arrFuentesByProceso; track fuente.idFuenteSeleccion) {
+                <option [value]="fuente.idFuenteSeleccion">
                   {{ fuente.fuente }} {{ fuente.edicion ? ('- ' + fuente.edicion) : '' }}
                 </option>
                 }
@@ -196,13 +196,37 @@
                 Variables registradas para la fuente seleccionada.
               </p>
             </div>
-
+            <button *ngIf="!modoSeleccionVariables" class="btn btn-outline btn-sm" type="button"
+              [disabled]="loadingVariables || variables.length === 0" (click)="activarSeleccionVariables()">
+              Seleccionar variables
+            </button>
           </div>
 
-          <div class=" h-114 overflow-x-auto rounded-box border border-base-300">
+          <div *ngIf="modoSeleccionVariables"
+            class="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-box bg-base-200 p-3">
+            <span class="text-sm font-medium">
+              {{ variablesSeleccionadas.size }} variable(s) seleccionada(s)
+            </span>
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm" type="button" (click)="cancelarSeleccionVariables()">
+                Cancelar
+              </button>
+              <button class="btn btn-primary btn-sm" type="button" [disabled]="variablesSeleccionadas.size === 0"
+                (click)="abrirModalMoverVariables()">
+                Mover
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-box border border-base-300 pb-[5px]">
             <table class="table table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>
+                  <th *ngIf="modoSeleccionVariables" class="w-10 text-center">
+                    <input type="checkbox" class="checkbox checkbox-sm" aria-label="Seleccionar página actual"
+                      [checked]="paginaActualSeleccionada" [indeterminate]="paginaActualParcialmenteSeleccionada"
+                      (change)="alternarPaginaActual($any($event.target).checked)" />
+                  </th>
                   <th>Id variable</th>
                   <th>Nombre</th>
                   <th>Definición</th>
@@ -216,26 +240,42 @@
 
               <tbody>
                 <tr *ngIf="loadingVariables">
-                  <td colspan="9" class="py-8 text-center">
+                  <td [attr.colspan]="modoSeleccionVariables ? 10 : 9" class="py-8 text-center">
                     <span class="loading loading-spinner loading-md"></span>
                   </td>
                 </tr>
 
                 <tr *ngIf="!loadingVariables && variables.length === 0">
-                  <td colspan="9" class="h-100 py-8 text-center text-sm text-base-content/60">
+                  <td [attr.colspan]="modoSeleccionVariables ? 10 : 9"
+                    class="h-100 py-8 text-center text-sm text-base-content/60">
                     No se encontraron variables para esta fuente.
                   </td>
                 </tr>
 
-                <tr *ngFor="let item of paginatedVariables">
+                <tr *ngFor="let item of paginatedVariables; let i = index">
+                  <td *ngIf="modoSeleccionVariables" class="text-center">
+                    <input type="checkbox" class="checkbox checkbox-sm" [attr.aria-label]="'Seleccionar ' + item.idA"
+                      [checked]="variablesSeleccionadas.has(item.idA)"
+                      (change)="alternarVariableSeleccionada(item.idA, $any($event.target).checked)" />
+                  </td>
                   <td class="text-sm">{{ item.idA }}</td>
 
-                  <td class="max-w-44 truncate text-sm" [title]="item.nombre || ''">
-                    {{ item.nombre || '-' }}
+                  <td class="max-w-44 text-sm">
+                    <div class="tooltip relative z-20 w-full hover:z-50"
+                      [class.tooltip-bottom]="i < paginatedVariables.length / 2"
+                      [class.tooltip-top]="i >= paginatedVariables.length / 2"
+                      [attr.data-tip]="item.nombre || '-'">
+                      <span class="block truncate">{{ item.nombre || '-' }}</span>
+                    </div>
                   </td>
 
-                  <td class="max-w-56 truncate text-sm" [title]="item.definicion || ''">
-                    {{ item.definicion || '-' }}
+                  <td class="max-w-56 text-sm">
+                    <div class="tooltip relative z-20 w-full hover:z-50"
+                      [class.tooltip-bottom]="i < paginatedVariables.length / 2"
+                      [class.tooltip-top]="i >= paginatedVariables.length / 2"
+                      [attr.data-tip]="item.definicion || '-'">
+                      <span class="block truncate">{{ item.definicion || '-' }}</span>
+                    </div>
                   </td>
 
                   <td class="text-sm">
@@ -354,7 +394,7 @@
 
     <div class="space-y-2 xl:col-span-12" *ngIf="mostrarBloqueOds">
       <div class="space-y-2 xl:col-span-12" *ngIf="mostrarBloqueOds">
-        <app-captura-ods-variable [idA]="idAVariableActual" [idS]="idSVariableActual">
+        <app-captura-ods-variable #capturaOdsVariable [idA]="idAVariableActual" [idS]="idSVariableActual">
         </app-captura-ods-variable>
       </div>
     </div>
@@ -362,7 +402,7 @@
 
   <div class="grid gap-4 xl:grid-cols-12 mb-5">
     <div class="space-y-2 xl:col-span-12">
-      <app-captura-pertinencia-variable *ngIf="variableGuardada" [idA]="idAVariableActual" [idS]="idSVariableActual"
+      <app-captura-pertinencia-variable #capturaPertinenciaVariable *ngIf="variableGuardada" [idA]="idAVariableActual" [idS]="idSVariableActual"
         (pertinenciaGuardada)="finalizarCapturaVariable()">
       </app-captura-pertinencia-variable>
     </div>
@@ -426,6 +466,7 @@
         <article *ngFor="let item of variablesEncontradasPorIdS"
           class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
           <div class="mb-3 flex flex-col gap-2 border-b border-base-300 pb-3">
+            <p class="text-xs text-base-content/60">{{ item.idA || '-' }}</p>
             <h3 class="text-base font-semibold">{{ item.nombre || 'Sin nombre' }}</h3>
           </div>
 
@@ -466,14 +507,14 @@
             </button>
 
             <section class="border-t border-base-300 pt-3" *ngIf="item.mdeas?.length">
-              <h4 class="mb-2 font-semibold">MDEA</h4>
+              <div class="mb-2 flex items-center justify-between gap-2">
+                <h4 class="font-semibold">MDEA</h4>
+                <button class="btn btn-primary btn-xs" type="button" (click)="pegarPrimerMdeaEncontrado(item)"
+                  [disabled]="!idAVariableActual || !mostrarBloqueMdea">
+                  Pegar MDEA
+                </button>
+              </div>
               <div *ngFor="let mdea of item.mdeas" class="mb-2 rounded-box bg-base-200 p-3">
-                <div class="mb-2 flex justify-end">
-                  <button class="btn btn-primary btn-xs" type="button" (click)="pegarRelacionMdeaEncontrada(mdea)"
-                    [disabled]="!idAVariableActual || !mostrarBloqueMdea">
-                    Pegar MDEA
-                  </button>
-                </div>
                 <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
                   <dt class="font-medium">Componente:</dt>
                   <dd>{{ textoConIdYNombre(mdea.componente, mdea.componenteNombre) }}</dd>
@@ -494,7 +535,13 @@
             </section>
 
             <section class="border-t border-base-300 pt-3" *ngIf="item.odsList?.length">
-              <h4 class="mb-2 font-semibold">ODS</h4>
+              <div class="mb-2 flex items-center justify-between gap-2">
+                <h4 class="font-semibold">ODS</h4>
+                <button class="btn btn-primary btn-xs" type="button" (click)="pegarPrimerOdsEncontrado(item)"
+                  [disabled]="!idAVariableActual || !mostrarBloqueOds">
+                  Pegar ODS
+                </button>
+              </div>
               <div *ngFor="let ods of item.odsList" class="mb-2 rounded-box bg-base-200 p-3">
                 <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
                   <dt class="font-medium">Objetivo:</dt>
@@ -512,8 +559,15 @@
             </section>
 
             <section class="border-t border-base-300 pt-3" *ngIf="item.pertinencia">
-              <h4 class="mb-2 font-semibold">Pertinencia</h4>
-              <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
+              <div class="mb-2 flex items-center justify-between gap-2">
+                <h4 class="font-semibold">Pertinencia</h4>
+                <button class="btn btn-primary btn-xs" type="button"
+                  (click)="pegarPertinenciaEncontrada(item.pertinencia)"
+                  [disabled]="!idAVariableActual">
+                  Pegar pertinencia
+                </button>
+              </div>
+              <dl class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 rounded-box bg-base-200 p-3 text-xs">
                 <dt class="font-medium">Tema:</dt>
                 <dd>{{ item.pertinencia.pertinencia || '-' }}</dd>
                 <dt class="font-medium">Contribución:</dt>
@@ -584,6 +638,63 @@
 
     <div class="modal-action">
       <button class="btn btn-primary" type="button" (click)="cerrarModalVariableCapturada()">
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalMoverVariables class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Mover variables a otra fuente</h3>
+    <p class="py-3 text-sm text-base-content/70">
+      Se moverán {{ variablesSeleccionadas.size }} variable(s). El ID_A y sus relaciones se conservarán.
+    </p>
+
+    <div *ngIf="cargandoFuentesDestino" class="flex justify-center py-6">
+      <span class="loading loading-spinner loading-md"></span>
+    </div>
+
+    <div *ngIf="!cargandoFuentesDestino" class="form-control">
+      <label class="label" for="fuenteDestinoVariables">
+        <span class="label-text font-medium">Fuente destino</span>
+      </label>
+      <select id="fuenteDestinoVariables" class="select select-bordered w-full"
+        [(ngModel)]="fuenteDestinoSeleccionada" [disabled]="moviendoVariables || fuentesDestino.length === 0">
+        <option value="">Selecciona una fuente</option>
+        <option *ngFor="let fuente of fuentesDestino" [value]="fuente.idFuenteSeleccion">
+          {{ fuente.fuente }} - {{ fuente.edicion }}
+        </option>
+      </select>
+      <p *ngIf="fuentesDestino.length === 0" class="mt-2 text-sm text-warning">
+        No hay otra fuente disponible para este proceso de producción.
+      </p>
+    </div>
+
+    <div *ngIf="errorMovimientoVariables" class="alert alert-error mt-4 text-sm">
+      {{ errorMovimientoVariables }}
+    </div>
+
+    <div class="modal-action">
+      <button class="btn" type="button" [disabled]="moviendoVariables" (click)="cerrarModalMoverVariables()">
+        Cancelar
+      </button>
+      <button class="btn btn-primary" type="button"
+        [disabled]="!fuenteDestinoSeleccionada || cargandoFuentesDestino || moviendoVariables"
+        (click)="confirmarMovimientoVariables()">
+        <span *ngIf="moviendoVariables" class="loading loading-spinner loading-sm"></span>
+        Mover variables
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<dialog #modalResultadoMovimiento class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Movimiento completado</h3>
+    <p class="py-4">{{ resultadoMovimientoVariables }}</p>
+    <div class="modal-action">
+      <button class="btn btn-primary" type="button" (click)="cerrarModalResultadoMovimiento()">
         Entendido
       </button>
     </div>

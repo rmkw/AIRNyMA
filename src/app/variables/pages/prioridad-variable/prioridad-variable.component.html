@@ -25,6 +25,8 @@
     </div>
   </div>
 
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
+    <div class="space-y-4 xl:col-span-5">
   <div class="card border border-base-300 bg-base-100 shadow-sm">
     <div class="card-body gap-5 p-5">
       <div>
@@ -84,7 +86,7 @@
 
           <button class="btn btn-sm btn-primary" type="button" [disabled]="fuentesSeleccionadas.length === 0"
             (click)="cargarVariablesSeleccionadas()">
-            Cargar variables seleccionadas
+            Cargar variables
           </button>
         </div>
       </div>
@@ -114,7 +116,7 @@
         </div>
       </div>
       } @else {
-      <div class="overflow-x-auto rounded-box border border-base-300 max-h-72">
+      <div class="overflow-x-auto rounded-box border border-base-300 max-h-[36rem]">
         <table class="table table-pin-rows table-zebra">
           <thead>
             <tr>
@@ -131,7 +133,7 @@
               <td class="text-sm">{{ fuente.fuente }}</td>
               <td class="text-sm">
                 @if (fuente.url) {
-                <a [href]="fuente.url" target="_blank" class="link link-primary break-all">Ver URL</a>
+                <a [href]="fuente.url" target="_blank" class="link link-neutral break-all">Ver URL</a>
                 } @else {
                 <span class="text-base-content/50">Sin URL</span>
                 }
@@ -162,6 +164,9 @@
     </div>
   </div>
 
+    </div>
+
+    <div class="space-y-4 xl:col-span-7">
   @if (loadingVariables) {
   <div class="space-y-6">
     @for (item of [1,2,3]; track item) {
@@ -211,41 +216,41 @@
   @if (arrVariablesSeleccionadas.length > 0) {
   <div class="card border border-base-300 bg-base-100 shadow-sm">
     <div class="card-body gap-5 p-5">
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
         <div>
           <h2 class="card-title text-base">Variables seleccionadas</h2>
           <p class="text-xs text-base-content/60">Filtra la lista y actualiza la prioridad de forma individual o masiva.
           </p>
         </div>
-
-        <div class="grid gap-4 md:grid-cols-3 lg:min-w-[52rem]">
-          <div class="form-control md:col-span-2">
-            <label class="label" for="filtroIdS">
-              <span class="label-text text-xs font-medium">Buscar por ID_S, ID_A o nombre</span>
-            </label>
-            <input id="filtroIdS" type="text" class="input input-bordered w-full" [(ngModel)]="filtroIdS"
-              (input)="filtrarVariablesPorIdS()" placeholder="Ej. ATUS-001" />
-          </div>
-
-          <div class="flex items-end">
-            <div class="w-full rounded-xl border border-base-300 bg-base-200/40 px-4 py-3 text-sm">
-              <div class="text-xs uppercase tracking-wide text-base-content/60">Resultados</div>
-              <div class="mt-1 font-semibold">{{ arrVariablesSeleccionadasFiltradas.length }}</div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        <button type="button" class="btn btn-sm btn-primary"
-          [disabled]="arrVariablesSeleccionadasFiltradas.length === 0" (click)="asignarPrioridadMasiva(1)">
-          Marcar visibles como prioritarias
-        </button>
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div class="flex flex-wrap items-end gap-2">
+        <div class="form-control w-full sm:w-64">
+          <label class="label py-0" for="filtroIdS">
+            <span class="label-text text-xs font-medium">Buscar por ID_S, ID_A o nombre</span>
+          </label>
+          <input id="filtroIdS" type="text" class="input input-bordered input-sm w-full" [(ngModel)]="filtroIdS"
+            (input)="filtrarVariablesPorIdS()" placeholder="Ej. ATUS-001" />
+        </div>
 
-        <button type="button" class="btn btn-sm btn-outline"
-          [disabled]="arrVariablesSeleccionadasFiltradas.length === 0" (click)="asignarPrioridadMasiva(2)">
-          Marcar visibles como no prioritarias
-        </button>
+        <div class="flex h-8 items-center gap-1 text-xs text-base-content/60">
+          <span>Resultados:</span>
+          <span class="font-semibold text-base-content">{{ arrVariablesSeleccionadasFiltradas.length }}</span>
+        </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="btn btn-sm btn-primary"
+            [disabled]="arrVariablesSeleccionadasFiltradas.length === 0" (click)="asignarPrioridadMasiva(1)">
+            Marcar visibles como prioritarias
+          </button>
+
+          <button type="button" class="btn btn-sm btn-outline"
+            [disabled]="arrVariablesSeleccionadasFiltradas.length === 0" (click)="asignarPrioridadMasiva(2)">
+            Marcar visibles como no prioritarias
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -254,28 +259,14 @@
   @if (arrVariablesSeleccionadas.length > 0) {
   <div class="grid grid-cols-1 gap-6">
     @for (variable of arrVariablesSeleccionadasFiltradas; track variable.idA) {
-    <div class="card border border-base-300 bg-base-100 shadow-sm">
+    <div class="card border-2 border-base-300 bg-base-100 shadow-md">
       <div class="card-body gap-5 p-5">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div class="badge badge-soft badge-primary mb-2">Variable</div>
-            <h3 class="text-lg font-semibold text-base-content">{{ variable.nombre }}</h3>
-            <p class="mt-1 text-sm text-base-content/60">Identificación y referencia de consulta para priorización.</p>
-          </div>
-
-          <div>
-            @if (variable.revisada) {
-            <span class="badge badge-success badge-sm px-3 py-3 font-medium">Modificada</span>
-            } @else {
-            <span class="badge badge-warning badge-sm px-3 py-3 font-medium">No modificada</span>
-            }
-          </div>
-        </div>
+        
 
         <div class="grid gap-4 md:grid-cols-3">
           <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
             <div class="mb-2 text-xs uppercase tracking-wide text-base-content/60">ID de variable</div>
-            <div class="font-mono text-sm font-semibold text-primary break-all">{{ variable.idA }}</div>
+            <div class="font-mono text-sm font-semibold text-neutral break-all">{{ variable.idA }}</div>
           </div>
 
           <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
@@ -286,7 +277,7 @@
           <div class="rounded-xl border border-base-300 bg-base-200/40 p-4">
             <div class="mb-2 text-xs uppercase tracking-wide text-base-content/60">Fuente de consulta</div>
             @if (variable.url) {
-            <a [href]="variable.url" target="_blank" class="link link-primary break-all text-sm font-medium">Ver URL</a>
+            <a [href]="variable.url" target="_blank" class="link link-neutral break-all text-sm font-medium">Ver URL</a>
             } @else {
             <span class="text-sm text-base-content/50">Sin URL disponible</span>
             }
@@ -305,7 +296,7 @@
             <div class="collapse-title">
               <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <span class="text-base font-semibold text-secondary">Relaciones de la variable</span>
+                  <span class="text-base font-semibold text-neutral">Relaciones de la variable</span>
                   <p class="text-sm text-base-content/60">MDEA, ODS y pertinencia asociadas a esta variable.</p>
                 </div>
 
@@ -393,12 +384,12 @@
           <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div class="flex items-center gap-4">
               <div>
-                <div class="text-sm font-semibold text-secondary">Variable prioritaria</div>
+                <div class="text-sm font-semibold text-neutral">Variable prioritaria</div>
                 <div class="text-xs text-base-content/60">Activa o desactiva si la variable debe quedar marcada como
                   prioritaria.</div>
               </div>
 
-              <input type="checkbox" class="toggle toggle-primary toggle-lg" [checked]="variable.prioridad === 1"
+              <input type="checkbox" class="toggle toggle-neutral toggle-lg" [checked]="variable.prioridad === 1"
                 (change)="togglePrioridad(variable, $event)" />
             </div>
 
@@ -419,4 +410,6 @@
   </div>
   }
   }
+    </div>
+  </div>
 </div>

@@ -106,7 +106,9 @@
               <label class="label" for="anio">
                 <span class="label-text text-xs font-medium">Año de la edición</span>
               </label>
-              <input id="anio" type="text" maxlength="9" class="input input-bordered w-full" [(ngModel)]="edicion" />
+              <input id="anio" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+                placeholder="Ej. 2026" class="input input-bordered w-full" [(ngModel)]="edicion"
+                (input)="limitarAnio($event)" />
             </div>
           </div>
 
@@ -168,7 +170,7 @@
 
           </div>
 
-          <div class="h-114 overflow-x-auto rounded-box border border-base-300">
+          <div class="overflow-x-auto rounded-box border border-base-300 pb-[5px]">
             <table class="table  table-zebra table-sm [&_td]:py-2 [&_th]:py-1.5">
               <thead>
                 <tr>

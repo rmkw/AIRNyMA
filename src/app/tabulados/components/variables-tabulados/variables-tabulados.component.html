@@ -64,7 +64,7 @@
               <tr>
                 <td class="whitespace-nowrap text-xs">{{ variable.idA }}</td>
                 <td class="text-sm leading-5  break-words max-w-38">
-                  <div class="tooltip tooltip-top w-full" [attr.data-tip]="nombreVariable(variable)">
+                  <div class="tooltip tooltip-top relative z-20 w-full" [attr.data-tip]="nombreVariable(variable)">
                     <span class="block truncate">
                       {{ nombreVariable(variable) }}
                     </span>
@@ -74,7 +74,7 @@
                 <td class="text-center">
                   <button type="button" class="btn btn-primary btn-xs"
                     [disabled]="!idTabulado || guardando"
-                    (click)="abrirRelacion(variable)">
+                    (click)="guardarRelacion(variable)">
                     Relacionar
                   </button>
                 </td>
@@ -125,18 +125,25 @@
               <tr>
                 <td class="whitespace-nowrap text-xs">{{ relacion.idA }}</td>
                 <td class="text-sm leading-5  break-words max-w-40">
-                  <div class="tooltip tooltip-top w-full" [attr.data-tip]="nombreVariable(relacion)">
+                  <div class="tooltip tooltip-top relative z-20 w-full" [attr.data-tip]="nombreVariable(relacion)">
                     <span class="block truncate">
                       {{ nombreVariable(relacion) }}
                     </span>
                   </div>
                 </td>
-                <td class="text-center">
+                <td>
+                  <div class="flex justify-center gap-2">
+                  <button type="button" class="btn btn-info btn-xs"
+                    [disabled]="eliminandoId !== null || guardando"
+                    (click)="abrirEdicionComentario(relacion)">
+                    Editar comentario
+                  </button>
                   <button type="button" class="btn btn-error btn-xs"
                     [disabled]="eliminandoId !== null || guardando"
                     (click)="eliminarRelacion(relacion)">
                     {{ eliminandoId === relacion.idUnique ? 'Eliminando...' : 'Eliminar' }}
                   </button>
+                  </div>
                 </td>
               </tr>
               } @empty {
@@ -155,32 +162,26 @@
   </div>
 </div>
 
-<dialog #relacionModal class="modal" (cancel)="cerrarRelacion()">
+<dialog #comentarioModal class="modal" (cancel)="cerrarRelacion()">
   <div class="modal-box">
-    <h3 class="text-lg font-bold">Relacionar variable</h3>
+    <h3 class="text-lg font-bold">Editar comentario de la relación</h3>
     <div class="grid gap-4 py-4">
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-xs font-medium">ID de la variable</span>
-        </label>
-        <input type="text" class="input input-sm input-bordered"
-          [value]="variablePorRelacionar?.idA ?? ''" disabled />
+      <div class="w-full">
+        <label class="mb-1 block text-xs font-medium">ID de la variable</label>
+        <input type="text" class="input input-sm input-bordered w-full"
+          [value]="relacionEditando?.idA ?? ''" disabled />
       </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-xs font-medium">ID del tabulado</span>
-        </label>
-        <input type="text" class="input input-sm input-bordered"
+      <div class="w-full">
+        <label class="mb-1 block text-xs font-medium">ID del tabulado</label>
+        <input type="text" class="input input-sm input-bordered w-full"
           [value]="idTabulado ?? ''" disabled />
       </div>
-      <div class="form-control">
-        <label class="label" for="comentarioRelacionVariable">
-          <span class="label-text text-xs font-medium">Comentario</span>
-        </label>
+      <div class="w-full">
+        <label class="mb-1 block text-xs font-medium" for="comentarioRelacionVariable">Comentario</label>
         <textarea id="comentarioRelacionVariable"
-          class="textarea textarea-sm textarea-bordered min-h-24"
+          class="textarea textarea-sm textarea-bordered min-h-24 w-full resize-y"
           [(ngModel)]="comentarioA"
-          placeholder="Escribe un comentario"
+          placeholder="Escribe el comentario de la relación"
           [disabled]="guardando"></textarea>
       </div>
     </div>
@@ -189,8 +190,8 @@
         (click)="cerrarRelacion()">Cancelar</button>
       <button type="button" class="btn btn-primary"
         [disabled]="!comentarioA.trim() || guardando"
-        (click)="guardarRelacion()">
-        {{ guardando ? 'Relacionando...' : 'Relacionar' }}
+        (click)="actualizarComentario()">
+        {{ guardando ? 'Actualizando...' : 'Actualizar comentario' }}
       </button>
     </div>
   </div>
