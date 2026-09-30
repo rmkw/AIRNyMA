@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { FiEcoResponce } from '@/fuenteIdentificacion/interfaces/fiEco-responce.interface';
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
 import { CommonModule } from '@angular/common';
@@ -38,11 +39,11 @@ export class FuentesListComponent implements OnInit {
   }
 
   getPropsLocalStorage() {
-    const propsPp = localStorage.getItem('procesoEditable');
+    const propsPp = instanceStorage.getItem('procesoEditable');
 
     if (propsPp) {
       const procesoP = JSON.parse(propsPp);
-      const _responsableRegister = localStorage.getItem('_id');
+      const _responsableRegister = instanceStorage.getItem('_id');
 
       this.procesoProduccion = procesoP.nombrePp;
       this.acronimo = procesoP.acronimo;
@@ -114,7 +115,7 @@ export class FuentesListComponent implements OnInit {
     this.comentarioF = '';
   }
   editarFuente(_fuente: FiEcoResponce) {
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
     const fuenteEditable = {
       idFuente: _fuente.idFuente,
       acronimo: _fuente.acronimo,
@@ -124,19 +125,19 @@ export class FuentesListComponent implements OnInit {
       comentarioS: _fuente.comentarioS,
       responsableActualizacion: _fuente.responsableActualizacion,
     };
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+    instanceStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
 
     this._router.navigate(['/fuente', _fuente.idFuente]);
   }
 
   addVars(_fuente: FiEcoResponce) {
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
     const fuenteEditable = {
       idFuente: _fuente.idFuente,
       idPp: _fuente.acronimo,
       edicion: _fuente.edicion,
     };
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+    instanceStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
     this._router.navigate(['/nueva-variable']);
   }
 

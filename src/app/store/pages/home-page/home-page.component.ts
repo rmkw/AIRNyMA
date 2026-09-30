@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { homeService } from '../../services/home.service';
@@ -63,7 +64,7 @@ export class HomePageComponent {
     });
   }
   tieneRol(rol: string): boolean {
-    const rolesGuardados = localStorage.getItem('roles');
+    const rolesGuardados = instanceStorage.getItem('roles');
     if (!rolesGuardados) return false;
 
     try {

@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { authService } from "@/auth/services/auth.service";
 import { FuenteIdentificacionService } from "@/fuenteIdentificacion/services/fuente-identificacion.service";
 import { interface_ProcesoP } from "@/procesoProduccion/interfaces/procesos.interface";
@@ -229,7 +230,7 @@ export class PrioridadVariableComponent implements OnInit {
   // }
 
   asignarPrioridad(variable: VariableRevisionPrioridadDTO, prioridad: number) {
-    const responsableRevision = Number(localStorage.getItem('_id'));
+    const responsableRevision = Number(instanceStorage.getItem('_id'));
 
     variable.prioridad = prioridad;
     variable.revisada = true;
@@ -288,7 +289,7 @@ export class PrioridadVariableComponent implements OnInit {
   }
 
   asignarPrioridadMasiva(prioridad: number) {
-    const responsableRevision = Number(localStorage.getItem('_id'));
+    const responsableRevision = Number(instanceStorage.getItem('_id'));
 
     const variablesActualizar = this.arrVariablesSeleccionadasFiltradas.filter(
       (variable) => variable.prioridad !== prioridad,

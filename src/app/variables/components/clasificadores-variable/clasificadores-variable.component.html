@@ -1,0 +1,69 @@
+@if (!idA) {
+<div class="alert alert-info text-sm">Selecciona y guarda una variable en armonización para registrar clasificadores.</div>
+} @else {
+<fieldset class="grid gap-4" [disabled]="guardando || cargando">
+  <label class="form-control">
+    <span class="label label-text text-xs font-medium">Clasificador</span>
+    <input type="text" class="input input-sm input-bordered w-full" [(ngModel)]="form.clasificador"
+      [ngModelOptions]="{standalone: true}" placeholder="Escriba el clasificador" />
+  </label>
+  <label class="form-control">
+    <span class="label label-text text-xs font-medium">Versión</span>
+    <input type="text" class="input input-sm input-bordered w-full" [(ngModel)]="form.version"
+      [ngModelOptions]="{standalone: true}" placeholder="Versión del clasificador" />
+  </label>
+  <label class="form-control">
+    <span class="label label-text text-xs font-medium">URL</span>
+    <input type="text" class="input input-sm input-bordered w-full" [(ngModel)]="form.url"
+      [ngModelOptions]="{standalone: true}" placeholder="https://..." />
+  </label>
+  <label class="form-control">
+    <span class="label label-text text-xs font-medium">Comentarios</span>
+    <textarea class="textarea textarea-sm textarea-bordered min-h-18 w-full"
+      [(ngModel)]="form.comentariosA" [ngModelOptions]="{standalone: true}"></textarea>
+  </label>
+  <div class="flex justify-end gap-2">
+    @if (editandoId !== null) {
+    <button type="button" class="btn btn-sm btn-outline" (click)="cancelarEdicion()">Cancelar edición</button>
+    }
+    <button type="button" class="btn btn-sm btn-accent" (click)="guardar()">
+      {{ guardando ? 'Guardando...' : editandoId !== null ? 'Actualizar clasificador' : 'Agregar clasificador' }}
+    </button>
+  </div>
+</fieldset>
+@if (error) {
+<div role="alert" class="alert alert-error mt-4 text-sm">{{ error }}</div>
+}
+@if (mensaje) {
+<div role="status" class="alert alert-success mt-4 text-sm">{{ mensaje }}</div>
+}
+@if (cargando) {
+<div role="status" class="mt-4 text-sm"><span class="loading loading-spinner loading-sm"></span> Consultando clasificadores...</div>
+} @else if (registros.length) {
+<div class="overflow-x-auto rounded-xl border border-base-300 mt-4">
+  <table class="table table-sm">
+    <thead><tr><th>Clasificador</th><th>Versión</th><th>URL</th><th>Comentarios</th><th>Acción</th></tr></thead>
+    <tbody>
+      @for (registro of registros; track registro.idUnique) {
+      <tr>
+        <td class="whitespace-pre-wrap">{{ registro.clasificador }}</td>
+        <td>{{ registro.version }}</td>
+        <td class="break-all">{{ registro.url }}</td>
+        <td class="whitespace-pre-wrap">{{ registro.comentariosA }}</td>
+        <td>
+          <div class="flex gap-2">
+            <button type="button" class="btn btn-xs btn-info" [disabled]="guardando" (click)="editar(registro)">Editar</button>
+            <button type="button" class="btn btn-xs btn-error" [disabled]="guardando" (click)="eliminar(registro)">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+} @else if (!error) {
+<div class="rounded-xl border border-dashed border-base-300 p-4 mt-4 text-sm text-base-content/60">
+  No hay clasificadores registrados para esta variable.
+</div>
+}
+}

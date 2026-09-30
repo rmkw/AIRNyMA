@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { FiEcoResponce } from "@/fuenteIdentificacion/interfaces/fiEco-responce.interface";
 import { FuenteIdentificacionService } from "@/fuenteIdentificacion/services/fuente-identificacion.service";
 import { interface_ProcesoP } from "@/procesoProduccion/interfaces/procesos.interface";
@@ -112,7 +113,7 @@ export class SeleccionVariablesComponent implements OnInit {
   }
 
   intentarPrecargarDesdeLocalStorage() {
-    const data = localStorage.getItem('fuenteEditable');
+    const data = instanceStorage.getItem('fuenteEditable');
     if (!data) return;
 
     try {
@@ -123,7 +124,7 @@ export class SeleccionVariablesComponent implements OnInit {
         !fuenteGuardada?.acronimo ||
         !fuenteGuardada?.idFuente
       ) {
-        localStorage.removeItem('fuenteEditable');
+        instanceStorage.removeItem('fuenteEditable');
         return;
       }
 
@@ -174,12 +175,12 @@ export class SeleccionVariablesComponent implements OnInit {
           },
           error: (err) => {
             console.error('Error al precargar procesos:', err);
-            localStorage.removeItem('fuenteEditable');
+            instanceStorage.removeItem('fuenteEditable');
           },
         });
     } catch (error) {
       console.error('Error al leer fuenteEditable del localStorage', error);
-      localStorage.removeItem('fuenteEditable');
+      instanceStorage.removeItem('fuenteEditable');
     }
   }
 
@@ -207,7 +208,7 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this.resetFormularioVariable();
     this.resetContextoVariableActual();
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
 
     this.cargarProcesosProduccionByDireccionGeneral(nameDi);
   }
@@ -251,7 +252,7 @@ export class SeleccionVariablesComponent implements OnInit {
 
     this.idS = proceso ? `${proceso}-` : '';
 
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
 
     if (proceso) {
       this.cargarFuentesPorProceso(proceso);
@@ -302,7 +303,7 @@ export class SeleccionVariablesComponent implements OnInit {
     this.resetFormularioVariable();
     this.resetContextoVariableActual();
     this.idS = this.acronimoActual ? `${this.acronimoActual}-` : '';
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
 
     if (idFuente) {
       this.cargarVariablesPorFuente(idFuente);
@@ -356,13 +357,13 @@ export class SeleccionVariablesComponent implements OnInit {
   }
 
   obtenerUsuarioId(): number | null {
-    const idDirecto = localStorage.getItem('_id');
+    const idDirecto = instanceStorage.getItem('_id');
     if (idDirecto) {
       const parsed = Number(idDirecto);
       return Number.isNaN(parsed) ? null : parsed;
     }
 
-    const userResponse = localStorage.getItem('useResponce');
+    const userResponse = instanceStorage.getItem('useResponce');
     if (userResponse) {
       try {
         const user = JSON.parse(userResponse);

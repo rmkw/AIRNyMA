@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { authService } from '@/auth/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnInit } from '@angular/core';
@@ -23,10 +24,10 @@ export class FrontNavbarComponent implements OnInit {
   }
 
   navegandosinStorage() {
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
   }
   tieneRol(rol: string): boolean {
-    const rolesGuardados = localStorage.getItem('roles');
+    const rolesGuardados = instanceStorage.getItem('roles');
     if (!rolesGuardados) return false;
 
     try {

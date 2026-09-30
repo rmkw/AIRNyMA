@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -140,7 +141,7 @@ export class ProcesoProduccionComponent implements OnInit {
       direccion: this.direccionName, // 👈 aquí guardas la unidad
     };
 
-    localStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
+    instanceStorage.setItem('procesoEditable', JSON.stringify(procesoEditable));
 
     this._router.navigate(['/fuentes']);
   }
@@ -199,7 +200,7 @@ export class ProcesoProduccionComponent implements OnInit {
   tipoComentarioPendiente: 'seleccion' | 'armonizacion' | null = null;
 
   tieneRol(rol: string): boolean {
-    const rolesGuardados = localStorage.getItem('roles');
+    const rolesGuardados = instanceStorage.getItem('roles');
     if (!rolesGuardados) return false;
 
     try {

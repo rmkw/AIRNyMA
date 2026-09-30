@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
@@ -30,6 +31,8 @@ export class ValidacionPageComponent implements OnInit {
   fuenteSeleccionada: FuenteArmonizacionDTO | null = null;
   variableSeleccionada: VariablesArmo | null = null;
   detalleVariable: VariableDetalleArmo | null = null;
+  mensajeCopiaJson = '';
+  jsonCopiaManual = '';
   mdeasTraducidos: MdeaTraducido[] = [];
   odsTraducidos: OdsTraducido[] = [];
   direccionSeleccionada = '';
@@ -130,6 +133,8 @@ export class ValidacionPageComponent implements OnInit {
   }
 
   private limpiarVariables() {
+    this.mensajeCopiaJson = '';
+    this.jsonCopiaManual = '';
     this.variables = [];
     this.fuenteSeleccionada = null;
     this.cargandoVariables = false;
@@ -148,6 +153,9 @@ export class ValidacionPageComponent implements OnInit {
   }
 
   seleccionarVariable(variable: VariablesArmo) {
+    this.mensajeCopiaJson = '';
+    this.jsonCopiaManual = '';
+    console.log('[Validación] Variable seleccionada:', variable);
     this.variableSeleccionada = variable;
     this.detalleVariable = null;
     this.mdeasTraducidos = [];
@@ -157,16 +165,38 @@ export class ValidacionPageComponent implements OnInit {
 
     this.variablesArmoService.obtenerDetallePorIdA(variable.idA).subscribe({
       next: (detalle) => {
+        if (this.variableSeleccionada?.idA !== variable.idA) return;
+        console.log(`[Validación] Detalle completo (${variable.idA}):`, detalle);
+        console.log(`[Validación] JSON completo (${variable.idA}):\n${JSON.stringify(detalle, null, 2)}`);
         this.detalleVariable = { ...detalle, clasificadores: detalle.clasificadores ?? [] };
         this.cargandoDetalle = false;
         this.cargarTraducciones(variable.idA);
         this.cargarTicketsVariable(variable.idA);
       },
-      error: () => {
+      error: (error) => {
+        if (this.variableSeleccionada?.idA !== variable.idA) return;
+        console.error(`[Validación] Error al consultar el detalle (${variable.idA}):`, error);
         this.cargandoDetalle = false;
         this.errorDetalle = 'No fue posible cargar el detalle de la variable seleccionada.';
       },
     });
+  }
+
+  async copiarJsonVariable() {
+    const detalle = this.detalleVariable;
+    if (!detalle || this.cargandoDetalle) return;
+    const json = JSON.stringify(detalle, null, 2);
+    this.mensajeCopiaJson = '';
+    this.jsonCopiaManual = '';
+    try {
+      await navigator.clipboard.writeText(json);
+      if (this.detalleVariable !== detalle) return;
+      this.mensajeCopiaJson = 'JSON copiado';
+    } catch {
+      if (this.detalleVariable !== detalle) return;
+      this.jsonCopiaManual = json;
+      this.mensajeCopiaJson = 'No se pudo copiar automáticamente. Selecciona el JSON y cópialo con Ctrl+C.';
+    }
   }
 
   cambiarValidacion(validada: boolean) {
@@ -229,7 +259,7 @@ export class ValidacionPageComponent implements OnInit {
   guardarTicket() {
     if (!this.variableSeleccionada || this.guardandoTicket) return;
 
-    const idUsuarioReporta = Number(localStorage.getItem('_id'));
+    const idUsuarioReporta = Number(instanceStorage.getItem('_id'));
     if (!Number.isInteger(idUsuarioReporta) || idUsuarioReporta <= 0) {
       this.errorTicket = 'No fue posible identificar al usuario reportante.';
       return;

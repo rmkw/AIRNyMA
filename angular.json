@@ -32,6 +32,20 @@
             "scripts": []
           },
           "configurations": {
+            "produccion": {
+              "baseHref": "/prod/",
+              "outputPath": "dist/produccion",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.produccion.ts"
+                }
+              ]
+            },
+            "pruebas": {
+              "baseHref": "/frontendv1/",
+              "outputPath": "dist/pruebas"
+            },
             "production": {
               "budgets": [
                 {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ClasificadoresVariableComponent } from '../clasificadores-variable/clasificadores-variable.component';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
 import { ClasificacionesArmoService } from '@/variables/services/armonizacion/clasificaciones-armo.service';
 
@@ -9,12 +10,12 @@ export interface ClasificacionVariableForm {
   comentarioA: string;
 }
 
-export const MINIMO_CLASIFICACIONES = 2;
+export const MINIMO_CLASIFICACIONES = 1;
 
 @Component({
   selector: 'app-clasificaciones-variable',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ClasificadoresVariableComponent],
   templateUrl: './clasificaciones-variable.component.html',
   host: {
     class: 'block',
@@ -29,6 +30,8 @@ export class ClasificacionesVariableComponent implements OnChanges {
   @Input() clasificaciones: ClasificacionArmo[] = [];
   @Input() guardando = false;
   @Input() ticketIdA = '';
+  @Input() idA = '';
+  usarClasificadores = false;
   cargandoClasificaciones = false;
   errorClasificaciones = '';
 
@@ -37,6 +40,7 @@ export class ClasificacionesVariableComponent implements OnChanges {
   @Output() cambiarActiva = new EventEmitter<boolean>();
   @Output() agregarClasificacion = new EventEmitter<ClasificacionVariableForm>();
   @Output() eliminarClasificacion = new EventEmitter<ClasificacionArmo>();
+  @Output() clasificadoresChange = new EventEmitter<string>();
 
   get clasificacionesFaltantes(): number {
     return Math.max(this.minimoClasificaciones - this.clasificaciones.length, 0);
@@ -47,6 +51,7 @@ export class ClasificacionesVariableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['idA'] || changes['ticketIdA']) this.usarClasificadores = false;
     const idA = changes['ticketIdA']?.currentValue?.trim();
     if (idA) this.cargarClasificacionesTicket(idA);
   }

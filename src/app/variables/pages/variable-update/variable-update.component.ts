@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { CapturaMdeaVarService } from './../../services/captura-mdea-vars.service';
 import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
@@ -751,8 +752,8 @@ export class VariableUpdateComponent implements OnInit, AfterViewInit {
   }
 
   getPropetiesLocalStorage() {
-    const storeFuente = localStorage.getItem('fuenteEditable');
-    const _responsableRegister = localStorage.getItem('_id');
+    const storeFuente = instanceStorage.getItem('fuenteEditable');
+    const _responsableRegister = instanceStorage.getItem('_id');
 
     if (storeFuente) {
       const fuente = JSON.parse(storeFuente);

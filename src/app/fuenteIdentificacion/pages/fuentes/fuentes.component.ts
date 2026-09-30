@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { FiEcoResponce } from '@/fuenteIdentificacion/interfaces/fiEco-responce.interface';
 import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fuente-identificacion.service';
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
@@ -82,14 +83,14 @@ export class FuentesComponent implements OnInit {
   }
 
   intentarPrecargarDesdeLocalStorage() {
-    const data = localStorage.getItem('procesoEditable');
+    const data = instanceStorage.getItem('procesoEditable');
     if (!data) return;
 
     try {
       const procesoGuardado = JSON.parse(data);
 
       if (!procesoGuardado?.direccion || !procesoGuardado?.acronimo) {
-        localStorage.removeItem('procesoEditable');
+        instanceStorage.removeItem('procesoEditable');
         return;
       }
 
@@ -110,7 +111,7 @@ export class FuentesComponent implements OnInit {
               ) || null;
 
             if (!procesoEncontrado) {
-              localStorage.removeItem('procesoEditable');
+              instanceStorage.removeItem('procesoEditable');
               this.procesoSeleccionado.set(null);
               this.procesoSeleccionadoValue = '';
               return;
@@ -123,12 +124,12 @@ export class FuentesComponent implements OnInit {
           },
           error: (err) => {
             console.error('Error al precargar procesos por dirección', err);
-            localStorage.removeItem('procesoEditable');
+            instanceStorage.removeItem('procesoEditable');
           },
         });
     } catch (error) {
       console.error('Error al leer procesoEditable del localStorage', error);
-      localStorage.removeItem('procesoEditable');
+      instanceStorage.removeItem('procesoEditable');
     }
   }
 
@@ -146,7 +147,7 @@ export class FuentesComponent implements OnInit {
     this.fuentes = [];
     this.limpiarFormularioFuente();
 
-    localStorage.removeItem('procesoEditable');
+    instanceStorage.removeItem('procesoEditable');
 
     this.cargarProcesosProduccionByDireccionGeneral(nameDi);
     this.currentPage = 0;
@@ -184,7 +185,7 @@ export class FuentesComponent implements OnInit {
     this.fuentes = [];
     this.limpiarFormularioFuente();
 
-    localStorage.removeItem('procesoEditable');
+    instanceStorage.removeItem('procesoEditable');
 
     if (procesoEncontrado?.acronimo) {
       this.cargarFuentesPorProceso(procesoEncontrado.acronimo);
@@ -362,13 +363,13 @@ export class FuentesComponent implements OnInit {
 
   //! helper
   obtenerUsuarioId(): number | null {
-    const idDirecto = localStorage.getItem('_id');
+    const idDirecto = instanceStorage.getItem('_id');
     if (idDirecto) {
       const parsed = Number(idDirecto);
       return Number.isNaN(parsed) ? null : parsed;
     }
 
-    const userResponse = localStorage.getItem('useResponce');
+    const userResponse = instanceStorage.getItem('useResponce');
     if (userResponse) {
       try {
         const user = JSON.parse(userResponse);
@@ -432,7 +433,7 @@ export class FuentesComponent implements OnInit {
       return;
     }
 
-    localStorage.removeItem('fuenteEditable');
+    instanceStorage.removeItem('fuenteEditable');
 
     const fuenteEditable = {
       direccion: this.direccionSeleccionada,
@@ -445,7 +446,7 @@ export class FuentesComponent implements OnInit {
       edicion: fuente.edicion ?? '',
     };
 
-    localStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
+    instanceStorage.setItem('fuenteEditable', JSON.stringify(fuenteEditable));
 
     this._router.navigate(['/variables']);
   }

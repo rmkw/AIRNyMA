@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 
 import { RelacionODS } from '@/variables/interfaces/relationVarWhit_ODS.interface';
 import { RelationVarWhitMDEA } from '@/variables/interfaces/relationVarWhitMdea.interface';
@@ -633,8 +634,8 @@ export class NuevaVariableComponent implements OnInit, AfterViewInit {
   _anioEvento: string = '';
 
   getPropetiesLocalStorage() {
-    const storeFuente = localStorage.getItem('fuenteEditable');
-    const _responsableRegister = localStorage.getItem('_id');
+    const storeFuente = instanceStorage.getItem('fuenteEditable');
+    const _responsableRegister = instanceStorage.getItem('_id');
 
     if (storeFuente) {
       const fuente = JSON.parse(storeFuente);

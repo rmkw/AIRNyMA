@@ -2,14 +2,25 @@
   <div class="card-body gap-5 p-5">
     <div class="flex items-center justify-between gap-4">
       <div>
-        <h3 class="card-title text-base">Clasificaciones</h3>
-        <p class="text-xs text-base-content/60">Registra al menos 2 clasificaciones asociadas a la variable.</p>
+        <h3 class="card-title text-base">{{ usarClasificadores ? 'Clasificadores' : 'Clasificaciones' }}</h3>
+        <p class="text-xs text-base-content/60">{{ usarClasificadores
+          ? 'Registra clasificadores asociados a la variable.'
+          : 'Registra al menos 1 clasificación asociada a la variable.' }}</p>
       </div>
-      <input type="checkbox" class="toggle toggle-accent" [checked]="activa"
+      <input type="checkbox" class="toggle toggle-accent" [checked]="activa" [hidden]="usarClasificadores"
         (change)="toggleClasificacion($event)" />
     </div>
 
-    @if (activa) {
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" class="checkbox checkbox-sm checkbox-accent"
+        [(ngModel)]="usarClasificadores" [ngModelOptions]="{standalone: true}" [disabled]="guardando" />
+      <span>Usar clasificadores</span>
+    </label>
+
+    @if (usarClasificadores) {
+    <app-clasificadores-variable [idA]="idA || ticketIdA"
+      (registrosChange)="clasificadoresChange.emit($event)"></app-clasificadores-variable>
+    } @else if (activa) {
     <div class="">
       <div class="grid gap-4">
         <div class="form-control">

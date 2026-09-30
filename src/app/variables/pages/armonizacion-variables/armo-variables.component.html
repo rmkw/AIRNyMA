@@ -592,6 +592,8 @@
   @if (ticketClasificacionesIdA && variableSeleccionada) {
   <section class="mt-4">
     <app-clasificaciones-variable [activa]="clasificacionActiva" [(form)]="clasificacionForm"
+      (clasificadoresChange)="refrescarBanderaClasificacion($event)"
+      [idA]="variableExisteEnArmonizacion ? variableSeleccionada.idA : ''"
       [clasificaciones]="arrClasificaciones" [guardando]="guardandoClasificacion"
       (cambiarActiva)="cambiarEstadoClasificacion($event)"
       (agregarClasificacion)="agregarClasificacionLocal($event)"
@@ -616,6 +618,8 @@
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-2 2xl:grid-cols-3">
       <app-clasificaciones-variable [activa]="clasificacionActiva" [(form)]="clasificacionForm"
+        (clasificadoresChange)="refrescarBanderaClasificacion($event)"
+        [idA]="variableExisteEnArmonizacion ? variableSeleccionada.idA : ''"
         [clasificaciones]="arrClasificaciones" [guardando]="guardandoClasificacion"
         (cambiarActiva)="cambiarEstadoClasificacion($event)"
         (agregarClasificacion)="agregarClasificacionLocal($event)"

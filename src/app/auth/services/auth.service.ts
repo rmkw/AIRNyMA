@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { Role, UsersResponce } from '../interfaces/users.interfaces';
 import { HttpClient } from '@angular/common/http';
@@ -116,12 +117,12 @@ export class authService {
           this._user.set(null);
           this._authStatus.set('not-authenticated');
 
-          localStorage.removeItem('_id');
-          localStorage.removeItem('userName');
-          localStorage.removeItem('aka');
-          localStorage.removeItem('roles');
-          localStorage.removeItem('useResponce');
-          localStorage.clear();
+          instanceStorage.removeItem('_id');
+          instanceStorage.removeItem('userName');
+          instanceStorage.removeItem('aka');
+          instanceStorage.removeItem('roles');
+          instanceStorage.removeItem('useResponce');
+          instanceStorage.clear();
 
           this.router.navigateByUrl('/auth/login');
         },
@@ -134,21 +135,21 @@ export class authService {
 
     if (resp.user) {
       // ✅ Verificamos que resp.user no sea undefined
-      localStorage.setItem('_id', resp.user.id.toString());
-      localStorage.setItem('userName', resp.user.nombre);
-      localStorage.setItem('aka', resp.user.aka);
-      localStorage.setItem('roles', JSON.stringify(resp.user.roles));
-      localStorage.setItem('useResponce', JSON.stringify(resp.user));
+      instanceStorage.setItem('_id', resp.user.id.toString());
+      instanceStorage.setItem('userName', resp.user.nombre);
+      instanceStorage.setItem('aka', resp.user.aka);
+      instanceStorage.setItem('roles', JSON.stringify(resp.user.roles));
+      instanceStorage.setItem('useResponce', JSON.stringify(resp.user));
     } else {
       console.warn(
         '⚠️ No hay usuario autenticado, no se guardan datos en localStorage',
       );
-      localStorage.removeItem('_id');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('aka');
-      localStorage.removeItem('roles');
-      localStorage.removeItem('useResponce');
-      localStorage.clear();
+      instanceStorage.removeItem('_id');
+      instanceStorage.removeItem('userName');
+      instanceStorage.removeItem('aka');
+      instanceStorage.removeItem('roles');
+      instanceStorage.removeItem('useResponce');
+      instanceStorage.clear();
     }
 
     return true;

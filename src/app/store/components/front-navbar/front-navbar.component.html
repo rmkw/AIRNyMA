@@ -95,6 +95,13 @@
     </li>
 
     <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
+      <a routerLink="/varvisor" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Visor">
+        <span>📋</span>
+        <span class="is-drawer-close:hidden">Visor</span>
+      </a>
+    </li>
+
+    <li *ngIf="esArmonizacion() || puedeVerAdmin() || puedeVerRoot()">
       <a routerLink="/tickets" class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Tickets">
         <span>🎫</span>
         <span class="is-drawer-close:hidden">Tickets</span>

@@ -10,7 +10,7 @@ import { FuenteIdentificacionService } from '@/fuenteIdentificacion/services/fue
 import { interface_ProcesoP } from '@/procesoProduccion/interfaces/procesos.interface';
 import { DireccionesService } from '@/procesoProduccion/services/direcciones.service';
 import { ppEcoService } from '@/procesoProduccion/services/proceso-produccion.service';
-import { ClasificacionesVariableComponent, ClasificacionVariableForm, MINIMO_CLASIFICACIONES } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
+import { ClasificacionesVariableComponent, ClasificacionVariableForm } from '@/variables/components/clasificaciones-variable/clasificaciones-variable.component';
 import { DatosAbiertosVariableComponent, DatosAbiertosVariableForm } from '@/variables/components/datos-abiertos-variable/datos-abiertos-variable.component';
 import { MicrodatosVariableComponent, MicrodatosVariableForm } from '@/variables/components/microdatos-variable/microdatos-variable.component';
 import { ClasificacionArmo } from '@/variables/interfaces/armonizacion/clasificaciones-armo.interface';
@@ -1213,7 +1213,6 @@ export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
   clasificacionActiva: boolean = false;
   arrClasificaciones: ClasificacionArmo[] = [];
   guardandoClasificacion = false;
-  private readonly minimoClasificaciones = MINIMO_CLASIFICACIONES;
 
   clasificacionForm: ClasificacionVariableForm = {
     clase: '',
@@ -1319,12 +1318,6 @@ export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
         this.clasificacionActiva = true;
         this.cargarClasificacionesVariable(payload.idA, () => {
           this.guardandoClasificacion = false;
-          if (this.arrClasificaciones.length < this.minimoClasificaciones) {
-            this.mostrarToast(
-              'Clasificación agregada correctamente. Falta 1 clasificación para activar la bandera.',
-            );
-            return;
-          }
           this.mostrarToast('Clasificación agregada correctamente.');
         });
       },
@@ -1340,7 +1333,7 @@ export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
       next: (resp) => {
         this.arrClasificaciones = resp ?? [];
         this.clasificacionActiva = this.arrClasificaciones.length > 0;
-        this.sincronizarBanderaClasificacion(onSuccess);
+        this.refrescarBanderaClasificacion(idA, onSuccess);
       },
       error: (err) => {
         console.error('Error al cargar clasificaciones:', err);
@@ -1381,42 +1374,19 @@ export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
     });
   }
 
-  private sincronizarBanderaClasificacion(onSuccess: () => void) {
-    const clasificacion =
-      this.arrClasificaciones.length >= this.minimoClasificaciones;
-    const banderaActual = this.variableForm.get('clasificacion')?.value === true;
-
-    this.variableForm.patchValue({ clasificacion });
-
-    if (banderaActual === clasificacion) {
-      onSuccess();
-      return;
-    }
-
-    this.persistirBanderaClasificacionVariable(clasificacion, onSuccess);
-  }
-
-  private persistirBanderaClasificacionVariable(
-    clasificacion: boolean,
-    onSuccess: () => void,
+  refrescarBanderaClasificacion(
+    idA: string,
+    onSuccess: () => void = () => {},
   ) {
-    if (!this.variableSeleccionada?.idA) {
-      this.guardandoClasificacion = false;
-      this.abrirModalError('No se encontró la variable seleccionada para actualizar la bandera de clasificación.');
-      return;
-    }
-
-    this.variableForm.patchValue({ clasificacion });
-    const payload = this.variableForm.getRawValue();
-
-    this.variablesArmoService.actualizarVariable(this.variableSeleccionada.idA, payload).subscribe({
+    if (this.variableSeleccionada?.idA !== idA) return;
+    this.variablesArmoService.obtenerPorIdA(idA).subscribe({
       next: (resp) => {
-        this.variableForm.patchValue(resp);
-        this.variableExisteEnArmonizacion = true;
-        this.modoEdicionVariable = true;
+        if (this.variableSeleccionada?.idA !== idA) return;
+        this.variableForm.patchValue({ clasificacion: resp.clasificacion === true });
         onSuccess();
       },
       error: (err) => {
+        if (this.variableSeleccionada?.idA !== idA) return;
         this.guardandoClasificacion = false;
         this.abrirModalError(this.obtenerMensajeError(err));
       },

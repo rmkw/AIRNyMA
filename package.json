@@ -6,6 +6,10 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200 --disable-host-check",
     "build": "ng build",
+    "build:produccion": "ng build --configuration production,produccion",
+    "build:pruebas": "ng build --configuration production,pruebas",
+    "war:produccion": "npm run build:produccion && node scripts/package-war.cjs produccion",
+    "war:pruebas": "npm run build:pruebas && node scripts/package-war.cjs pruebas",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

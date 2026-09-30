@@ -197,9 +197,11 @@
         } @else if (detalleVariable) {
         <div class="space-y-4">
           <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
+            <div class="flex flex-wrap items-center gap-2">
             <div class="badge badge-primary">Variable: {{ detalleVariable.variable.idA }}</div>
-            
+            <button type="button" class="btn btn-outline btn-primary btn-sm" (click)="copiarJsonVariable()">
+              Copiar JSON
+            </button>
             </div>
             <div class="flex items-center gap-2">
               @if (!detalleVariable.variable.validada) {
@@ -223,6 +225,17 @@
               </button>
             </div>
           </div>
+
+          @if (mensajeCopiaJson) {
+          <p role="status" class="text-sm">{{ mensajeCopiaJson }}</p>
+          }
+          @if (jsonCopiaManual) {
+          <label class="form-control">
+            <span class="label-text text-sm">JSON para copiar</span>
+            <textarea #jsonManual readonly class="textarea textarea-bordered h-48 w-full font-mono text-xs"
+              [value]="jsonCopiaManual" (focus)="jsonManual.select()"></textarea>
+          </label>
+          }
 
           @if (cargandoTicketsVariable) {
           <div class="text-sm text-base-content/60">Verificando tickets de la variable...</div>

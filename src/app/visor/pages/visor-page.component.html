@@ -1,0 +1,125 @@
+<div class="space-y-4">
+  <header class="rounded-box bg-gradient-to-r from-[#003057] via-[#0d717e] to-[#08989c] p-6 text-white">
+    <h1 class="text-2xl font-bold">Visor</h1>
+    <p class="mt-2 text-sm">Consulta variables armonizadas y explora toda su información.</p>
+  </header>
+
+  <section class="card border border-base-300 bg-base-100 shadow-sm" aria-label="Filtros del Visor">
+    <div class="card-body gap-4 p-5">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="card-title text-base">Filtros de búsqueda</h2>
+        <button type="button" class="btn btn-sm btn-outline" (click)="limpiar()">Limpiar filtros</button>
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <label class="form-control"><span class="label-text mb-1 text-xs">Unidad</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros.unidad" (ngModelChange)="cambiar('unidad', $event)">
+            <option value="">Todas</option>
+            @for (unidad of opciones.unidades; track unidad) { <option [value]="unidad">{{ unidad }}</option> }
+          </select>
+        </label>
+        <label class="form-control"><span class="label-text mb-1 text-xs">Proceso</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros.acronimo" (ngModelChange)="cambiar('acronimo', $event)" [disabled]="cargandoOpciones">
+            <option value="">Todos</option>
+            @for (proceso of opciones.procesos; track proceso.acronimo) { <option [value]="proceso.acronimo">{{ proceso.acronimo }} — {{ proceso.proceso }}</option> }
+          </select>
+        </label>
+        <label class="form-control"><span class="label-text mb-1 text-xs">Fuente</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros.idFuente" (ngModelChange)="cambiar('idFuente', $event)" [disabled]="!filtros.acronimo || cargandoOpciones">
+            <option value="">Todas</option>
+            @for (fuente of opciones.fuentes; track fuente.idFuente) { <option [value]="fuente.idFuente">{{ fuente.fuente }} — {{ fuente.edicion }}</option> }
+          </select>
+        </label>
+        <label class="form-control"><span class="label-text mb-1 text-xs">Nombre armonizado</span>
+          <input class="input input-bordered w-full" type="search" placeholder="Buscar por nombre"
+            [ngModel]="filtros.variableA" (ngModelChange)="cambiar('variableA', $event)" />
+        </label>
+        <label class="form-control"><span class="label-text mb-1 text-xs">Año de referencia</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros.anioReferencia" (ngModelChange)="cambiar('anioReferencia', $event)" [disabled]="cargandoOpciones">
+            <option value="">Todos</option>
+            @for (anio of opciones.anios; track anio) { <option [value]="anio">{{ anio }}</option> }
+          </select>
+        </label>
+        @for (tema of temas; track tema.campo) {
+        <label class="form-control"><span class="label-text mb-1 text-xs">{{ tema.label }}</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros[tema.campo]" (ngModelChange)="cambiar(tema.campo, $event)" [disabled]="cargandoOpciones">
+            <option value="">Todos</option>
+            @for (valor of opciones[tema.campo]; track valor) { <option [value]="valor">{{ valor }}</option> }
+          </select>
+        </label>
+        }
+      </div>
+      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-7">
+        @for (bandera of banderas; track bandera.campo) {
+        <label class="form-control"><span class="label-text mb-1 text-xs">{{ bandera.label }}</span>
+          <select class="select select-bordered w-full" [ngModel]="filtros[bandera.campo]" (ngModelChange)="cambiar(bandera.campo, $event)">
+            <option value="">Todos</option><option value="true">Sí</option><option value="false">No</option>
+          </select>
+        </label>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="card border border-base-300 bg-base-100 shadow-sm" aria-label="Resultados del Visor">
+    <div class="card-body p-5">
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="card-title text-base">Variables @if (!cargando && !error) { ({{ pagina.totalElements }}) }</h2>
+        <label class="flex items-center gap-2 text-sm">Registros por página
+          <select class="select select-sm select-bordered" [ngModel]="size" (ngModelChange)="cambiarTamano($event)">
+            <option [ngValue]="20">20</option><option [ngValue]="50">50</option><option [ngValue]="100">100</option>
+          </select>
+        </label>
+      </div>
+      @if (cargando) {
+      <div role="status" class="flex min-h-40 items-center justify-center gap-2"><span class="loading loading-spinner"></span> Consultando variables...</div>
+      } @else if (error) {
+      <div role="alert" class="alert alert-error"><span>{{ error }}</span><button class="btn btn-sm" (click)="reintentar()">Reintentar</button></div>
+      } @else {
+      <div class="overflow-x-auto">
+        <table class="table table-sm">
+          <thead><tr><th>ID_A</th><th>Nombre armonizado</th><th>Acrónimo</th><th>Fuente</th><th>Año</th><th>Revisión</th><th>Acción</th></tr></thead>
+          <tbody>
+            @for (variable of pagina.content; track variable.idA) {
+            <tr>
+              <td class="font-mono text-xs">{{ variable.idA }}</td>
+              <td>{{ variable.variableA || 'Sin nombre' }}</td>
+              <td>{{ variable.acronimo }}</td>
+              <td [title]="variable.idFuente">{{ variable.fuente || 'Sin fuente' }} @if (variable.edicion) { — {{ variable.edicion }} }</td>
+              <td>{{ variable.anioReferencia ?? 'Sin dato' }}</td>
+              <td><span class="badge badge-sm" [class.badge-success]="variable.validada === true" [class.badge-warning]="variable.validada === false">
+                {{ variable.validada === true ? 'Revisada' : variable.validada === false ? 'Pendiente' : 'Sin dato' }}
+              </span></td>
+              <td><button type="button" class="btn btn-xs btn-primary" (click)="abrirDetalle(variable.idA)">Ver toda la información</button></td>
+            </tr>
+            } @empty { <tr><td colspan="7" class="py-10 text-center text-base-content/60">No se encontraron variables con estos filtros.</td></tr> }
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-sm">Página {{ pagina.totalPages ? pagina.page + 1 : 0 }} de {{ pagina.totalPages }} · {{ pagina.totalElements }} resultados</span>
+        <div class="join">
+          <button type="button" class="btn btn-sm join-item" [disabled]="page === 0" (click)="irPagina(page - 1)">Anterior</button>
+          <button type="button" class="btn btn-sm join-item" [disabled]="page + 1 >= pagina.totalPages" (click)="irPagina(page + 1)">Siguiente</button>
+        </div>
+      </div>
+      }
+    </div>
+  </section>
+</div>
+
+<dialog #detalleModal class="modal" aria-labelledby="tituloDetalleVisor" (close)="limpiarDetalle()">
+  <div class="modal-box max-h-[90vh] w-11/12 max-w-6xl overflow-y-auto">
+    <div class="sticky -top-6 z-10 mb-4 flex items-center justify-between gap-3 bg-base-100 py-3">
+      <h2 id="tituloDetalleVisor" class="text-lg font-bold">Variable: {{ idDetalle }}</h2>
+      <button type="button" class="btn btn-sm btn-outline" (click)="cerrarDetalle()">Cerrar</button>
+    </div>
+    @if (cargandoDetalle) {
+    <div role="status" class="p-8 text-center"><span class="loading loading-spinner"></span> Cargando detalle...</div>
+    } @else if (errorDetalle) {
+    <div class="alert alert-error" role="alert"><span>{{ errorDetalle }}</span><button class="btn btn-sm" (click)="abrirDetalle(idDetalle)">Reintentar</button></div>
+    } @else if (detalle) {
+      @for (aviso of avisosDetalle; track aviso) { <p role="status" class="alert alert-warning mb-3">{{ aviso }}</p> }
+      <app-detalle-visor [detalle]="detalle" [mdeas]="mdeas" [ods]="ods"></app-detalle-visor>
+    }
+  </div>
+</dialog>

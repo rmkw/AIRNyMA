@@ -14,6 +14,7 @@ import { FuentesComponent } from "@/fuenteIdentificacion/pages/fuentes/fuentes.c
 import { SeleccionVariablesComponent } from "@/variables/pages/seleccion-variables/seleccion-variables.component";
 import { TabuladosPageComponent } from "@/tabulados/pages/tabulados-page/tabulados-page.component";
 import { ValidacionPageComponent } from "@/validacion/pages/validacion-page/validacion-page.component";
+import { VisorPageComponent } from "@/visor/pages/visor-page.component";
 import { TicketsPageComponent } from "@/tickets/pages/tickets-page/tickets-page.component";
 import { UsuariosAdminPageComponent } from "@/usuarios-admin/pages/usuarios-admin-page/usuarios-admin-page.component";
 
@@ -74,6 +75,10 @@ export const storeFrontRoutes: Routes = [
       {
         path: 'validacion',
         component: ValidacionPageComponent,
+      },
+      {
+        path: 'varvisor',
+        component: VisorPageComponent,
       },
       {
         path: 'tickets',

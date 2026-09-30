@@ -1,3 +1,4 @@
+import { instanceStorage } from '@/shared/instance-storage';
 import { Component, OnInit, inject } from '@angular/core';
 import { TicketVariable, UsuarioTicket } from '@/tickets/interfaces/ticket-variable.interface';
 import { TicketsVariablesService } from '@/tickets/services/tickets-variables.service';
@@ -224,7 +225,7 @@ export class TicketsPageComponent implements OnInit {
   }
 
   private idUsuarioSesion(): number | null {
-    const idUsuario = Number(localStorage.getItem('_id'));
+    const idUsuario = Number(instanceStorage.getItem('_id'));
     return Number.isInteger(idUsuario) && idUsuario > 0 ? idUsuario : null;
   }
 }
