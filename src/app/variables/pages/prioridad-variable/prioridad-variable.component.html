@@ -56,7 +56,7 @@
             [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
             <option disabled selected>Selecciona una opción</option>
             @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
-            <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+            <option [value]="proceso.acronimo">{{ proceso.acronimo }} — {{ proceso.proceso }}</option>
             }
           </select>
         </div>

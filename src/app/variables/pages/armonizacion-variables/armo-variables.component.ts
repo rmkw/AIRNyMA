@@ -222,7 +222,11 @@ export class ArmonizacionVariablesComponent implements OnInit, OnChanges {
 
     this._fuentesService.getByAcronimo(acronimo).subscribe({
       next: (response) => {
-        this.arrFuentesByProceso = response ?? [];
+        this.arrFuentesByProceso = [...(response ?? [])].sort((a, b) => {
+          const anioA = Number(a.edicion) || 0;
+          const anioB = Number(b.edicion) || 0;
+          return anioB - anioA || String(a.fuente ?? '').localeCompare(String(b.fuente ?? ''), 'es');
+        });
         this._fuentes_isSelectEnabled = this.arrFuentesByProceso.length > 0;
         this.loadingFuentes = false;
       },

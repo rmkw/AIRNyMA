@@ -48,7 +48,7 @@
                 [disabled]="!direccionSeleccionada || cargandoProcesos" (change)="seleccionarProceso($event)">
                 <option value="">{{ cargandoProcesos ? 'Cargando procesos...' : 'Selecciona una opción' }}</option>
                 @for (proceso of procesos; track proceso.acronimo) {
-                <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+                <option [value]="proceso.acronimo">{{ proceso.acronimo }} — {{ proceso.proceso }}</option>
                 }
               </select>
             </div>
@@ -269,6 +269,27 @@
                   {{ clasificacion.clase }}
                 </div>
                 } @empty { <span class="text-base-content/60">Sin clasificaciones registradas.</span> }
+              </div>
+            </details>
+
+            <details open class="collapse collapse-arrow border border-base-300 bg-base-100 xl:col-span-3">
+              <summary class="collapse-title text-sm font-medium">Clasificadores ({{ detalleVariable.clasificadores.length }})</summary>
+              <div class="collapse-content space-y-2 text-sm">
+                @for (clasificador of detalleVariable.clasificadores; track clasificador.idUnique) {
+                <section class="mt-4 space-y-3 border-t border-base-300 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+                  <div class="grid gap-3 md:grid-cols-2">
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Clasificador</div><div class="whitespace-pre-wrap break-words">{{ clasificador.clasificador || '-' }}</div></div>
+                    <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Versión</div><div>{{ clasificador.version || '-' }}</div></div>
+                  </div>
+                  <div class="rounded-box bg-base-200 p-3">
+                    <div class="font-medium">URL</div>
+                    @if (clasificador.url && clasificador.url !== '-') {
+                    <a [href]="clasificador.url" target="_blank" rel="noopener" class="link link-neutral break-all">{{ clasificador.url }}</a>
+                    } @else { <span>-</span> }
+                  </div>
+                  <div class="rounded-box bg-base-200 p-3"><div class="font-medium">Comentarios</div><div class="whitespace-pre-wrap break-words">{{ clasificador.comentariosA || '-' }}</div></div>
+                </section>
+                } @empty { <span class="text-base-content/60">Sin clasificadores registrados.</span> }
               </div>
             </details>
 

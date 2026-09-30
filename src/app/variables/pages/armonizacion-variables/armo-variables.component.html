@@ -65,7 +65,7 @@
                 [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
                 <option disabled selected>Selecciona una opción</option>
                 @for (proceso of arrProcesosPBydire; track proceso.acronimo) {
-                <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+                <option [value]="proceso.acronimo">{{ proceso.acronimo }} — {{ proceso.proceso }}</option>
                 }
               </select>
             </div>
@@ -125,8 +125,8 @@
               <thead>
                 <tr>
                   <th class="text-center">Fuente</th>
-                  <th class="text-center">URL</th>
                   <th class="text-center">Edición</th>
+                  <th class="text-center">URL</th>
                   <th class="text-center">Seleccionar</th>
                 </tr>
               </thead>
@@ -135,6 +135,7 @@
                 @for (fuente of arrFuentesByProceso; track fuente.idFuente) {
                 <tr>
                   <td class="text-sm text-center">{{ fuente.fuente }}</td>
+                  <td class="text-sm text-center">{{ fuente.edicion || 'Sin edición' }}</td>
                   <td class="text-sm text-center">
                     @if (fuente.url) {
                     <a [href]="fuente.url" target="_blank" class="link link-neutral break-all">Ver URL</a>
@@ -142,7 +143,6 @@
                     <span class="text-base-content/50">Sin URL</span>
                     }
                   </td>
-                  <td class="text-sm text-center">{{ fuente.edicion || 'Sin edición' }}</td>
                   <td class="text-center">
                     <input type="checkbox" class="text-center checkbox checkbox-sm" [value]="fuente.idFuente"
                       [checked]="fuentesSeleccionadas.includes(fuente.idFuente)"

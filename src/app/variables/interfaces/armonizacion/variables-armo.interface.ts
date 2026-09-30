@@ -1,3 +1,5 @@
+import { ClasificadorArmo } from './clasificadores-armo.interface';
+
 export interface VariablesArmo {
   idA: string;
   idFuente: string;
@@ -140,6 +142,7 @@ export interface OdsTraducido extends OdsDetalle {
 }
 
 export interface VariableDetalleArmo {
+  clasificadores: ClasificadorArmo[];
   variable: VariablesArmo;
   clasificaciones: ClasificacionArmoDetalle[];
   microdatos: MicrodatoArmoDetalle[];

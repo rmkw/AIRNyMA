@@ -48,7 +48,7 @@
               [disabled]="!_procesos_isSelectEnabled" (change)="seleccionarProceso($event)">
               <option disabled selected>Selecciona una opción</option>
               @for (proceso of arrProcesosByDir; track proceso.acronimo) {
-              <option [value]="proceso.acronimo">{{ proceso.proceso }}</option>
+              <option [value]="proceso.acronimo">{{ proceso.acronimo }} — {{ proceso.proceso }}</option>
               }
               <option value="otro">Agregar nuevo proceso de producción +</option>
             </select>

@@ -157,7 +157,7 @@ export class ValidacionPageComponent implements OnInit {
 
     this.variablesArmoService.obtenerDetallePorIdA(variable.idA).subscribe({
       next: (detalle) => {
-        this.detalleVariable = detalle;
+        this.detalleVariable = { ...detalle, clasificadores: detalle.clasificadores ?? [] };
         this.cargandoDetalle = false;
         this.cargarTraducciones(variable.idA);
         this.cargarTicketsVariable(variable.idA);

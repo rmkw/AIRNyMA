@@ -50,7 +50,7 @@
 
                 @for (proceso of arrProcesosByDir; track proceso.acronimo) {
                 <option [value]="proceso.acronimo">
-                  {{ proceso.proceso }}
+                  {{ proceso.acronimo }} — {{ proceso.proceso }}
                 </option>
                 }
               </select>
